@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/OverMoneyReal.iml" filepath="$PROJECT_DIR$/.idea/OverMoneyReal.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Eureka/eureka-server/eureka-server.iml" filepath="$PROJECT_DIR$/Eureka/eureka-server/eureka-server.iml" />
     </modules>
   </component>
 </project>
