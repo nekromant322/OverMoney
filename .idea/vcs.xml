@@ -2,7 +2,8 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Orchestrator" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/Recognizer" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/OverMoneyReal" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/OverMoneyReal/Orchestrator" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/OverMoneyReal/Recognizer" vcs="Git" />
   </component>
 </project>
