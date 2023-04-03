@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/OverMoneyReal.iml" filepath="$PROJECT_DIR$/.idea/OverMoneyReal.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Eureka/eureka-server/eureka-server.iml" filepath="$PROJECT_DIR$/Eureka/eureka-server/eureka-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/eureka-server/eureka-server.iml" filepath="$PROJECT_DIR$/eureka-server/eureka-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/orchestrator-server/orchestrator-service.iml" filepath="$PROJECT_DIR$/orchestrator-server/orchestrator-service.iml" />
+      <module fileurl="file://$PROJECT_DIR$/recognizer-server/recognizer-service.iml" filepath="$PROJECT_DIR$/recognizer-server/recognizer-service.iml" />
     </modules>
   </component>
 </project>

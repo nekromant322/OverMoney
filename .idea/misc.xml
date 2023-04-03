@@ -4,6 +4,10 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/Eureka/eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/recognizer-server/pom.xml" />
+        <option value="$PROJECT_DIR$/orchestrator-server/pom.xml" />
+        <option value="$PROJECT_DIR$/eureka-server/pom.xml" />
+        <option value="$PROJECT_DIR$/pom.xml" />
       </list>
     </option>
   </component>
