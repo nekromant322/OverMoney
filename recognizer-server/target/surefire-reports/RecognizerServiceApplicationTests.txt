@@ -1,7 +1,0 @@
--------------------------------------------------------------------------------
-Test set: RecognizerServiceApplicationTests
--------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.234 s <<< FAILURE! - in RecognizerServiceApplicationTests
-RecognizerServiceApplicationTests  Time elapsed: 0.232 s  <<< ERROR!
-java.lang.IllegalStateException: Unable to find a @SpringBootConfiguration, you need to use @ContextConfiguration or @SpringBootTest(classes=...) with your test
-
