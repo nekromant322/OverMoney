@@ -11,9 +11,4 @@ class EurekaServerApplicationTests {
     void contextLoads() {
     }
 
-    @Test
-    void nasralTestExample() {
-        Assertions.assertEquals(1, 2);
-    }
-
 }
