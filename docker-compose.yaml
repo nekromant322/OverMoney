@@ -1,0 +1,13 @@
+version: '1'
+
+services:
+  overmoney-db:
+    image: postgres:14.1-alpine
+    ports:
+      - '5433:5432'
+    container_name: overmoney-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    restart: always
