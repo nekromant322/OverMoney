@@ -1,8 +1,8 @@
-version: '1'
+version: '3.1'
 
 services:
   orchestrator-db:
-    container_name: orchestratordb
+    container_name: orchestrator-db
     image: postgres:14.1-alpine
     ports:
       - '5433:5432'
@@ -22,18 +22,21 @@ services:
       POSTGRES_DB: recognizer-db
     restart: always
   eureka:
+    container_name: eureka
     image: kyomexd/overmoney:eureka
     ports:
       - '8761:8761'
   orchestrator:
+    container_name: orchestrator
     image: kyomexd/overmoney:orchestrator
     ports:
-      - '8001:8001'
+      - '8081:8081'
     depends_on:
       - orchestrator-db
   recognizer:
+    container_name: recognizer
     image: kyomexd/overmoney:recognizer
     ports:
-      - '8000:8000'
+      - '8080:8080'
     depends_on:
       - recognizer-db

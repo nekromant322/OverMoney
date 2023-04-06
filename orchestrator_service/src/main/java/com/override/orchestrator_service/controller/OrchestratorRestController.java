@@ -15,7 +15,7 @@ public class OrchestratorRestController {
         return "Orchestra";
     }
 
-    @GetMapping("/reccognizer")
+    @GetMapping("/recognizer")
     public String getRecognizerWithFeign() {
         return feignClient.getRecognition();
     }
