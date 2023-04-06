@@ -1,13 +1,41 @@
 version: '1'
 
 services:
-  overmoney-db:
+  orchestrator-db:
     image: postgres:14.1-alpine
     ports:
       - '5433:5432'
-    container_name: overmoney-db
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: orchestrator-db
     restart: always
+
+  recognizer-db:
+      image: postgres:14.1-alpine
+      ports:
+        - '5434:5432'
+      environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: recognizer-db
+      restart: always
+
+  eureka:
+    image: kyomexd/overmoney:eureka
+    ports:
+      - '8761:8761'
+
+  orchestrator:
+    image: kyomexd/overmoney:orchestrator
+    ports:
+      - '8001:8001'
+    depends_on:
+      - orchestrator-db
+
+  recognizer:
+    image: kyomexd/overmoney:recognizer
+    ports:
+      - '8000:8000'
+    depends_on:
+      - recognizer-db
