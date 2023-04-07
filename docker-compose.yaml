@@ -7,8 +7,8 @@ services:
     ports:
       - '5433:5432'
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${ORCHESTRATOR_DB_USER}
+      POSTGRES_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD}
       POSTGRES_DB: orchestrator-db
     restart: always
   recognizer-db:
@@ -17,8 +17,8 @@ services:
     ports:
       - '5434:5432'
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${RECOGNIZER_DB_USER}
+      POSTGRES_PASSWORD: ${RECOGNIZER_DB_PASSWORD}
       POSTGRES_DB: recognizer-db
     restart: always
   eureka:
@@ -31,6 +31,9 @@ services:
     image: kyomexd/overmoney:orchestrator
     ports:
       - '8081:8081'
+    environment:
+      ORCHESTRATOR_DB_USER: ${ORCHESTRATOR_DB_USER}
+      ORCHESTRATOR_DB_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD}
     depends_on:
       - orchestrator-db
   recognizer:
@@ -38,5 +41,8 @@ services:
     image: kyomexd/overmoney:recognizer
     ports:
       - '8080:8080'
+    environment:
+      RECOGNIZER_DB_USER: ${RECOGNIZER_DB_USER}
+      RECOGNIZER_DB_PASSWORD: ${RECOGNIZER_DB_PASSWORD}
     depends_on:
       - recognizer-db
