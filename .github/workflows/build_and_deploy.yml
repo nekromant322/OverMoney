@@ -77,15 +77,15 @@
               echo ORCHESTRATOR_DB_USER = ${{ secrets.ORCHESTRATOR_DB_USER }} >> overmoney-env.txt
               echo ORCHESTRATOR_DB_PASSWORD = ${{ secrets.ORCHESTRATOR_DB_PASSWORD }} >> overmoney-env.txt
             
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop eureka
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop recognizer
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop orchestrator
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm eureka
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm recognizer
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm orchestrator
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:eureka
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:recognizer
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:orchestrator
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose --env-file overmoney-env.txt up -d eureka recognizer orchestrator
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker ps -a  
+              sudo -S docker stop eureka
+              sudo -S docker stop recognizer
+              sudo -S docker stop orchestrator
+              sudo -S docker rm eureka
+              sudo -S docker rm recognizer
+              sudo -S docker rm orchestrator
+              sudo -S docker rmi nekromant322/overmoney:eureka
+              sudo -S docker rmi nekromant322/overmoney:recognizer
+              sudo -S docker rmi nekromant322/overmoney:orchestrator
+              sudo -S docker compose --env-file overmoney-env.txt up -d eureka recognizer orchestrator
+              sudo -S docker ps -a  
               rm overmoney-env.txt
