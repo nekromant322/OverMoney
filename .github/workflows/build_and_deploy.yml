@@ -83,6 +83,6 @@
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:eureka
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:recognizer
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:orchestrator
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker compose --env-file=overmoney-env.txt up -d
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose --env-file=overmoney-env.txt up -d
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker ps -a  
               rm overmoney-env.txt
