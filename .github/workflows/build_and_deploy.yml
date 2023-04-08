@@ -39,7 +39,6 @@
         - name: Eureka Build and Push to Dockerhub
           uses: docker/build-push-action@v2
           with:
-            context: /eureka_server
             file: /eureka_server/Dockerfile
             push: true
             tags: nekromant322/overmoney:eureka
@@ -47,7 +46,6 @@
         - name: Orchestrator Build and Push to Dockerhub
           uses: docker/build-push-action@v2
           with:
-            context: /orchestrator_service
             file: /orchestrator_service/Dockerfile
             push: true
             tags: nekromant322/overmoney:orchestrator
@@ -55,7 +53,6 @@
         - name: Recognizer Build and Push to Dockerhub
           uses: docker/build-push-action@v2
           with:
-            context: /recognizer_service
             file: /recognizer_service/Dockerfile
             push: true
             tags: nekromant322/overmoney:recognizer
