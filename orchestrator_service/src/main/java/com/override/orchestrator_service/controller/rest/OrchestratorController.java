@@ -1,14 +1,15 @@
-package com.override.orchestrator_service.controller;
+package com.override.orchestrator_service.controller.rest;
 
-import com.override.orchestrator_service.client.OrchestratorFeignClient;
+import com.override.orchestrator_service.feign.RecognizerFeign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class OrchestratorRestController {
+public class OrchestratorController {
+
     @Autowired
-    OrchestratorFeignClient feignClient;
+    private RecognizerFeign recognizerFeign;
 
     @GetMapping("/orchestra")
     public String getOrchestra() {
@@ -17,7 +18,7 @@ public class OrchestratorRestController {
 
     @GetMapping("/recognizer")
     public String getRecognizerWithFeign() {
-        return feignClient.getRecognition();
+        return recognizerFeign.getRecognition();
     }
 
 }
