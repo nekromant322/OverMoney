@@ -23,12 +23,12 @@ services:
     restart: always
   eureka:
     container_name: eureka
-    image: kyomexd/overmoney:eureka
+    image: nekromant322/overmoney:eureka
     ports:
       - '8761:8761'
   orchestrator:
     container_name: orchestrator
-    image: kyomexd/overmoney:orchestrator
+    image: nekromant322/overmoney:orchestrator
     ports:
       - '8081:8081'
     environment:
@@ -38,7 +38,7 @@ services:
       - orchestrator-db
   recognizer:
     container_name: recognizer
-    image: kyomexd/overmoney:recognizer
+    image: nekromant322/overmoney:recognizer
     ports:
       - '8080:8080'
     environment:
