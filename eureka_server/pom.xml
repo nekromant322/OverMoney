@@ -80,5 +80,7 @@
                     <release>11</release>
                 </configuration>
             </plugin>
+        </plugins>
+    </build>
 
 </project>
