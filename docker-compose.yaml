@@ -10,6 +10,7 @@ services:
       POSTGRES_USER: ${ORCHESTRATOR_DB_USER}
       POSTGRES_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD}
       POSTGRES_DB: orchestrator-db
+    restart: always
   recognizer-db:
     container_name: recognizer-db
     image: postgres:14.1-alpine
@@ -19,6 +20,7 @@ services:
       POSTGRES_USER: ${RECOGNIZER_DB_USER}
       POSTGRES_PASSWORD: ${RECOGNIZER_DB_PASSWORD}
       POSTGRES_DB: recognizer-db
+    restart: always
   eureka:
     container_name: eureka
     image: nekromant322/overmoney:eureka
