@@ -7,8 +7,8 @@ services:
     ports:
       - '5433:5432'
     environment:
-      POSTGRES_USER: ${ORCHESTRATOR_DB_USER}
-      POSTGRES_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD}
+      POSTGRES_USER: ${ORCHESTRATOR_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD:-postgres}
       POSTGRES_DB: orchestrator-db
     restart: always
   recognizer-db:
@@ -17,8 +17,8 @@ services:
     ports:
       - '5434:5432'
     environment:
-      POSTGRES_USER: ${RECOGNIZER_DB_USER}
-      POSTGRES_PASSWORD: ${RECOGNIZER_DB_PASSWORD}
+      POSTGRES_USER: ${RECOGNIZER_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${RECOGNIZER_DB_PASSWORD:-postgres}
       POSTGRES_DB: recognizer-db
     restart: always
   eureka:
@@ -34,6 +34,8 @@ services:
     environment:
       ORCHESTRATOR_DB_USER: ${ORCHESTRATOR_DB_USER}
       ORCHESTRATOR_DB_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD}
+      ORCHESTRATOR_DB_HOST: ${ORCHESTRATOR_DB_HOST}
+      ORCHESTRATOR_DB_PORT: ${ORCHESTRATOR_DB_PORT}
     depends_on:
       - orchestrator-db
   recognizer:
@@ -44,5 +46,7 @@ services:
     environment:
       RECOGNIZER_DB_USER: ${RECOGNIZER_DB_USER}
       RECOGNIZER_DB_PASSWORD: ${RECOGNIZER_DB_PASSWORD}
+      RECOGNIZER_DB_HOST: ${RECOGNIZER_DB_HOST}
+      RECOGNIZER_DB_PORT: ${RECOGNIZER_DB_PORT}
     depends_on:
       - recognizer-db
