@@ -1,8 +1,8 @@
 FROM maven:3.6.3-jdk-11-slim AS build
 RUN mkdir -p /recognizer
 WORKDIR /recognizer
-COPY pom.xml /recognizer
-COPY src /recognizer/src
+COPY /recognizer_service/pom.xml /recognizer
+COPY /recognizer_service/src /recognizer/src
 RUN mvn -B -f pom.xml clean package -DskipTests
 
 FROM openjdk:11-jdk-slim
