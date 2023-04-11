@@ -18,6 +18,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Value("${bot.token}")
     private String botToken;
+
     @Override
     public String getBotUsername() {
         return botName;
