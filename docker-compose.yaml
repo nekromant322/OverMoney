@@ -21,6 +21,16 @@ services:
       POSTGRES_PASSWORD: ${RECOGNIZER_DB_PASSWORD:-postgres}
       POSTGRES_DB: recognizer-db
     restart: always
+  telegram-bot-db:
+    container_name: telegram-bot-db
+    image: postgres:14.1-alpine
+    ports:
+      - '5435:5432'
+    environment:
+      POSTGRES_USER: ${TELEGRAM_BOT_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${TELEGRAM_BOT_DB_PASSWORD:-postgres}
+      POSTGRES_DB: telegram-bot-db
+    restart: always
   eureka:
     container_name: eureka
     image: nekromant322/overmoney:eureka
@@ -50,3 +60,16 @@ services:
       RECOGNIZER_DB_PORT: ${RECOGNIZER_DB_PORT}
     depends_on:
       - recognizer-db
+  telegram-bot:
+    container_name: telegram-bot
+    image: nekromant322/overmoney:telegram_bot
+    ports:
+      - '8082:8082'
+    environment:
+      TELEGRAM_BOT_DB_USER: ${TELEGRAM_BOT_DB_USER}
+      TELEGRAM_BOT_DB_PASSWORD: ${TELEGRAM_BOT_DB_PASSWORD}
+      TELEGRAM_BOT_DB_HOST: ${TELEGRAM_BOT_DB_HOST}
+      TELEGRAM_BOT_DB_PORT: ${TELEGRAM_BOT_DB_PORT}
+      TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+    depends_on:
+      - telegram-bot-db
