@@ -19,6 +19,7 @@
         <module>eureka_server</module>
         <module>recognizer_service</module>
         <module>orchestrator_service</module>
+        <module>telegram_bot_service</module>
     </modules>
 
     <properties>

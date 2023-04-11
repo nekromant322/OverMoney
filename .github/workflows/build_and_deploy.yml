@@ -56,6 +56,13 @@ jobs:
           push: true
           tags: nekromant322/overmoney:recognizer
 
+      - name: Telegram Bot Build and Push to Dockerhub
+        uses: docker/build-push-action@v2
+        with:
+          file: /telegram_bot_service/Dockerfile
+          push: true
+          tags: nekromant322/overmoney:telegram_bot
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
@@ -76,16 +83,24 @@ jobs:
             echo ORCHESTRATOR_DB_PASSWORD = ${{ secrets.ORCHESTRATOR_DB_PASSWORD }} >> overmoney-env.txt
             echo ORCHESTRATOR_DB_PORT = 5432 >> overmoney-env.txt
             echo ORCHESTRATOR_DB_HOST = orchestrator-db >> overmoney-env.txt
+            echo TELEGRAM_BOT_DB_USER = ${{ secrets.TELEGRAM_BOT_DB_USER }} >> overmoney-env.txt
+            echo TELEGRAM_BOT_DB_PASSWORD = ${{ secrets.TELEGRAM_BOT_DB_PASSWORD }} >> overmoney-env.txt
+            echo TELEGRAM_BOT_DB_PORT = 5432 >> overmoney-env.txt
+            echo TELEGRAM_BOT_DB_HOST = telegram-bot-db >> overmoney-env.txt
+            echo TELEGRAM_BOT_TOKEN = ${{ secrets.TELEGRAM_BOT_TOKEN }} >> overmoney-env.txt
             
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop eureka
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop recognizer
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop orchestrator
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop telegram-bot
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm eureka
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm recognizer
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm orchestrator
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm telegram-bot
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:eureka
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:recognizer
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:orchestrator
-            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose --env-file=overmoney-env.txt up -d
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:telegram_bot
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose -f docker-compose.yaml --env-file=overmoney-env.txt up -d
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker ps -a  
             rm overmoney-env.txt
