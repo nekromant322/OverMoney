@@ -8,6 +8,11 @@
       password: ${ORCHESTRATOR_DB_PASSWORD:postgres}
       driver-class-name: org.postgresql.Driver
 
+    thymeleaf:
+      enabled: true
+      prefix: classpath:/templates/
+      suffix: .html
+
     jpa:
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect

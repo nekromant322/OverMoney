@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-@EnableWebSecurity
 public class OrchestratorServiceApplication {
 
     public static void main(String[] args) {
