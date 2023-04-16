@@ -16,6 +16,7 @@
 	<properties>
 		<java.version>11</java.version>
 		<spring-cloud.version>2021.0.6</spring-cloud.version>
+		<logstash-logback-encoder.version>6.1</logstash-logback-encoder.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -53,6 +54,16 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>${logstash-logback-encoder.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

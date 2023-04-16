@@ -1,6 +1,47 @@
 version: '3.1'
 
 services:
+  elasticsearch:
+    image: elasticsearch:8.3.3
+    container_name: elasticsearch
+    environment:
+      bootstrap.memory_lock: true
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      discovery.type: single-node
+      xpack.security.enabled: false
+    ports:
+      - "9200:9200"
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  kibana:
+    image: kibana:8.3.3
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    environment:
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
+    depends_on:
+      - elasticsearch
+
+  logstash:
+    image: logstash:8.3.3
+    container_name: logstash
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - "5044:5044"
+      - "5000:5000/tcp"
+      - "5000:5000/udp"
+      - "9600:9600"
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+      xpack.monitoring.elasticsearch.url: "elasticsearch:9200"
+    depends_on:
+      - elasticsearch
+
   orchestrator-db:
     container_name: orchestrator-db
     image: postgres:14.1-alpine
@@ -11,6 +52,7 @@ services:
       POSTGRES_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD:-postgres}
       POSTGRES_DB: orchestrator-db
     restart: always
+
   recognizer-db:
     container_name: recognizer-db
     image: postgres:14.1-alpine
@@ -21,6 +63,7 @@ services:
       POSTGRES_PASSWORD: ${RECOGNIZER_DB_PASSWORD:-postgres}
       POSTGRES_DB: recognizer-db
     restart: always
+
   telegram-bot-db:
     container_name: telegram-bot-db
     image: postgres:14.1-alpine
@@ -31,11 +74,13 @@ services:
       POSTGRES_PASSWORD: ${TELEGRAM_BOT_DB_PASSWORD:-postgres}
       POSTGRES_DB: telegram-bot-db
     restart: always
+
   eureka:
     container_name: eureka
     image: nekromant322/overmoney:eureka
     ports:
       - '8761:8761'
+
   orchestrator:
     container_name: orchestrator
     image: nekromant322/overmoney:orchestrator
@@ -48,6 +93,7 @@ services:
       ORCHESTRATOR_DB_PORT: ${ORCHESTRATOR_DB_PORT}
     depends_on:
       - orchestrator-db
+
   recognizer:
     container_name: recognizer
     image: nekromant322/overmoney:recognizer
@@ -60,6 +106,7 @@ services:
       RECOGNIZER_DB_PORT: ${RECOGNIZER_DB_PORT}
     depends_on:
       - recognizer-db
+
   telegram-bot:
     container_name: telegram-bot
     image: nekromant322/overmoney:telegram_bot
@@ -73,3 +120,8 @@ services:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
     depends_on:
       - telegram-bot-db
+
+volumes:
+  elasticsearch_data:
+    driver: local
+
