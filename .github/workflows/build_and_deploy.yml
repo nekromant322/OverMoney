@@ -14,12 +14,44 @@ jobs:
       - name: Copy docker-compose.yaml via SSH
         uses: appleboy/scp-action@master
         with:
-          host: overridetech.ru
+          host: overridetech.site
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           source: "docker-compose.yaml"
-          target: "/home/vasya"
+          target: "/home/${{ secrets.SSH_USER }}"
+          overwrite: true
+
+  push_logstash_config:
+    name: Push logstash.yml to remote server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Copy logstash.yml to remote server
+        uses: appleboy/scp-action@master
+        with:
+          host: overridetech.site
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          source: "logstash/config/logstash.yml"
+          target: "/home/${{ secrets.SSH_USER }}"
+          overwrite: true
+
+  push_logstash_pipelines:
+    name: Push logstash.conf to remote server
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Copy logstash.conf to remote server
+        uses: appleboy/scp-action@master
+        with:
+          host: overridetech.site
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          source: "logstash/pipeline/logstash.conf"
+          target: "/home/${{ secrets.SSH_USER }}"
           overwrite: true
 
   build_and_push_images:
