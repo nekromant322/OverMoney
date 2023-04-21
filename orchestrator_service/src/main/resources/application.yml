@@ -1,6 +1,10 @@
   server:
     port: 8081
 
+  telegram:
+    bot:
+      token: ${TELEGRAM_BOT_TOKEN}
+
   spring:
     datasource:
       url: jdbc:postgresql://${ORCHESTRATOR_DB_HOST:localhost}:${ORCHESTRATOR_DB_PORT:5433}/orchestrator-db
@@ -16,9 +20,9 @@
     jpa:
       database: postgresql
       database-platform: org.hibernate.dialect.PostgreSQLDialect
-      generate-ddl: false
+      generate-ddl: true
       hibernate:
-        ddl-auto: none
+        ddl-auto: validate
       properties:
         hibernate:
           dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -28,7 +32,7 @@
       name: orchestrator-service
 
     liquibase:
-      enabled: true
+      enabled: false
       change-log: /db/changelog/db.changelog-1.0.xml
 
   eureka:
