@@ -120,6 +120,18 @@
                     </excludes>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.6.2</version>
+                <configuration>
+                    <driver>org.postgresql.Driver</driver>
+                    <url>jdbc:postgresql://localhost:5433/orchestrator-db</url>
+                    <username>postgres</username>
+                    <password>postgres</password>
+                    <outputChangeLogFile>src/main/resources/db/liquibase=outputChangeLog.xml</outputChangeLogFile>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

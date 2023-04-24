@@ -29,9 +29,7 @@ public class JwtAuthenticationService {
         if (telegramVerificationService.verify(telegramAuthRequest)) {
             userService.saveUser(telegramAuthRequest);
             final User user = userService.getUserByUsername(telegramAuthRequest.getUsername());
-            final String accessToken = jwtProvider.generateAccessToken(user);
-            final String refreshToken = jwtProvider.generateRefreshToken(user);
-            return new JwtResponse(accessToken, refreshToken);
+            return new JwtResponse(jwtProvider.generateAccessToken(user), jwtProvider.generateRefreshToken(user));
         } else {
             throw new TelegramAuthException("Telegram authentication failed for user " + telegramAuthRequest.getUsername() +
                     ": encoded data does not match with the hash");

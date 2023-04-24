@@ -5,10 +5,10 @@ services:
     image: elasticsearch:8.3.3
     container_name: elasticsearch
     environment:
-      bootstrap.memory_lock: true
+      bootstrap.memory_lock: 'true'
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
       discovery.type: single-node
-      xpack.security.enabled: false
+      xpack.security.enabled: 'false'
     ports:
       - "9200:9200"
     volumes:
@@ -92,6 +92,8 @@ services:
       ORCHESTRATOR_DB_HOST: ${ORCHESTRATOR_DB_HOST}
       ORCHESTRATOR_DB_PORT: ${ORCHESTRATOR_DB_PORT}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      JWT_ACCESS_KEY: ${JWT_ACCESS_KEY}
+      JWT_REFRESH_KEY: ${JWT_REFRESH_KEY}
     depends_on:
       - orchestrator-db
 
