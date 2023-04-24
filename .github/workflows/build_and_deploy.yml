@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           source: "logstash/config/logstash.yml"
-          target: "/home/${{ secrets.SSH_USER }}"
+          target: "/home/${{ secrets.SSH_USER }}/logstash/config"
           overwrite: true
 
   push_logstash_pipelines:
@@ -51,7 +51,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           source: "logstash/pipeline/logstash.conf"
-          target: "/home/${{ secrets.SSH_USER }}"
+          target: "/home/${{ secrets.SSH_USER }}/logstash/pipeline"
           overwrite: true
 
   build_and_push_images:
@@ -120,6 +120,8 @@ jobs:
             echo TELEGRAM_BOT_DB_PORT = 5432 >> overmoney-env.txt
             echo TELEGRAM_BOT_DB_HOST = telegram-bot-db >> overmoney-env.txt
             echo TELEGRAM_BOT_TOKEN = ${{ secrets.TELEGRAM_BOT_TOKEN }} >> overmoney-env.txt
+            echo JWT_ACCESS_KEY = ${{ secrets.JWT_ACCESS_KEY }} >> overmoney-env.txt
+            echo JWT_REFRESH_KEY = ${{ secrets.JWT_REFRESH_KEY }} >> overmoney-env.txt
             
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop eureka
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop recognizer

@@ -1,30 +1,31 @@
 package com.override.orchestrator_service.config;
 
-import org.springframework.context.annotation.Bean;
+import com.override.orchestrator_service.config.jwt.JwtFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private JwtFilter jwtFilter;
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable();
 
-        httpSecurity.authorizeRequests()
-                .antMatchers("/signup").not().fullyAuthenticated()
+        httpSecurity.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+                .authorizeRequests()
+                .antMatchers( "/templates/**", "/scripts/**").permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/login").permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .loginProcessingUrl("/perform_login");
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+                .and().formLogin().loginPage("/login")
+                .and().addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
