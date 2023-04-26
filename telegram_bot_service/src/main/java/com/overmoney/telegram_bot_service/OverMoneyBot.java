@@ -1,7 +1,10 @@
 package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
+import com.overmoney.telegram_bot_service.model.TransactionDTO;
+import com.overmoney.telegram_bot_service.service.OrchestratorService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -19,6 +22,9 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     @Value("${bot.token}")
     private String botToken;
 
+    @Autowired
+    OrchestratorService orchestratorService;
+
     @Override
     public String getBotUsername() {
         return botName;
@@ -32,14 +38,15 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         String chatId = update.getMessage().getChatId().toString();
+        String username = update.getMessage().getFrom().getUserName();
 
         if (update.getMessage().hasText()) {
             String receivedMessage = update.getMessage().getText();
-            botAnswer(receivedMessage, chatId);
+            botAnswer(receivedMessage, chatId, username);
         }
     }
 
-    private void botAnswer(String receivedMessage, String chatId) {
+    private void botAnswer(String receivedMessage, String chatId, String username) {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());
@@ -47,7 +54,10 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             case "/money":
                 sendMessage(chatId, Command.MONEY.getDescription());
                 break;
-            default: break;
+            default:
+                String answer = orchestratorService.sendTransaction(new TransactionDTO(receivedMessage, username));
+                sendMessage(chatId, answer);
+                break;
         }
 
     }
