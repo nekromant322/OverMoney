@@ -1,18 +1,6 @@
 version: '3.1'
 
 services:
-  elasticsearch:
-    image: elasticsearch:8.3.3
-    container_name: elasticsearch
-    environment:
-      bootstrap.memory_lock: 'true'
-      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
-      discovery.type: single-node
-      xpack.security.enabled: 'false'
-    ports:
-      - "9200:9200"
-    volumes:
-      - elasticsearch_data:/usr/share/elasticsearch/data
 
   kibana:
     image: kibana:8.3.3
@@ -22,8 +10,6 @@ services:
     environment:
       ELASTICSEARCH_URL: http://elasticsearch:9200
       ELASTICSEARCH_HOSTS: '["http://elasticsearch:9200"]'
-    depends_on:
-      - elasticsearch
 
   logstash:
     image: logstash:8.3.3
@@ -39,8 +25,6 @@ services:
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
       xpack.monitoring.elasticsearch.url: "elasticsearch:9200"
-    depends_on:
-      - elasticsearch
 
   orchestrator-db:
     container_name: orchestrator-db

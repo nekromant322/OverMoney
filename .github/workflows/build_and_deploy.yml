@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           source: "logstash/config/logstash.yml"
-          target: "/home/${{ secrets.SSH_USER }}/logstash/config"
+          target: "/home/${{ secrets.SSH_USER }}"
           overwrite: true
 
   push_logstash_pipelines:
@@ -51,7 +51,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           source: "logstash/pipeline/logstash.conf"
-          target: "/home/${{ secrets.SSH_USER }}/logstash/pipeline"
+          target: "/home/${{ secrets.SSH_USER }}"
           overwrite: true
 
   build_and_push_images:
