@@ -18,13 +18,13 @@ public class TransactionController {
     private final String TRANSACTION_PROCESSING_FAILED = "Мы не смогли распознать ваше сообщение. Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
 
     @Autowired
-    TransactionProcessingService transactionProcessingService;
+    private TransactionProcessingService transactionProcessingService;
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     @Autowired
-    TransactionMapper transactionMapper;
+    private TransactionMapper transactionMapper;
 
     @PostMapping("/transaction")
     public String processTransaction(@RequestBody TransactionMessageDTO transactionMessage) {
@@ -32,7 +32,7 @@ public class TransactionController {
             Transaction transaction = transactionProcessingService.processTransaction(transactionMessage);
             userService.addTransaction(userService.getUserByUsername(transactionMessage.getUsername()), transaction);
             return transactionMapper.mapTransactionToTelegramMessage(transaction);
-        } catch (InstanceNotFoundException e) {
+        } catch (InstanceNotFoundException | NullPointerException e) {
             return TRANSACTION_PROCESSING_FAILED;
         }
     }

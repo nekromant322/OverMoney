@@ -12,14 +12,4 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
-
-    public Category getUndefinedCategory() {
-        List<Category> categories = categoryRepository.findAll();
-        for (Category category: categories) {
-            if (category.getName().equals("Нераспознанное")) {
-                return category;
-            }
-        }
-        return null;
-    }
 }

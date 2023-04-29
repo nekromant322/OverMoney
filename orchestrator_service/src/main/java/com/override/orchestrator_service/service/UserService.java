@@ -19,6 +19,9 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private TransactionService transactionService;
+
+    @Autowired
     private UserMapper userMapper;
 
     public List<User> getAllUsers() {
@@ -40,6 +43,7 @@ public class UserService {
         transactions.add(transaction);
         user.setTransactions(transactions);
         userRepository.save(user);
+        transactionService.saveTransaction(transaction);
     }
 
     public User getUserById(Long id) throws InstanceNotFoundException {
