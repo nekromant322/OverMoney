@@ -27,7 +27,7 @@
       database-platform: org.hibernate.dialect.PostgreSQLDialect
       generate-ddl: true
       hibernate:
-        ddl-auto: update
+        ddl-auto: validate
       properties:
         hibernate:
           dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -37,7 +37,7 @@
       name: orchestrator-service
 
     liquibase:
-      enabled: false
+      enabled: true
       change-log: /db/changelog/db.changelog-master.xml
 
   eureka:

@@ -1,8 +1,10 @@
 package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
+import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
 import com.overmoney.telegram_bot_service.model.TransactionDTO;
-import com.overmoney.telegram_bot_service.service.OrchestratorService;
+import com.overmoney.telegram_bot_service.model.TransactionResponseDTO;
+import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 public class OverMoneyBot extends TelegramLongPollingBot {
 
+    private final String MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
+
     @Value("${bot.name}")
     private String botName;
 
@@ -23,7 +27,10 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private String botToken;
 
     @Autowired
-    OrchestratorService orchestratorService;
+    OrchestratorRequestService orchestratorRequestService;
+
+    @Autowired
+    TransactionMapper transactionMapper;
 
     @Override
     public String getBotUsername() {
@@ -55,8 +62,12 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 sendMessage(chatId, Command.MONEY.getDescription());
                 break;
             default:
-                String answer = orchestratorService.sendTransaction(new TransactionDTO(receivedMessage, username));
-                sendMessage(chatId, answer);
+                try {
+                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionDTO(receivedMessage, username));
+                    sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
+                } catch (Exception e) {
+                    sendMessage(chatId, MESSAGE_INVALID);
+                }
                 break;
         }
 

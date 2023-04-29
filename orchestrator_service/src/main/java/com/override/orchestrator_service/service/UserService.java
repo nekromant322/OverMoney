@@ -3,6 +3,7 @@ package com.override.orchestrator_service.service;
 import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -33,13 +35,6 @@ public class UserService {
         if (Objects.isNull(getUserByUsername(telegramAuthRequest.getUsername()))) {
             userRepository.save(userMapper.mapTelegramAuthToUser(telegramAuthRequest));
         }
-    }
-
-    public void addTransaction(User user, Transaction transaction) {
-        Set<Transaction> transactions = user.getTransactions();
-        transactions.add(transaction);
-        user.setTransactions(transactions);
-        userRepository.save(user);
     }
 
     public User getUserById(Long id) throws InstanceNotFoundException {
