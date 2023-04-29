@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TelegramAuthRequest {
 
-    private String id;
+    private Long id;
 
     private String first_name;
 

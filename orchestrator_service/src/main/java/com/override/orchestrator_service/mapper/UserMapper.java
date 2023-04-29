@@ -13,6 +13,7 @@ public class UserMapper {
 
     public User mapTelegramAuthToUser(TelegramAuthRequest telegramAuthRequest) {
         User user = new User();
+        user.setId(telegramAuthRequest.getId());
         user.setUsername(telegramAuthRequest.getUsername());
         user.setFirstName(telegramAuthRequest.getFirst_name());
         user.setLastName(telegramAuthRequest.getLast_name());
