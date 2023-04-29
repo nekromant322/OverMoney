@@ -14,6 +14,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -39,12 +40,13 @@ public class JwtFilter extends GenericFilterBean {
     private String getTokenFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String token = null;
-        for (Cookie cookie : cookies) {
-            if (ACCESS_TOKEN.equals(cookie.getName())) {
-                token = cookie.getValue();
+        if (!Objects.isNull(cookies)) {
+            for (Cookie cookie : cookies) {
+                if (ACCESS_TOKEN.equals(cookie.getName())) {
+                    token = cookie.getValue();
+                }
             }
         }
-        log.info(token);
         return token;
     }
 }
