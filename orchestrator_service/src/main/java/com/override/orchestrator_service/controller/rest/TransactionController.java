@@ -6,7 +6,6 @@ import com.override.orchestrator_service.model.TransactionMessageDTO;
 import com.override.orchestrator_service.model.TransactionResponseDTO;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
-import com.override.orchestrator_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
