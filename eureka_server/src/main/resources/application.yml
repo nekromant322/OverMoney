@@ -9,3 +9,7 @@
     client:
       register-with-eureka: false
       fetch-registry: false
+
+  logging:
+    level:
+      org.zalando.logbook: TRACE
