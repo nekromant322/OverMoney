@@ -1,0 +1,88 @@
+version: '3.1'
+
+services:
+  orchestrator-db:
+    container_name: orchestrator-db
+    image: postgres:14.1-alpine
+    ports:
+      - '5433:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: orchestrator-db
+    restart: always
+
+  recognizer-db:
+    container_name: recognizer-db
+    image: postgres:14.1-alpine
+    ports:
+      - '5434:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: recognizer-db
+    restart: always
+
+  telegram-bot-db:
+    container_name: telegram-bot-db
+    image: postgres:14.1-alpine
+    ports:
+      - '5435:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: telegram-bot-db
+    restart: always
+
+  eureka:
+    container_name: eureka
+    build:
+      dockerfile: eureka_server/Dockerfile
+    ports:
+      - '8761:8761'
+
+  orchestrator:
+    container_name: orchestrator
+    build:
+      dockerfile: orchestrator_service/Dockerfile
+    ports:
+      - '8081:8081'
+    environment:
+      ORCHESTRATOR_DB_USER: postgres
+      ORCHESTRATOR_DB_PASSWORD: postgres
+      ORCHESTRATOR_DB_HOST: orchestrator-db
+      ORCHESTRATOR_DB_PORT: 5432
+      TELEGRAM_BOT_TOKEN: 6238619409:AAEzdutzOER5slDVsTbSRIZnezfU7Hqmz7U
+      JWT_ACCESS_KEY: 4LKiGdX0aJhBdx5wFH5cs8v6HnGIUyhDn7BeoLqJ4UEixTGOT3CYKg6YrzS32K5hMlVdstATeliyxhRH0eaU6A==
+      JWT_REFRESH_KEY: 5LKiGdX0aJhBdx5wFH5cs8v6HnGIUyhDn7BeoLqJ4UEixTGOT3CYKg6YrzS32K5hMlVdstATeliyxhRH0eaU6A==
+    depends_on:
+      - orchestrator-db
+
+  recognizer:
+    container_name: recognizer
+    build:
+      dockerfile: recognizer_service/Dockerfile
+    ports:
+      - '8080:8080'
+    environment:
+      RECOGNIZER_DB_USER: postgres
+      RECOGNIZER_DB_PASSWORD: postgres
+      RECOGNIZER_DB_HOST: recognizer-db
+      RECOGNIZER_DB_PORT: 5432
+    depends_on:
+      - recognizer-db
+
+  telegram-bot:
+    container_name: telegram-bot
+    build:
+      dockerfile: telegram_bot_service/Dockerfile
+    ports:
+      - '8082:8082'
+    environment:
+      TELEGRAM_BOT_DB_USER: postgres
+      TELEGRAM_BOT_DB_PASSWORD: postgres
+      TELEGRAM_BOT_DB_HOST: telegram-bot-db
+      TELEGRAM_BOT_DB_PORT: 5432
+      TELEGRAM_BOT_TOKEN: 6238619409:AAEzdutzOER5slDVsTbSRIZnezfU7Hqmz7U
+    depends_on:
+      - telegram-bot-db

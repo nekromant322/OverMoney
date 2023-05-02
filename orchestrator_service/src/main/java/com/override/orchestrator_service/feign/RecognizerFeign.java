@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface RecognizerFeign {
 
     @GetMapping("/recognizer")
-    public String getRecognition();
+    String getRecognition();
 
 }

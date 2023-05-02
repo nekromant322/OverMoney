@@ -1,10 +1,9 @@
 package com.override.orchestrator_service.service;
 
 import com.override.orchestrator_service.mapper.UserMapper;
-import com.override.orchestrator_service.model.Role;
-import com.override.orchestrator_service.model.TelegramAuthRequest;
-import com.override.orchestrator_service.model.User;
+import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class UserService {
 
     @Autowired
@@ -32,20 +32,22 @@ public class UserService {
     }
 
     public void saveUser(TelegramAuthRequest telegramAuthRequest) {
-        if (Objects.isNull(getUserById(telegramAuthRequest.getId()))) {
+        try {
+            getUserById(telegramAuthRequest.getId());
+        } catch (InstanceNotFoundException e) {
             userRepository.save(userMapper.mapTelegramAuthToUser(telegramAuthRequest));
         }
     }
 
-    public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+    public User getUserById(Long id) throws InstanceNotFoundException {
+        return userRepository.findById(id).orElseThrow(() -> new InstanceNotFoundException("User with id " + id + " does not exist"));
     }
 
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
-    public void updateUser(User user, Long id) {
+    public void updateUser(User user, Long id) throws InstanceNotFoundException {
         User foundUser = getUserById(id);
         foundUser.setFirstName(user.getFirstName());
         foundUser.setLastName(user.getLastName());

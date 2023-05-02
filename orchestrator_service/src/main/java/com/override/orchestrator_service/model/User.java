@@ -35,4 +35,10 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<Category> categories;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<Transaction> transactions;
 }

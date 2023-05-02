@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="Pc (generated)" id="1682723604075-1">
+        <createTable tableName="categories">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="categories_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="type" type="INTEGER"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682723604075-2">
+        <createTable tableName="keywords">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="keywords_pkey"/>
+            </column>
+            <column name="keyword" type="VARCHAR(255)"/>
+            <column name="category_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682723604075-4">
+        <createTable tableName="transactions">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="transactions_pkey"/>
+            </column>
+            <column name="amount" type="FLOAT4"/>
+            <column name="message" type="VARCHAR(255)"/>
+            <column name="category_id" type="BIGINT"/>
+            <column name="user_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682723604075-9">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="categories" constraintName="fkghuylkwuedgl2qahxjt8g41kb" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682723604075-10">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="transactions" constraintName="fkqwv7rmvc8va8rep7piikrojds" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682723604075-11">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="keywords" constraintName="fkr9hhn3bc97ucu1lpuihwojelh" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682723604075-12">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="transactions" constraintName="fksqqi7sneo04kast0o138h19mv" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
