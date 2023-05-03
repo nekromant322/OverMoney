@@ -32,13 +32,15 @@ public class UserService {
     }
 
     public void saveUser(TelegramAuthRequest telegramAuthRequest) {
-        if (Objects.isNull(getUserByUsername(telegramAuthRequest.getUsername()))) {
+        try {
+            getUserById(telegramAuthRequest.getId());
+        } catch (InstanceNotFoundException e) {
             userRepository.save(userMapper.mapTelegramAuthToUser(telegramAuthRequest));
         }
     }
 
     public User getUserById(Long id) throws InstanceNotFoundException {
-        return userRepository.findById(id).orElseThrow(() -> new InstanceNotFoundException("Error: no user with this ID"));
+        return userRepository.findById(id).orElseThrow(() -> new InstanceNotFoundException("User with id " + id + " does not exist"));
     }
 
     public User getUserByUsername(String username) {
