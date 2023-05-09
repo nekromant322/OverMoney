@@ -1,6 +1,9 @@
+"use strict";
+
 window.onload = function () {
     drawUndefinedCircles(getUndefinedTransactionsData());
     drawCategories(getCategoriesData());
+
     let circles = document.querySelectorAll('.undefined-circle')
     circles.forEach(function (circle) {
         circle.addEventListener('dragstart', handleDragStart);
@@ -23,7 +26,7 @@ function getMaxSingleTransactionAmount() {
 }
 
 function getUndefinedTransactionsData() {
-    return [
+    const undefinedTransactionsData = [
         {"id": "1", "comment": "Пиво", "amount": '200'},
         {"id": "2", "comment": "Сигарет", "amount": '800'},
         {"id": "3", "comment": "Фильтр", "amount": '1000'},
@@ -34,14 +37,18 @@ function getUndefinedTransactionsData() {
         {"id": "8", "comment": "Очень длинное ключевое слово", "amount": '100'},
         {"id": "9", "comment": "Марсоход ровер", "amount": '200'}
     ]
+    Object.freeze(undefinedTransactionsData)
+    return undefinedTransactionsData;
 }
 
 function getCategoriesData() {
-    return [
+    const categoriesData = [
         {"id": '1', "name": 'Продукты'},
         {"id": '2', "name": 'Развлечения'},
         {"id": '3', "name": 'Табачка'},
     ]
+    Object.freeze(categoriesData)
+    return categoriesData;
 }
 
 function handleDragStart(e) {
@@ -58,9 +65,9 @@ function handleDragEnd(e) {
 
 function handleDrop(e) {
     e.preventDefault();
-    var categoryId = this.dataset.id;
-    var transactionId = e.dataTransfer.getData("transactionId");
-    var circleId = e.dataTransfer.getData("elementId");
+    const categoryId = this.dataset.id;
+    const transactionId = e.dataTransfer.getData("transactionId");
+    const circleId = e.dataTransfer.getData("elementId");
     alert("Transaction ID: " + transactionId + " Category ID: " + categoryId)
     this.classList.remove('over');
     document.getElementById(circleId).remove();
