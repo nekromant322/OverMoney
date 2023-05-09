@@ -1,0 +1,39 @@
+body, html {
+    height: 100%;
+}
+.row {
+    height: 100%;
+}
+.undefined-space {
+    width: 70%;
+    height: 100%;
+    display: inline-block;
+}
+.categories-space {
+    border: 1px solid #000;
+    width: 29%;
+    height: 100%;
+    display: inline-block;
+    flex-direction: column;
+    flex-grow: 1;
+    position: fixed;
+}
+.category {
+    display: table;
+    width: 100%;
+    border: 1px solid #000;
+    text-align: center;
+}
+.category.over {
+    background: #999;
+}
+.undefined-circle {
+    display: inline-block;
+    text-align: center;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: move;
+    border: 3px solid #000;
+    margin: 10px;
+    padding: 10px;
+}
