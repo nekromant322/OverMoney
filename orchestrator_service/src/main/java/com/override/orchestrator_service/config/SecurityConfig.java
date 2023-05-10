@@ -25,7 +25,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/templates/**", "/scripts/**", "/css/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/transaction").permitAll()
+                .antMatchers("/transaction", "/voice_message").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage("/login")
                 .and().addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);

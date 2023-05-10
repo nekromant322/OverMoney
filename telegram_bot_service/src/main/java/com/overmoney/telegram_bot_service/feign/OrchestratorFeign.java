@@ -11,4 +11,7 @@ public interface OrchestratorFeign {
 
     @PostMapping("/transaction")
     TransactionResponseDTO sendTransaction(@RequestBody TransactionDTO transaction);
+
+    @PostMapping("/voice_message")
+    void sendVoiceMessage(@RequestBody byte[] voiceMessage);
 }

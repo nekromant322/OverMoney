@@ -15,4 +15,8 @@ public class OrchestratorRequestService {
     public TransactionResponseDTO sendTransaction(TransactionDTO transaction) {
        return orchestratorFeign.sendTransaction(transaction);
     }
+
+    public void sendVoiceMessage(byte[] voiceMessage) {
+        orchestratorFeign.sendVoiceMessage(voiceMessage);
+    }
 }

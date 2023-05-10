@@ -5,13 +5,14 @@ import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
 import com.overmoney.telegram_bot_service.model.TransactionDTO;
 import com.overmoney.telegram_bot_service.model.TransactionResponseDTO;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
+import com.overmoney.telegram_bot_service.service.TelegramBotApiRequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
@@ -28,6 +29,9 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Autowired
     OrchestratorRequestService orchestratorRequestService;
+
+    @Autowired
+    TelegramBotApiRequestService telegramBotApiRequestService;
 
     @Autowired
     TransactionMapper transactionMapper;
@@ -51,6 +55,11 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             String receivedMessage = update.getMessage().getText();
             botAnswer(receivedMessage, chatId, username);
         }
+
+        if (update.getMessage().hasVoice()) {
+            byte[] voiceMessage = telegramBotApiRequestService.getVoiceMessageBytes(update.getMessage().getVoice().getFileId());
+            orchestratorRequestService.sendVoiceMessage(voiceMessage);
+        }
     }
 
     private void botAnswer(String receivedMessage, String chatId, String username) {
@@ -70,7 +79,6 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 }
                 break;
         }
-
     }
 
     private void sendMessage(String chatId, String messageText) {

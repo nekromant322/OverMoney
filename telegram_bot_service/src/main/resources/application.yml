@@ -1,6 +1,8 @@
   bot:
     name: OverMoney
     token: ${TELEGRAM_BOT_TOKEN}
+    api:
+      url: https://api.telegram.org
 
   server:
     port: 8082
