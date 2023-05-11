@@ -28,13 +28,13 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private String botToken;
 
     @Autowired
-    OrchestratorRequestService orchestratorRequestService;
+    private OrchestratorRequestService orchestratorRequestService;
 
     @Autowired
-    TelegramBotApiRequestService telegramBotApiRequestService;
+    private TelegramBotApiRequestService telegramBotApiRequestService;
 
     @Autowired
-    TransactionMapper transactionMapper;
+    private TransactionMapper transactionMapper;
 
     @Override
     public String getBotUsername() {

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class RecognizerRequestService {
 
     @Autowired
-    RecognizerFeign recognizerFeign;
+    private RecognizerFeign recognizerFeign;
 
     public void sendVoiceMessage(byte[] voiceMessage) {
         recognizerFeign.sendVoiceMessage(voiceMessage);
