@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 public class TelegramBotApiRequestService {
 
     @Autowired
-    TelegramBotApiFeign telegramBotApiFeign;
+    private TelegramBotApiFeign telegramBotApiFeign;
 
     public byte[] getVoiceMessageBytes(String fileId) {
         return telegramBotApiFeign.getVoiceMessage(getTelegramFileUrl(fileId)).getBody();
