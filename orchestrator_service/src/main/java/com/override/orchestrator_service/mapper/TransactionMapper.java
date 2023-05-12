@@ -20,7 +20,7 @@ public class TransactionMapper {
         transactionResponseDTO.setCategory(getTransactionCategory(transaction));
         transactionResponseDTO.setAmount(transaction.getAmount().toString());
         transactionResponseDTO.setComment(transaction.getMessage());
-        transactionResponseDTO.setUserId(transaction.getUser().getId());
+        transactionResponseDTO.setUserId(transaction.getUser().getUuid());
 
         return transactionResponseDTO;
     }

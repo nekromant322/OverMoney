@@ -9,7 +9,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TelegramAuthRequest {
 
-    private UUID id;
+    private UUID uuid;
 
     private String first_name;
 
