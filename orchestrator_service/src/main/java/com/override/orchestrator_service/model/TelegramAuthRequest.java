@@ -3,11 +3,13 @@ package com.override.orchestrator_service.model;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @RequiredArgsConstructor
 public class TelegramAuthRequest {
 
-    private Long id;
+    private UUID id;
 
     private String first_name;
 

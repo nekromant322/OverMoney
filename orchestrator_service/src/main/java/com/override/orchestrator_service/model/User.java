@@ -2,11 +2,13 @@ package com.override.orchestrator_service.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -15,7 +17,10 @@ import java.util.Set;
 public class User {
 
     @Id
-    private Long id;
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(generator = "UUID")
+    @Column(unique = true)
+    private UUID uuid;
 
     @Column(nullable = false)
     private String username;
