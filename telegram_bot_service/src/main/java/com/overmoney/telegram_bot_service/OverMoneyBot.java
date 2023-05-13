@@ -2,8 +2,8 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
-import com.overmoney.telegram_bot_service.model.TransactionDTO;
-import com.overmoney.telegram_bot_service.model.TransactionResponseDTO;
+import com.override.dto.TransactionMessageDTO;
+import com.override.dto.TransactionResponseDTO;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
 import com.overmoney.telegram_bot_service.service.TelegramBotApiRequestService;
 import lombok.extern.slf4j.Slf4j;
@@ -72,7 +72,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 break;
             default:
                 try {
-                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionDTO(receivedMessage, username));
+                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
                     sendMessage(chatId, MESSAGE_INVALID);

@@ -1,4 +1,11 @@
 FROM maven:3.6.3-jdk-11-slim AS build
+
+RUN mkdir -p /dto
+WORKDIR /dto
+COPY /dto/pom.xml /dto
+COPY /dto/src /dto/src
+RUN mvn -B -f pom.xml clean install -DskipTests
+
 RUN mkdir -p /telegram_bot
 WORKDIR /telegram_bot
 COPY /telegram_bot_service/pom.xml /telegram_bot

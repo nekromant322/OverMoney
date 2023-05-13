@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>dto</module>
         <module>eureka_service</module>
         <module>recognizer_service</module>
         <module>orchestrator_service</module>

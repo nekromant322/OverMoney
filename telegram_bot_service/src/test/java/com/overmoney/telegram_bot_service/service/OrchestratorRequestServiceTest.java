@@ -1,7 +1,7 @@
 package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
-import com.overmoney.telegram_bot_service.model.TransactionDTO;
+import com.override.dto.TransactionMessageDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +22,7 @@ public class OrchestratorRequestServiceTest {
 
     @Test
     public void sendTransactionTest() {
-        TransactionDTO transaction = generateTransactionDTO();
+        TransactionMessageDTO transaction = generateTransactionDTO();
 
         orchestratorRequestService.sendTransaction(transaction);
 

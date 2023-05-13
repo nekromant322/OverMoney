@@ -2,8 +2,8 @@ package com.override.orchestrator_service.controller.rest;
 
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
-import com.override.orchestrator_service.model.TransactionMessageDTO;
-import com.override.orchestrator_service.model.TransactionResponseDTO;
+import com.override.dto.TransactionMessageDTO;
+import com.override.dto.TransactionResponseDTO;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
