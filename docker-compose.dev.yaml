@@ -34,6 +34,13 @@ services:
       POSTGRES_DB: telegram-bot-db
     restart: always
 
+  dto:
+    container_name: dto
+    build:
+      dockerfile: dto/Dockerfile
+    ports:
+      - '8083:8083'
+
   eureka:
     container_name: eureka
     build:

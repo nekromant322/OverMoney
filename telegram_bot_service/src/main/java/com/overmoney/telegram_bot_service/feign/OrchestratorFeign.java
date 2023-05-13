@@ -1,7 +1,7 @@
 package com.overmoney.telegram_bot_service.feign;
 
-import com.overmoney.telegram_bot_service.model.TransactionDTO;
-import com.overmoney.telegram_bot_service.model.TransactionResponseDTO;
+import com.override.dto.TransactionMessageDTO;
+import com.override.dto.TransactionResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface OrchestratorFeign {
 
     @PostMapping("/transaction")
-    TransactionResponseDTO sendTransaction(@RequestBody TransactionDTO transaction);
+    TransactionResponseDTO sendTransaction(@RequestBody TransactionMessageDTO transaction);
 
     @PostMapping("/voice_message")
     void sendVoiceMessage(@RequestBody byte[] voiceMessage);
