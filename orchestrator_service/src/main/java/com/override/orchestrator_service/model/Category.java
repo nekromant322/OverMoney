@@ -22,7 +22,7 @@ public class Category {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @GeneratedValue(generator = "UUID")
     @Column(unique = true)
-    private UUID uuid;
+    private UUID id;
 
     @Column
     private String name;

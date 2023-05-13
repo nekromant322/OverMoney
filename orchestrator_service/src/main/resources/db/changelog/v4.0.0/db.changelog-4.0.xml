@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <property name="uuid_type" value="uuid" dbms="postgresql"/>
+    <property name="uuid_function" value="uuid_generate_v4()" dbms="postgresql"/>
+
+    <changeSet author="Pc (generated)" id="1682723604075-1">
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+            ALTER TABLE categories
+            DROP COLUMN IF EXISTS id CASCADE;
+        </sql>
+        <addColumn tableName="categories">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="categories_pkey"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Pc (generated)" id="1682723604075-2">
+        <sql>
+            ALTER TABLE keywords
+                DROP COLUMN IF EXISTS id CASCADE,
+                DROP COLUMN IF EXISTS category_id;
+        </sql>
+        <addColumn tableName="keywords">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="keywords_pkey"/>
+            </column>
+            <column name="category_id" type="uuid"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Pc (generated)" id="1682723604075-4">
+        <sql>
+            ALTER TABLE transactions
+                DROP COLUMN IF EXISTS id CASCADE,
+                DROP COLUMN IF EXISTS category_id;
+        </sql>
+        <addColumn tableName="transactions">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="transactions_pkey"/>
+            </column>
+            <column name="category_id" type="uuid"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Pc (generated)" id="1682723604075-11">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="keywords" constraintName="fkr9hhn3bc97ucu1lpuihwojelh" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682723604075-12">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="transactions" constraintName="fksqqi7sneo04kast0o138h19mv" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>
