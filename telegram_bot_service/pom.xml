@@ -8,7 +8,7 @@
         <version>2.7.10</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.overmoney</groupId>
+    <groupId>com.override</groupId>
     <artifactId>telegram_bot_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>tg_bot_service</name>
@@ -78,6 +78,12 @@
             <groupId>org.zalando</groupId>
             <artifactId>logbook-spring-boot-starter</artifactId>
             <version>2.16.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.override</groupId>
+            <artifactId>dto</artifactId>
+            <version>0.0.1</version>
         </dependency>
     </dependencies>
     <dependencyManagement>

@@ -1,8 +1,8 @@
 package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
-import com.overmoney.telegram_bot_service.model.TransactionDTO;
-import com.overmoney.telegram_bot_service.model.TransactionResponseDTO;
+import com.override.dto.TransactionMessageDTO;
+import com.override.dto.TransactionResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ public class OrchestratorRequestService {
     @Autowired
     private OrchestratorFeign orchestratorFeign;
 
-    public TransactionResponseDTO sendTransaction(TransactionDTO transaction) {
+    public TransactionResponseDTO sendTransaction(TransactionMessageDTO transaction) {
        return orchestratorFeign.sendTransaction(transaction);
     }
 

@@ -1,12 +1,12 @@
 package com.overmoney.telegram_bot_service.utils;
 
-import com.overmoney.telegram_bot_service.model.TransactionDTO;
+import com.override.dto.TransactionMessageDTO;
 import org.telegram.telegrambots.meta.api.objects.File;
 
 public class TestFieldsUtil {
 
-    public static TransactionDTO generateTransactionDTO() {
-        return TransactionDTO.builder()
+    public static TransactionMessageDTO generateTransactionDTO() {
+        return TransactionMessageDTO.builder()
                 .message("message")
                 .username("username")
                 .build();
