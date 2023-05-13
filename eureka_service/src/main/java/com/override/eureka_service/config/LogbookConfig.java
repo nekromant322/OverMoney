@@ -1,4 +1,4 @@
-package com.override.eureka_server.config;
+package com.override.eureka_service.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
