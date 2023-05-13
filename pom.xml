@@ -17,6 +17,7 @@
 
     <modules>
         <module>eureka_service</module>
+        <module>dto</module>
         <module>recognizer_service</module>
         <module>orchestrator_service</module>
         <module>telegram_bot_service</module>
