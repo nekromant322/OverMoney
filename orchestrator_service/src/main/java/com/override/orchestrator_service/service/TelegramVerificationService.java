@@ -36,7 +36,6 @@ public class TelegramVerificationService {
                 .digest(secretKey.getBytes(StandardCharsets.UTF_8)), HMAC_SHA256));
         byte[] encodedDataBytes = hmacSha256.doFinal(requestData.getBytes(StandardCharsets.UTF_8));
         return Hex.encodeHexString(encodedDataBytes);
-
     }
 
     private String getHashableData(TelegramAuthRequest telegramAuthRequest) {

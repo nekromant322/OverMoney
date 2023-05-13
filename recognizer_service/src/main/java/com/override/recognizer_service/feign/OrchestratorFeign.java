@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface OrchestratorFeign {
 
     @GetMapping("/orchestra")
-    public String getOrchestra();
+    String getOrchestra();
 }

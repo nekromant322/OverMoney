@@ -9,9 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 @EnableDiscoveryClient
 public class RecognizerServiceApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(RecognizerServiceApplication.class, args);
 	}
-
 }
