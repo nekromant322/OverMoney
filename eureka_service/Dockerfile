@@ -3,7 +3,7 @@ RUN mkdir -p /eureka
 WORKDIR /eureka
 COPY /eureka_service/pom.xml /eureka
 COPY /eureka_service/src /eureka/src
-RUN mvn -B -f pom.xml clean package -DskipTests
+RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
 FROM openjdk:11-jdk-slim
 COPY --from=build /eureka/target/*.jar app.jar

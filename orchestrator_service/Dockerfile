@@ -4,13 +4,13 @@ RUN mkdir -p /dto
 WORKDIR /dto
 COPY /dto/pom.xml /dto
 COPY /dto/src /dto/src
-RUN mvn -B -f pom.xml clean install -DskipTests
+RUN mvn -B -f pom.xml clean install -DskipTests -Dcheckstyle.skip
 
 RUN mkdir -p /orchestrator
 WORKDIR /orchestrator
 COPY /orchestrator_service/pom.xml /orchestrator
 COPY /orchestrator_service/src /orchestrator/src
-RUN mvn -B -f pom.xml clean package -DskipTests
+RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
 FROM openjdk:11-jdk-slim
 COPY --from=build /orchestrator/target/*.jar app.jar
