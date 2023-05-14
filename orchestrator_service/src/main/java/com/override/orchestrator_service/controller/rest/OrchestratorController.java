@@ -23,5 +23,4 @@ public class OrchestratorController {
     public String getRecognizerWithFeign() {
         return recognizerFeign.getRecognition();
     }
-
 }

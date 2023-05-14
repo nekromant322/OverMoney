@@ -24,5 +24,4 @@ public class Keyword {
 
     @ManyToOne
     private Category category;
-
 }

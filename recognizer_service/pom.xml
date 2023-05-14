@@ -77,13 +77,6 @@
             <scope>compile</scope>
         </dependency>
 		<dependency>
-			<groupId>org.telegram</groupId>
-			<artifactId>telegrambots-meta</artifactId>
-			<version>6.5.0</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>com.override</groupId>
 			<artifactId>dto</artifactId>
 			<version>0.0.1</version>

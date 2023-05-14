@@ -28,6 +28,4 @@ public class AuthController {
         final JwtResponse token = jwtAuthenticationService.login(telegramAuthRequest);
         cookieUtils.addAccessTokenCookie(token, response);
     }
-
-
 }
