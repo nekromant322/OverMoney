@@ -44,7 +44,7 @@ function getUndefinedTransactionsData() {
 function getCategoriesData() {
     $.ajax({
         method: 'GET',
-        url: '/categories/',
+        url: './categories/',
         contentType: "application/json; charset=utf8",
         success: function (data) {
             console.log("Successfully get categories")
