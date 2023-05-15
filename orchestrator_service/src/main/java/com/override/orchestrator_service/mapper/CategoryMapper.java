@@ -2,41 +2,28 @@ package com.override.orchestrator_service.mapper;
 
 
 import com.override.dto.CategoryDTO;
-import com.override.orchestrator_service.constants.Type;
 import com.override.orchestrator_service.model.Category;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Component
 public class CategoryMapper {
-    private final String INCOME = "Доходы";
-    private final String EXPENSE = "Расходы";
-
     public CategoryDTO mapCategoryToJsonResponse(Category category) {
-        CategoryDTO categoryDTO = new CategoryDTO();
-        categoryDTO.setName(category.getName());
-        categoryDTO.setType(getCategoryType(category));
-        categoryDTO.setKeywords(getCategoryKeywords(category));
+        CategoryDTO categoryDTO = CategoryDTO.builder()
+                .name(category.getName())
+                .type(category.getType().getValue())
+                .keywords(getCategoryKeywords(category))
+                .build();
         return categoryDTO;
     }
 
     public List<CategoryDTO> mapCategoriesListToJsonResponse(List<Category> categories) {
-        List<CategoryDTO> categoryDTOList = new ArrayList<>();
-        categories.stream().forEach(category -> {
-            categoryDTOList.add(mapCategoryToJsonResponse(category));
-        });
-        return categoryDTOList;
-    }
-
-    private String getCategoryType(Category category) {
-        if (category.getType() == Type.EXPENSE) {
-            return EXPENSE;
-        }
-        if (category.getType() == Type.INCOME) {
-            return INCOME;
-        }
-        return null;
+        return categories
+                .stream()
+                .map(this::mapCategoryToJsonResponse)
+                .collect(Collectors.toList());
     }
 
     private List<String> getCategoryKeywords(Category category) {
