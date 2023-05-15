@@ -72,7 +72,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 break;
             default:
                 try {
-                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username));
+                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username, chatId));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
                     sendMessage(chatId, MESSAGE_INVALID);

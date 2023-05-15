@@ -27,6 +27,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<User> getAllUsers(OverMoneyAccount overMoneyAccount) {
+        return userRepository.findByAccountId(overMoneyAccount.getId());
+    }
+
     public void saveUser(User user) {
         userRepository.save(user);
     }
@@ -54,7 +58,6 @@ public class UserService {
         foundUser.setUsername(user.getUsername());
         foundUser.setPhotoUrl(user.getPhotoUrl());
         foundUser.setAuthDate(user.getAuthDate());
-        foundUser.setRoles(user.getRoles());
         userRepository.save(foundUser);
     }
 

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="1682723604075-15" author="Pc (generated)">
+        <createTable tableName="over_money_accounts">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="over_money_accounts_pkey"/>
+            </column>
+            <column name="chat_id" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="1682723604075-16" author="Pc (generated)">
+        <dropColumn tableName="categories" columnName="user_id"/>
+        <addColumn tableName="categories">
+            <column name="over_money_account_id" type="BIGINT"/>
+        </addColumn>
+
+        <dropColumn tableName="transactions" columnName="user_id"/>
+        <addColumn tableName="transactions">
+            <column name="over_money_account_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Pc (generated)" id="1682723604075-9">
+        <addForeignKeyConstraint baseColumnNames="over_money_account_id" baseTableName="categories" constraintName="fkghuylkwuedgl2qahxjt8g41kb" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="over_money_accounts" validate="true"/>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682723604075-10">
+        <addForeignKeyConstraint baseColumnNames="over_money_account_id" baseTableName="transactions" constraintName="fkqwv7rmvc8va8rep7piikrojds" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="over_money_accounts" validate="true"/>
+    </changeSet>
+
+    <changeSet author="Pc (generated)" id="1682336102383-3">
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+        </sql>
+        <createTable tableName="users_over_money_accounts">
+            <column defaultValueComputed="uuid_generate_v4()" name = "id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="users_over_money_accounts_pkey"/>
+            </column>
+            <column name="users_id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="users_over_money_accounts_pkey"/>
+            </column>
+            <column name="over_money_accounts_id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="users_over_money_accounts_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="Pc (generated)" id="1682336102383-4">
+        <addForeignKeyConstraint baseColumnNames="users_id" baseTableName="users_over_money_accounts" constraintName="fk2o0jvgh89lemvvo17cbqvdxaa" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682336102383-5">
+        <addForeignKeyConstraint baseColumnNames="over_money_accounts_id" baseTableName="users_over_money_accounts" constraintName="fka62j07k5mhgifpp955h37ponj" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="over_money_accounts" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.model;
 
 import com.override.orchestrator_service.constants.Type;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -37,5 +36,5 @@ public class Category {
     private Set<Keyword> keywords;
 
     @ManyToOne
-    private User user;
+    private OverMoneyAccount overMoneyAccount;
 }

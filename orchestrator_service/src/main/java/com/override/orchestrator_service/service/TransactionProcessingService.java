@@ -15,31 +15,45 @@ import java.util.regex.Pattern;
 public class TransactionProcessingService {
 
     @Autowired
+    private OverMoneyAccountService overMoneyAccountService;
+    @Autowired
     private UserService userService;
+    @Autowired
+    private UsersOverMoneyAccountsService usersOverMoneyAccountsService;
 
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         User user = userService.getUserByUsername(transactionMessageDTO.getUsername());
+        String chatId = transactionMessageDTO.getChatId();
+        OverMoneyAccount overMoneyAccount = overMoneyAccountService.getOverMoneyAccountByChatId(chatId);
+
+        if (overMoneyAccount == null) {
+            overMoneyAccount = new OverMoneyAccount();
+            overMoneyAccount.setChatId(chatId);
+            overMoneyAccountService.saveOverMoneyAccount(overMoneyAccount);
+            usersOverMoneyAccountsService.save(user, overMoneyAccount);
+        }
+
         Transaction transaction = new Transaction();
-        transaction.setUser(user);
+        transaction.setOverMoneyAccount(overMoneyAccount);
         transaction.setAmount(getAmount(transactionMessageDTO.getMessage()));
-        transaction.setMessage(getTransactionMessage(transactionMessageDTO, user));
-        transaction.setCategory(getTransactionCategory(transactionMessageDTO, user));
+        transaction.setMessage(getTransactionMessage(transactionMessageDTO, overMoneyAccount));
+        transaction.setCategory(getTransactionCategory(transactionMessageDTO, overMoneyAccount));
         return transaction;
     }
 
-    private String getTransactionMessage(TransactionMessageDTO transactionMessageDTO, User user) throws InstanceNotFoundException {
-        if (Objects.isNull(user.getCategories()) || Objects.isNull(getMatchingKeyword(user.getCategories(), getWords(transactionMessageDTO.getMessage())))) {
+    private String getTransactionMessage(TransactionMessageDTO transactionMessageDTO, OverMoneyAccount overMoneyAccount) throws InstanceNotFoundException {
+        if (Objects.isNull(overMoneyAccount.getCategories()) || Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage())))) {
             return transactionMessageDTO.getMessage();
         }
-        Keyword matchingKeyword = getMatchingKeyword(user.getCategories(), getWords(transactionMessageDTO.getMessage()));
+        Keyword matchingKeyword = getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         return matchingKeyword.getKeyword();
     }
 
-    private Category getTransactionCategory(TransactionMessageDTO transactionMessageDTO, User user) throws InstanceNotFoundException {
-        if (Objects.isNull(user.getCategories()) || Objects.isNull(getMatchingKeyword(user.getCategories(), getWords(transactionMessageDTO.getMessage())))) {
+    private Category getTransactionCategory(TransactionMessageDTO transactionMessageDTO, OverMoneyAccount overMoneyAccount) throws InstanceNotFoundException {
+        if (Objects.isNull(overMoneyAccount.getCategories()) || Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage())))) {
             return null;
         }
-        Keyword matchingKeyword = getMatchingKeyword(user.getCategories(), getWords(transactionMessageDTO.getMessage()));
+        Keyword matchingKeyword = getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         return matchingKeyword.getCategory();
     }
 
