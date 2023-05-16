@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public class CategoryMapper {
     public CategoryDTO mapCategoryToJsonResponse(Category category) {
         CategoryDTO categoryDTO = CategoryDTO.builder()
+                .id(category.getId())
                 .name(category.getName())
                 .type(category.getType().getValue())
                 .keywords(getCategoryKeywords(category))
