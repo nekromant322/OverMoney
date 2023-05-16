@@ -9,13 +9,7 @@ window.onload = function () {
         circle.addEventListener('dragstart', handleDragStart);
         circle.addEventListener('dragend', handleDragEnd);
     })
-    let categories = document.querySelectorAll('.category')
-    categories.forEach(function (category) {
-        category.addEventListener('dragenter', handleDragEnter)
-        category.addEventListener('dragleave', handleDragLeave)
-        category.addEventListener('dragover', handleDragOver);
-        category.addEventListener('drop', handleDrop);
-    })
+
 }
 
 const minUndefinedCircleSize = 100;
@@ -124,6 +118,13 @@ function setCircleDimensions(circle, transactionAmount, maxSingleTransactionAmou
 
 function drawCategories(data) {
     data.forEach(category => drawCategory(category, data.length))
+    let categories = document.querySelectorAll('.category')
+    categories.forEach(function (category) {
+        category.addEventListener('dragenter', handleDragEnter)
+        category.addEventListener('dragleave', handleDragLeave)
+        category.addEventListener('dragover', handleDragOver);
+        category.addEventListener('drop', handleDrop);
+    })
 }
 
 function drawCategory(category, length) {
@@ -169,6 +170,8 @@ function drawCategory(category, length) {
         });
     }
     categorySpace.insertAdjacentElement('beforeend', newCategory);
+
+
 }
 
 function writeKeywordsOfCategory(category) {
