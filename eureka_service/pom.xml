@@ -6,7 +6,7 @@
         <groupId>com.override</groupId>
         <artifactId>overmoney</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath> ../pom.xml </relativePath>
     </parent>
     <artifactId>eureka_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
