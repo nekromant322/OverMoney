@@ -37,3 +37,68 @@ body, html {
     margin: 10px;
     padding: 10px;
 }
+
+.modal-category-fade {
+    display: none;
+}
+
+.modal-category-fade:before {
+    content: '';
+    background: #000;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.7;
+    z-index: 9999;
+}
+
+.modal-category-content {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    padding: 20px;
+    width: 360px;
+    margin-left: -200px;
+    background: #ffffff;
+    border: 1px solid black;
+    border-radius: 10px;
+    z-index: 99999;
+    opacity: 1;
+}
+
+.modal-category-content label {
+    font-family: "Arial";
+    display: block;
+    margin: 0 auto 10px;
+    width: 313px;
+}
+
+.modal-category-content h3 {
+    text-align: center;
+    font-size: 20px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-style: revert;
+}
+
+.modal-category-close {
+    position: absolute;
+    top: 1px;
+    cursor: pointer;
+    right: 10px;
+    color: darkslategray;
+    font-size: 15px;
+    font-weight: bolder;
+}
+
+.input-modal-category {
+    font-family: "Arial";
+    display: block;
+    margin: 0 auto 10px;
+    width: 300px;
+    border-color: lightgray;
+    border-radius: 10px;
+    padding: 10px 10px;
+}
