@@ -1,6 +1,6 @@
 "use strict";
 
-window.onload = async function () {
+window.onload = function () {
     drawUndefinedCircles(getUndefinedTransactionsData());
     getCategoriesData();
 
