@@ -1,4 +1,4 @@
-name: Run tests
+name: Run tests and verify checkstyle
 
 on:
   pull_request:
@@ -20,5 +20,5 @@ jobs:
       - name: Build with Maven
         run: mvn -B package --file pom.xml
 
-      - name: Test
+      - name: Test and verify checkstyle
         run: mvn verify

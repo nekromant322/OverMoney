@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
 import javax.naming.AuthenticationException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;

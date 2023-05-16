@@ -28,7 +28,4 @@ public class OverMoneyAccount {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "overMoneyAccount")
     private Set<UsersOverMoneyAccounts> usersOverMoneyAccounts;
-
-//    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "overMoneyAccounts")
-//    private Set<User> users;
 }

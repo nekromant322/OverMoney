@@ -54,5 +54,4 @@ public class OverMoneyAccountService {
     public void deleteOverMoneyAccountById(Long id) {
         overMoneyAccountRepository.deleteById(id);
     }
-
 }

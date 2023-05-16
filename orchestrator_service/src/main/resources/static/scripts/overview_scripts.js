@@ -2,7 +2,7 @@
 
 window.onload = function () {
     drawUndefinedCircles(getUndefinedTransactionsData());
-    drawCategories(getCategoriesData());
+    getCategoriesData();
 
     let circles = document.querySelectorAll('.undefined-circle')
     circles.forEach(function (circle) {
@@ -42,13 +42,19 @@ function getUndefinedTransactionsData() {
 }
 
 function getCategoriesData() {
-    const categoriesData = [
-        {"id": '1', "name": 'Продукты'},
-        {"id": '2', "name": 'Развлечения'},
-        {"id": '3', "name": 'Табачка'},
-    ]
-    Object.freeze(categoriesData)
-    return categoriesData;
+    $.ajax({
+        method: 'GET',
+        url: './categories/',
+        contentType: "application/json; charset=utf8",
+        success: function (data) {
+            console.log("Successfully get categories")
+            drawCategories(data)
+        },
+        error: function () {
+            console.log("ERROR! Something wrong happened")
+        }
+    })
+
 }
 
 function handleDragStart(e) {
@@ -126,10 +132,54 @@ function drawCategory(category, length) {
     newCategory.className = "category";
     newCategory.innerText = category.name;
     newCategory.style.height = 100 / length + '%';
+    let keywords = writeKeywordsOfCategory(category)
     newCategory.dataset.id = category.id;
+    newCategory.dataset.name = category.name;
+    newCategory.dataset.type = category.type;
+    newCategory.dataset.keywords = keywords;
     newCategory.onclick = function () {
-        alert('redirecting to  /categories/' + category.id)
-        //location.href = '/categories/' + category.id;
+        let body = `<h3>Информация о категории</h3>
+                    <form class="modal-category">
+                   <p class="modal-category-close" href="#">X</p>
+                        <div>
+                            <label for="name">Наименование категории:</label>
+                            <input type="text" class="input-modal-category" readonly id="name" value="${newCategory.dataset.name}" >
+                        </div>
+                        <div>
+                            <label for="type">Тип категории:</label>
+                            <input type="text" readonly class="input-modal-category" id="type" value="${newCategory.dataset.type}" >
+                        </div>
+                        <div>
+                            <label for="keywords">Ключевые слова категории:</label>
+                            <input type="text" readonly class="input-modal-category" id="keywords" value="${newCategory.dataset.keywords}">
+                        </div>
+                    </form>`
+        $('.modal-category-content').html(body)
+
+        $('.modal-category-fade').fadeIn();
+
+        $('.modal-category-close').click(function () {
+            $(this).parents('.modal-category-fade').fadeOut();
+        });
+
+        $('.modal-category-fade').click(function (e) {
+            if ($(e.target).closest('.modal-category-content').length == 0) {
+                $(this).fadeOut();
+            }
+        });
     }
     categorySpace.insertAdjacentElement('beforeend', newCategory);
+}
+
+function writeKeywordsOfCategory(category) {
+    let allKeywords = '';
+    for (let j = 0; j < category.keywords.length; j++) {
+        let keywordStr = category.keywords[j]
+        if (j != category.keywords.length - 1) {
+            allKeywords += String(keywordStr + ', ')
+        } else {
+            allKeywords += String(keywordStr)
+        }
+    }
+    return allKeywords
 }

@@ -12,5 +12,4 @@ public interface RecognizerFeign {
 
     @PostMapping("/voice_message")
     void sendVoiceMessage(byte[] voiceMessage);
-
 }

@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.model;
 
 import brave.internal.Nullable;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;

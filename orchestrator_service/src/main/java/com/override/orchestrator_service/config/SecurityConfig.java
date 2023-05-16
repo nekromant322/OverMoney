@@ -2,7 +2,6 @@ package com.override.orchestrator_service.config;
 
 import com.override.orchestrator_service.config.jwt.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -22,10 +21,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
-                .antMatchers( "/templates/**", "/scripts/**", "/css/**").permitAll()
+                .antMatchers("/templates/**", "/scripts/**", "/css/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/transaction", "/voice_message").permitAll()
+                .antMatchers("/categories/**").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage("/login")
                 .and().addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
