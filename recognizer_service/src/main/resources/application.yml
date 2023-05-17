@@ -34,3 +34,9 @@
   logging:
     level:
       org.zalando.logbook: TRACE
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: "*"

@@ -8,7 +8,7 @@
 		<version>2.7.10</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.override</groupId>
+	<groupId>com.overmoney</groupId>
 	<artifactId>recognizer_service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>recognizer_service</name>
@@ -17,6 +17,7 @@
 		<java.version>11</java.version>
 		<spring-cloud.version>2021.0.6</spring-cloud.version>
 		<logstash-logback-encoder.version>6.1</logstash-logback-encoder.version>
+		<jacoco.min.coverage>0.0</jacoco.min.coverage>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -81,6 +82,11 @@
 			<artifactId>dto</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -107,6 +113,58 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.5</version>
+				<configuration>
+					<excludes>
+						<exclude>**/override/recognizer_service/RecognizerServiceApplication.class</exclude>
+						<exclude>**/model/**</exclude>
+						<exclude>**/config/**</exclude>
+						<exclude>**/controller/**</exclude>
+						<exclude>**/feign/**</exclude>
+					</excludes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<!-- attached to Maven verify phase -->
+					<execution>
+						<id>report</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/jacoco-report</outputDirectory>
+						</configuration>
+					</execution>
+					<execution>
+						<id>jacoco-check</id>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<rule>
+									<element>PACKAGE</element>
+									<limits>
+										<limit>
+											<counter>LINE</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>${jacoco.min.coverage}</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

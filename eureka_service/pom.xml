@@ -8,7 +8,7 @@
         <version>2.7.10</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.override</groupId>
+    <groupId>com.overmoney</groupId>
     <artifactId>eureka_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>eureka_service</name>
@@ -62,6 +62,11 @@
             <groupId>org.zalando</groupId>
             <artifactId>logbook-spring-boot-starter</artifactId>
             <version>2.16.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
     </dependencies>
     <dependencyManagement>
