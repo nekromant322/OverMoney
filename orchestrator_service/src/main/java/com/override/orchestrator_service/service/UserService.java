@@ -26,10 +26,6 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public List<User> getAllUsers(OverMoneyAccount overMoneyAccount) {
-        return userRepository.findByAccountId(overMoneyAccount.getId());
-    }
-
     public void saveUser(User user) {
         userRepository.save(user);
     }

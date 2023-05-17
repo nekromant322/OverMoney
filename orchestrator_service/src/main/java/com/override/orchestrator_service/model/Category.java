@@ -36,5 +36,5 @@ public class Category {
     private Set<Keyword> keywords;
 
     @ManyToOne
-    private OverMoneyAccount overMoneyAccount;
+    private OverMoneyAccount account;
 }

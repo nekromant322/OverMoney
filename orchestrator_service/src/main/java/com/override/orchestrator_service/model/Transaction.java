@@ -1,8 +1,7 @@
 package com.override.orchestrator_service.model;
 
 import brave.internal.Nullable;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -31,5 +30,5 @@ public class Transaction {
     private Float amount;
 
     @ManyToOne
-    private OverMoneyAccount overMoneyAccount;
+    private OverMoneyAccount account;
 }

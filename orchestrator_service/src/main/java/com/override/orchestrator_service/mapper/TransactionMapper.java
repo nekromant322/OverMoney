@@ -19,7 +19,7 @@ public class TransactionMapper {
                 .type(getTransactionType(transaction))
                 .category(getTransactionCategory(transaction))
                 .amount(transaction.getAmount().toString())
-                .chatId(Long.valueOf(transaction.getOverMoneyAccount().getChatId()))
+                .chatId(Long.valueOf(transaction.getAccount().getChatId()))
                 .comment(transaction.getMessage())
                 .build();
     }

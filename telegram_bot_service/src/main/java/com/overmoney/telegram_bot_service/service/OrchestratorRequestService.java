@@ -1,6 +1,7 @@
 package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
+import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,5 +19,9 @@ public class OrchestratorRequestService {
 
     public void sendVoiceMessage(byte[] voiceMessage) {
         orchestratorFeign.sendVoiceMessage(voiceMessage);
+    }
+
+    public void registerOverMoneyAccount(AccountDataDTO accountData) {
+        orchestratorFeign.registerOverMoneyAccount(accountData);
     }
 }

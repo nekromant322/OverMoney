@@ -35,6 +35,6 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @OneToMany(mappedBy = "user")
-    private Set<UsersOverMoneyAccounts> usersOverMoneyAccounts;
+    @ManyToMany(mappedBy = "users")
+    private Set<OverMoneyAccount> overMoneyAccounts;
 }

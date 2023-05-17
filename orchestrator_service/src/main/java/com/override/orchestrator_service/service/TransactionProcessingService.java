@@ -16,25 +16,13 @@ public class TransactionProcessingService {
 
     @Autowired
     private OverMoneyAccountService overMoneyAccountService;
-    @Autowired
-    private UserService userService;
-    @Autowired
-    private UsersOverMoneyAccountsService usersOverMoneyAccountsService;
 
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
-        User user = userService.getUserByUsername(transactionMessageDTO.getUsername());
-        String chatId = transactionMessageDTO.getChatId();
-        OverMoneyAccount overMoneyAccount = overMoneyAccountService.getOverMoneyAccountByChatId(chatId);
-
-        if (overMoneyAccount == null) {
-            overMoneyAccount = new OverMoneyAccount();
-            overMoneyAccount.setChatId(chatId);
-            overMoneyAccountService.saveOverMoneyAccount(overMoneyAccount);
-            usersOverMoneyAccountsService.save(user, overMoneyAccount);
-        }
+        OverMoneyAccount overMoneyAccount = overMoneyAccountService
+                .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
 
         Transaction transaction = new Transaction();
-        transaction.setOverMoneyAccount(overMoneyAccount);
+        transaction.setAccount(overMoneyAccount);
         transaction.setAmount(getAmount(transactionMessageDTO.getMessage()));
         transaction.setMessage(getTransactionMessage(transactionMessageDTO, overMoneyAccount));
         transaction.setCategory(getTransactionCategory(transactionMessageDTO, overMoneyAccount));

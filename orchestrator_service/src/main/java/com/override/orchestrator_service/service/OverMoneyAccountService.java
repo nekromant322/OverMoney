@@ -7,44 +7,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class OverMoneyAccountService {
     @Autowired
     private OverMoneyAccountRepository overMoneyAccountRepository;
+    @Autowired
+    private UserService userService;
 
     public List<OverMoneyAccount> getAllAccounts() {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
     }
 
-    public List<OverMoneyAccount> getAllUserAccounts(User user) {
-        return overMoneyAccountRepository.findByUserId(user.getId());
+    public void saveOverMoneyAccount(String chatId, String username) {
+        User user = userService.getUserByUsername(username);
+        Set<User> accountUsers = new HashSet<>();
+        accountUsers.add(user);
+
+        OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
+                .chatId(chatId)
+                .users(accountUsers)
+                .build();
+
+        saveOverMoneyAccount(overMoneyAccount);
     }
 
     public void saveOverMoneyAccount(OverMoneyAccount overMoneyAccount) {
         overMoneyAccountRepository.save(overMoneyAccount);
     }
 
-    public void updateOverMoneyAccount(OverMoneyAccount overMoneyAccount, String chatId) throws InstanceNotFoundException {
-        OverMoneyAccount foundAccount = getOverMoneyAccountByChatId(chatId);
-        foundAccount.setUsersOverMoneyAccounts(overMoneyAccount.getUsersOverMoneyAccounts());
-        foundAccount.setCategories(overMoneyAccount.getCategories());
-        foundAccount.setTransactions(overMoneyAccount.getTransactions());
-        overMoneyAccountRepository.save(foundAccount);
-    }
-
-    public OverMoneyAccount getOverMoneyAccountByChatId(String chatId) throws InstanceNotFoundException {
+    public OverMoneyAccount getOverMoneyAccountByChatId(String chatId) {
         return overMoneyAccountRepository.findByChatId(chatId);
-    }
-
-    public void updateOverMoneyAccount(OverMoneyAccount overMoneyAccount, Long id) throws InstanceNotFoundException {
-        OverMoneyAccount foundAccount = getOverMoneyAccountById(id);
-        foundAccount.setChatId(overMoneyAccount.getChatId());
-        foundAccount.setUsersOverMoneyAccounts(overMoneyAccount.getUsersOverMoneyAccounts());
-        foundAccount.setCategories(overMoneyAccount.getCategories());
-        foundAccount.setTransactions(overMoneyAccount.getTransactions());
-        overMoneyAccountRepository.save(foundAccount);
     }
 
     public OverMoneyAccount getOverMoneyAccountById(Long id) throws InstanceNotFoundException {
