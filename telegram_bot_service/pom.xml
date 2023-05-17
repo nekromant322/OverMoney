@@ -10,8 +10,8 @@
     </parent>
     <artifactId>telegram_bot_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>tg_bot_service</name>
-    <description>tg_bot_service</description>
+    <name>telegram_bot_service</name>
+    <description>telegram_bot_service</description>
     <properties>
         <java.version>11</java.version>
         <spring-cloud.version>2021.0.6</spring-cloud.version>
@@ -138,7 +138,7 @@
                 <version>0.8.5</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/override/TelegramBotServiceApplication.class</exclude>
+                        <exclude>**/overmoney/telegram_bot_service/TelegramBotServiceApplication.class</exclude>
                         <exclude>**/model/**</exclude>
                         <exclude>**/config/**</exclude>
                         <exclude>**/constants/**</exclude>

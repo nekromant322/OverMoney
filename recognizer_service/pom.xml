@@ -119,7 +119,7 @@
 				<version>0.8.5</version>
 				<configuration>
 					<excludes>
-						<exclude>**/override/RecognizerServiceApplication.class</exclude>
+						<exclude>**/override/recognizer_service/RecognizerServiceApplication.class</exclude>
 						<exclude>**/model/**</exclude>
 						<exclude>**/config/**</exclude>
 						<exclude>**/controller/**</exclude>

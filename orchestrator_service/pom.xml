@@ -175,14 +175,13 @@
                 <version>0.8.5</version>
                 <configuration>
                     <excludes>
-                        <exclude>**/override/OrchestratorServiceApplication.class</exclude>
+                        <exclude>**/override/orchestrator_service/OrchestratorServiceApplication.class</exclude>
                         <exclude>**/model/**</exclude>
                         <exclude>**/config/**</exclude>
                         <exclude>**/controller/**</exclude>
                         <exclude>**/feign/**</exclude>
                         <exclude>**/constants/**</exclude>
                         <exclude>**/exception/**</exclude>
-                        <exclude>**/util/**</exclude>
                     </excludes>
                 </configuration>
                 <executions>
