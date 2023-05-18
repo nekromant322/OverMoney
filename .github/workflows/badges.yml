@@ -1,9 +1,8 @@
 name: Generate and commit badges
 
 on:
-  push:
-    branches:
-      - master
+  pull_request:
+    branches: '*'
 
 jobs:
   build:
@@ -16,6 +15,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
+          token: ${{ secrets.PERSONAL_TOKEN_FOR_ACTION }}
 
       - name: Build with Maven
         run: mvn -B verify
