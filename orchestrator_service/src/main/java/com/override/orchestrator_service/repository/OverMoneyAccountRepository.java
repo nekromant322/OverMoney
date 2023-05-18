@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OverMoneyAccountRepository extends CrudRepository<OverMoneyAccount, Long> {
 
-    OverMoneyAccount findByChatId(String chatId);
+    OverMoneyAccount findByChatId(Long chatId);
 }

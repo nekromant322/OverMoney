@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AccountDataDTO {
-    String chatId;
-    String username;
+    private Long chatId;
+    private String username;
 }

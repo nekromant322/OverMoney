@@ -21,12 +21,12 @@ public class TransactionProcessingService {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
 
-        Transaction transaction = new Transaction();
-        transaction.setAccount(overMoneyAccount);
-        transaction.setAmount(getAmount(transactionMessageDTO.getMessage()));
-        transaction.setMessage(getTransactionMessage(transactionMessageDTO, overMoneyAccount));
-        transaction.setCategory(getTransactionCategory(transactionMessageDTO, overMoneyAccount));
-        return transaction;
+        return Transaction.builder()
+                .account(overMoneyAccount)
+                .amount(getAmount(transactionMessageDTO.getMessage()))
+                .message(getTransactionMessage(transactionMessageDTO, overMoneyAccount))
+                .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
+                .build();
     }
 
     private String getTransactionMessage(TransactionMessageDTO transactionMessageDTO, OverMoneyAccount overMoneyAccount) throws InstanceNotFoundException {

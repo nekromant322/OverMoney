@@ -53,6 +53,7 @@ public class UserService {
         foundUser.setUsername(user.getUsername());
         foundUser.setPhotoUrl(user.getPhotoUrl());
         foundUser.setAuthDate(user.getAuthDate());
+        foundUser.setRoles(user.getRoles());
         userRepository.save(foundUser);
     }
 

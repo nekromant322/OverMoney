@@ -49,7 +49,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        String chatId = update.getMessage().getChatId().toString();
+        Long chatId = update.getMessage().getChatId();
         String username = update.getMessage().getFrom().getUserName();
 
         if (update.getMessage().hasText()) {
@@ -63,7 +63,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void botAnswer(String receivedMessage, String chatId, String username) {
+    private void botAnswer(String receivedMessage, Long chatId, String username) {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());
@@ -83,8 +83,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendMessage(String chatId, String messageText) {
-        SendMessage message = new SendMessage(chatId, messageText);
+    private void sendMessage(Long chatId, String messageText) {
+        SendMessage message = new SendMessage(chatId.toString(), messageText);
         try {
             execute(message);
         } catch (TelegramApiException e) {

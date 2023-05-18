@@ -18,7 +18,7 @@ public class OverMoneyAccount {
     private Long id;
 
     @Column(name = "chat_id", unique = true)
-    private String chatId;
+    private Long chatId;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
     private Set<Category> categories;

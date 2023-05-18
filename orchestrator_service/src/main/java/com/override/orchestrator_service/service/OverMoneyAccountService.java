@@ -22,24 +22,27 @@ public class OverMoneyAccountService {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
     }
 
-    public void saveOverMoneyAccount(String chatId, String username) {
-        User user = userService.getUserByUsername(username);
-        Set<User> accountUsers = new HashSet<>();
-        accountUsers.add(user);
-
+    public void saveOverMoneyAccount(Long chatId, String username) {
         OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
                 .chatId(chatId)
-                .users(accountUsers)
+                .users(getUser(username))
                 .build();
 
         saveOverMoneyAccount(overMoneyAccount);
+    }
+
+    private Set<User> getUser(String username) {
+        User user = userService.getUserByUsername(username);
+        Set<User> accountUsers = new HashSet<>();
+        accountUsers.add(user);
+        return accountUsers;
     }
 
     public void saveOverMoneyAccount(OverMoneyAccount overMoneyAccount) {
         overMoneyAccountRepository.save(overMoneyAccount);
     }
 
-    public OverMoneyAccount getOverMoneyAccountByChatId(String chatId) {
+    public OverMoneyAccount getOverMoneyAccountByChatId(Long chatId) {
         return overMoneyAccountRepository.findByChatId(chatId);
     }
 

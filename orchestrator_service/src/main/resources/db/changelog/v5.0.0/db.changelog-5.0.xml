@@ -6,7 +6,7 @@
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints primaryKey="true" primaryKeyName="accounts_pkey"/>
             </column>
-            <column name="chat_id" type="VARCHAR(255)">
+            <column name="chat_id" type="BIGINT">
                 <constraints unique="true"/>
             </column>
         </createTable>
