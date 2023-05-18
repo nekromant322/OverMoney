@@ -11,6 +11,6 @@ import java.util.UUID;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, UUID> {
-    @Query(nativeQuery = true, value = "select * from categories where user_id = :userId")
-    List<Category> findAllByUserId(@Param("userId") Long userId);
+    @Query("SELECT c FROM Category c WHERE c.account.id = :id")
+    List<Category> findAllByUserId(@Param("id") String accountId);
 }

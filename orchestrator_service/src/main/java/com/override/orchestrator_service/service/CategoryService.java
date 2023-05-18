@@ -20,6 +20,6 @@ public class CategoryService {
 
     public List<CategoryDTO> findCategoriesListByUsername(String username) {
         Long id = userService.getUserByUsername(username).getId();
-        return categoryMapper.mapCategoriesListToJsonResponse(categoryRepository.findAllByUserId(id));
+        return categoryMapper.mapCategoriesListToJsonResponse(categoryRepository.findAllByUserId(String.valueOf(id)));
     }
 }

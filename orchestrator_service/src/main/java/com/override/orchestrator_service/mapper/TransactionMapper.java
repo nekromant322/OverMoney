@@ -15,14 +15,13 @@ public class TransactionMapper {
     private final String CATEGORY_UNDEFINED = "Нераспознанное";
 
     public TransactionResponseDTO mapTransactionToTelegramResponse(Transaction transaction) throws InstanceNotFoundException {
-        TransactionResponseDTO transactionResponseDTO = new TransactionResponseDTO();
-        transactionResponseDTO.setType(getTransactionType(transaction));
-        transactionResponseDTO.setCategory(getTransactionCategory(transaction));
-        transactionResponseDTO.setAmount(transaction.getAmount().toString());
-        transactionResponseDTO.setComment(transaction.getMessage());
-        transactionResponseDTO.setUserId(transaction.getUser().getId());
-
-        return transactionResponseDTO;
+        return TransactionResponseDTO.builder()
+                .type(getTransactionType(transaction))
+                .category(getTransactionCategory(transaction))
+                .amount(transaction.getAmount().toString())
+                .chatId(Long.valueOf(transaction.getAccount().getChatId()))
+                .comment(transaction.getMessage())
+                .build();
     }
 
     private String getTransactionType(Transaction transaction) throws InstanceNotFoundException {

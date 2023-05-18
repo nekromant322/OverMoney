@@ -2,6 +2,7 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
+import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
@@ -48,7 +49,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        String chatId = update.getMessage().getChatId().toString();
+        Long chatId = update.getMessage().getChatId();
         String username = update.getMessage().getFrom().getUserName();
 
         if (update.getMessage().hasText()) {
@@ -62,17 +63,18 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void botAnswer(String receivedMessage, String chatId, String username) {
+    private void botAnswer(String receivedMessage, Long chatId, String username) {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());
+                orchestratorRequestService.registerOverMoneyAccount(new AccountDataDTO(chatId, username));
                 break;
             case "/money":
                 sendMessage(chatId, Command.MONEY.getDescription());
                 break;
             default:
                 try {
-                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username));
+                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username, chatId));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
                     sendMessage(chatId, MESSAGE_INVALID);
@@ -81,8 +83,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendMessage(String chatId, String messageText) {
-        SendMessage message = new SendMessage(chatId, messageText);
+    private void sendMessage(Long chatId, String messageText) {
+        SendMessage message = new SendMessage(chatId.toString(), messageText);
         try {
             execute(message);
         } catch (TelegramApiException e) {

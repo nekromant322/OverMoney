@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TransactionResponseDTO {
-    private String type;
-    private String category;
-    private String amount;
-    private String comment;
+public class AccountDataDTO {
     private Long chatId;
+    private String username;
 }
