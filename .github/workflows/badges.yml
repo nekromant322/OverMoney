@@ -16,6 +16,7 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
           token: ${{ secrets.PERSONAL_TOKEN_FOR_ACTION }}
+          ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Build with Maven
         run: mvn -B verify
@@ -51,6 +52,5 @@ jobs:
            git config --global user.email 'nekromant322@users.noreply.github.com'
            git add -A
            git commit -m "JaCoCo coverage badges"
-           git pull
-           git push origin HEAD:master
+           git push
           fi
