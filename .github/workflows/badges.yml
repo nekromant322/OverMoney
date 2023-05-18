@@ -11,7 +11,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.PERSONAL_TOKEN_FOR_ACTION }}
           ref: badges-branch
 
       - name: Set up JDK 11
