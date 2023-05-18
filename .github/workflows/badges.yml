@@ -1,8 +1,9 @@
 name: Generate and commit badges
 
 on:
-  pull_request:
-    branches: '*'
+  push:
+    branches:
+      - master
 
 jobs:
   build:
