@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.PERSONAL_TOKEN_FOR_ACTION }}
-          ref: master
+          ref: badges-branch
 
       - name: Set up JDK 11
         uses: actions/setup-java@v2
