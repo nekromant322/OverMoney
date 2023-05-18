@@ -20,22 +20,21 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 @Slf4j
 public class OverMoneyBot extends TelegramLongPollingBot {
 
-    private final String MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
-
     @Value("${bot.name}")
     private String botName;
-
     @Value("${bot.token}")
     private String botToken;
-
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
-
     @Autowired
     private TelegramBotApiRequestService telegramBotApiRequestService;
-
     @Autowired
     private TransactionMapper transactionMapper;
+    private final int VOICE_MESSAGE_MAX_LENGTH = 10;
+    private final String VOICE_MESSAGE_TOO_LONG = "К сожалению, мы не можем распознать голосовое сообщение длиннее "
+            +  VOICE_MESSAGE_MAX_LENGTH + " секунд - попробуйте разбить его на части поменьше :^)";
+    private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
+            "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
 
     @Override
     public String getBotUsername() {
@@ -58,8 +57,12 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
 
         if (update.getMessage().hasVoice()) {
-            byte[] voiceMessage = telegramBotApiRequestService.getVoiceMessageBytes(update.getMessage().getVoice().getFileId());
-            orchestratorRequestService.sendVoiceMessage(voiceMessage);
+            if (update.getMessage().getVoice().getDuration() > VOICE_MESSAGE_MAX_LENGTH) {
+                sendMessage(chatId, VOICE_MESSAGE_TOO_LONG);
+            } else {
+                byte[] voiceMessage = telegramBotApiRequestService.getVoiceMessageBytes(update.getMessage().getVoice().getFileId());
+                orchestratorRequestService.sendVoiceMessage(voiceMessage);
+            }
         }
     }
 
@@ -77,7 +80,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                     TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username, chatId));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
-                    sendMessage(chatId, MESSAGE_INVALID);
+                    sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
                 }
                 break;
         }
