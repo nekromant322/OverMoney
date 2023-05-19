@@ -22,7 +22,8 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/")
-    public List<CategoryDTO> getCategoriesList(Principal principal) {
-        return categoryService.findCategoriesListByUsername(((JwtAuthentication)principal).getUsername());
+    public List<CategoryDTO> getCategoriesList(){// Principal principal) {
+        return categoryService.findCategoriesListByUsername("etozhealexis");
+//        return categoryService.findCategoriesListByUsername(((JwtAuthentication)principal).getUsername());
     }
 }

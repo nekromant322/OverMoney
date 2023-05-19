@@ -6,7 +6,9 @@ import com.override.dto.TransactionResponseDTO;
 import org.springframework.stereotype.Component;
 
 import javax.management.InstanceNotFoundException;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Component
 public class TransactionMapper {
@@ -14,14 +16,21 @@ public class TransactionMapper {
     private final String EXPENSE = "Расходы";
     private final String CATEGORY_UNDEFINED = "Нераспознанное";
 
-    public TransactionResponseDTO mapTransactionToTelegramResponse(Transaction transaction) throws InstanceNotFoundException {
+    public TransactionResponseDTO mapTransactionToJsonResponse(Transaction transaction) throws InstanceNotFoundException {
         return TransactionResponseDTO.builder()
                 .type(getTransactionType(transaction))
                 .category(getTransactionCategory(transaction))
                 .amount(transaction.getAmount().toString())
-                .chatId(Long.valueOf(transaction.getAccount().getChatId()))
+                .chatId(transaction.getAccount().getChatId())
                 .comment(transaction.getMessage())
                 .build();
+    }
+
+    public List<TransactionResponseDTO> mapTransactionListToJsonList(List<Transaction> transactions) {
+        return transactions
+                .stream()
+                .map(this::mapTransactionToJsonResponse)
+                .collect(Collectors.toList());
     }
 
     private String getTransactionType(Transaction transaction) throws InstanceNotFoundException {

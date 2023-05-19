@@ -5,14 +5,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountDataDTO {
+public class RegistrationDataDTO {
     private Long chatId;
-    private List<CategoryDTO> categories;
-    private List<TransactionResponseDTO> transactions;
+    private String username;
 }

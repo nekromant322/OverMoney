@@ -29,6 +29,6 @@ public class TransactionController {
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
         Transaction transaction = transactionProcessingService.processTransaction(transactionMessage);
         transactionService.saveTransaction(transaction);
-        return transactionMapper.mapTransactionToTelegramResponse(transaction);
+        return transactionMapper.mapTransactionToJsonResponse(transaction);
     }
 }
