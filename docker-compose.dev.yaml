@@ -41,6 +41,8 @@ services:
       dockerfile: eureka_service/Dockerfile
     ports:
       - '8761:8761'
+    environment:
+      _JAVA_OPTIONS: -Xmx256m
 
   orchestrator:
     container_name: orchestrator
@@ -50,6 +52,7 @@ services:
     ports:
       - '8081:8081'
     environment:
+      _JAVA_OPTIONS: -Xmx256m
       ORCHESTRATOR_DB_USER: postgres
       ORCHESTRATOR_DB_PASSWORD: postgres
       ORCHESTRATOR_DB_HOST: orchestrator-db
@@ -68,6 +71,7 @@ services:
     ports:
       - '8080:8080'
     environment:
+      _JAVA_OPTIONS: -Xmx256m
       RECOGNIZER_DB_USER: postgres
       RECOGNIZER_DB_PASSWORD: postgres
       RECOGNIZER_DB_HOST: recognizer-db
@@ -83,6 +87,7 @@ services:
     ports:
       - '8082:8082'
     environment:
+      _JAVA_OPTIONS: -Xmx256m
       TELEGRAM_BOT_DB_USER: postgres
       TELEGRAM_BOT_DB_PASSWORD: postgres
       TELEGRAM_BOT_DB_HOST: telegram-bot-db
