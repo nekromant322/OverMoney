@@ -26,11 +26,6 @@ public class OverMoneyAccount {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
     private Set<Transaction> transactions;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(
-            name = "users_accounts",
-            joinColumns = @JoinColumn(name = "accounts_id"),
-            inverseJoinColumns = @JoinColumn(name = "users_id")
-    )
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
     private Set<User> users;
 }

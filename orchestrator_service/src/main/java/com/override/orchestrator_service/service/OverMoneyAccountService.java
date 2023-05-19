@@ -28,6 +28,9 @@ public class OverMoneyAccountService {
                 .users(getUser(username))
                 .build();
 
+        User user = userService.getUserByUsername(username);
+        user.setAccount(overMoneyAccount);
+
         saveOverMoneyAccount(overMoneyAccount);
     }
 

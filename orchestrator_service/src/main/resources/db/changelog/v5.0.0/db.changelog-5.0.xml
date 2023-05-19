@@ -22,6 +22,11 @@
         <addColumn tableName="transactions">
             <column name="account_id" type="BIGINT"/>
         </addColumn>
+
+        <addColumn tableName="users">
+            <column name="account_id" type="BIGINT"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="users" constraintName="fk2c5ghgh89lnsfvo17cbqvdxaa" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="accounts" validate="true"/>
     </changeSet>
 
     <changeSet author="Pc (generated)" id="1682723604075-9">
@@ -29,23 +34,5 @@
     </changeSet>
     <changeSet author="Pc (generated)" id="1682723604075-10">
         <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="transactions" constraintName="fkqwv7rmvc8va8rep7piikrojds" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="accounts" validate="true"/>
-    </changeSet>
-
-    <changeSet author="Pc (generated)" id="1682336102383-3">
-        <createTable tableName="users_accounts">
-            <column name="users_id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="users_accounts_pkey"/>
-            </column>
-            <column name="accounts_id" type="BIGINT">
-                <constraints primaryKey="true" primaryKeyName="users_accounts_pkey"/>
-            </column>
-        </createTable>
-    </changeSet>
-
-    <changeSet author="Pc (generated)" id="1682336102383-6">
-        <addForeignKeyConstraint baseColumnNames="users_id" baseTableName="users_accounts" constraintName="fk2o0jvgh89lnsfvo17cbqvdxaa" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
-    </changeSet>
-    <changeSet author="Pc (generated)" id="1682336102383-7">
-        <addForeignKeyConstraint baseColumnNames="accounts_id" baseTableName="users_accounts" constraintName="fka62j07k5mhgifpp955h37ponj" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="accounts" validate="true"/>
     </changeSet>
 </databaseChangeLog>
