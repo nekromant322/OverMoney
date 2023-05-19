@@ -16,3 +16,4 @@ FROM openjdk:11-jdk-slim
 COPY --from=build /recognizer/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]
+RUN apt-get -y update && apt-get -y upgrade && apt-get install -y --no-install-recommends ffmpeg
