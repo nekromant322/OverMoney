@@ -1,7 +1,7 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AnnounceDTO;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
-import com.override.orchestrator_service.model.AnnounceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

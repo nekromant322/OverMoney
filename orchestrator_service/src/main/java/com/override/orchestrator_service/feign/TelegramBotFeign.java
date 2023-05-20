@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.feign;
 
-import com.override.orchestrator_service.model.AnnounceDTO;
+
+import com.override.dto.AnnounceDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 

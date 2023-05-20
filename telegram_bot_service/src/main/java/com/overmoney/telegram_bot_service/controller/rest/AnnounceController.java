@@ -1,7 +1,8 @@
 package com.overmoney.telegram_bot_service.controller.rest;
 
-import com.overmoney.telegram_bot_service.model.AnnounceDTO;
+
 import com.overmoney.telegram_bot_service.service.AnnounceService;
+import com.override.dto.AnnounceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
