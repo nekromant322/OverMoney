@@ -2,11 +2,11 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
+import com.overmoney.telegram_bot_service.service.VoiceMessageProcessingService;
 import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
-import com.overmoney.telegram_bot_service.service.TelegramBotApiRequestService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,16 +24,12 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private String botName;
     @Value("${bot.token}")
     private String botToken;
-    @Value("${bot.voice.max_length}")
-    private int voiceMessageMaxLength;
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
     @Autowired
-    private TelegramBotApiRequestService telegramBotApiRequestService;
-    @Autowired
     private TransactionMapper transactionMapper;
-    private final String VOICE_MESSAGE_TOO_LONG = "К сожалению, мы не можем распознать голосовое сообщение длиннее "
-            +  voiceMessageMaxLength + " секунд - попробуйте разбить его на части поменьше :^)";
+    @Autowired
+    private VoiceMessageProcessingService voiceMessageProcessingService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
             "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
 
@@ -58,12 +54,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
 
         if (update.getMessage().hasVoice()) {
-            if (update.getMessage().getVoice().getDuration() > voiceMessageMaxLength) {
-                sendMessage(chatId, VOICE_MESSAGE_TOO_LONG);
-            } else {
-                byte[] voiceMessage = telegramBotApiRequestService.getVoiceMessageBytes(update.getMessage().getVoice().getFileId());
-                orchestratorRequestService.sendVoiceMessage(voiceMessage);
-            }
+            voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice(), chatId);
         }
     }
 
@@ -87,7 +78,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendMessage(Long chatId, String messageText) {
+    public void sendMessage(Long chatId, String messageText) {
         SendMessage message = new SendMessage(chatId.toString(), messageText);
         try {
             execute(message);
