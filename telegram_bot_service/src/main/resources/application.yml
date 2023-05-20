@@ -3,6 +3,8 @@
     token: ${TELEGRAM_BOT_TOKEN}
     api:
       url: https://api.telegram.org
+    voice:
+      max_length: 10
 
   server:
     port: 8082

@@ -24,15 +24,16 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private String botName;
     @Value("${bot.token}")
     private String botToken;
+    @Value("${bot.voice.max_length}")
+    private int voiceMessageMaxLength;
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
     @Autowired
     private TelegramBotApiRequestService telegramBotApiRequestService;
     @Autowired
     private TransactionMapper transactionMapper;
-    private final int VOICE_MESSAGE_MAX_LENGTH = 10;
     private final String VOICE_MESSAGE_TOO_LONG = "К сожалению, мы не можем распознать голосовое сообщение длиннее "
-            +  VOICE_MESSAGE_MAX_LENGTH + " секунд - попробуйте разбить его на части поменьше :^)";
+            +  voiceMessageMaxLength + " секунд - попробуйте разбить его на части поменьше :^)";
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
             "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
 
@@ -57,7 +58,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
 
         if (update.getMessage().hasVoice()) {
-            if (update.getMessage().getVoice().getDuration() > VOICE_MESSAGE_MAX_LENGTH) {
+            if (update.getMessage().getVoice().getDuration() > voiceMessageMaxLength) {
                 sendMessage(chatId, VOICE_MESSAGE_TOO_LONG);
             } else {
                 byte[] voiceMessage = telegramBotApiRequestService.getVoiceMessageBytes(update.getMessage().getVoice().getFileId());
