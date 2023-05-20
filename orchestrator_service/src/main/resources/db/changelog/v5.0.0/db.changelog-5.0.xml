@@ -13,6 +13,7 @@
     </changeSet>
 
     <changeSet id="1682723604075-16" author="Pc (generated)">
+        <validCheckSum>8:0cc9023b02cf8ee3380e7e0c1a65be8a</validCheckSum>
         <dropColumn tableName="categories" columnName="user_id"/>
         <addColumn tableName="categories">
             <column name="account_id" type="BIGINT"/>
