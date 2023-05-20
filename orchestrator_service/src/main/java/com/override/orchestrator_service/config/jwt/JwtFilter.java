@@ -37,7 +37,7 @@ public class JwtFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private String getTokenFromRequest(HttpServletRequest request) {
+    public String getTokenFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String token = null;
         if (!Objects.isNull(cookies)) {
