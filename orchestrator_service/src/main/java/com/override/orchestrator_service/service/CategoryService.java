@@ -8,6 +8,7 @@ import com.override.orchestrator_service.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.management.InstanceNotFoundException;
 import java.util.List;
 
 @Service
@@ -22,8 +23,8 @@ public class CategoryService {
     @Autowired
     private AccountMapper accountMapper;
 
-    public List<CategoryDTO> findCategoriesListByUsername(String username) {
-        OverMoneyAccount account = accountService.getAccountByUsername(username);
+    public List<CategoryDTO> findCategoriesListByUserId(Long id) throws InstanceNotFoundException {
+        OverMoneyAccount account = accountService.getAccountByUserId(id);
         return categoryMapper.mapCategoriesListToJsonResponse(accountMapper.mapAccountToCategoryList(account));
     }
 }

@@ -1,6 +1,5 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.AccountDataDTO;
 import com.override.orchestrator_service.mapper.AccountMapper;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
@@ -57,8 +56,8 @@ public class OverMoneyAccountService {
         return userService.getUserByUsername(username).getAccount();
     }
 
-    public AccountDataDTO getAccountDataDTO(OverMoneyAccount overMoneyAccount) {
-        return accountMapper.mapAccountToJson(overMoneyAccount);
+    public OverMoneyAccount getAccountByUserId(Long id) throws InstanceNotFoundException {
+        return userService.getUserById(id).getAccount();
     }
 
     public OverMoneyAccount getOverMoneyAccountById(Long id) throws InstanceNotFoundException {

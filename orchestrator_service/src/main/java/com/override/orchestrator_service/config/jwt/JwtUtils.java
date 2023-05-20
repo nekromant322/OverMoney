@@ -11,9 +11,10 @@ public class JwtUtils {
 
     public static JwtAuthentication generate(Claims claims) {
         final JwtAuthentication jwtInfoToken = new JwtAuthentication();
+        jwtInfoToken.setId(Long.parseLong(claims.getSubject()));
         jwtInfoToken.setRoles(getRoles(claims));
         jwtInfoToken.setFirstName(claims.get("firstName", String.class));
-        jwtInfoToken.setUsername(claims.getSubject());
+        jwtInfoToken.setUsername(claims.get("username", String.class));
         return jwtInfoToken;
     }
 

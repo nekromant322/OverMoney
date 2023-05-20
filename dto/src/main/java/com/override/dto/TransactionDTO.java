@@ -5,14 +5,14 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountDataDTO {
-    private Long chatId;
-    private List<CategoryDTO> categories;
-    private List<TransactionResponseDTO> transactions;
+public class TransactionDTO {
+    private UUID id;
+    private String message;
+    private Float amount;
 }

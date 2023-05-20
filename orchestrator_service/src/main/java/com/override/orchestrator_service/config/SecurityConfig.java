@@ -22,12 +22,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
                 .antMatchers("/templates/**", "/scripts/**", "/css/**").permitAll()
-//                .antMatchers("/auth/**").permitAll()
-//                .antMatchers("/login").permitAll()
-                .antMatchers("/transaction", "/voice_message", "/register", "/overview").permitAll()
-                .antMatchers("/categories/**").permitAll()
-                .anyRequest().authenticated();
-//                .and().formLogin().loginPage("/login")
-//                .and().addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/transaction", "/voice_message", "/register").permitAll()
+                .anyRequest().authenticated()
+                .and().formLogin().loginPage("/login")
+                .and().addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

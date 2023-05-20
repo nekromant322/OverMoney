@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.mapper;
 
+import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.constants.Type;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.dto.TransactionResponseDTO;
@@ -16,7 +17,7 @@ public class TransactionMapper {
     private final String EXPENSE = "Расходы";
     private final String CATEGORY_UNDEFINED = "Нераспознанное";
 
-    public TransactionResponseDTO mapTransactionToJsonResponse(Transaction transaction) throws InstanceNotFoundException {
+    public TransactionResponseDTO mapTransactionToTelegramResponse(Transaction transaction) throws InstanceNotFoundException {
         return TransactionResponseDTO.builder()
                 .type(getTransactionType(transaction))
                 .category(getTransactionCategory(transaction))
@@ -26,10 +27,18 @@ public class TransactionMapper {
                 .build();
     }
 
-    public List<TransactionResponseDTO> mapTransactionListToJsonList(List<Transaction> transactions) {
+    public TransactionDTO mapTransactionToJson(Transaction transaction) {
+        return TransactionDTO.builder()
+                .id(transaction.getId())
+                .amount(transaction.getAmount())
+                .message(transaction.getMessage())
+                .build();
+    }
+
+    public List<TransactionDTO> mapTransactionListToJsonList(List<Transaction> transactions) {
         return transactions
                 .stream()
-                .map(this::mapTransactionToJsonResponse)
+                .map(this::mapTransactionToJson)
                 .collect(Collectors.toList());
     }
 
