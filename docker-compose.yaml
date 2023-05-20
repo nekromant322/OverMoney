@@ -40,6 +40,8 @@ services:
     image: nekromant322/overmoney:eureka
     ports:
       - '8761:8761'
+    environment:
+      _JAVA_OPTIONS: -Xmx256m
 
   orchestrator:
     container_name: orchestrator
@@ -47,6 +49,7 @@ services:
     ports:
       - '8081:8081'
     environment:
+      _JAVA_OPTIONS: -Xmx256m
       ORCHESTRATOR_DB_USER: ${ORCHESTRATOR_DB_USER}
       ORCHESTRATOR_DB_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD}
       ORCHESTRATOR_DB_HOST: ${ORCHESTRATOR_DB_HOST}
@@ -63,6 +66,7 @@ services:
     ports:
       - '8080:8080'
     environment:
+      _JAVA_OPTIONS: -Xmx256m
       RECOGNIZER_DB_USER: ${RECOGNIZER_DB_USER}
       RECOGNIZER_DB_PASSWORD: ${RECOGNIZER_DB_PASSWORD}
       RECOGNIZER_DB_HOST: ${RECOGNIZER_DB_HOST}
@@ -76,6 +80,7 @@ services:
     ports:
       - '8082:8082'
     environment:
+      _JAVA_OPTIONS: -Xmx256m
       TELEGRAM_BOT_DB_USER: ${TELEGRAM_BOT_DB_USER}
       TELEGRAM_BOT_DB_PASSWORD: ${TELEGRAM_BOT_DB_PASSWORD}
       TELEGRAM_BOT_DB_HOST: ${TELEGRAM_BOT_DB_HOST}
