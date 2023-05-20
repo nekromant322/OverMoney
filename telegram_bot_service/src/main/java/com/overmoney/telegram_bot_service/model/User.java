@@ -1,22 +1,20 @@
 package com.overmoney.telegram_bot_service.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "users")
 @Getter
 @Setter
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name = "first_name")
     private String firstName;
@@ -27,9 +25,7 @@ public class User {
     @Column(name = "username")
     private String username;
 
-    @Column(name = "photo_url")
-    private String photoUrl;
-
-    @Column(name = "auth_date")
-    private Date authDate;
+    public Long getChatId() {
+        return id;
+    }
 }

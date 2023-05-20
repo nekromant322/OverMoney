@@ -30,7 +30,7 @@
 
     liquibase:
       enabled: true
-      change-log: /db/changelog/db.changelog-1.0.xml
+      change-log: /db/changelog/db.changelog-master.xml
 
   eureka:
     client:

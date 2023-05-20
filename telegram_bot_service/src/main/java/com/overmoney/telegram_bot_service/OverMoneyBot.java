@@ -2,6 +2,9 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
+import com.overmoney.telegram_bot_service.mapper.UserMapper;
+import com.overmoney.telegram_bot_service.model.User;
+import com.overmoney.telegram_bot_service.service.UserService;
 import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
@@ -15,6 +18,9 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
+import javax.management.InstanceNotFoundException;
+import java.util.Objects;
 
 @Component
 @Slf4j
@@ -37,6 +43,12 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     @Autowired
     private TransactionMapper transactionMapper;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private UserMapper userMapper;
+
     @Override
     public String getBotUsername() {
         return botName;
@@ -51,6 +63,15 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         Long chatId = update.getMessage().getChatId();
         String username = update.getMessage().getFrom().getUserName();
+
+        if (Objects.isNull(update.getMessage().getChat().getTitle())) {
+            try {
+                userService.getUserByTelegramUsername(username);
+            } catch (InstanceNotFoundException e) {
+                User user = userMapper.mapTelegramUsertoUser(update.getMessage().getFrom());
+                userService.saveUser(user);
+            }
+        }
 
         if (update.getMessage().hasText()) {
             String receivedMessage = update.getMessage().getText();
