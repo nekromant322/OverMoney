@@ -10,9 +10,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 public class VoiceMessageService {
-    private static final String VOICE_FILE_NAME = "voiceMessage";
-    private static final String OGG_FORMAT = ".ogg";
-    private static final String WAV_FORMAT = ".wav";
+    private final String VOICE_FILE_NAME = "voiceMessage";
+    private final String OGG_FORMAT = ".ogg";
+    private final String WAV_FORMAT = ".wav";
 
     public byte[] convertOggBytesToWav(byte[] voiceMessage) throws IOException, InterruptedException {
         UUID voiceId = UUID.randomUUID();
@@ -25,7 +25,7 @@ public class VoiceMessageService {
         if (oggVoiceFile.createNewFile()) {
             log.info("OGG voice file has been created");
         } else {
-            log.error("OGG voice file was not created");
+            throw new IOException("OGG voice file was not created");
         }
         OutputStream outStream = new FileOutputStream(oggVoiceFile);
         outStream.write(voiceMessage);
@@ -39,7 +39,7 @@ public class VoiceMessageService {
         if (oggVoiceFile.delete()) {
             log.info("OGG voice file has been deleted");
         } else {
-            log.warn("OGG voice file was not deleted");
+            throw new IOException("OGG voice file was not deleted");
         }
         byte[] wavVoiceBytes = null;
         try (InputStream in = new FileInputStream(wavFileName)) {
@@ -53,7 +53,7 @@ public class VoiceMessageService {
         if (wavVoiceFile.delete()) {
             log.info("WAV voice file has been deleted");
         } else {
-            log.warn("WAV voice file was not deleted");
+            throw new IOException("WAV voice file was not deleted");
         }
         return wavVoiceBytes;
     }
