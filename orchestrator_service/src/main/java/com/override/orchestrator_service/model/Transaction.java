@@ -1,9 +1,9 @@
 package com.override.orchestrator_service.model;
 
-import brave.internal.Nullable;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 import java.util.UUID;
 

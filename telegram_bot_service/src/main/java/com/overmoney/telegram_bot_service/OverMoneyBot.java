@@ -78,7 +78,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendMessage(Long chatId, String messageText) {
+    public void sendMessage(Long chatId, String messageText) {
         SendMessage message = new SendMessage(chatId.toString(), messageText);
         try {
             execute(message);
