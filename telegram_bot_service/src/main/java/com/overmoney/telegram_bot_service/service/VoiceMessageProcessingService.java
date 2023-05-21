@@ -20,10 +20,9 @@ public class VoiceMessageProcessingService {
     public String processVoiceMessage(Voice voiceMessage) {
         if (voiceMessage.getDuration() > voiceMessageMaxLength) {
             return VOICE_MESSAGE_TOO_LONG.replaceAll("voiceMessageMaxLength", String.valueOf(voiceMessageMaxLength));
-        } else {
-            byte[] voiceMessageBytes = telegramBotApiRequestService.getVoiceMessageBytes(voiceMessage.getFileId());
-            orchestratorRequestService.sendVoiceMessage(voiceMessageBytes);
-            return VOICE_MESSAGE_PROCESSING;
         }
+        byte[] voiceMessageBytes = telegramBotApiRequestService.getVoiceMessageBytes(voiceMessage.getFileId());
+        orchestratorRequestService.sendVoiceMessage(voiceMessageBytes);
+        return VOICE_MESSAGE_PROCESSING;
     }
 }
