@@ -9,7 +9,6 @@ window.onload = function () {
         circle.addEventListener('dragstart', handleDragStart);
         circle.addEventListener('dragend', handleDragEnd);
     })
-
 }
 
 const minUndefinedCircleSize = 100;
