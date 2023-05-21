@@ -24,6 +24,6 @@ public class CategoryController {
 
     @GetMapping("/")
     public List<CategoryDTO> getCategoriesList(Principal principal) throws InstanceNotFoundException {
-        return categoryService.findCategoriesListByUserId(((JwtAuthentication)principal).getId());
+        return categoryService.findCategoriesListByUserId(((JwtAuthentication)principal).getTelegramId());
     }
 }

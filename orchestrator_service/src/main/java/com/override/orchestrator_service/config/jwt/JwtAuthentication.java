@@ -16,7 +16,7 @@ public class JwtAuthentication implements Authentication {
     private boolean authenticated;
     private String username;
     private String firstName;
-    private Long id;
+    private Long telegramId;
     private Set<Role> roles;
 
     @Override

@@ -7,9 +7,7 @@ import com.override.dto.TransactionResponseDTO;
 import org.springframework.stereotype.Component;
 
 import javax.management.InstanceNotFoundException;
-import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Component
 public class TransactionMapper {
@@ -27,19 +25,12 @@ public class TransactionMapper {
                 .build();
     }
 
-    public TransactionDTO mapTransactionToJson(Transaction transaction) {
+    public TransactionDTO mapTransactionToDTO(Transaction transaction) {
         return TransactionDTO.builder()
                 .id(transaction.getId())
                 .amount(transaction.getAmount())
                 .message(transaction.getMessage())
                 .build();
-    }
-
-    public List<TransactionDTO> mapTransactionListToJsonList(List<Transaction> transactions) {
-        return transactions
-                .stream()
-                .map(this::mapTransactionToJson)
-                .collect(Collectors.toList());
     }
 
     private String getTransactionType(Transaction transaction) throws InstanceNotFoundException {

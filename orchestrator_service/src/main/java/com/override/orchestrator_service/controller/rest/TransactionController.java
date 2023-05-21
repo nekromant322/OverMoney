@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class TransactionController {
@@ -39,8 +40,10 @@ public class TransactionController {
 
     @GetMapping("/transactions")
     public List<TransactionDTO> getTransactionsList(Principal principal) throws InstanceNotFoundException {
-        List<Transaction> transactions = transactionService.findTransactionsListByUserId(((JwtAuthentication) principal).getId());
+        List<Transaction> transactions = transactionService.findTransactionsListByUserId(((JwtAuthentication) principal).getTelegramId());
         transactions.removeIf(transaction -> transaction.getCategory() != null);
-        return transactionMapper.mapTransactionListToJsonList(transactions);
+        return transactions.stream()
+                .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
+                .collect(Collectors.toList());
     }
 }
