@@ -1,6 +1,6 @@
 package com.override.orchestrator_service.controller.rest;
 
-import com.override.dto.AccountDataDTO;
+import com.override.dto.RegistrationDataDTO;
 import com.override.orchestrator_service.service.OverMoneyAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,7 +13,7 @@ public class RegistrationController {
     private OverMoneyAccountService overMoneyAccountService;
 
     @PostMapping("/register")
-    public void registerOverMoneyAccount(@RequestBody AccountDataDTO accountData) {
+    public void registerOverMoneyAccount(@RequestBody RegistrationDataDTO accountData) {
         overMoneyAccountService.saveOverMoneyAccount(accountData.getChatId(), accountData.getUsername());
     }
 }

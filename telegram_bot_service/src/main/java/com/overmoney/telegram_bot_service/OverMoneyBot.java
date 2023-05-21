@@ -2,8 +2,8 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
+import com.override.dto.RegistrationDataDTO;
 import com.overmoney.telegram_bot_service.service.VoiceMessageProcessingService;
-import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
@@ -62,7 +62,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());
-                orchestratorRequestService.registerOverMoneyAccount(new AccountDataDTO(chatId, username));
+                orchestratorRequestService.registerOverMoneyAccount(new RegistrationDataDTO(chatId, username));
                 break;
             case "/money":
                 sendMessage(chatId, Command.MONEY.getDescription());

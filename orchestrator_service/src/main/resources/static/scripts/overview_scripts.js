@@ -1,7 +1,7 @@
 "use strict";
 
 window.onload = function () {
-    drawUndefinedCircles(getUndefinedTransactionsData());
+    getUndefinedTransactionsData();
     getCategoriesData();
 
     let circles = document.querySelectorAll('.undefined-circle')
@@ -13,25 +13,40 @@ window.onload = function () {
 
 const minUndefinedCircleSize = 100;
 const maxUndefinedCircleSize = 200;
+let maxSingleTransactionAmount;
+
+function setMaxSingleTransactionAmount(value) {
+    maxSingleTransactionAmount = value;
+}
 
 function getMaxSingleTransactionAmount() {
-    return 1000;
+    return maxSingleTransactionAmount;
 }
 
 function getUndefinedTransactionsData() {
-    const undefinedTransactionsData = [
-        {"id": "1", "comment": "Пиво", "amount": '200'},
-        {"id": "2", "comment": "Сигарет", "amount": '800'},
-        {"id": "3", "comment": "Фильтр", "amount": '1000'},
-        {"id": "4", "comment": "Стрижка", "amount": '600'},
-        {"id": "5", "comment": "Стрижка", "amount": '778'},
-        {"id": "6", "comment": "Стрижка", "amount": '350'},
-        {"id": "7", "comment": "Стрижка", "amount": '500'},
-        {"id": "8", "comment": "Очень длинное ключевое слово", "amount": '100'},
-        {"id": "9", "comment": "Марсоход ровер", "amount": '200'}
-    ]
-    Object.freeze(undefinedTransactionsData)
-    return undefinedTransactionsData;
+    $.ajax({
+        method: 'GET',
+        url: './transactions',
+        contentType: "application/json; charset=utf8",
+        success: function (data) {
+            let undefinedTransactionsData = []
+            let maxAmount = -1
+            for (let i = 0; i < data.length; i++) {
+                if (data[i].amount > maxAmount) {
+                    maxAmount = data[i].amount
+                }
+
+                undefinedTransactionsData.push({
+                    "id": data[i].id,
+                    "comment": data[i].message,
+                    "amount": data[i].amount
+                })
+            }
+            Object.freeze(undefinedTransactionsData)
+            setMaxSingleTransactionAmount(maxAmount)
+            drawUndefinedCircles(undefinedTransactionsData)
+        }
+    })
 }
 
 function getCategoriesData() {

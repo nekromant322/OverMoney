@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.mapper;
 
+import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.constants.Type;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.dto.TransactionResponseDTO;
@@ -19,8 +20,16 @@ public class TransactionMapper {
                 .type(getTransactionType(transaction))
                 .category(getTransactionCategory(transaction))
                 .amount(transaction.getAmount().toString())
-                .chatId(Long.valueOf(transaction.getAccount().getChatId()))
+                .chatId(transaction.getAccount().getChatId())
                 .comment(transaction.getMessage())
+                .build();
+    }
+
+    public TransactionDTO mapTransactionToDTO(Transaction transaction) {
+        return TransactionDTO.builder()
+                .id(transaction.getId())
+                .amount(transaction.getAmount())
+                .message(transaction.getMessage())
                 .build();
     }
 

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AccountDataDTO {
+public class RegistrationDataDTO {
     private Long chatId;
     private String username;
 }

@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.management.InstanceNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -24,7 +25,7 @@ public class AuthController {
     private CookieUtils cookieUtils;
 
     @PostMapping("/login")
-    public void login(@RequestBody TelegramAuthRequest telegramAuthRequest, final HttpServletResponse response) throws NoSuchAlgorithmException, InvalidKeyException {
+    public void login(@RequestBody TelegramAuthRequest telegramAuthRequest, final HttpServletResponse response) throws NoSuchAlgorithmException, InvalidKeyException, InstanceNotFoundException {
         final JwtResponse token = jwtAuthenticationService.login(telegramAuthRequest);
         cookieUtils.addAccessTokenCookie(token, response);
     }
