@@ -1,6 +1,5 @@
 package com.overmoney.telegram_bot_service.service;
 
-import com.overmoney.telegram_bot_service.OverMoneyBot;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -12,20 +11,19 @@ public class VoiceMessageProcessingService {
     @Value("${bot.voice.max_length}")
     private int voiceMessageMaxLength;
     @Autowired
-    private OverMoneyBot overMoneyBot;
-    @Autowired
     private TelegramBotApiRequestService telegramBotApiRequestService;
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
-    private final String VOICE_MESSAGE_TOO_LONG = "К сожалению, мы не можем распознать голосовое сообщение длиннее "
-            +  voiceMessageMaxLength + " секунд - попробуйте разбить его на части поменьше :^)";
+    private final String VOICE_MESSAGE_TOO_LONG = "К сожалению, мы не можем распознать голосовое сообщение длиннее voiceMessageMaxLength секунд - попробуйте разбить его на части поменьше :^)";
+    private final String VOICE_MESSAGE_PROCESSING = "Обрабатываем ваше сообщение...";
 
-    public void processVoiceMessage(Voice voiceMessage, Long chatId) {
+    public String processVoiceMessage(Voice voiceMessage) {
         if (voiceMessage.getDuration() > voiceMessageMaxLength) {
-            overMoneyBot.sendMessage(chatId, VOICE_MESSAGE_TOO_LONG);
+            return VOICE_MESSAGE_TOO_LONG.replaceAll("voiceMessageMaxLength", String.valueOf(voiceMessageMaxLength));
         } else {
             byte[] voiceMessageBytes = telegramBotApiRequestService.getVoiceMessageBytes(voiceMessage.getFileId());
             orchestratorRequestService.sendVoiceMessage(voiceMessageBytes);
+            return VOICE_MESSAGE_PROCESSING;
         }
     }
 }

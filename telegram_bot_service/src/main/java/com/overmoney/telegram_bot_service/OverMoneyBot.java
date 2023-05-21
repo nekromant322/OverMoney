@@ -54,7 +54,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
 
         if (update.getMessage().hasVoice()) {
-            voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice(), chatId);
+            sendMessage(chatId, voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice()));
         }
     }
 
@@ -78,7 +78,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    public void sendMessage(Long chatId, String messageText) {
+    private void sendMessage(Long chatId, String messageText) {
         SendMessage message = new SendMessage(chatId.toString(), messageText);
         try {
             execute(message);
