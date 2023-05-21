@@ -30,10 +30,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login").permitAll()
                 .antMatchers("/transaction", "/voice_message", "/register").permitAll()
                 .antMatchers("/categories/**").permitAll()
-                .antMatchers("/admin/**").authenticated()
-                .antMatchers("/announce/**").authenticated()
                 .anyRequest().authenticated()
-                .and().formLogin().loginPage("/login")
-                .and().addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class).addFilterAfter(adminPageFilter, UsernamePasswordAuthenticationFilter.class);
+                .and()
+                .formLogin().loginPage("/login")
+                .and().addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(adminPageFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

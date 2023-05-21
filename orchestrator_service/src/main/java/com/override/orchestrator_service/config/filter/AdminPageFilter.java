@@ -1,14 +1,11 @@
 package com.override.orchestrator_service.config.filter;
 
-import com.override.orchestrator_service.config.jwt.JwtAuthentication;
 import com.override.orchestrator_service.config.jwt.JwtFilter;
 import com.override.orchestrator_service.config.jwt.JwtProvider;
-import com.override.orchestrator_service.config.jwt.JwtUtils;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,21 +25,21 @@ public class AdminPageFilter extends OncePerRequestFilter {
     private JwtFilter jwtFilter;
     @Autowired
     private JwtProvider jwtProvider;
-    private final String ADMIN_PANEL_PATH = "/admin/path";
+    private final String ADMIN_PANEL_PATH = "/admin/panel";
     private final String SEND_ANNOUNCE_PATH = "/announce/send";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String token = jwtFilter.getTokenFromRequest(request);
         final Claims claims = jwtProvider.getAccessClaims(token);
-        final JwtAuthentication jwtInfoToken = JwtUtils.generate(claims);
         final String username = claims.getSubject();
         for (String allowedUsername : allowedUsers) {
             if (username.equals(allowedUsername)) {
-                jwtInfoToken.setAuthenticated(true);
-                SecurityContextHolder.getContext().setAuthentication(jwtInfoToken);
+                filterChain.doFilter(request, response);
+                return;
             }
         }
+        response.sendError(HttpServletResponse.SC_FORBIDDEN);
         filterChain.doFilter(request, response);
     }
 
