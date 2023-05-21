@@ -3,12 +3,6 @@
 window.onload = function () {
     getUndefinedTransactionsData();
     getCategoriesData();
-
-    let circles = document.querySelectorAll('.undefined-circle')
-    circles.forEach(function (circle) {
-        circle.addEventListener('dragstart', handleDragStart);
-        circle.addEventListener('dragend', handleDragEnd);
-    })
 }
 
 const minUndefinedCircleSize = 100;
@@ -45,6 +39,16 @@ function getUndefinedTransactionsData() {
             Object.freeze(undefinedTransactionsData)
             setMaxSingleTransactionAmount(maxAmount)
             drawUndefinedCircles(undefinedTransactionsData)
+
+            let circles = document.querySelectorAll('.undefined-circle')
+            circles.forEach(function (circle) {
+                circle.addEventListener('dragstart', handleDragStart);
+                circle.addEventListener('dragend', handleDragEnd);
+            })
+        },
+        error: function () {
+            if(alert('Напиши в бота /start')){}
+            else    window.location.reload();
         }
     })
 }
