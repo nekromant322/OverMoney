@@ -25,14 +25,14 @@ public class AdminPageFilter extends OncePerRequestFilter {
     private JwtFilter jwtFilter;
     @Autowired
     private JwtProvider jwtProvider;
-    private final String ADMIN_PANEL_PATH = "/admin/panel";
-    private final String SEND_ANNOUNCE_PATH = "/announce/send";
+    private final String ADMIN_PATH = "/admin";
+    private final String USERNAME_CLAIM = "username";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String token = jwtFilter.getTokenFromRequest(request);
         final Claims claims = jwtProvider.getAccessClaims(token);
-        final String username = claims.getSubject();
+        final String username = claims.get(USERNAME_CLAIM, String.class);
         for (String allowedUsername : allowedUsers) {
             if (username.equals(allowedUsername)) {
                 filterChain.doFilter(request, response);
@@ -46,6 +46,6 @@ public class AdminPageFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return !path.equals(ADMIN_PANEL_PATH) && !path.equals(SEND_ANNOUNCE_PATH);
+        return !path.startsWith(ADMIN_PATH);
     }
 }

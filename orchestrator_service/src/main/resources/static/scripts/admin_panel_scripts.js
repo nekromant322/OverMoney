@@ -3,7 +3,7 @@ function sendAnnounce() {
     let text = JSON.stringify(announceText);
     $.ajax({
         method: 'POST',
-        url: '/announce/send',
+        url: '/admin/announce',
         contentType: "application/json; charset=utf8",
         data: text,
         success: function () {

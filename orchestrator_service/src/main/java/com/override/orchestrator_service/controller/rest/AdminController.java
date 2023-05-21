@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/announce")
-public class AnnounceController {
+@RequestMapping("/admin")
+public class AdminController {
 
     @Autowired
     private TelegramBotRequestService telegramBotRequestService;
 
-    @PostMapping("/send")
+    @PostMapping("/announce")
     public void sendAnnounce(@RequestBody String text) {
         telegramBotRequestService.sendAnnounce(text);
     }
