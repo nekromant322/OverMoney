@@ -28,10 +28,10 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private OrchestratorRequestService orchestratorRequestService;
     @Autowired
     private TransactionMapper transactionMapper;
-    @Autowired
+/*    @Autowired
     private VoiceMessageProcessingService voiceMessageProcessingService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
-            "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
+            "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";*/
 
     @Override
     public String getBotUsername() {
@@ -53,9 +53,9 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             botAnswer(receivedMessage, chatId, username);
         }
 
-        if (update.getMessage().hasVoice()) {
+/*        if (update.getMessage().hasVoice()) {
             voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice(), chatId);
-        }
+        }*/
     }
 
     private void botAnswer(String receivedMessage, Long chatId, String username) {
@@ -72,7 +72,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                     TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username, chatId));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
-                    sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
+                    sendMessage(chatId, "TRANSACTION_MESSAGE_INVALID");
                 }
                 break;
         }
