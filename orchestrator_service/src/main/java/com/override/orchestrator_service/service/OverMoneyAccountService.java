@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.orchestrator_service.mapper.AccountMapper;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
@@ -17,6 +18,8 @@ public class OverMoneyAccountService {
     private OverMoneyAccountRepository overMoneyAccountRepository;
     @Autowired
     private UserService userService;
+    @Autowired
+    private AccountMapper accountMapper;
 
     public List<OverMoneyAccount> getAllAccounts() {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
@@ -47,6 +50,14 @@ public class OverMoneyAccountService {
 
     public OverMoneyAccount getOverMoneyAccountByChatId(Long chatId) {
         return overMoneyAccountRepository.findByChatId(chatId);
+    }
+
+    public OverMoneyAccount getAccountByUsername(String username) {
+        return userService.getUserByUsername(username).getAccount();
+    }
+
+    public OverMoneyAccount getAccountByUserId(Long id) throws InstanceNotFoundException {
+        return userService.getUserById(id).getAccount();
     }
 
     public OverMoneyAccount getOverMoneyAccountById(Long id) throws InstanceNotFoundException {

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.List;
 
@@ -22,7 +23,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/")
-    public List<CategoryDTO> getCategoriesList(Principal principal) {
-        return categoryService.findCategoriesListByUsername(((JwtAuthentication)principal).getUsername());
+    public List<CategoryDTO> getCategoriesList(Principal principal) throws InstanceNotFoundException {
+        return categoryService.findCategoriesListByUserId(((JwtAuthentication)principal).getTelegramId());
     }
 }

@@ -36,11 +36,11 @@ public class JwtAuthenticationServiceTest {
         User user = generateTestUser();
 
         when(telegramVerificationService.verify(telegramAuthRequest)).thenReturn(true);
-        when(userService.getUserByUsername(telegramAuthRequest.getUsername())).thenReturn(user);
+        when(userService.getUserById(telegramAuthRequest.getId())).thenReturn(user);
         jwtAuthenticationService.login(telegramAuthRequest);
 
         verify(userService, times(1)).saveUser(telegramAuthRequest);
-        verify(userService, times(1)).getUserByUsername(telegramAuthRequest.getUsername());
+        verify(userService, times(1)).getUserById(telegramAuthRequest.getId());
         verify(jwtProvider, times(1)).generateAccessToken(user);
         verify(jwtProvider, times(1)).generateRefreshToken(user);
     }

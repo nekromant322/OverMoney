@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import javax.management.InstanceNotFoundException;
 import javax.naming.AuthenticationException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -25,10 +26,10 @@ public class JwtAuthenticationService {
     private final JwtProvider jwtProvider;
     private final TelegramVerificationService telegramVerificationService;
 
-    public JwtResponse login(TelegramAuthRequest telegramAuthRequest) throws NoSuchAlgorithmException, InvalidKeyException {
-        if (true) {
+    public JwtResponse login(TelegramAuthRequest telegramAuthRequest) throws NoSuchAlgorithmException, InvalidKeyException, InstanceNotFoundException {
+        if (telegramVerificationService.verify(telegramAuthRequest)) {
             userService.saveUser(telegramAuthRequest);
-            final User user = userService.getUserByUsername(telegramAuthRequest.getUsername());
+            final User user = userService.getUserById(telegramAuthRequest.getId());
             return new JwtResponse(jwtProvider.generateAccessToken(user), jwtProvider.generateRefreshToken(user));
         } else {
             throw new TelegramAuthException("Telegram authentication failed for user " + telegramAuthRequest.getUsername() +
@@ -36,13 +37,13 @@ public class JwtAuthenticationService {
         }
     }
 
-    public JwtResponse getAccessToken(@NonNull String refreshToken) throws AuthenticationException {
+    public JwtResponse getAccessToken(@NonNull String refreshToken) throws AuthenticationException, InstanceNotFoundException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String username = claims.getSubject();
-            final User user = userService.getUserByUsername(username);
+            final String id = claims.getSubject();
+            final User user = userService.getUserById(Long.parseLong(id));
             if (Objects.isNull(user)) {
-                throw new AuthenticationException("No user registered under this name");
+                throw new AuthenticationException("No user registered with this token");
             }
             final String accessToken = jwtProvider.generateAccessToken(user);
             return new JwtResponse(accessToken, null);
@@ -50,13 +51,13 @@ public class JwtAuthenticationService {
         return new JwtResponse(null, null);
     }
 
-    public JwtResponse refresh(@NonNull String refreshToken) throws AuthenticationException {
+    public JwtResponse refresh(@NonNull String refreshToken) throws AuthenticationException, InstanceNotFoundException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
-            final String username = claims.getSubject();
-            final User user = userService.getUserByUsername(username);
+            final String id = claims.getSubject();
+            final User user = userService.getUserById(Long.parseLong(id));
             if (Objects.isNull(user)) {
-                throw new AuthenticationException("No user registered under this name");
+                throw new AuthenticationException("No user registered with this token");
             }
             final String accessToken = jwtProvider.generateAccessToken(user);
             final String newRefreshToken = jwtProvider.generateRefreshToken(user);

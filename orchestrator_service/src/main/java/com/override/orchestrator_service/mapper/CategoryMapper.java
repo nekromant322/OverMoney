@@ -3,21 +3,22 @@ package com.override.orchestrator_service.mapper;
 
 import com.override.dto.CategoryDTO;
 import com.override.orchestrator_service.model.Category;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
+@Slf4j
 public class CategoryMapper {
     public CategoryDTO mapCategoryToJsonResponse(Category category) {
-        CategoryDTO categoryDTO = CategoryDTO.builder()
+        return CategoryDTO.builder()
                 .id(category.getId())
                 .name(category.getName())
                 .type(category.getType().getValue())
                 .keywords(getCategoryKeywords(category))
                 .build();
-        return categoryDTO;
     }
 
     public List<CategoryDTO> mapCategoriesListToJsonResponse(List<Category> categories) {

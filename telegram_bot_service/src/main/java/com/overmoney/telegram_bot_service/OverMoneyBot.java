@@ -2,8 +2,8 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
+import com.override.dto.RegistrationDataDTO;
 import com.overmoney.telegram_bot_service.service.VoiceMessageProcessingService;
-import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
@@ -28,10 +28,10 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private OrchestratorRequestService orchestratorRequestService;
     @Autowired
     private TransactionMapper transactionMapper;
-/*    @Autowired
+    @Autowired
     private VoiceMessageProcessingService voiceMessageProcessingService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
-            "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";*/
+            "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
 
     @Override
     public String getBotUsername() {
@@ -53,16 +53,18 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             botAnswer(receivedMessage, chatId, username);
         }
 
-/*        if (update.getMessage().hasVoice()) {
-            voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice(), chatId);
-        }*/
+
+        if (update.getMessage().hasVoice()) {
+            sendMessage(chatId, voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice()));
+        }
+
     }
 
     private void botAnswer(String receivedMessage, Long chatId, String username) {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());
-                orchestratorRequestService.registerOverMoneyAccount(new AccountDataDTO(chatId, username));
+                orchestratorRequestService.registerOverMoneyAccount(new RegistrationDataDTO(chatId, username));
                 break;
             case "/money":
                 sendMessage(chatId, Command.MONEY.getDescription());
