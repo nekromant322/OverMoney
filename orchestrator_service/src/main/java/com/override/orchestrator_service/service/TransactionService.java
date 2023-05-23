@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,11 +21,7 @@ public class TransactionService {
     }
 
     public List<Transaction> findTransactionsListByUserId(Long id) throws InstanceNotFoundException {
-        return new ArrayList<>(
-                userService
-                .getUserById(id)
-                .getAccount()
-                .getTransactions()
-        );
+        Long accID = userService.getUserById(id).getAccount().getId();
+        return transactionRepository.findAllWithoutCategoriesByAccountId(accID);
     }
 }
