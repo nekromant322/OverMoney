@@ -1,6 +1,8 @@
   spring:
     application:
       name: eureka_service
+    profiles:
+      active: ${SPRING_APPLICATION_PROFILE:dev}
 
   server:
     port: 8761
