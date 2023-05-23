@@ -75,6 +75,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
+            echo SPRING_APPLICATION_PROFILE = test >> overmoney-env.txt
             echo RECOGNIZER_DB_USER = ${{ secrets.RECOGNIZER_DB_USER }} > overmoney-env.txt
             echo RECOGNIZER_DB_PASSWORD = ${{ secrets.RECOGNIZER_DB_PASSWORD }} >> overmoney-env.txt
             echo RECOGNIZER_DB_PORT = 5432 >> overmoney-env.txt
