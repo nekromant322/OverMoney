@@ -5,6 +5,21 @@
     bot:
       token: ${TELEGRAM_BOT_TOKEN}
 
+  default-category:
+    categories:
+      -
+        name: Зарплата
+        type: INCOME
+      -
+        name: Продукты
+        type: EXPENSE
+      -
+        name: Транспорт
+        type: EXPENSE
+      -
+        name: Рестораны
+        type: EXPENSE
+
   admin:
     allowed_users:
       Marandyuk_Anatolii,
@@ -48,6 +63,9 @@
     liquibase:
       enabled: true
       change-log: /db/changelog/db.changelog-master.xml
+
+    profiles:
+      active: ${SPRING_APPLICATION_PROFILE:dev}
 
   eureka:
     client:

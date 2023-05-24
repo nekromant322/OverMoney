@@ -19,6 +19,17 @@
         </div>
     </div>
 </div>
+<div class="modal-default-category" id="modal-default-category">
+    <div class="modal-default-category-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <form>
+            <p>Мы обнаружили, что у Вас нет категорий.</p>
+            <p>Добавить стандартный набор категорий?</p>
+            <input type="submit" class="submit-default-modal-category" onclick="addDefaultCategories()" value="Да">
+            <input type="button" class="modal-default-category-close" onclick="closeModal()" value="Нет">
+        </form>
+    </div>
+</div>
 <script
         src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
