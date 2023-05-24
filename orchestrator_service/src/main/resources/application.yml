@@ -3,7 +3,7 @@
 
   telegram:
     bot:
-      token: ${TELEGRAM_BOT_TOKEN:6238619409:AAEzdutzOER5slDVsTbSRIZnezfU7Hqmz7U}
+      token: ${TELEGRAM_BOT_TOKEN}
 
   admin:
     allowed_users:
@@ -56,7 +56,6 @@
   logging:
     level:
       org.zalando.logbook: TRACE
-
   management:
     endpoints:
       web:
