@@ -1,9 +1,7 @@
 package com.override.orchestrator_service.model;
 
 import com.override.orchestrator_service.constants.Type;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -13,6 +11,7 @@ import java.util.UUID;
 @Entity
 @Table(name="categories")
 @RequiredArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 public class Category {
@@ -37,4 +36,10 @@ public class Category {
 
     @ManyToOne
     private OverMoneyAccount account;
+
+    public Category(String name, Type type, OverMoneyAccount account) {
+        this.name = name;
+        this.type = type;
+        this.account = account;
+    }
 }
