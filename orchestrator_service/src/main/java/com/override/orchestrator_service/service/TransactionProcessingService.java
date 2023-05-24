@@ -30,19 +30,52 @@ public class TransactionProcessingService {
     }
 
     private String getTransactionMessage(TransactionMessageDTO transactionMessageDTO, OverMoneyAccount overMoneyAccount) throws InstanceNotFoundException {
-        if (Objects.isNull(overMoneyAccount.getCategories()) || Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage())))) {
+        if (Objects.isNull(overMoneyAccount.getCategories()) ||
+                Objects.isNull(getMatchingCategory(overMoneyAccount.getCategories(),
+                        getWords(transactionMessageDTO.getMessage()))) &&
+                Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
+                        getWords(transactionMessageDTO.getMessage())))) {
             return transactionMessageDTO.getMessage();
         }
+
+        Category matchingCategory = getMatchingCategory(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
+        if (matchingCategory != null) {
+            return matchingCategory.getName();
+        }
+
         Keyword matchingKeyword = getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         return matchingKeyword.getKeyword();
     }
 
     private Category getTransactionCategory(TransactionMessageDTO transactionMessageDTO, OverMoneyAccount overMoneyAccount) throws InstanceNotFoundException {
-        if (Objects.isNull(overMoneyAccount.getCategories()) || Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage())))) {
+        if (Objects.isNull(overMoneyAccount.getCategories()) ||
+                Objects.isNull(getMatchingCategory(overMoneyAccount.getCategories(),
+                        getWords(transactionMessageDTO.getMessage()))) &&
+                Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
+                        getWords(transactionMessageDTO.getMessage())))) {
             return null;
         }
+
+        Category matchingCategory = getMatchingCategory(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
+        if (matchingCategory != null) {
+            return matchingCategory;
+        }
+
         Keyword matchingKeyword = getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         return matchingKeyword.getCategory();
+    }
+
+    private Category getMatchingCategory(Set<Category> categories, Set<String> words) {
+        Category matchingCategory = null;
+        for (Category category : categories) {
+            for (String word : words) {
+                if (word.equalsIgnoreCase(category.getName())) {
+                    matchingCategory = category;
+                    break;
+                }
+            }
+        }
+        return matchingCategory;
     }
 
     private Set<String> getWords(String message) throws InstanceNotFoundException {
