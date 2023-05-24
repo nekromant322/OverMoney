@@ -20,7 +20,7 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
-    public List<Transaction> findTransactionsListByUserId(Long id) throws InstanceNotFoundException {
+    public List<Transaction> findTransactionsListByUserIdWithoutCategories(Long id) throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
         return transactionRepository.findAllWithoutCategoriesByAccountId(accID);
     }
