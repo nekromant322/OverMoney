@@ -22,16 +22,21 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Value("${bot.name}")
     private String botName;
+
     @Value("${bot.token}")
     private String botToken;
+
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
+
     @Autowired
     private TransactionMapper transactionMapper;
+
     @Autowired
     private VoiceMessageProcessingService voiceMessageProcessingService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
             "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
+
     @Override
     public String getBotUsername() {
         return botName;
