@@ -63,6 +63,9 @@
       enabled: true
       change-log: /db/changelog/db.changelog-master.xml
 
+    profiles:
+      active: ${SPRING_APPLICATION_PROFILE:dev}
+
   eureka:
     client:
       serviceUrl:
