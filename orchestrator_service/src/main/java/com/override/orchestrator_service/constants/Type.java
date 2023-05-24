@@ -1,16 +1,15 @@
 package com.override.orchestrator_service.constants;
 
+import lombok.Getter;
+
+@Getter
 public enum Type {
     INCOME("Доходы"),
     EXPENSE("Расходы");
 
-    private String value;
+    private final String value;
 
     Type(String value){
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 }
