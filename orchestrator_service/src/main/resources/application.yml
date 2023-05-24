@@ -3,7 +3,7 @@
 
   telegram:
     bot:
-      token: ${TELEGRAM_BOT_TOKEN:6238619409:AAEzdutzOER5slDVsTbSRIZnezfU7Hqmz7U}
+      token: ${TELEGRAM_BOT_TOKEN}
 
   admin:
     allowed_users:
@@ -40,6 +40,7 @@
         hibernate:
           dialect: org.hibernate.dialect.PostgreSQLDialect
           current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+      show-sql: true
 
     application:
       name: orchestrator-service
@@ -59,7 +60,6 @@
   logging:
     level:
       org.zalando.logbook: TRACE
-
   management:
     endpoints:
       web:
