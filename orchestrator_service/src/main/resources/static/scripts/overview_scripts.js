@@ -86,6 +86,20 @@ function handleDrop(e) {
     const categoryId = this.dataset.id;
     const transactionId = e.dataTransfer.getData("transactionId");
     const circleId = e.dataTransfer.getData("elementId");
+
+    const transactionDefined = {
+        transactionId: transactionId,
+        categoryId: categoryId
+    }
+    let url = './qualifier'
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(transactionDefined),
+        dataType: "json"
+    });
+
     alert("Transaction ID: " + transactionId + " Category ID: " + categoryId)
     this.classList.remove('over');
     document.getElementById(circleId).remove();
