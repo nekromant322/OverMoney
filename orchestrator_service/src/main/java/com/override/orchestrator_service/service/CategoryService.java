@@ -2,6 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.orchestrator_service.config.DefaultCategoryProperties;
+import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.mapper.AccountMapper;
 import com.override.orchestrator_service.mapper.CategoryMapper;
 import com.override.orchestrator_service.model.Category;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.management.InstanceNotFoundException;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CancellationException;
 
 @Service
 public class CategoryService {
@@ -34,7 +36,7 @@ public class CategoryService {
     }
 
     public Category getCategoryById(UUID categoryId) {
-        return categoryRepository.findById(categoryId).orElse(null);
+        return categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
     }
 
     public void setDefaultCategoryForAccount(Long id) throws InstanceNotFoundException {

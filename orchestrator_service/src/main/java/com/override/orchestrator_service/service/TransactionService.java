@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.TransactionRepository;
@@ -33,14 +34,12 @@ public class TransactionService {
     }
 
     public Transaction getTransactionById(UUID transactionId) {
-        return transactionRepository.findById(transactionId).orElse(null);
+        return transactionRepository.findById(transactionId).orElseThrow(TransactionNotFoundException::new);
     }
 
     public void setTransactionCategory(UUID transactionId, UUID categoryId) {
         Transaction transaction = getTransactionById(transactionId);
         Category category = categoryService.getCategoryById(categoryId);
-        System.out.println(transaction);
-        System.out.println(category);
         if (Objects.nonNull(transaction) && Objects.nonNull(category)) {
             transaction.setCategory(category);
             transactionRepository.save(transaction);
