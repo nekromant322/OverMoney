@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.TransactionQualifierDTO;
-import com.override.orchestrator_service.service.CategoryService;
 import com.override.orchestrator_service.service.KeywordService;
 import com.override.orchestrator_service.service.TransactionService;
 import lombok.extern.slf4j.Slf4j;

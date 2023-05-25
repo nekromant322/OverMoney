@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import javax.management.InstanceNotFoundException;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.CancellationException;
 
 @Service
 public class CategoryService {
