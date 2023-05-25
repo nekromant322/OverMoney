@@ -44,6 +44,6 @@ public class CategoryService {
                         category.getName(),
                         category.getType(),
                         account
-                        )));
+                )));
     }
 }

@@ -21,7 +21,6 @@ public class KeywordService {
     @Autowired
     private CategoryService categoryService;
 
-
     public void saveKeyword(Keyword keyword) {
         keywordRepository.save(keyword);
     }
