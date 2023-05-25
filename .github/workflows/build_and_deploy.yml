@@ -37,6 +37,24 @@ jobs:
           source: "nginx/nginx.conf"
           target: "/etc/nginx"
           overwrite: true
+      - name: Copy and rewrite nginx/sites-enabled/default via SSH
+        uses: appleboy/scp-action@master
+        with:
+          source: "nginx/sites-enabled/default"
+          target: "/etc/nginx/sites-enabled"
+          overwrite: true
+      - name: Copy and rewrite nginx/sites-enabled/overrideTech.ru via SSH
+        uses: appleboy/scp-action@master
+        with:
+          source: "nginx/sites-enabled/overrideTech.ru"
+          target: "/etc/nginx/sites-enabled"
+          overwrite: true
+      - name: Copy and rewrite nginx/sites-enabled/overridetech.site via SSH
+        uses: appleboy/scp-action@master
+        with:
+          source: "nginx/sites-enabled/overridetech.site"
+          target: "/etc/nginx/sites-enabled"
+          overwrite: true
 
   build_and_push_images:
     name: Push image to DockerHub
