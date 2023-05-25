@@ -37,7 +37,7 @@ public class TransactionProcessingService {
                         getWords(transactionMessageDTO.getMessage())))) {
             StringBuilder message = new StringBuilder();
             getWords(transactionMessageDTO.getMessage()).forEach(word -> message.append(word).append(" "));
-            return message.toString();
+            return message.toString().trim();
         }
 
         Category matchingCategory = getMatchingCategory(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
