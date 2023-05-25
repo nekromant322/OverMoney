@@ -34,6 +34,5 @@ public class QualifierController {
                 qualifierMapper.getCategoryId(transactionQualifierDTO));
         keywordService.setKeywordCategory(qualifierMapper.getTransactionId(transactionQualifierDTO),
                 qualifierMapper.getCategoryId(transactionQualifierDTO));
-        ;
     }
 }
