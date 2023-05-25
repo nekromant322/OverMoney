@@ -22,6 +22,22 @@ jobs:
           target: "/home/${{ secrets.SSH_USER }}"
           overwrite: true
 
+  rewrite_nginx:
+    name: Rewrite nginx
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Copy and rewrite nginx.conf via SSH
+        uses: appleboy/scp-action@master
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          source: "nginx/nginx.conf"
+          target: "/etc/nginx"
+          overwrite: true
+
   build_and_push_images:
     name: Push image to DockerHub
     runs-on: ubuntu-latest
@@ -107,3 +123,4 @@ jobs:
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose -f docker-compose.yaml --env-file=overmoney-env.txt up -d
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker ps -a  
             rm overmoney-env.txt
+            echo ${{ secrets.SSH_PASSWORD }} | sudo systemctl restart nginx
