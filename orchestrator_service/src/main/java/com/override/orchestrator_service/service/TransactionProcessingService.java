@@ -95,7 +95,7 @@ public class TransactionProcessingService {
     }
 
     private Float getAmount(String message) throws InstanceNotFoundException {
-        Pattern pattern = Pattern.compile("[0-9]*[\\.|\\,]{0,1}[0-9]+$");
+        Pattern pattern = Pattern.compile("[0-9]*[.|,]{0,1}[0-9]+$");
         Matcher matcher = pattern.matcher(message);
         if (matcher.find()) {
             return Float.parseFloat(matcher.group());
