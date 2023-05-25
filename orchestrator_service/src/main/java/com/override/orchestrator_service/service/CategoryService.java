@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
+import com.override.orchestrator_service.config.DefaultCategoryProperties;
 import com.override.orchestrator_service.mapper.AccountMapper;
 import com.override.orchestrator_service.mapper.CategoryMapper;
 import com.override.orchestrator_service.model.Category;
@@ -24,6 +25,8 @@ public class CategoryService {
     private OverMoneyAccountService accountService;
     @Autowired
     private AccountMapper accountMapper;
+    @Autowired
+    private DefaultCategoryProperties defaultCategoryProperties;
 
     public List<CategoryDTO> findCategoriesListByUserId(Long id) throws InstanceNotFoundException {
         OverMoneyAccount account = accountService.getAccountByUserId(id);
@@ -32,5 +35,15 @@ public class CategoryService {
 
     public Category getCategoryById(UUID categoryId) {
         return categoryRepository.findById(categoryId).orElse(null);
+    }
+
+    public void setDefaultCategoryForAccount(Long id) throws InstanceNotFoundException {
+        OverMoneyAccount account = accountService.getAccountByUserId(id);
+        defaultCategoryProperties.getCategories()
+                .forEach(category -> categoryRepository.save(new Category(
+                        category.getName(),
+                        category.getType(),
+                        account
+                        )));
     }
 }

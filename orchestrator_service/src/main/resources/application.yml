@@ -5,6 +5,21 @@
     bot:
       token: ${TELEGRAM_BOT_TOKEN:6238619409:AAEzdutzOER5slDVsTbSRIZnezfU7Hqmz7U}
 
+  default-category:
+    categories:
+      -
+        name: Зарплата
+        type: INCOME
+      -
+        name: Продукты
+        type: EXPENSE
+      -
+        name: Транспорт
+        type: EXPENSE
+      -
+        name: Рестораны
+        type: EXPENSE
+
   admin:
     allowed_users:
       Marandyuk_Anatolii,
