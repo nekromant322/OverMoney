@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.TransactionDTO;
-import com.override.orchestrator_service.config.jwt.JwtAuthentication;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.dto.TransactionMessageDTO;
@@ -18,6 +17,8 @@ import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.override.orchestrator_service.util.TelegramUtils.getTelegramId;
 
 @RestController
 public class TransactionController {
@@ -40,7 +41,7 @@ public class TransactionController {
 
     @GetMapping("/transactions")
     public List<TransactionDTO> getTransactionsList(Principal principal) throws InstanceNotFoundException {
-        List<Transaction> transactions = transactionService.findTransactionsListByUserId(((JwtAuthentication) principal).getTelegramId());
+        List<Transaction> transactions = transactionService.findTransactionsListByUserId(getTelegramId(principal));
         transactions.removeIf(transaction -> transaction.getCategory() != null);
         return transactions.stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
