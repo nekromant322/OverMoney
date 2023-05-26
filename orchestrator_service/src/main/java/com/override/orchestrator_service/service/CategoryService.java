@@ -34,12 +34,16 @@ public class CategoryService {
 
     public void setDefaultCategoryForAccount(Long id) throws InstanceNotFoundException {
         OverMoneyAccount account = accountService.getAccountByUserId(id);
-
         defaultCategoryProperties.getCategories()
                 .forEach(category -> categoryRepository.save(new Category(
                         category.getName(),
                         category.getType(),
                         account
                         )));
+    }
+
+    public void saveCategoryForAcc(Long id, CategoryDTO categoryDTO) throws InstanceNotFoundException {
+        OverMoneyAccount account = accountService.getAccountByUserId(id);
+        categoryRepository.save(categoryMapper.mapCategoryDTOToCategory(categoryDTO, account));
     }
 }

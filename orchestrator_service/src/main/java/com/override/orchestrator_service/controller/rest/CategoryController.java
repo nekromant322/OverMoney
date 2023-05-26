@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
@@ -31,5 +34,11 @@ public class CategoryController {
     @PostMapping("/add-default-categories")
     public void addDefaultCategories(Principal principal) throws InstanceNotFoundException {
         categoryService.setDefaultCategoryForAccount(((JwtAuthentication)principal).getTelegramId());
+    }
+
+    @PostMapping("/")
+    public ResponseEntity<HttpStatus> createCategoryForAcc(Principal principal, @RequestBody CategoryDTO category) throws InstanceNotFoundException {
+        categoryService.saveCategoryForAcc(((JwtAuthentication)principal).getTelegramId(), category);
+        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }
