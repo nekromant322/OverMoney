@@ -24,13 +24,9 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
-    public List<Transaction> findTransactionsListByUserId(Long id) throws InstanceNotFoundException {
-        return new ArrayList<>(
-                userService
-                        .getUserById(id)
-                        .getAccount()
-                        .getTransactions()
-        );
+    public List<Transaction> findTransactionsListByUserIdWithoutCategories(Long id) throws InstanceNotFoundException {
+        Long accID = userService.getUserById(id).getAccount().getId();
+        return transactionRepository.findAllWithoutCategoriesByAccountId(accID);
     }
 
     public Transaction getTransactionById(UUID transactionId) {
