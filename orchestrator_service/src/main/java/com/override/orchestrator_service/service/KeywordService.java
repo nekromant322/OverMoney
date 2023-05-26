@@ -7,7 +7,6 @@ import com.override.orchestrator_service.repository.KeywordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -28,11 +27,9 @@ public class KeywordService {
     public void setKeywordCategory(UUID transactionId, UUID categoryId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         Category category = categoryService.getCategoryById(categoryId);
-        if (Objects.nonNull(transaction) && Objects.nonNull(category)) {
-            Keyword keyword = new Keyword();
-            keyword.setKeyword(transaction.getMessage());
-            keyword.setCategory(category);
-            saveKeyword(keyword);
-        }
+        Keyword keyword = new Keyword();
+        keyword.setKeyword(transaction.getMessage());
+        keyword.setCategory(category);
+        saveKeyword(keyword);
     }
 }

@@ -1,6 +1,6 @@
 package com.override.orchestrator_service.model;
 
-import com.override.orchestrator_service.constants.Type;
+import com.override.dto.constants.Type;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -14,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
+@Builder
 public class Category {
 
     @Id
@@ -31,7 +32,7 @@ public class Category {
     @OneToMany(mappedBy="category")
     private Set<Transaction> transactions;
 
-    @OneToMany(mappedBy="category")
+    @OneToMany(mappedBy="category", cascade = CascadeType.PERSIST)
     private Set<Keyword> keywords;
 
     @ManyToOne

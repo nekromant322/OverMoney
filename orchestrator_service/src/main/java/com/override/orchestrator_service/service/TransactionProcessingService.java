@@ -38,7 +38,9 @@ public class TransactionProcessingService {
                         getWords(transactionMessageDTO.getMessage()))) &&
                 Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
                         getWords(transactionMessageDTO.getMessage())))) {
-            return transactionMessageDTO.getMessage();
+            StringBuilder message = new StringBuilder();
+            getWords(transactionMessageDTO.getMessage()).forEach(word -> message.append(word).append(" "));
+            return message.toString().trim();
         }
 
         Category matchingCategory = getMatchingCategory(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
@@ -85,7 +87,7 @@ public class TransactionProcessingService {
         String[] messageSplit = message.split(" ");
         Set<String> words = new HashSet<>();
         for (String word : messageSplit) {
-            if (!word.matches(".*\\d.*")) {
+            if (!word.matches("^[0-9]*[.|,]{0,1}[0-9]+$")) {
                 words.add(word);
             }
         }
@@ -96,7 +98,7 @@ public class TransactionProcessingService {
     }
 
     private Float getAmount(String message) throws InstanceNotFoundException {
-        Pattern pattern = Pattern.compile("\\d+\\.?\\d*");
+        Pattern pattern = Pattern.compile("[0-9]*[.|,]{0,1}[0-9]+$");
         Matcher matcher = pattern.matcher(message);
         if (matcher.find()) {
             return Float.parseFloat(matcher.group());

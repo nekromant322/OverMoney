@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.TransactionDTO;
-import com.override.orchestrator_service.config.jwt.JwtAuthentication;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.dto.TransactionMessageDTO;
@@ -16,10 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.override.orchestrator_service.util.TelegramUtils.getTelegramId;
 
 @RestController
 public class TransactionController {
@@ -43,7 +43,7 @@ public class TransactionController {
     @GetMapping("/transactions")
     public List<TransactionDTO> getTransactionsList(Principal principal) throws InstanceNotFoundException {
         List<Transaction> transactions =
-                transactionService.findTransactionsListByUserIdWithoutCategories(((JwtAuthentication) principal).getTelegramId());
+                transactionService.findTransactionsListByUserIdWithoutCategories(getTelegramId(principal));
         transactions.sort(Comparator.comparingInt(Transaction::getDate));
 
         return transactions.stream()
