@@ -12,5 +12,4 @@ public enum Type {
     Type(String value) {
         this.value = value;
     }
-
 }
