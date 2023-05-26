@@ -1,6 +1,6 @@
 package com.override.orchestrator_service.model;
 
-import com.override.orchestrator_service.constants.Type;
+import com.override.dto.constants.Type;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
