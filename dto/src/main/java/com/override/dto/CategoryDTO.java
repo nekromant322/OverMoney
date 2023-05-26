@@ -1,5 +1,6 @@
 package com.override.dto;
 
+import com.override.dto.constants.Type;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +15,6 @@ import java.util.UUID;
 public class CategoryDTO {
     private UUID id;
     private String name;
-    private String type;
+    private Type type;
     private List<String> keywords;
 }

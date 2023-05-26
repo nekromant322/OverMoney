@@ -47,8 +47,8 @@ function getUndefinedTransactionsData() {
             })
         },
         error: function () {
-            if(alert('Напиши в бота /start')){}
-            else    window.location.reload();
+            if (alert('Напиши в бота /start')) {
+            } else window.location.reload();
         }
     })
 }
@@ -76,7 +76,7 @@ function drawModalDefaultCategories() {
     let modal = document.getElementById("modal-default-category");
     modal.style.display = "block";
 
-    window.onclick = function(event) {
+    window.onclick = function (event) {
         if (event.target === modal) {
             modal.style.display = "none";
         }
@@ -103,6 +103,7 @@ function addDefaultCategories() {
         })
     )
 }
+
 function handleDragStart(e) {
     this.style.opacity = 0.4;
     e.dataTransfer.setData("amount", this.dataset.amount);
@@ -198,11 +199,17 @@ function drawCategory(category, length) {
     let newCategory = document.createElement('div');
     newCategory.className = "category";
     newCategory.innerText = category.name;
-    newCategory.style.height = 100 / length + '%';
+    newCategory.style.height = 85 / length + '%';
     let keywords = writeKeywordsOfCategory(category)
     newCategory.dataset.id = category.id;
     newCategory.dataset.name = category.name;
-    newCategory.dataset.type = category.type;
+    let type;
+    if(category.type == "INCOME"){
+        type = "Доходы";
+    } else if (category.type == "EXPENSE"){
+        type = "Расходы"
+    }
+    newCategory.dataset.type = type;
     newCategory.dataset.keywords = keywords;
     newCategory.onclick = function () {
         let body = `<h3>Информация о категории</h3>
@@ -229,11 +236,7 @@ function drawCategory(category, length) {
             $(this).parents('.modal-category-fade').fadeOut();
         });
 
-        $('.modal-category-fade').click(function (e) {
-            if ($(e.target).closest('.modal-category-content').length == 0) {
-                $(this).fadeOut();
-            }
-        });
+
     }
     categorySpace.insertAdjacentElement('beforeend', newCategory);
 
@@ -251,4 +254,74 @@ function writeKeywordsOfCategory(category) {
         }
     }
     return allKeywords
+}
+
+function drawModalToAddCategory() {
+    let body = `<h3>Добавление категории</h3>
+                    <form class="modal-category" id="formAddCategory">
+                   <p class="modal-category-close" href="#">X</p>
+                        <div>
+                            <label for="newCategoryName">Наименование категории:</label>
+                            <input type="text" required class="input-modal-category" id="newCategoryName">
+                        </div>
+                        <div>
+                        <label for="newCategoryType">Выберите тип категории:</label>
+                            <select class="select-modal-category" id="newCategoryType">
+                                <option value="INCOME">Доходы</option>
+                                <option selected value="EXPENSE">Расходы</option>
+                            </select>
+                        </div>
+                        </form>                    
+                        <div class="listOfKeywords">
+                        </div>
+                        <div>
+                        <button type="submit" class="button-save-category">Добавить категорию</button>
+                        </div>
+                    </form>`
+    $('.modal-category-content').html(body)
+
+    $('.modal-category-fade').fadeIn();
+
+
+    $('.modal-category-close').click(function () {
+        $(this).parents('.modal-category-fade').fadeOut();
+    });
+
+    $('.button-save-category').click(function () {
+        let formAddCategory = $('#formAddCategory')
+        let nameValue = formAddCategory.find('#newCategoryName').val().trim();
+        let typeValue = $('#newCategoryType option:selected').val();
+
+        if (!(nameValue === '') && !(typeValue === '')) {
+            let data = {
+                name: nameValue,
+                type: typeValue,
+            }
+            console.log(JSON.stringify(data));
+            createNewCategory(data);
+            $(this).parents('.modal-category-fade').fadeOut();
+        }
+
+        location.reload();
+
+    });
+}
+
+function createNewCategory(category) {
+    $.ajax({
+        type: 'POST',
+        url: './categories/',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(category),
+        async: false,
+        dataType: 'json',
+        success: function () {
+            console.log("Successfully created categories")
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    })
 }

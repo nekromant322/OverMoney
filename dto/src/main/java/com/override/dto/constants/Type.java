@@ -1,4 +1,4 @@
-package com.override.orchestrator_service.constants;
+package com.override.dto.constants;
 
 import lombok.Getter;
 
@@ -9,7 +9,7 @@ public enum Type {
 
     private final String value;
 
-    Type(String value){
+    Type(String value) {
         this.value = value;
     }
 }

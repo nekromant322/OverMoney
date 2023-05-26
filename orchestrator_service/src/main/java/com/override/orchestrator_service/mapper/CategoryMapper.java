@@ -3,6 +3,7 @@ package com.override.orchestrator_service.mapper;
 
 import com.override.dto.CategoryDTO;
 import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.OverMoneyAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ public class CategoryMapper {
         return CategoryDTO.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .type(category.getType().getValue())
+                .type(category.getType())
                 .keywords(getCategoryKeywords(category))
                 .build();
     }
@@ -30,9 +31,17 @@ public class CategoryMapper {
 
     private List<String> getCategoryKeywords(Category category) {
         List<String> allKeywords = new ArrayList<>();
-        category.getKeywords().stream().forEach(keyword -> {
+        category.getKeywords().forEach(keyword -> {
             allKeywords.add(keyword.getKeyword());
         });
         return allKeywords;
+    }
+
+    public Category mapCategoryDTOToCategory(CategoryDTO categoryDTO, OverMoneyAccount account) {
+        return Category.builder()
+                .name(categoryDTO.getName())
+                .type(categoryDTO.getType())
+                .account(account)
+                .build();
     }
 }
