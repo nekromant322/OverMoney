@@ -41,8 +41,8 @@ public class TransactionController {
 
     @GetMapping("/transactions")
     public List<TransactionDTO> getTransactionsList(Principal principal) throws InstanceNotFoundException {
-        List<Transaction> transactions = transactionService.findTransactionsListByUserId(getTelegramId(principal));
-        transactions.removeIf(transaction -> transaction.getCategory() != null);
+        List<Transaction> transactions =
+                transactionService.findTransactionsListByUserIdWithoutCategories(getTelegramId(principal));
         return transactions.stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                 .collect(Collectors.toList());
