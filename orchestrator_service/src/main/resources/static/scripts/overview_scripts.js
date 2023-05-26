@@ -189,7 +189,13 @@ function drawCategory(category, length) {
     let keywords = writeKeywordsOfCategory(category)
     newCategory.dataset.id = category.id;
     newCategory.dataset.name = category.name;
-    newCategory.dataset.type = category.type;
+    let type;
+    if(category.type == "INCOME"){
+        type = "Доходы";
+    } else if (category.type == "EXPENSE"){
+        type = "Расходы"
+    }
+    newCategory.dataset.type = type;
     newCategory.dataset.keywords = keywords;
     newCategory.onclick = function () {
         let body = `<h3>Информация о категории</h3>
@@ -216,6 +222,7 @@ function drawCategory(category, length) {
             $(this).parents('.modal-category-fade').fadeOut();
         });
 
+
     }
     categorySpace.insertAdjacentElement('beforeend', newCategory);
 
@@ -236,7 +243,6 @@ function writeKeywordsOfCategory(category) {
 }
 
 function drawModalToAddCategory() {
-    let keywords = [];
     let body = `<h3>Добавление категории</h3>
                     <form class="modal-category" id="formAddCategory">
                    <p class="modal-category-close" href="#">X</p>
@@ -247,17 +253,11 @@ function drawModalToAddCategory() {
                         <div>
                         <label for="newCategoryType">Выберите тип категории:</label>
                             <select class="select-modal-category" id="newCategoryType">
-                                <option value="Доходы">Доходы</option>
-                                <option selected value="Расходы">Расходы</option>
+                                <option value="INCOME">Доходы</option>
+                                <option selected value="EXPENSE">Расходы</option>
                             </select>
                         </div>
-                        <div>
-                        <label for="newCategoryKeywords">Ключевые слова категории:</label>
-                            <input type="text"  class="input-modal-category" required id="newCategoryKeywords">
-                            <button type="button" class="button-add-keyword">Добавить ключ. слово</button>
-                        <label>Список добавленных слов:</label>
-                        </form>
-                        </div>
+                        </form>                    
                         <div class="listOfKeywords">
                         </div>
                         <div>
@@ -269,29 +269,6 @@ function drawModalToAddCategory() {
     $('.modal-category-fade').fadeIn();
 
 
-    $('.button-add-keyword').on("click", function (evt) {
-        evt.preventDefault();
-        let keyword = document.getElementById('newCategoryKeywords').value;
-        if (keyword != null & keyword != '') {
-            keywords.push(keyword);
-            document.getElementById('newCategoryKeywords').value = '';
-            $('.listOfKeywords').append(`<div id="keyword-value-${keyword}">
-                                         <p>${keyword}
-                                         <button class="deleteKeywordValue" type="submit" id="${keyword}">X</button>
-                                         </p>
-                                         </div>`);
-
-        }
-        $('.deleteKeywordValue').on("click", function (evt) {
-            evt.preventDefault();
-            let keywordToDelete = $(this).attr('id');
-            document.getElementById(String('keyword-value-' + keywordToDelete)).remove();
-            keywords = keywords.filter((keywordValue) => {
-                return keywordValue != keywordToDelete;
-            });
-        });
-    });
-
     $('.modal-category-close').click(function () {
         $(this).parents('.modal-category-fade').fadeOut();
     });
@@ -299,14 +276,12 @@ function drawModalToAddCategory() {
     $('.button-save-category').click(function () {
         let formAddCategory = $('#formAddCategory')
         let nameValue = formAddCategory.find('#newCategoryName').val().trim();
-        let keywordsValues = keywords;
         let typeValue = $('#newCategoryType option:selected').val();
 
-        if (!(nameValue === '') && !(typeValue === '') && keywordsValues.length != 0) {
+        if (!(nameValue === '') && !(typeValue === '')) {
             let data = {
                 name: nameValue,
                 type: typeValue,
-                keywords: keywordsValues
             }
             console.log(JSON.stringify(data));
             createNewCategory(data);

@@ -2,9 +2,7 @@ package com.override.orchestrator_service.mapper;
 
 
 import com.override.dto.CategoryDTO;
-import com.override.orchestrator_service.constants.Type;
 import com.override.orchestrator_service.model.Category;
-import com.override.orchestrator_service.model.Keyword;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -19,7 +17,7 @@ public class CategoryMapper {
         return CategoryDTO.builder()
                 .id(category.getId())
                 .name(category.getName())
-                .type(category.getType().getValue())
+                .type(category.getType())
                 .keywords(getCategoryKeywords(category))
                 .build();
     }
@@ -40,21 +38,10 @@ public class CategoryMapper {
     }
 
     public Category mapCategoryDTOToCategory(CategoryDTO categoryDTO, OverMoneyAccount account) {
-        Category category = Category.builder()
+        return Category.builder()
                 .name(categoryDTO.getName())
-                .type(Type.mapStringValueToType(categoryDTO.getType()))
+                .type(categoryDTO.getType())
                 .account(account)
                 .build();
-        category.setKeywords(getSetOfKeywords(categoryDTO.getKeywords(), category));
-        return category;
-    }
-
-    private Set<Keyword> getSetOfKeywords(List<String> keywordsValues, Category category) {
-        Set<Keyword> keywords = new HashSet<>();
-        for (String keywordValue : keywordsValues) {
-            Keyword keyword = new Keyword(keywordValue, category);
-            keywords.add(keyword);
-        }
-        return keywords;
     }
 }

@@ -178,36 +178,6 @@ body, html {
     color: white;
 }
 
-.button-add-keyword {
-    display: block;
-    position: center;
-    text-align: center;
-    padding: 10px 10px;
-    margin: 0 auto ;
-    width: 75%;
-    height: 8%;
-    font-size: 17px;
-    font-weight: 600;
-    font-style: revert;
-    border-radius: 20px;
-    background-color: green; /* Green */
-    color: black;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.2s;
-
-}
-
-.button-add-keyword:hover {
-    background-color: #4CAF50; /* Green */
-    color: white;
-}
-
-.list0fKeywords{
-    color: steelblue;
-    font-size: 15px;
-    font-weight: 400;
-    font-family: Arial;
-}
 
 .button-save-category{
     display: block;
