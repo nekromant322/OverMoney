@@ -45,12 +45,13 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        Integer date = update.getMessage().getDate();
         Long chatId = update.getMessage().getChatId();
         String username = update.getMessage().getFrom().getUserName();
 
         if (update.getMessage().hasText()) {
             String receivedMessage = update.getMessage().getText();
-            botAnswer(receivedMessage, chatId, username);
+            botAnswer(receivedMessage, chatId, username, date);
         }
 
         if (update.getMessage().hasVoice()) {
@@ -58,7 +59,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void botAnswer(String receivedMessage, Long chatId, String username) {
+    private void botAnswer(String receivedMessage, Long chatId, String username, Integer date) {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());
@@ -69,7 +70,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 break;
             default:
                 try {
-                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username, chatId));
+                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username, chatId, date));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
                     sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);

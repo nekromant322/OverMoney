@@ -32,6 +32,9 @@ public class Transaction {
     @Column
     private Float amount;
 
+    @Column
+    private Integer date;
+
     @ManyToOne
     private OverMoneyAccount account;
 }

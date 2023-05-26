@@ -15,4 +15,5 @@ public class TransactionDTO {
     private UUID id;
     private String message;
     private Float amount;
+    private Integer date;
 }

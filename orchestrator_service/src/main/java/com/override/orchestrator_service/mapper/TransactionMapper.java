@@ -30,6 +30,7 @@ public class TransactionMapper {
                 .id(transaction.getId())
                 .amount(transaction.getAmount())
                 .message(transaction.getMessage())
+                .date(transaction.getDate())
                 .build();
     }
 

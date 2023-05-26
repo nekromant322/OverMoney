@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.service;
 
 import com.override.orchestrator_service.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
@@ -12,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@Slf4j
 public class TransactionProcessingService {
 
     @Autowired
@@ -26,6 +28,7 @@ public class TransactionProcessingService {
                 .amount(getAmount(transactionMessageDTO.getMessage()))
                 .message(getTransactionMessage(transactionMessageDTO, overMoneyAccount))
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
+                .date(transactionMessageDTO.getDate())
                 .build();
     }
 

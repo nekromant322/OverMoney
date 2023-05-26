@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +44,8 @@ public class TransactionController {
     public List<TransactionDTO> getTransactionsList(Principal principal) throws InstanceNotFoundException {
         List<Transaction> transactions =
                 transactionService.findTransactionsListByUserIdWithoutCategories(((JwtAuthentication) principal).getTelegramId());
+        transactions.sort(Comparator.comparingInt(Transaction::getDate));
+
         return transactions.stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                 .collect(Collectors.toList());
