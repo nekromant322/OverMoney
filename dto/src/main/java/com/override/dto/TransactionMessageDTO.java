@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,5 +15,5 @@ public class TransactionMessageDTO {
     private String message;
     private String username;
     private Long chatId;
-    private Integer date;
+    private Date date;
 }

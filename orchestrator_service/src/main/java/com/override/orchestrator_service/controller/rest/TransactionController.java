@@ -44,7 +44,7 @@ public class TransactionController {
     public List<TransactionDTO> getTransactionsList(Principal principal) throws InstanceNotFoundException {
         List<Transaction> transactions =
                 transactionService.findTransactionsListByUserIdWithoutCategories(getTelegramId(principal));
-        transactions.sort(Comparator.comparingInt(Transaction::getDate));
+        transactions.sort(Comparator.comparing(Transaction::getDate));
 
         return transactions.stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))

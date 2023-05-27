@@ -16,6 +16,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.Date;
+
 @Component
 @Slf4j
 public class OverMoneyBot extends TelegramLongPollingBot {
@@ -32,6 +34,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private VoiceMessageProcessingService voiceMessageProcessingService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
             "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
+    private final Integer MILLISECONDS_CONVERSION = 1000;
 
     @Override
     public String getBotUsername() {
@@ -45,7 +48,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        Integer date = update.getMessage().getDate();
+        Date date = new Date((long) update.getMessage().getDate() * MILLISECONDS_CONVERSION);
         Long chatId = update.getMessage().getChatId();
         String username = update.getMessage().getFrom().getUserName();
 
@@ -59,7 +62,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void botAnswer(String receivedMessage, Long chatId, String username, Integer date) {
+    private void botAnswer(String receivedMessage, Long chatId, String username, Date date) {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());

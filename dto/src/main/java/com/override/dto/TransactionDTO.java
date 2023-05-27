@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.UUID;
 
 @Data
@@ -15,5 +16,5 @@ public class TransactionDTO {
     private UUID id;
     private String message;
     private Float amount;
-    private Integer date;
+    private Date date;
 }
