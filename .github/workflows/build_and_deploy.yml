@@ -124,5 +124,5 @@ jobs:
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker ps -a  
             rm overmoney-env.txt
             
-            echo ${{ secrets.SSH_PASSWORD }} | yes | sudo cp -rf '/home/${{ secrets.SSH_PASSWORD }}/nginx/*' /etc/nginx
-            echo ${{ secrets.SSH_PASSWORD }} | sudo systemctl restart nginx
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S cp -r '/home/${{ secrets.SSH_USER }}/nginx'/* /etc/nginx
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S systemctl restart nginx
