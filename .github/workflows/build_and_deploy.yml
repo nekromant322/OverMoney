@@ -23,37 +23,19 @@ jobs:
           overwrite: true
 
   rewrite_nginx:
-    name: Rewrite nginx
+    name: Copy nginx files
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Copy and rewrite nginx.conf via SSH
+      - name: Copy nginx.conf and /sites-enabled via SSH
         uses: appleboy/scp-action@master
         with:
           host: overridetech.ru
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           port: 22
-          source: "nginx/nginx.conf"
-          target: "/etc/nginx"
-          overwrite: true
-      - name: Copy and rewrite nginx/sites-enabled/default via SSH
-        uses: appleboy/scp-action@master
-        with:
-          source: "nginx/sites-enabled/default"
-          target: "/etc/nginx/sites-enabled"
-          overwrite: true
-      - name: Copy and rewrite nginx/sites-enabled/overrideTech.ru via SSH
-        uses: appleboy/scp-action@master
-        with:
-          source: "nginx/sites-enabled/overrideTech.ru"
-          target: "/etc/nginx/sites-enabled"
-          overwrite: true
-      - name: Copy and rewrite nginx/sites-enabled/overridetech.site via SSH
-        uses: appleboy/scp-action@master
-        with:
-          source: "nginx/sites-enabled/overridetech.site"
-          target: "/etc/nginx/sites-enabled"
+          source: "nginx/*"
+          target: "/home/${{ secrets.SSH_USER }}"
           overwrite: true
 
   build_and_push_images:
@@ -141,4 +123,6 @@ jobs:
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose -f docker-compose.yaml --env-file=overmoney-env.txt up -d
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker ps -a  
             rm overmoney-env.txt
-            echo ${{ secrets.SSH_PASSWORD }} | sudo systemctl restart nginx
+            
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S cp -r '/home/${{ secrets.SSH_USER }}/nginx'/* /etc/nginx
+            echo ${{ secrets.SSH_PASSWORD }} | sudo -S systemctl restart nginx
