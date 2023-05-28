@@ -7,6 +7,8 @@ import com.override.dto.TransactionResponseDTO;
 import org.springframework.stereotype.Component;
 
 import javax.management.InstanceNotFoundException;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.Objects;
 
 @Component
@@ -14,6 +16,7 @@ public class TransactionMapper {
     private final String INCOME = "Доходы";
     private final String EXPENSE = "Расходы";
     private final String CATEGORY_UNDEFINED = "Нераспознанное";
+    private final ZoneOffset MOSCOW_OFFSET = ZoneOffset.of("+03:00");
 
     public TransactionResponseDTO mapTransactionToTelegramResponse(Transaction transaction) throws InstanceNotFoundException {
         return TransactionResponseDTO.builder()
@@ -30,7 +33,7 @@ public class TransactionMapper {
                 .id(transaction.getId())
                 .amount(transaction.getAmount())
                 .message(transaction.getMessage())
-                .date(transaction.getDate())
+                .date(transaction.getDate().toLocalDateTime().atOffset(MOSCOW_OFFSET))
                 .build();
     }
 
