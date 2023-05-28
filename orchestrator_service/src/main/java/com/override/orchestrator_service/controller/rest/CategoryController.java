@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 import static com.override.orchestrator_service.util.TelegramUtils.getTelegramId;
 
@@ -30,6 +31,11 @@ public class CategoryController {
     @GetMapping("/")
     public List<CategoryDTO> getCategoriesList(Principal principal) throws InstanceNotFoundException {
         return categoryService.findCategoriesListByUserId(getTelegramId(principal));
+    }
+
+    @GetMapping("/{id}")
+    public CategoryDTO getCategoryByCategoryId(@PathVariable("id") UUID id) {
+        return categoryService.findCategoryById(id);
     }
 
     @PostMapping("/add-default-categories")
