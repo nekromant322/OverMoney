@@ -72,6 +72,30 @@ function getCategoriesData() {
     })
 }
 
+function getCategoryById(id) {
+    let url = './categories/' + id;
+    let category;
+    $.ajax({
+        method: 'GET',
+        url: url,
+        contentType: "application/json; charset=utf8",
+        async: false,
+        success: function (data) {
+            console.log("Successfully get category")
+            console.log(data)
+            category = data
+            if (data.length === 0) {
+                console.log("data is null")
+            }
+        },
+        error: function () {
+            console.log("ERROR! Something wrong happened")
+        }
+    })
+    console.log(category)
+    return category;
+}
+
 function drawModalDefaultCategories() {
     let modal = document.getElementById("modal-default-category");
     modal.style.display = "block";
@@ -204,14 +228,15 @@ function drawCategory(category, length) {
     newCategory.dataset.id = category.id;
     newCategory.dataset.name = category.name;
     let type;
-    if(category.type == "INCOME"){
+    if (category.type == "INCOME") {
         type = "Доходы";
-    } else if (category.type == "EXPENSE"){
+    } else if (category.type == "EXPENSE") {
         type = "Расходы"
     }
     newCategory.dataset.type = type;
     newCategory.dataset.keywords = keywords;
     newCategory.onclick = function () {
+        keywords = writeKeywordsOfCategory(getCategoryById(newCategory.dataset.id));
         let body = `<h3>Информация о категории</h3>
                     <form class="modal-category">
                    <p class="modal-category-close" href="#">X</p>
@@ -225,7 +250,7 @@ function drawCategory(category, length) {
                         </div>
                         <div>
                             <label for="keywords">Ключевые слова категории:</label>
-                            <input type="text" readonly class="input-modal-category" id="keywords" value="${newCategory.dataset.keywords}">
+                            <input type="text" readonly class="input-modal-category" id="keywords" value="${keywords}">
                         </div>
                     </form>`
         $('.modal-category-content').html(body)
@@ -235,8 +260,6 @@ function drawCategory(category, length) {
         $('.modal-category-close').click(function () {
             $(this).parents('.modal-category-fade').fadeOut();
         });
-
-
     }
     categorySpace.insertAdjacentElement('beforeend', newCategory);
 
@@ -300,10 +323,8 @@ function drawModalToAddCategory() {
             console.log(JSON.stringify(data));
             createNewCategory(data);
             $(this).parents('.modal-category-fade').fadeOut();
+            location.reload();
         }
-
-        location.reload();
-
     });
 }
 
