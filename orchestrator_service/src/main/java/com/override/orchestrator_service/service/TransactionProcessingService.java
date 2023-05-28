@@ -26,6 +26,7 @@ public class TransactionProcessingService {
                 .amount(getAmount(transactionMessageDTO.getMessage()))
                 .message(getTransactionMessage(transactionMessageDTO, overMoneyAccount))
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
+                .date(transactionMessageDTO.getDate())
                 .build();
     }
 

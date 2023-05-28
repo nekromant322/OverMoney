@@ -5,6 +5,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.annotation.Nullable;
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -31,6 +32,9 @@ public class Transaction {
 
     @Column
     private Float amount;
+
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime date;
 
     @ManyToOne
     private OverMoneyAccount account;
