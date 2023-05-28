@@ -49,8 +49,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        OffsetDateTime date = Instant.ofEpochMilli((long) update.getMessage().getDate() * MILLISECONDS_CONVERSION)
-                .atOffset(MOSCOW_OFFSET);
+        LocalDateTime date = Instant.ofEpochMilli((long) update.getMessage().getDate() * MILLISECONDS_CONVERSION)
+                .atOffset(MOSCOW_OFFSET).toLocalDateTime();
         Long chatId = update.getMessage().getChatId();
         String username = update.getMessage().getFrom().getUserName();
 
@@ -64,7 +64,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void botAnswer(String receivedMessage, Long chatId, String username, OffsetDateTime date) {
+    private void botAnswer(String receivedMessage, Long chatId, String username, LocalDateTime date) {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());

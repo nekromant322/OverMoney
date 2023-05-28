@@ -5,8 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
 import javax.management.InstanceNotFoundException;
-import java.sql.Timestamp;
-import java.time.ZoneOffset;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -18,7 +16,6 @@ public class TransactionProcessingService {
 
     @Autowired
     private OverMoneyAccountService overMoneyAccountService;
-    private final ZoneOffset MOSCOW_OFFSET = ZoneOffset.of("+03:00");
 
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
@@ -29,7 +26,7 @@ public class TransactionProcessingService {
                 .amount(getAmount(transactionMessageDTO.getMessage()))
                 .message(getTransactionMessage(transactionMessageDTO, overMoneyAccount))
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
-                .date(Timestamp.valueOf(transactionMessageDTO.getDate().atZoneSameInstant(MOSCOW_OFFSET).toLocalDateTime()))
+                .date(transactionMessageDTO.getDate())
                 .build();
     }
 

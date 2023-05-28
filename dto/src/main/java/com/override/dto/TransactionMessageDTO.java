@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -15,5 +15,5 @@ public class TransactionMessageDTO {
     private String message;
     private String username;
     private Long chatId;
-    private OffsetDateTime date;
+    private LocalDateTime date;
 }

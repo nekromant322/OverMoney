@@ -4,7 +4,7 @@
 
     <changeSet id="1" author="etz">
         <addColumn tableName="transactions">
-            <column name="date" type="TIMESTAMPTZ"/>
+            <column name="date" type="TIMESTAMP"/>
         </addColumn>
     </changeSet>
 </databaseChangeLog>
