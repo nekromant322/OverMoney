@@ -5,7 +5,7 @@ window.onload = function () {
 function requestBotLogin() {
     $.ajax({
         method: 'GET',
-        url: '/login/bot-login',
+        url: './login/bot-login',
         contentType: "application/json; charset=utf8",
         async: false,
         success: function (data) {
