@@ -105,6 +105,7 @@ jobs:
             echo TELEGRAM_BOT_DB_PORT = 5432 >> overmoney-env.txt
             echo TELEGRAM_BOT_DB_HOST = telegram-bot-db >> overmoney-env.txt
             echo TELEGRAM_BOT_TOKEN = ${{ secrets.TELEGRAM_BOT_TOKEN }} >> overmoney-env.txt
+            echo TELEGRAM_BOT_NAME = OverMoneyBot >> overmoney-env.txt
             echo JWT_ACCESS_KEY = ${{ secrets.JWT_ACCESS_KEY }} >> overmoney-env.txt
             echo JWT_REFRESH_KEY = ${{ secrets.JWT_REFRESH_KEY }} >> overmoney-env.txt
             
