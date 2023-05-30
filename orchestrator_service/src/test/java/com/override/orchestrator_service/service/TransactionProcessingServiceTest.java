@@ -16,8 +16,6 @@ import javax.management.InstanceNotFoundException;
 import java.util.stream.Stream;
 
 import static com.override.orchestrator_service.utils.TestFieldsUtil.generateTestAccount;
-import static com.override.orchestrator_service.utils.TestFieldsUtil.generateTestCategory;
-import static java.util.Objects.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -33,66 +31,29 @@ public class TransactionProcessingServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideTransactionArguments")
-    public void processTransactionTest(TransactionMessageDTO transactionMessageDTO, Transaction transactionProvided) throws InstanceNotFoundException {
+    public void processTransactionTest(String message, String messageResponse, Float amount, String categoryName) throws InstanceNotFoundException {
+        TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
+                .message(message)
+                .username("kyomexd")
+                .chatId(404723191L)
+                .build();
         OverMoneyAccount account = generateTestAccount();
+
         when(overMoneyAccountService.getOverMoneyAccountByChatId(transactionMessageDTO.getChatId())).thenReturn(account);
         Transaction transactionTest = transactionProcessingService.processTransaction(transactionMessageDTO);
 
-        assertEquals(transactionProvided.getMessage(), transactionTest.getMessage());
-        assertEquals(transactionProvided.getAmount(), transactionTest.getAmount());
-        if (transactionProvided.getCategory() != null || transactionTest.getCategory() != null) {
-            assertEquals(requireNonNull(transactionProvided.getCategory()).getName(), requireNonNull(transactionTest.getCategory()).getName());
+        assertEquals(messageResponse, transactionTest.getMessage());
+        assertEquals(amount, transactionTest.getAmount());
+        if (categoryName != null && transactionTest.getCategory() != null) {
+            assertEquals(categoryName, transactionTest.getCategory().getName());
         }
     }
 
     private static Stream<Arguments> provideTransactionArguments() {
         return Stream.of(
-                Arguments.of(
-                        TransactionMessageDTO.builder()
-                                .message("пиво 200")
-                                .username("kyomexd")
-                                .chatId(404723191L)
-                                .build(),
-                        Transaction.builder()
-                                .message("пиво")
-                                .amount(200f)
-                                .category(generateTestCategory())
-                                .build()
-                ),
-                Arguments.of(
-                        TransactionMessageDTO.builder()
-                                .message("пиво7 200")
-                                .username("kyomexd")
-                                .chatId(404723191L)
-                                .build(),
-                        Transaction.builder()
-                                .message("пиво7")
-                                .amount(200f)
-                                .build()
-                ),
-                Arguments.of(
-                        TransactionMessageDTO.builder()
-                                .message("пиво7 200")
-                                .username("kyomexd")
-                                .chatId(404723191L)
-                                .build(),
-                        Transaction.builder()
-                                .message("пиво7")
-                                .amount(200f)
-                                .build()
-                ),
-                Arguments.of(
-                        TransactionMessageDTO.builder()
-                                .message("продукты 200")
-                                .username("kyomexd")
-                                .chatId(404723191L)
-                                .build(),
-                        Transaction.builder()
-                                .message("продукты")
-                                .category(generateTestCategory())
-                                .amount(200f)
-                                .build()
-                )
+                Arguments.of("пиво 200", "пиво", 200f, "продукты"),
+                Arguments.of("пиво7 200", "пиво7", 200f, null),
+                Arguments.of("продукты 200", "продукты", 200f, "продукты")
         );
     }
 }
