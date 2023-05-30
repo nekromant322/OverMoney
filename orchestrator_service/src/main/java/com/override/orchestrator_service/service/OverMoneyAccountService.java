@@ -1,12 +1,15 @@
 package com.override.orchestrator_service.service;
 
+import com.override.orchestrator_service.config.RecentActivityProperties;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
+import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +19,20 @@ public class OverMoneyAccountService {
     @Autowired
     private OverMoneyAccountRepository overMoneyAccountRepository;
     @Autowired
+    private TransactionRepository transactionRepository;
+    @Autowired
+    private RecentActivityProperties recentActivityProperties;
+    @Autowired
     private UserService userService;
 
     public List<OverMoneyAccount> getAllAccounts() {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
+    }
+
+    public List<Long> getAllActivityUsers() {
+        LocalDateTime minimalDate = LocalDateTime.now().minusDays(recentActivityProperties.getActivityDays());
+        return overMoneyAccountRepository.findAllActivityUsersByAccId
+                (transactionRepository.findActiveAccounts(minimalDate));
     }
 
     public void saveOverMoneyAccount(Long chatId, String username) {
@@ -27,10 +40,8 @@ public class OverMoneyAccountService {
                 .chatId(chatId)
                 .users(getUser(username))
                 .build();
-
         User user = userService.getUserByUsername(username);
         user.setAccount(overMoneyAccount);
-
         saveOverMoneyAccount(overMoneyAccount);
     }
 
