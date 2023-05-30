@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,7 +40,7 @@ public class KeywordServiceTest {
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 
-        given(categoryService.getCategoryById(category.getId())).willThrow(CategoryNotFoundException.class);
+        when(categoryService.getCategoryById(category.getId())).thenThrow(CategoryNotFoundException.class);
 
         assertThrows(CategoryNotFoundException.class, () ->
                 keywordService.setKeywordCategory(transaction.getId(), category.getId()));
@@ -54,7 +53,7 @@ public class KeywordServiceTest {
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 
-        given(transactionService.getTransactionById(transaction.getId())).willThrow(TransactionNotFoundException.class);
+        when(transactionService.getTransactionById(transaction.getId())).thenThrow(TransactionNotFoundException.class);
 
         assertThrows(TransactionNotFoundException.class, () ->
                 keywordService.setKeywordCategory(transaction.getId(), category.getId()));
@@ -80,8 +79,9 @@ public class KeywordServiceTest {
         category.setId(UUID.randomUUID());
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
-        given(categoryService.getCategoryById(category.getId())).willReturn(category);
-        given(transactionService.getTransactionById(transaction.getId())).willReturn(transaction);
+
+        when(categoryService.getCategoryById(category.getId())).thenReturn(category);
+        when(transactionService.getTransactionById(transaction.getId())).thenReturn(transaction);
 
         keywordService.setKeywordCategory(transaction.getId(), category.getId());
 

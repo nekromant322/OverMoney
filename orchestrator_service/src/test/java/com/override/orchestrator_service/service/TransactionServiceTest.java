@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,8 +37,8 @@ public class TransactionServiceTest {
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 
-        given(categoryService.getCategoryById(category.getId())).willThrow(CategoryNotFoundException.class);
-        given(transactionRepository.findById(transaction.getId())).willReturn(Optional.of(transaction));
+        when(categoryService.getCategoryById(category.getId())).thenThrow(CategoryNotFoundException.class);
+        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.of(transaction));
 
         assertThrows(CategoryNotFoundException.class, () ->
                 transactionService.setTransactionCategory(transaction.getId(), category.getId()));
@@ -52,7 +51,7 @@ public class TransactionServiceTest {
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 
-        given(transactionRepository.findById(transaction.getId())).willReturn(Optional.empty());
+        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.empty());
 
         assertThrows(TransactionNotFoundException.class, () ->
                 transactionService.setTransactionCategory(transaction.getId(), category.getId()));
@@ -74,8 +73,9 @@ public class TransactionServiceTest {
         category.setId(UUID.randomUUID());
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
-        given(categoryService.getCategoryById(category.getId())).willReturn(category);
-        given(transactionRepository.findById(transaction.getId())).willReturn(Optional.of(transaction));
+
+        when(categoryService.getCategoryById(category.getId())).thenReturn(category);
+        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.of(transaction));
 
         transactionService.setTransactionCategory(transaction.getId(), category.getId());
 

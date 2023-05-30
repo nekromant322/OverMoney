@@ -14,7 +14,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryServiceTest {
@@ -30,7 +30,8 @@ public class CategoryServiceTest {
         final Category category = new Category();
         category.setId(UUID.randomUUID());
 
-        given(categoryRepository.findById(category.getId())).willReturn(Optional.empty());
+        when(categoryRepository.findById(category.getId())).thenReturn(Optional.empty());
+
         assertThrows(CategoryNotFoundException.class, () ->
                 categoryService.getCategoryById(category.getId()));
     }
@@ -39,8 +40,11 @@ public class CategoryServiceTest {
     public void getCategoryByIdReturnCategoryWhenCategoryFound() {
         final Category category = new Category();
         category.setId(UUID.randomUUID());
-        given(categoryRepository.findById(category.getId())).willReturn(Optional.of(category));
+
+        when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
+
         Category expectation = categoryService.getCategoryById(category.getId());
+
         assertEquals(expectation, category);
     }
 }
