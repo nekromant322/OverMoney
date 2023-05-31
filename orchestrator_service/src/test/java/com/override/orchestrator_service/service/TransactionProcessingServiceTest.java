@@ -57,7 +57,10 @@ public class TransactionProcessingServiceTest {
         return Stream.of(
                 Arguments.of("пиво 200", "пиво", 200f, "продукты"),
                 Arguments.of("пиво7 200", "пиво7", 200f, null),
-                Arguments.of("продукты 200", "продукты", 200f, "продукты")
+                Arguments.of("продукты 200", "продукты", 200f, "продукты"),
+                Arguments.of("пиво7 123.45", "пиво7", 123.45f, null),
+                Arguments.of("пиво7 123,45", "пиво7", 123.45f, null),
+                Arguments.of("7пиво 100", "7пиво", 100f, null)
         );
     }
 
