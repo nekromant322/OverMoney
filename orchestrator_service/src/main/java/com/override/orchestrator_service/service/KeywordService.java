@@ -24,7 +24,7 @@ public class KeywordService {
         keywordRepository.save(keyword);
     }
 
-    public void setKeywordCategory(UUID transactionId, UUID categoryId) {
+    public void setKeywordCategory(UUID transactionId, Long categoryId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         Category category = categoryService.getCategoryById(categoryId);
         Keyword keyword = new Keyword();
