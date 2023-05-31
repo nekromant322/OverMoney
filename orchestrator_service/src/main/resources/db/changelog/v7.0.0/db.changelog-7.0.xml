@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="Pc (generated)" id="1682723604076-1">
+        <sql>
+            ALTER TABLE categories
+            DROP COLUMN IF EXISTS id CASCADE;
+        </sql>
+        <addColumn tableName="categories">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="categories_pkey"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Pc (generated)" id="1682723604076-2">
+        <sql>
+            ALTER TABLE keywords
+            DROP COLUMN IF EXISTS category_id;
+        </sql>
+        <addColumn tableName="keywords">
+            <column name="category_id" type="BIGSERIAL"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Pc (generated)" id="1682723604076-3">
+        <sql>
+            ALTER TABLE transactions
+            DROP COLUMN IF EXISTS category_id;
+        </sql>
+        <addColumn tableName="transactions">
+            <column name="category_id" type="BIGSERIAL"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Pc (generated)" id="1682723604076-4">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="keywords"
+                                 constraintName="fkr9hhn3bc97ucu1lpuihwojelh" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+    <changeSet author="Pc (generated)" id="1682723604076-5">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="transactions"
+                                 constraintName="fksqqi7sneo04kast0o138h19mv" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
