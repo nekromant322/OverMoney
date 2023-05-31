@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.TransactionMessageDTO;
+import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,9 +14,12 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.management.InstanceNotFoundException;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Stream;
 
-import static com.override.orchestrator_service.utils.TestFieldsUtil.generateTestAccount;
+import static com.override.orchestrator_service.utils.TestFieldsUtil.generateTestUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -55,5 +59,44 @@ public class TransactionProcessingServiceTest {
                 Arguments.of("пиво7 200", "пиво7", 200f, null),
                 Arguments.of("продукты 200", "продукты", 200f, "продукты")
         );
+    }
+
+    private OverMoneyAccount generateTestAccount() {
+        Set<Category> categorySet = new HashSet<>();
+        categorySet.add(generateTestCategory());
+
+        Set<User> userSet = new HashSet<>();
+        userSet.add(generateTestUser());
+
+        return OverMoneyAccount.builder()
+                .id(1L)
+                .chatId(404723191L)
+                .categories(categorySet)
+                .users(userSet)
+                .build();
+    }
+
+    private Category generateTestCategory() {
+        Set<Keyword> keywordSet = new HashSet<>();
+        keywordSet.add(generateTestKeyword());
+
+        return Category.builder()
+                .id(UUID.fromString("6060677e-a3d5-4613-9da2-d067597ff095"))
+                .name("продукты")
+                .type(Type.EXPENSE)
+                .keywords(keywordSet)
+                .build();
+    }
+
+    private Keyword generateTestKeyword() {
+        return Keyword.builder()
+                .id(UUID.fromString("6620d7e6-c60f-4928-94d7-40ac77c24fc6"))
+                .keyword("пиво")
+                .category(Category.builder()
+                        .id(UUID.fromString("6060677e-a3d5-4613-9da2-d067597ff095"))
+                        .name("продукты")
+                        .type(Type.EXPENSE)
+                        .build())
+                .build();
     }
 }
