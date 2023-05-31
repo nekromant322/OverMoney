@@ -28,7 +28,7 @@ public class CategoryServiceTest {
     @Test
     public void getCategoryByIdThrowExceptionWhenCategoryNotFound() {
         final Category category = new Category();
-        category.setId(UUID.randomUUID());
+        category.setId(12345L);
 
         when(categoryRepository.findById(category.getId())).thenReturn(Optional.empty());
 
@@ -39,7 +39,7 @@ public class CategoryServiceTest {
     @Test
     public void getCategoryByIdReturnCategoryWhenCategoryFound() {
         final Category category = new Category();
-        category.setId(UUID.randomUUID());
+        category.setId(12345L);
 
         when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
 

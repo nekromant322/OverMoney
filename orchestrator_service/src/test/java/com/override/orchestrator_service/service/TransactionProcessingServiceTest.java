@@ -84,7 +84,7 @@ public class TransactionProcessingServiceTest {
         keywordSet.add(generateTestKeyword());
 
         return Category.builder()
-                .id(UUID.fromString("6060677e-a3d5-4613-9da2-d067597ff095"))
+                .id(12345L)
                 .name("продукты")
                 .type(Type.EXPENSE)
                 .keywords(keywordSet)
@@ -96,7 +96,7 @@ public class TransactionProcessingServiceTest {
                 .id(UUID.fromString("6620d7e6-c60f-4928-94d7-40ac77c24fc6"))
                 .keyword("пиво")
                 .category(Category.builder()
-                        .id(UUID.fromString("6060677e-a3d5-4613-9da2-d067597ff095"))
+                        .id(12345L)
                         .name("продукты")
                         .type(Type.EXPENSE)
                         .build())
