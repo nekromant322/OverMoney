@@ -21,6 +21,9 @@
         name: Рестораны
         type: EXPENSE
 
+  recent-activity:
+    activityDays: 30
+
   admin:
     allowed_users:
       Marandyuk_Anatolii,

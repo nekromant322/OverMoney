@@ -11,7 +11,6 @@ import java.util.UUID;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
-
     @Query("SELECT t FROM Transaction t WHERE t.account.id = :id AND t.category.id is null")
     List<Transaction> findAllWithoutCategoriesByAccountId(@Param("id") Long accountId);
 }
