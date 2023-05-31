@@ -4,7 +4,6 @@ import com.override.orchestrator_service.config.RecentActivityProperties;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
-import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,8 +17,6 @@ import java.util.Set;
 public class OverMoneyAccountService {
     @Autowired
     private OverMoneyAccountRepository overMoneyAccountRepository;
-    @Autowired
-    private TransactionRepository transactionRepository;
     @Autowired
     private RecentActivityProperties recentActivityProperties;
     @Autowired
