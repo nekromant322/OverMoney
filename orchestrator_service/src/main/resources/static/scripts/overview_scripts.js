@@ -143,6 +143,7 @@ function handleDragEnd(e) {
 function handleDrop(e) {
     e.preventDefault();
     const categoryId = this.dataset.id;
+    const categoryName = this.dataset.name;
     const transactionId = e.dataTransfer.getData("transactionId");
     const circleId = e.dataTransfer.getData("elementId");
 
@@ -159,9 +160,20 @@ function handleDrop(e) {
         dataType: "json"
     });
 
-    alert("Transaction ID: " + transactionId + " Category ID: " + categoryId)
+    drawToast(e, categoryName)
     this.classList.remove('over');
     document.getElementById(circleId).remove();
+}
+
+function drawToast(e, categoryName) {
+    Toastify({
+        text: "\n \"" + e.dataTransfer.getData("comment") + " " + e.dataTransfer.getData("amount") + "\" "
+            + "добавлено в категорию \"" + categoryName + "\"",
+        duration: 5000,
+        position: "left",
+        gravity: "bottom",
+        close: true
+    }).showToast()
 }
 
 function handleDragEnter(e) {
