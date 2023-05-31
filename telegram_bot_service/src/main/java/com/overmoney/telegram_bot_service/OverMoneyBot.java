@@ -16,6 +16,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.time.*;
+
 @Component
 @Slf4j
 public class OverMoneyBot extends TelegramLongPollingBot {
@@ -32,6 +34,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private VoiceMessageProcessingService voiceMessageProcessingService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
             "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
+    private final Integer MILLISECONDS_CONVERSION = 1000;
+    private final ZoneOffset MOSCOW_OFFSET = ZoneOffset.of("+03:00");
 
     @Override
     public String getBotUsername() {
@@ -45,12 +49,14 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+        LocalDateTime date = Instant.ofEpochMilli((long) update.getMessage().getDate() * MILLISECONDS_CONVERSION)
+                .atOffset(MOSCOW_OFFSET).toLocalDateTime();
         Long chatId = update.getMessage().getChatId();
         String username = update.getMessage().getFrom().getUserName();
 
         if (update.getMessage().hasText()) {
             String receivedMessage = update.getMessage().getText();
-            botAnswer(receivedMessage, chatId, username);
+            botAnswer(receivedMessage, chatId, username, date);
         }
 
         if (update.getMessage().hasVoice()) {
@@ -58,7 +64,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    private void botAnswer(String receivedMessage, Long chatId, String username) {
+    private void botAnswer(String receivedMessage, Long chatId, String username, LocalDateTime date) {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());
@@ -69,7 +75,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 break;
             default:
                 try {
-                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username, chatId));
+                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username, chatId, date));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
                     sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);

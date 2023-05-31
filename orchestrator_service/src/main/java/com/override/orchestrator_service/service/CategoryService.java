@@ -17,7 +17,6 @@ import java.util.UUID;
 
 @Service
 public class CategoryService {
-
     @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
@@ -36,6 +35,11 @@ public class CategoryService {
 
     public Category getCategoryById(UUID categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
+    }
+
+    public CategoryDTO findCategoryById(UUID categoryId) {
+        return categoryMapper.mapCategoryToJsonResponse(
+                categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new));
     }
 
     public void setDefaultCategoryForAccount(Long id) throws InstanceNotFoundException {

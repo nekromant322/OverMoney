@@ -72,6 +72,30 @@ function getCategoriesData() {
     })
 }
 
+function getCategoryById(id) {
+    let url = './categories/' + id;
+    let category;
+    $.ajax({
+        method: 'GET',
+        url: url,
+        contentType: "application/json; charset=utf8",
+        async: false,
+        success: function (data) {
+            console.log("Successfully get category")
+            console.log(data)
+            category = data
+            if (data.length === 0) {
+                console.log("data is null")
+            }
+        },
+        error: function () {
+            console.log("ERROR! Something wrong happened")
+        }
+    })
+    console.log(category)
+    return category;
+}
+
 function drawModalDefaultCategories() {
     let modal = document.getElementById("modal-default-category");
     modal.style.display = "block";
@@ -119,6 +143,7 @@ function handleDragEnd(e) {
 function handleDrop(e) {
     e.preventDefault();
     const categoryId = this.dataset.id;
+    const categoryName = this.dataset.name;
     const transactionId = e.dataTransfer.getData("transactionId");
     const circleId = e.dataTransfer.getData("elementId");
 
@@ -135,9 +160,20 @@ function handleDrop(e) {
         dataType: "json"
     });
 
-    alert("Transaction ID: " + transactionId + " Category ID: " + categoryId)
+    drawToast(e, categoryName)
     this.classList.remove('over');
     document.getElementById(circleId).remove();
+}
+
+function drawToast(e, categoryName) {
+    Toastify({
+        text: "\n \"" + e.dataTransfer.getData("comment") + " " + e.dataTransfer.getData("amount") + "\" "
+            + "добавлено в категорию \"" + categoryName + "\"",
+        duration: 5000,
+        position: "left",
+        gravity: "bottom",
+        close: true
+    }).showToast()
 }
 
 function handleDragEnter(e) {
@@ -183,8 +219,19 @@ function setCircleDimensions(circle, transactionAmount, maxSingleTransactionAmou
     }
 }
 
+function comparatorByFieldName(dataOne, dataTwo) {
+    if (dataOne.name.toLowerCase() < dataTwo.name.toLowerCase()) {
+        return -1;
+    }
+    if (dataOne.name.toLowerCase() > dataTwo.name.toLowerCase()) {
+        return 1;
+    }
+    return 0;
+}
+
 function drawCategories(data) {
-    data.forEach(category => drawCategory(category, data.length))
+    const dataSorted = data.sort(comparatorByFieldName)
+    dataSorted.forEach(category => drawCategory(category, data.length))
     let categories = document.querySelectorAll('.category')
     categories.forEach(function (category) {
         category.addEventListener('dragenter', handleDragEnter)
@@ -193,6 +240,7 @@ function drawCategories(data) {
         category.addEventListener('drop', handleDrop);
     })
 }
+
 
 function drawCategory(category, length) {
     let categorySpace = document.querySelector('.categories-space');
@@ -204,14 +252,15 @@ function drawCategory(category, length) {
     newCategory.dataset.id = category.id;
     newCategory.dataset.name = category.name;
     let type;
-    if(category.type == "INCOME"){
+    if (category.type == "INCOME") {
         type = "Доходы";
-    } else if (category.type == "EXPENSE"){
+    } else if (category.type == "EXPENSE") {
         type = "Расходы"
     }
     newCategory.dataset.type = type;
     newCategory.dataset.keywords = keywords;
     newCategory.onclick = function () {
+        keywords = writeKeywordsOfCategory(getCategoryById(newCategory.dataset.id));
         let body = `<h3>Информация о категории</h3>
                     <form class="modal-category">
                    <p class="modal-category-close" href="#">X</p>
@@ -225,7 +274,7 @@ function drawCategory(category, length) {
                         </div>
                         <div>
                             <label for="keywords">Ключевые слова категории:</label>
-                            <input type="text" readonly class="input-modal-category" id="keywords" value="${newCategory.dataset.keywords}">
+                            <input type="text" readonly class="input-modal-category" id="keywords" value="${keywords}">
                         </div>
                     </form>`
         $('.modal-category-content').html(body)
@@ -235,8 +284,6 @@ function drawCategory(category, length) {
         $('.modal-category-close').click(function () {
             $(this).parents('.modal-category-fade').fadeOut();
         });
-
-
     }
     categorySpace.insertAdjacentElement('beforeend', newCategory);
 
@@ -300,10 +347,8 @@ function drawModalToAddCategory() {
             console.log(JSON.stringify(data));
             createNewCategory(data);
             $(this).parents('.modal-category-fade').fadeOut();
+            location.reload();
         }
-
-        location.reload();
-
     });
 }
 
