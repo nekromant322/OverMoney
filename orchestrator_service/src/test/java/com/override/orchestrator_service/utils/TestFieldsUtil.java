@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.utils;
 
-import com.override.orchestrator_service.model.TelegramAuthRequest;
-import com.override.orchestrator_service.model.User;
+import com.override.orchestrator_service.model.*;
 
 public class TestFieldsUtil {
 

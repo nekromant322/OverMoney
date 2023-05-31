@@ -1,8 +1,6 @@
 package com.override.orchestrator_service.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -12,7 +10,9 @@ import java.util.UUID;
 @Table(name = "keywords")
 @Getter
 @Setter
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class Keyword {
 
     @Id
@@ -31,5 +31,9 @@ public class Keyword {
     public Keyword(String keyword, Category category) {
         this.keyword = keyword;
         this.category = category;
+    }
+
+    public Keyword(String keyword) {
+        this.keyword = keyword;
     }
 }
