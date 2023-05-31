@@ -31,8 +31,7 @@ public class OverMoneyAccountService {
 
     public List<Long> getAllActivityUsers() {
         LocalDateTime minimalDate = LocalDateTime.now().minusDays(recentActivityProperties.getActivityDays());
-        return overMoneyAccountRepository.findAllActivityUsersByAccId
-                (transactionRepository.findActiveAccounts(minimalDate));
+        return overMoneyAccountRepository.findAllActivityUsersByAccId(minimalDate);
     }
 
     public void saveOverMoneyAccount(Long chatId, String username) {
