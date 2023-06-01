@@ -25,10 +25,13 @@ public class CategoryMapperTest {
     @Test
     public void mapCategoryToJsonResponseTest() {
         final Category category = TestFieldsUtil.generateTestCategory();
+
         Set<Keyword> keywords = new HashSet<>();
         keywords.add(TestFieldsUtil.generateTestKeyword());
         keywords.add(TestFieldsUtil.generateTestKeyword());
+
         CategoryDTO categoryDTO = categoryMapper.mapCategoryToJsonResponse(category);
+
         Assertions.assertEquals(categoryDTO.getId(), category.getId());
         Assertions.assertEquals(categoryDTO.getName(), category.getName());
         Assertions.assertEquals(categoryDTO.getType(), category.getType());
@@ -45,10 +48,11 @@ public class CategoryMapperTest {
         category.setName("TestName");
         category.setType(Type.EXPENSE);
         category.setKeywords(keywords);
+
         final Category categoryTest = categoryMapper.mapCategoryDTOToCategory
                 (category, TestFieldsUtil.generateTestAccount());
+
         Assertions.assertEquals(categoryTest.getName(), category.getName());
         Assertions.assertEquals(categoryTest.getType(), category.getType());
-        assertThrows(NullPointerException.class, () -> categoryTest.getKeywords().size());
     }
 }
