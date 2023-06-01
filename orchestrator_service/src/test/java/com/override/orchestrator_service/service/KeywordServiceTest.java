@@ -36,7 +36,7 @@ public class KeywordServiceTest {
     @Test
     public void setKeywordCategoryThrowExceptionWhenCategoryNotFound() {
         final Category category = new Category();
-        category.setId(UUID.randomUUID());
+        category.setId(12345L);
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 
@@ -49,7 +49,7 @@ public class KeywordServiceTest {
     @Test
     public void setKeywordCategoryThrowExceptionWhenTransactionNotFound() {
         final Category category = new Category();
-        category.setId(UUID.randomUUID());
+        category.setId(12345L);
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 
@@ -62,7 +62,7 @@ public class KeywordServiceTest {
     @Test
     public void keywordRepositorySaveKeywordWhenCategoryAndTransactionFound() {
         final Category category = new Category();
-        category.setId(UUID.randomUUID());
+        category.setId(12345L);
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
         transaction.setMessage("message");
@@ -76,7 +76,7 @@ public class KeywordServiceTest {
     @Test
     public void setKeywordCategorySaveKeywordWhenCategoryAndTransactionFound() {
         final Category category = new Category();
-        category.setId(UUID.randomUUID());
+        category.setId(12345L);
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 

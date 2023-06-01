@@ -33,7 +33,7 @@ public class TransactionServiceTest {
     @Test
     public void setTransactionCategoryThrowExceptionWhenCategoryNotFound() {
         final Category category = new Category();
-        category.setId(UUID.randomUUID());
+        category.setId(12345L);
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 
@@ -47,7 +47,7 @@ public class TransactionServiceTest {
     @Test
     public void setTransactionCategoryThrowExceptionWhenTransactionNotFound() {
         final Category category = new Category();
-        category.setId(UUID.randomUUID());
+        category.setId(12345L);
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 
@@ -70,7 +70,7 @@ public class TransactionServiceTest {
     @Test
     public void setTransactionCategorySaveTransactionWhenCategoryAndTransactionFound() {
         final Category category = new Category();
-        category.setId(UUID.randomUUID());
+        category.setId(12345L);
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
 

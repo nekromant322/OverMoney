@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class CategoryService {
@@ -33,11 +32,11 @@ public class CategoryService {
         return categoryMapper.mapCategoriesListToJsonResponse(accountMapper.mapAccountToCategoryList(account));
     }
 
-    public Category getCategoryById(UUID categoryId) {
+    public Category getCategoryById(Long categoryId) {
         return categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new);
     }
 
-    public CategoryDTO findCategoryById(UUID categoryId) {
+    public CategoryDTO findCategoryById(Long categoryId) {
         return categoryMapper.mapCategoryToJsonResponse(
                 categoryRepository.findById(categoryId).orElseThrow(CategoryNotFoundException::new));
     }

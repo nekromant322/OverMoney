@@ -13,5 +13,5 @@ import java.util.UUID;
 @Builder
 public class TransactionQualifierDTO {
     private UUID transactionId;
-    private UUID categoryId;
+    private Long categoryId;
 }

@@ -33,7 +33,7 @@ public class TransactionService {
         return transactionRepository.findById(transactionId).orElseThrow(TransactionNotFoundException::new);
     }
 
-    public void setTransactionCategory(UUID transactionId, UUID categoryId) {
+    public void setTransactionCategory(UUID transactionId, Long categoryId) {
         Transaction transaction = getTransactionById(transactionId);
         Category category = categoryService.getCategoryById(categoryId);
         if (Objects.nonNull(transaction) && Objects.nonNull(category)) {

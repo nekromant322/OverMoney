@@ -2,11 +2,9 @@ package com.override.orchestrator_service.model;
 
 import com.override.dto.constants.Type;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Set;
-import java.util.UUID;
 
 @Entity
 @Table(name="categories")
@@ -18,10 +16,8 @@ import java.util.UUID;
 public class Category {
 
     @Id
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @GeneratedValue(generator = "UUID")
-    @Column(unique = true)
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column
     private String name;
