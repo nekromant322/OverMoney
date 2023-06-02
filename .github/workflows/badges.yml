@@ -50,4 +50,4 @@ jobs:
            git config --global user.email github-actions@github.com
            git add -A
            git commit -m "JaCoCo coverage badges"
-           git push
+           git push origin HEAD:badges-branch
