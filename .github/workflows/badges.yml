@@ -45,9 +45,11 @@ jobs:
           coverage-label: coverage (Telegram Bot)
 
       - name: Commit the badge (if it changed)
-        run: |
+          run: |
            git config --global user.name github-actions
            git config --global user.email github-actions@github.com
            git add -A
            git commit -m "JaCoCo coverage badges"
-           git push origin badges-branch
+           git stash
+           git checkout badges-branch
+           git stash pop
