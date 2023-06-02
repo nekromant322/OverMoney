@@ -9,7 +9,7 @@ import org.zalando.logbook.json.JsonHttpLogFormatter;
 
 @Configuration
 public class LogbookConfig {
-
+    // sample text
     @Bean
     public Logbook logbook() {
         return Logbook.builder().sink(new DefaultSink(new JsonHttpLogFormatter(), new DefaultHttpLogWriter())).build();
