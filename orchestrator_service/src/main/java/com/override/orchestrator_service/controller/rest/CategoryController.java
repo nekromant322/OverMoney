@@ -55,9 +55,7 @@ public class CategoryController {
     }
 
     @PostMapping("/merger/{id}")
-    public ResponseEntity<HttpStatus> mergeCategory(@RequestBody Long categoryToChangeId,@PathVariable("id") Long categoryToMergeId ) throws InstanceNotFoundException {
-        System.out.println("Это id категории для merge = "+ categoryToMergeId);
-        System.out.println("Это id категории для изменения = "+ categoryToChangeId);
+    public ResponseEntity<HttpStatus> mergeCategory(@RequestBody Long categoryToChangeId, @PathVariable("id") Long categoryToMergeId) throws InstanceNotFoundException {
         categoryService.mergeCategory(categoryToMergeId, categoryToChangeId);
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
