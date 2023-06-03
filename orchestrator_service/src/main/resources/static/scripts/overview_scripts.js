@@ -276,10 +276,28 @@ function drawCategory(category, length) {
                             <label for="keywords">Ключевые слова категории:</label>
                             <input type="text" readonly class="input-modal-category" id="keywords" value="${keywords}">
                         </div>
-                    </form>`
+                        <div>
+                        <label>Категории для слияния:</label>
+                        <select class="Select-Categories-Merge" id="selectCategoryMerge">
+                        </select>
+                        </div>
+                         </form>
+                        <div>
+                        <button type="button" class="button-merge-category">Слияние категории</button>
+                        </div>`
         $('.modal-category-content').html(body)
 
-        $('.modal-category-fade').fadeIn();
+        drawSelectCategoryForMerge(getCategoryByType(category.type), category.id)
+        $('.modal-category-fade').fadeIn()
+
+        $('.button-merge-category').click(function (event) {
+            event.preventDefault();
+            let categoryIdForChange = $('.Select-Categories-Merge option:selected').val();
+            let categoryIdForMerge = category.id;
+            if (!(categoryIdForChange === '') & !(categoryIdForMerge === '')) {
+                verificationToMerge(categoryIdForChange, categoryIdForMerge);
+            }
+        });
 
         $('.modal-category-close').click(function () {
             $(this).parents('.modal-category-fade').fadeOut();
@@ -326,10 +344,7 @@ function drawModalToAddCategory() {
                         </div>
                     </form>`
     $('.modal-category-content').html(body)
-
     $('.modal-category-fade').fadeIn();
-
-
     $('.modal-category-close').click(function () {
         $(this).parents('.modal-category-fade').fadeOut();
     });
@@ -369,4 +384,78 @@ function createNewCategory(category) {
             console.log(error)
         }
     })
+}
+
+function mergeCategory(categoryToChangeId, categoryToMergeId) {
+    let url = './categories/merger/' + categoryToMergeId;
+    $.ajax({
+        type: 'POST',
+        url: url,
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(categoryToChangeId),
+        async: false,
+        dataType: 'json',
+        success: function () {
+            console.log("Successfully merged categories")
+            location.reload();
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    })
+}
+
+function getCategoryByType(type) {
+    let url = './categories/types/' + type;
+    let categories;
+    $.ajax({
+        method: 'GET',
+        url: url,
+        contentType: "application/json; charset=utf8",
+        async: false,
+        success: function (data) {
+            categories = data
+            if (data.length === 0) {
+                console.log("data is null")
+            }
+        },
+        error: function () {
+            console.log("ERROR! Something wrong happened")
+        }
+    })
+    return categories;
+}
+
+function drawSelectCategoryForMerge(categories, id) {
+    for (let i = 0; i < categories.length; i++) {
+        if (0 === categories.length - 1 & categories[i].id === id) {
+            $('#selectCategoryMerge').append($('<option>', {
+                value: "",
+                text: "Нет категорий для слияния"
+            })).attr('disabled', 'disabled');
+            continue;
+        }
+
+        if (categories[i].id === id) {
+            continue;
+        }
+        $('#selectCategoryMerge').append($('<option>', {
+            value: categories[i].id,
+            text: categories[i].name
+        }));
+    }
+}
+
+function verificationToMerge(categoryToChangeId, categoryToMergeId) {
+    $('.modal-verification-merge').fadeIn();
+    $('.formVerification').submit(function (e) {
+        e.preventDefault();
+        mergeCategory(categoryToChangeId, categoryToMergeId)
+    })
+}
+
+function closeModalVerification() {
+    $('.modal-verification-merge').fadeOut();
 }
