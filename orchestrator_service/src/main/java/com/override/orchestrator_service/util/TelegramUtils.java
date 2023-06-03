@@ -7,7 +7,8 @@ import java.security.Principal;
 
 @Component
 public class TelegramUtils {
-    public static Long getTelegramId(Principal principal) {
+
+    public Long getTelegramId(Principal principal) {
         return ((JwtAuthentication) principal).getTelegramId();
     }
 }

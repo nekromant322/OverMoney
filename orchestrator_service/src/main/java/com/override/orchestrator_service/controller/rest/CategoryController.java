@@ -2,13 +2,11 @@ package com.override.orchestrator_service.controller.rest;
 
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.constants.Type;
 import com.override.orchestrator_service.service.CategoryService;
+import com.override.orchestrator_service.util.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.List;
-
-import static com.override.orchestrator_service.util.TelegramUtils.getTelegramId;
 
 @RestController
 @RequestMapping("/categories")
@@ -27,9 +23,12 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
+    @Autowired
+    private TelegramUtils telegramUtils;
+
     @GetMapping("/")
     public List<CategoryDTO> getCategoriesList(Principal principal) throws InstanceNotFoundException {
-        return categoryService.findCategoriesListByUserId(getTelegramId(principal));
+        return categoryService.findCategoriesListByUserId(telegramUtils.getTelegramId(principal));
     }
 
     @GetMapping("/{id}")
@@ -37,14 +36,37 @@ public class CategoryController {
         return categoryService.findCategoryById(id);
     }
 
+    @GetMapping("/types/{type}")
+    public List<CategoryDTO> getCategoryByCategoryId(Principal principal, @PathVariable("type") Type type) throws InstanceNotFoundException {
+        return categoryService.findCategoriesListByType(telegramUtils.getTelegramId(principal), type);
+    }
+
     @PostMapping("/add-default-categories")
     public void addDefaultCategories(Principal principal) throws InstanceNotFoundException {
-        categoryService.setDefaultCategoryForAccount(getTelegramId(principal));
+        categoryService.setDefaultCategoryForAccount(telegramUtils.getTelegramId(principal));
     }
 
     @PostMapping("/")
-    public ResponseEntity<HttpStatus> createCategoryForAcc(Principal principal, @RequestBody CategoryDTO category) throws InstanceNotFoundException {
-        categoryService.saveCategoryForAcc(getTelegramId(principal), category);
+    public ResponseEntity<HttpStatus> saveCategoryForAcc(Principal principal, @RequestBody CategoryDTO category) throws InstanceNotFoundException {
+        categoryService.saveCategoryForAcc(telegramUtils.getTelegramId(principal), category);
         return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+
+    @PutMapping("/")
+    public ResponseEntity<HttpStatus> updateCategoryForAcc(Principal principal, @RequestBody CategoryDTO category) throws InstanceNotFoundException {
+        categoryService.updateCategoryForAcc(telegramUtils.getTelegramId(principal), category);
+        return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/merger/{id}")
+    public ResponseEntity<HttpStatus> mergeCategory(@RequestBody Long categoryToChangeId, @PathVariable("id") Long categoryToMergeId) {
+        categoryService.mergeCategory(categoryToMergeId, categoryToChangeId);
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/keywords/{keyword}")
+    public ResponseEntity<HttpStatus> mergeCategory(@PathVariable("keyword") String keywordValue, @RequestBody Long categoryId) {
+        categoryService.deleteKeyword(categoryId, keywordValue);
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 }
