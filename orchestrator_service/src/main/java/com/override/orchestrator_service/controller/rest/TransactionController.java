@@ -1,12 +1,13 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.TransactionDTO;
-import com.override.orchestrator_service.mapper.TransactionMapper;
-import com.override.orchestrator_service.model.Transaction;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
+import com.override.orchestrator_service.mapper.TransactionMapper;
+import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
+import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,8 +19,6 @@ import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static com.override.orchestrator_service.util.TelegramUtils.getTelegramId;
 
 @RestController
 public class TransactionController {
@@ -33,6 +32,9 @@ public class TransactionController {
     @Autowired
     private TransactionMapper transactionMapper;
 
+    @Autowired
+    private TelegramUtils telegramUtils;
+
     @PostMapping("/transaction")
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
         Transaction transaction = transactionProcessingService.processTransaction(transactionMessage);
@@ -43,7 +45,7 @@ public class TransactionController {
     @GetMapping("/transactions")
     public List<TransactionDTO> getTransactionsList(Principal principal) throws InstanceNotFoundException {
         List<Transaction> transactions =
-                transactionService.findTransactionsListByUserIdWithoutCategories(getTelegramId(principal));
+                transactionService.findTransactionsListByUserIdWithoutCategories(telegramUtils.getTelegramId(principal));
         transactions.sort(Comparator.comparing(Transaction::getDate));
 
         return transactions.stream()
