@@ -50,6 +50,15 @@ public class TransactionController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/transactions/history")
+    public List<TransactionDTO> getTransactionsHistory(Principal principal,
+                                                @RequestParam(defaultValue = "50") Integer pageSize,
+                                                @RequestParam(defaultValue = "0") Integer pageNumber)
+            throws InstanceNotFoundException {
+        return transactionService
+                .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
+    }
+
     @GetMapping("/transactions/sum/{categoryId}")
     public Long getSumTransactionsByCategoryId(@PathVariable("categoryId") Long categoryId) {
         return transactionService.getSumOfTransactionsByCategoryId(categoryId);

@@ -14,6 +14,7 @@ import java.util.UUID;
 @Builder
 public class TransactionDTO {
     private UUID id;
+    private String categoryName;
     private String message;
     private Float amount;
     private LocalDateTime date;
