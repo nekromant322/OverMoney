@@ -41,4 +41,9 @@ public class TransactionService {
             transactionRepository.save(transaction);
         }
     }
+
+    public List<Transaction> findTransactionsLimitedByUserId(Long id, Integer limit, Integer start) throws InstanceNotFoundException {
+        Long accID = userService.getUserById(id).getAccount().getId();
+        return transactionRepository.findTransactionsLimited(accID, limit, start);
+    }
 }

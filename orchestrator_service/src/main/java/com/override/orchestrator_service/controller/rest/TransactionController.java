@@ -9,10 +9,7 @@ import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
@@ -47,6 +44,18 @@ public class TransactionController {
         List<Transaction> transactions =
                 transactionService.findTransactionsListByUserIdWithoutCategories(telegramUtils.getTelegramId(principal));
         transactions.sort(Comparator.comparing(Transaction::getDate));
+
+        return transactions.stream()
+                .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
+                .collect(Collectors.toList());
+    }
+
+    @GetMapping("/transaction/history")
+    public List<TransactionDTO> getTransactions(Principal principal,
+                                                @RequestParam(defaultValue = "50") Integer limit,
+                                                @RequestParam(defaultValue = "0") Integer start) throws InstanceNotFoundException {
+        List<Transaction> transactions =
+                transactionService.findTransactionsLimitedByUserId(telegramUtils.getTelegramId(principal), limit, start);
 
         return transactions.stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))

@@ -108,4 +108,23 @@ public class TransactionServiceTest {
         Assertions.assertEquals(List.of(transaction1, transaction2), testListTransaction);
     }
 
+    @Test
+    public void findTransactionsLimitedByUserIdTest() throws InstanceNotFoundException {
+        OverMoneyAccount account = TestFieldsUtil.
+                generateTestAccount();
+        account.setUsers(null);
+        User user = TestFieldsUtil.generateTestUser();
+        user.setAccount(account);
+        int limit = 50;
+        int start = 0;
+        Transaction transaction1 = TestFieldsUtil.generateTestTransaction();
+        Transaction transaction2 = TestFieldsUtil.generateTestTransaction();
+        when(transactionRepository.findTransactionsLimited(any(), any(), any()))
+                .thenReturn(List.of(transaction1, transaction2));
+        when(userService.getUserById(any())).thenReturn(user);
+        List<Transaction> testListTransaction =
+                transactionService.findTransactionsLimitedByUserId(user.getId(), limit, start);
+        Assertions.assertEquals(List.of(transaction1, transaction2), testListTransaction);
+    }
+
 }

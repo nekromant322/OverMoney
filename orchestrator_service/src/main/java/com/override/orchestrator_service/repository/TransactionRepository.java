@@ -18,4 +18,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     @Modifying
     @Query("UPDATE Transaction t SET t.category.id = :newCategory WHERE t.category.id= :oldCategory")
     void updateCategoryId(@Param("oldCategory") Long oldCategoryId, @Param("newCategory") Long newCategoryId);
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT * FROM transactions t WHERE t.account_id = :id ORDER BY t.date DESC LIMIT :limit OFFSET :start"
+    )
+    List<Transaction> findTransactionsLimited(@Param("id") Long id, @Param("limit") Integer limit, @Param("start") Integer start);
 }

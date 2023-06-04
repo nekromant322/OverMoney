@@ -26,11 +26,21 @@ public class TransactionMapper {
     }
 
     public TransactionDTO mapTransactionToDTO(Transaction transaction) {
+        if (transaction.getCategory() == null) {
+            return TransactionDTO.builder()
+                    .id(transaction.getId())
+                    .amount(transaction.getAmount())
+                    .message(transaction.getMessage())
+                    .date(transaction.getDate())
+                    .build();
+        }
+
         return TransactionDTO.builder()
                 .id(transaction.getId())
                 .amount(transaction.getAmount())
                 .message(transaction.getMessage())
                 .date(transaction.getDate())
+                .categoryName(transaction.getCategory().getName())
                 .build();
     }
 

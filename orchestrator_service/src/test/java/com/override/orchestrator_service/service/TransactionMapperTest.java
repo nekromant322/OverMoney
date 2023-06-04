@@ -27,6 +27,7 @@ public class TransactionMapperTest {
         Assertions.assertEquals(transactionDTO.getId(), transaction.getId());
         Assertions.assertEquals(transactionDTO.getMessage(), transaction.getMessage());
         Assertions.assertEquals(transactionDTO.getDate(), transaction.getDate());
+        Assertions.assertEquals(transactionDTO.getCategoryName(), transaction.getCategory().getName());
         Assertions.assertEquals(transactionDTO.getAmount(), transaction.getAmount());
     }
 
