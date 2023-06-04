@@ -3,14 +3,20 @@ package com.override.orchestrator_service.service;
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.TransactionRepository;
+import com.override.orchestrator_service.utils.TestFieldsUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import javax.management.InstanceNotFoundException;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -29,6 +35,8 @@ public class TransactionServiceTest {
 
     @Mock
     private CategoryService categoryService;
+    @Mock
+    private UserService userService;
 
     @Test
     public void setTransactionCategoryThrowExceptionWhenCategoryNotFound() {
@@ -81,4 +89,23 @@ public class TransactionServiceTest {
 
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
+
+    @Test
+    public void findTransactionsListByUserIdWithoutCategoriesTest() throws InstanceNotFoundException {
+        OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
+        account.setUsers(null);
+        User user = TestFieldsUtil.generateTestUser();
+        user.setAccount(account);
+        Transaction transaction1 = TestFieldsUtil.generateTestTransaction();
+        Transaction transaction2 = TestFieldsUtil.generateTestTransaction();
+        transaction1.setCategory(null);
+        transaction2.setCategory(null);
+        when(transactionRepository.findAllWithoutCategoriesByAccountId(any()))
+                .thenReturn(List.of(transaction1, transaction2));
+        when(userService.getUserById(any())).thenReturn(user);
+        List<Transaction> testListTransaction =
+                transactionService.findTransactionsListByUserIdWithoutCategories(user.getId());
+        Assertions.assertEquals(List.of(transaction1, transaction2), testListTransaction);
+    }
+
 }
