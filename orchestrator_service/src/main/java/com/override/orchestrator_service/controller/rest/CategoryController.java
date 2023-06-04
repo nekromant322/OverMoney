@@ -2,6 +2,7 @@ package com.override.orchestrator_service.controller.rest;
 
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.constants.Type;
 import com.override.orchestrator_service.service.CategoryService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,11 @@ public class CategoryController {
         return categoryService.findCategoryById(id);
     }
 
+    @GetMapping("/types/{type}")
+    public List<CategoryDTO> getCategoryByCategoryId(Principal principal, @PathVariable("type") Type type) throws InstanceNotFoundException {
+        return categoryService.findCategoriesListByType(telegramUtils.getTelegramId(principal), type);
+    }
+
     @PostMapping("/add-default-categories")
     public void addDefaultCategories(Principal principal) throws InstanceNotFoundException {
         categoryService.setDefaultCategoryForAccount(telegramUtils.getTelegramId(principal));
@@ -44,5 +50,11 @@ public class CategoryController {
     public ResponseEntity<HttpStatus> createCategoryForAcc(Principal principal, @RequestBody CategoryDTO category) throws InstanceNotFoundException {
         categoryService.saveCategoryForAcc(telegramUtils.getTelegramId(principal), category);
         return ResponseEntity.ok(HttpStatus.CREATED);
+    }
+
+    @PostMapping("/merger/{id}")
+    public ResponseEntity<HttpStatus> mergeCategory(@RequestBody Long categoryToChangeId, @PathVariable("id") Long categoryToMergeId) throws InstanceNotFoundException {
+        categoryService.mergeCategory(categoryToMergeId, categoryToChangeId);
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 }
