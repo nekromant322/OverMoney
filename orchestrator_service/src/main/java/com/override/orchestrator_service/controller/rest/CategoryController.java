@@ -38,7 +38,7 @@ public class CategoryController {
 
     @GetMapping("/types/{type}")
     public List<CategoryDTO> getCategoryByCategoryId(Principal principal, @PathVariable("type") Type type) throws InstanceNotFoundException {
-        return categoryService.findCategoriesListByType(getTelegramId(principal), type);
+        return categoryService.findCategoriesListByType(telegramUtils.getTelegramId(principal), type);
     }
 
     @PostMapping("/add-default-categories")
