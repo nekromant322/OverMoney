@@ -118,7 +118,6 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            echo SPRING_APPLICATION_PROFILE = test >> overmoney-env.txt
             echo RECOGNIZER_DB_USER = ${{ secrets.RECOGNIZER_DB_USER }} > overmoney-env.txt
             echo RECOGNIZER_DB_PASSWORD = ${{ secrets.RECOGNIZER_DB_PASSWORD }} >> overmoney-env.txt
             echo RECOGNIZER_DB_PORT = 5432 >> overmoney-env.txt
@@ -135,6 +134,7 @@ jobs:
             echo TELEGRAM_BOT_NAME = OverMoneyBot >> overmoney-env.txt
             echo JWT_ACCESS_KEY = ${{ secrets.JWT_ACCESS_KEY }} >> overmoney-env.txt
             echo JWT_REFRESH_KEY = ${{ secrets.JWT_REFRESH_KEY }} >> overmoney-env.txt
+            echo SPRING_APPLICATION_PROFILE = test >> overmoney-env.txt
             
             if ${{ needs.paths-filter.outputs.eureka}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop eureka
