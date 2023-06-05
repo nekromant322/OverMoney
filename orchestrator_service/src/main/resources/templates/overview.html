@@ -37,12 +37,25 @@
 <div class="modal-verification-merge" id="modal-verification-merge">
     <div class="modal-verification-merge-content">
         <span class="close" onclick="closeModalVerification()">&times;</span>
-        <form class="formVerification">
-            <p>Вы уверены, что хотите произвести слияние категорий? Информация по данной категории очистится,
-                действие нельзя будет отменить.</p>
+        <form class="formVerificationMerge">
+            <p>Вы уверены, что хотите произвести слияние категорий?
+            <p class="information-merge"></p>
             <p>Произвести слияние категорий?</p>
             <input type="submit" class="submit-verification-merge" value="Да">
             <input type="button" class="modal-verification-merge-close" onclick="closeModalVerification()" value="Нет">
+        </form>
+    </div>
+</div>
+
+<div class="modal-verification-delete-keyword" id="modal-verification-delete-keyword">
+    <div class="modal-verification-delete-keyword-content">
+        <span class="close" onclick="closeModalDeleteKeyword()">&times;</span>
+        <form class="formVerificationDeleteKeyword">
+            <p>Вы уверены, что хотите удалить ключевое слово?
+            <p class="information-delete-keyword"></p>
+            <p>Выполнить удаление ключевого слова?</p>
+            <input type="submit" class="submit-delete-keyword" value="Да">
+            <input type="button" class="modal-verification-delete-keyword-close" onclick="closeModalDeleteKeyword()" value="Нет">
         </form>
     </div>
 </div>

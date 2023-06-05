@@ -100,6 +100,7 @@ body, html {
 }
 
 .input-modal-category {
+    font-size: 16px;
     font-family: "Arial";
     display: block;
     margin: 0 auto 10px;
@@ -198,19 +199,18 @@ body, html {
     font-weight: 600;
     font-style: revert;
     border-radius: 20px;
-    background-color: #4646e7; /* Green */
-    color: black;
+    background-color: #7070f5;
+    color: #3b3b3b;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.2s;
 }
 
 .button-save-category:hover {
-    background-color: #0e6f80; /* Green */
+    background-color: #2b779b;
     color: white;
 }
 
 .button-merge-category {
-    display: block;
     position: center;
     text-align: center;
     padding: 10px 10px;
@@ -221,18 +221,62 @@ body, html {
     font-weight: 600;
     font-style: revert;
     border-radius: 20px;
-    background-color: #4646e7; /* Green */
-    color: black;
+    background-color: #7070f5; /* Green */
+    color: #3b3b3b;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.2s;
 }
 
 .button-merge-category:hover {
-    background-color: #0e6f80; /* Green */
+    background-color: #2b779b;
     color: white;
 }
 
+
+.button-edit-category {
+    display: block;
+    position: center;
+    text-align: center;
+    padding: 10px 10px;
+    margin: 0 auto;
+    width: 75%;
+    font-size: 17px;
+    font-weight: 600;
+    font-style: revert;
+    border-radius: 20px;
+    background-color: #7070f5;
+    color: #3b3b3b;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.2s;
+}
+
+.space-button-edit-category {
+    height: 50px;
+}
+
+.button-edit-category:hover {
+    background-color: #2b779b;
+    color: white;
+}
+
+.space-merge-functional {
+    display: none;
+    text-align: center;
+    padding: 10px;
+}
+
 .Select-Categories-Merge {
+    font-size: 16px;
+    font-family: Arial;
+    width: 324px;
+    color: #444;
+    padding: 10px 10px;
+    margin: 0 auto 10px;
+    border-radius: 10px;
+    border: 2px solid lightgray;
+}
+
+.select-category-type {
     display: block;
     font-size: 16px;
     font-family: Arial;
@@ -265,4 +309,57 @@ body, html {
     width: 80%; /* Could be more or less, depending on screen size */
 }
 
+.space-for-keywords {
+    padding: 10px;
+}
 
+.open-merge-form {
+    position: absolute;
+    top: 12px;
+    cursor: pointer;
+    color: darkslategray;
+    font-size: 18px;
+    font-weight: bolder;
+    left: 279px;
+}
+
+.modal-verification-delete-keyword {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 12; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+.modal-verification-delete-keyword-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+}
+
+.keyword-info {
+    font-size: 18px;
+    word-spacing: -2px;
+    margin-left: 10px;
+}
+
+.button-delete-keyword {
+    color: #aaa;
+    font-size: 12px;
+    font-weight: bold;
+    border: 1px solid gray;
+}
+
+.button-delete-keyword:hover,
+.button-delete-keyword:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
