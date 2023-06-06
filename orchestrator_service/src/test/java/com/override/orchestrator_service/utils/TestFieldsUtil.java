@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.utils;
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.KeywordIdDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.*;
 
@@ -20,6 +21,12 @@ public class TestFieldsUtil {
                 .build();
     }
 
+    public static KeywordIdDTO generateTestKeywordIdDTO() {
+        return KeywordIdDTO.builder()
+                .accountId(123L)
+                .name("Тест")
+                .build();
+    }
     public static Category generateTestCategory() {
         Set<Keyword> keywordSet = new HashSet<>();
         keywordSet.add(generateTestKeyword());
@@ -45,14 +52,12 @@ public class TestFieldsUtil {
 
 
     public static CategoryDTO generateTestCategoryDTO() {
-        List<String> keywordList = new ArrayList<>();
-        keywordList.add("Тест");
-
+        List<KeywordIdDTO> keywordIdDTOList = List.of(generateTestKeywordIdDTO());
         return CategoryDTO.builder()
                 .id(12345L)
                 .name("продукты")
                 .type(Type.EXPENSE)
-                .keywords(keywordList)
+                .keywords(keywordIdDTOList)
                 .build();
     }
 

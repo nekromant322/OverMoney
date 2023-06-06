@@ -82,7 +82,6 @@ function getCategoryById(id) {
         async: false,
         success: function (data) {
             console.log("Successfully get category")
-            console.log(data)
             category = data
             if (data.length === 0) {
                 console.log("data is null")
@@ -92,7 +91,6 @@ function getCategoryById(id) {
             console.log("ERROR! Something wrong happened")
         }
     })
-    console.log(category)
     return category;
 }
 
@@ -304,8 +302,9 @@ function drawCategory(category, length) {
 
         $('.button-delete-keyword').on("click", function (evt) {
             evt.preventDefault();
-            let keywordToDeleteValue = $(this).attr('id');
-            verificationToDeleteKeyword(keywordToDeleteValue, newCategory.dataset.id)
+            let keywordToDeleteValue = $(this).attr('data-keywordValue');
+            let keywordToDeleteId = $(this).attr('id');
+            verificationToDeleteKeyword(keywordToDeleteValue, keywordToDeleteId)
         });
 
         $('.open-merge-form').click(function (event) {
@@ -357,9 +356,11 @@ function writeKeywordsOfCategory(category) {
     }
     for (let j = 0; j < category.keywords.length; j++) {
         $('.keywords-list').append(
-            `<span class="keyword-info" id="keyword-value-${category.keywords[j]}">
-                ${category.keywords[j]}
-                <button class="button-delete-keyword" id="${category.keywords[j]}" type="button">x
+            `<span class="keyword-info" id="keyword-value-${category.keywords[j].name}">
+                ${category.keywords[j].name}
+                <button class="button-delete-keyword" 
+                id="${category.keywords[j].accountId}" 
+                data-keywordValue="${category.keywords[j].name}" type="button">x
              </button></span>`)
     }
 }
@@ -447,15 +448,14 @@ function updateCategory(category) {
     })
 }
 
-function mergeCategory(categoryToChangeId, categoryToMergeId) {
-    let url = './categories/merger/' + categoryToMergeId;
+function mergeCategory(mergeCategoryDTO) {
     $.ajax({
         type: 'POST',
-        url: url,
+        url: './categories/merge/',
         headers: {
             'Content-Type': 'application/json',
         },
-        data: JSON.stringify(categoryToChangeId),
+        data: JSON.stringify(mergeCategoryDTO),
         async: false,
         dataType: 'json',
         success: function () {
@@ -518,18 +518,26 @@ function verificationToMerge(categoryToChangeId, categoryToMergeId) {
     $('.modal-verification-merge').fadeIn();
     $('.formVerificationMerge').submit(function (e) {
         e.preventDefault();
-        mergeCategory(categoryToChangeId, categoryToMergeId)
+        let mergeCategoryDTO = {
+            categoryToChangeId: categoryToChangeId,
+            categoryToMergeId: categoryToMergeId
+        }
+        mergeCategory(mergeCategoryDTO)
     })
 }
 
-function verificationToDeleteKeyword(keywordValue, categoryId) {
+function verificationToDeleteKeyword(keywordValue, keywordAccId) {
     let infoAboutMerge = 'Ключевое слово \"' + keywordValue +
         '\" будет безвозратно удалено'
     $('.information-delete-keyword').html(infoAboutMerge);
     $('.modal-verification-delete-keyword').fadeIn();
     $('.formVerificationDeleteKeyword').submit(function (e) {
         e.preventDefault();
-        deleteKeyword(keywordValue, categoryId)
+        let keywordIDtoDelete = {
+            accountId: keywordAccId,
+            name: keywordValue,
+        }
+        deleteKeyword(keywordIDtoDelete)
     })
 }
 
@@ -542,20 +550,19 @@ function closeModalDeleteKeyword() {
     $('.modal-verification-delete-keyword').fadeOut();
 }
 
-function deleteKeyword(keyword, categoryId) {
-    let url = './categories/keywords/' + keyword;
+function deleteKeyword(keywordId) {
     $.ajax({
         type: 'DELETE',
-        url: url,
+        url: './categories/keywords',
         headers: {
             'Content-Type': 'application/json',
         },
-        data: JSON.stringify(categoryId),
+        data: JSON.stringify(keywordId),
         async: false,
         dataType: 'json',
         success: function () {
             console.log("Successfully deleted keyword")
-            document.getElementById(String('keyword-value-' + keyword)).remove()
+            document.getElementById(String('keyword-value-' + keywordId.name)).remove()
             $('.modal-verification-delete-keyword').fadeOut();
         },
         error: function (error) {

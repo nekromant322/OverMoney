@@ -40,14 +40,8 @@ public class CategoryMapperTest {
 
     @Test
     public void mapCategoryDTOToCategoryTest() {
-        List<String> keywords = new ArrayList<>();
-        keywords.add("Тест1");
-        keywords.add("Тест2");
 
-        final CategoryDTO category = new CategoryDTO();
-        category.setName("TestName");
-        category.setType(Type.EXPENSE);
-        category.setKeywords(keywords);
+        final CategoryDTO category = TestFieldsUtil.generateTestCategoryDTO();
 
         final Category categoryTest = categoryMapper.mapCategoryDTOToCategory
                 (category, TestFieldsUtil.generateTestAccount());

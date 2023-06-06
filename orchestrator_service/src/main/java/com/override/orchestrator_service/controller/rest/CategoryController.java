@@ -2,7 +2,9 @@ package com.override.orchestrator_service.controller.rest;
 
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.MergeCategoryDTO;
 import com.override.dto.constants.Type;
+import com.override.orchestrator_service.model.KeywordId;
 import com.override.orchestrator_service.service.CategoryService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -55,19 +57,18 @@ public class CategoryController {
     @PutMapping("/")
     public ResponseEntity<HttpStatus> updateCategoryForAcc(Principal principal, @RequestBody CategoryDTO category) throws InstanceNotFoundException {
         categoryService.updateCategoryForAcc(telegramUtils.getTelegramId(principal), category);
-
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    @PostMapping("/merger/{id}")
-    public ResponseEntity<HttpStatus> mergeCategory(@RequestBody Long categoryToChangeId, @PathVariable("id") Long categoryToMergeId) {
-        categoryService.mergeCategory(categoryToMergeId, categoryToChangeId);
+    @PostMapping("/merge")
+    public ResponseEntity<HttpStatus> mergeCategory(@RequestBody MergeCategoryDTO categoryIDs) {
+        categoryService.mergeCategory(categoryIDs);
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 
-    @DeleteMapping("/keywords/{keyword}")
-    public ResponseEntity<HttpStatus> mergeCategory(@PathVariable("keyword") String keywordValue, @RequestBody Long categoryId) {
-        categoryService.deleteKeyword(categoryId, keywordValue);
+    @DeleteMapping("/keywords")
+    public ResponseEntity<HttpStatus> deleteKeyword(@RequestBody KeywordId keywordId) {
+        categoryService.deleteKeyword(keywordId);
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 }
