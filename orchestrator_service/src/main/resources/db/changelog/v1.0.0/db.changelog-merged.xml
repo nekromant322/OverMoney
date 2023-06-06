@@ -1,0 +1,167 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <property name="uuid_type" value="uuid" dbms="postgresql"/>
+    <property name="uuid_function" value="uuid_generate_v4()" dbms="postgresql"/>
+
+    <changeSet author="vladimir" id="05.06.23-createExtensionUUID">
+        <sql>
+            CREATE
+            EXTENSION IF NOT EXISTS "uuid-ossp";
+        </sql>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-categoriesTable">
+        <createTable tableName="categories">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="categories_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="type" type="INTEGER"/>
+            <column name="account_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-usersTable">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+                <constraints primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="auth_date" type="VARCHAR(255)"/>
+            <column name="account_id" type="BIGINT"/>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="photo_url" type="VARCHAR(255)"/>
+            <column name="username" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-accountsTable">
+        <createTable tableName="accounts">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="accounts_pkey"/>
+            </column>
+            <column name="chat_id" type="BIGINT">
+                <constraints unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-keywordsTable">
+        <createTable tableName="keywords">
+            <!--<column name="account_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>-->
+            <column autoIncrement="true" name="id" type="BIGSERIAL">
+
+            </column>
+
+            <column name="keyword" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <!--<changeSet author="vladimir" id="03.06.23-ChangeLogMerge-setCompositePKforKeywordsTable">
+        <addPrimaryKey tableName="keywords" columnNames="account_id,name"
+                       constraintName="composite_primary_key_constraint_keywords"/>
+    </changeSet>-->
+
+    <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-transactionsTable">
+        <createTable tableName="transactions">
+            <column defaultValueComputed="uuid_generate_v4()" name="id" type="uuid">
+                <constraints primaryKey="true" primaryKeyName="transactions_pkey"/>
+            </column>
+            <column name="amount" type="FLOAT4"/>
+            <column name="message" type="VARCHAR(255)"/>
+            <column name="category_id" type="BIGINT"/>
+            <column name="account_id" type="BIGINT"/>
+            <column name="date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-rolesTable">
+        <createTable tableName="roles">
+            <column name="id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="roles_pkey"/>
+            </column>
+            <column name="role" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-initiateRolesTable">
+        <insert tableName="roles">
+            <column name="id" value="1"/>
+            <column name="role" value="ROLE_USER"/>
+        </insert>
+        <insert tableName="roles">
+            <column name="id" value="2"/>
+            <column name="role" value="ROLE_ADMIN"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-users_rolesTable">
+        <createTable tableName="users_roles">
+            <column name="user_id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="users_roles_pkey"/>
+            </column>
+            <column name="roles_id" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="users_roles_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChengeLogMerge-users_rolesTableAddForeignKeyConstraintUserId">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="users_roles"
+                                 constraintName="foreign_key_constraint_user_id_for_users_roles" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="vladimir" id="03.06.23-ChengeLogMerge-users_rolesTableAddForeignKeyConstraintRoleId">
+        <addForeignKeyConstraint baseColumnNames="roles_id" baseTableName="users_roles"
+                                 constraintName="foreign_key_constraint_role_id_for_users_roles" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="roles" validate="true"/>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChengeLogMerge-usersTableAddForeignKeyConstraint">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="users"
+                                 constraintName="foreign_key_constraint_account_id_for_users" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="accounts" validate="true"/>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChengeLogMerge-keywordsTableAddForeignKeyConstraint">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="keywords"
+                                 constraintName="foreign_key_constraint_categories_id_forkeywords" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChengeLogMerge-transactionsTableAddForeignKeyConstraintAccountId">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="transactions"
+                                 constraintName="foreign_key_constraint_account_id_for_transactions" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="accounts" validate="true"/>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChengeLogMerge-transactionsTableAddForeignKeyConstraintCategoryId">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="transactions"
+                                 constraintName="foreign_key_constraint_category_id_for_transactions" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="categories" validate="true"/>
+    </changeSet>
+
+    <changeSet author="vladimir" id="03.06.23-ChengeLogMerge-categoriesTableAddForeignKeyConstraintAccountId">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="categories"
+                                 constraintName="foreign_key_constraint_account_id_for_categories" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="accounts" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
