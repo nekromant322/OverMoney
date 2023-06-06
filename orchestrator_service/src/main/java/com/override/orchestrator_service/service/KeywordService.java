@@ -2,6 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.Keyword;
+import com.override.orchestrator_service.model.KeywordId;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,7 @@ public class KeywordService {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         Category category = categoryService.getCategoryById(categoryId);
         Keyword keyword = new Keyword();
-        keyword.setKeyword(transaction.getMessage());
+        keyword.setKeywordId(new KeywordId(transaction.getMessage(), category.getAccount().getId()));
         keyword.setCategory(category);
         saveKeyword(keyword);
     }

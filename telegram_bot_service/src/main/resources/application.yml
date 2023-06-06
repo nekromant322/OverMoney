@@ -1,5 +1,5 @@
   bot:
-    name: OverMoney
+    name: ${TELEGRAM_BOT_NAME}
     token: ${TELEGRAM_BOT_TOKEN}
     api:
       url: https://api.telegram.org
