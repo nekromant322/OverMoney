@@ -18,5 +18,4 @@ public interface KeywordRepository extends JpaRepository<Keyword, UUID> {
     @Modifying
     @Query("DELETE FROM Keyword k WHERE k.category.id= :categoryId AND k.keyword= :value")
     void deleteKeywordByCategoryIdAndValue(@Param("categoryId") Long categoryId, @Param("value") String value);
-
 }

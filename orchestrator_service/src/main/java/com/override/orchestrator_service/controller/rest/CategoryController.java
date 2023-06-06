@@ -47,7 +47,6 @@ public class CategoryController {
     }
 
     @PostMapping("/")
-
     public ResponseEntity<HttpStatus> saveCategoryForAcc(Principal principal, @RequestBody CategoryDTO category) throws InstanceNotFoundException {
         categoryService.saveCategoryForAcc(telegramUtils.getTelegramId(principal), category);
         return ResponseEntity.ok(HttpStatus.CREATED);
@@ -61,7 +60,6 @@ public class CategoryController {
     }
 
     @PostMapping("/merger/{id}")
-
     public ResponseEntity<HttpStatus> mergeCategory(@RequestBody Long categoryToChangeId, @PathVariable("id") Long categoryToMergeId) {
         categoryService.mergeCategory(categoryToMergeId, categoryToChangeId);
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
@@ -72,5 +70,4 @@ public class CategoryController {
         categoryService.deleteKeyword(categoryId, keywordValue);
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
-
 }
