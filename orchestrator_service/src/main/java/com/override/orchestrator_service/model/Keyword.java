@@ -14,23 +14,12 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Keyword {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @EmbeddedId
+    private KeywordId keywordId;
 
-    @Column
-    private String keyword;
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
 
-    public Keyword(String keyword, Category category) {
-        this.keyword = keyword;
-        this.category = category;
-    }
-
-    public Keyword(String keyword) {
-        this.keyword = keyword;
-    }
 }
