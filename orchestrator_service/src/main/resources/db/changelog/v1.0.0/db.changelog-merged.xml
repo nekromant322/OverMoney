@@ -54,24 +54,20 @@
 
     <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-keywordsTable">
         <createTable tableName="keywords">
-            <!--<column name="account_id" type="BIGINT">
+            <column name="account_id" type="BIGINT">
                 <constraints nullable="false"/>
-            </column>-->
-            <column autoIncrement="true" name="id" type="BIGSERIAL">
-
             </column>
-
-            <column name="keyword" type="VARCHAR(255)">
+            <column name="name" type="VARCHAR(255)">
                 <constraints nullable="false"/>
             </column>
             <column name="category_id" type="BIGINT"/>
         </createTable>
     </changeSet>
 
-    <!--<changeSet author="vladimir" id="03.06.23-ChangeLogMerge-setCompositePKforKeywordsTable">
+    <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-setCompositePKforKeywordsTable">
         <addPrimaryKey tableName="keywords" columnNames="account_id,name"
                        constraintName="composite_primary_key_constraint_keywords"/>
-    </changeSet>-->
+    </changeSet>
 
     <changeSet author="vladimir" id="03.06.23-ChangeLogMerge-transactionsTable">
         <createTable tableName="transactions">
