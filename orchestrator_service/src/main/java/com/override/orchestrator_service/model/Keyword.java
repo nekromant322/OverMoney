@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.model;
 
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -17,9 +16,7 @@ public class Keyword {
     @EmbeddedId
     private KeywordId keywordId;
 
-
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
-
 }

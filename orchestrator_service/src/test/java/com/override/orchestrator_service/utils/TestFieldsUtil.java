@@ -11,8 +11,7 @@ public class TestFieldsUtil {
 
     public static Keyword generateTestKeyword() {
         return Keyword.builder()
-                .id(UUID.fromString("6620d7e6-c60f-4928-94d7-40ac77c24fc6"))
-                .keyword("пиво")
+                .keywordId(new KeywordId("пиво", 123L))
                 .category(Category.builder()
                         .id(12345L)
                         .name("продукты")
