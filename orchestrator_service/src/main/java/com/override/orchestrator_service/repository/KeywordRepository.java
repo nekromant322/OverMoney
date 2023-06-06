@@ -12,11 +12,16 @@ import java.util.List;
 
 @Repository
 public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
+
     @Modifying
     @Query("UPDATE Keyword k SET k.category.id = :newCategory WHERE k.category.id= :oldCategory")
     void updateCategoryId(@Param("oldCategory") Long oldCategoryId, @Param("newCategory") Long newCategoryId);
+
     Keyword findByKeywordId(KeywordId keywordId);
+
     List<Keyword> findAllByKeywordId_AccountId(Long accountId);
+
     List<Keyword> findAllByKeywordId_Name(String name);
+
     Keyword deleteByKeywordId(KeywordId keywordId);
 }
