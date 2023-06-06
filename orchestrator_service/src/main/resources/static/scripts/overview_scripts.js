@@ -1,5 +1,6 @@
 "use strict";
-
+const INCOME = "INCOME";
+const EXPENSE = "EXPENSE";
 window.onload = function () {
     getUndefinedTransactionsData();
     getCategoriesData();
@@ -241,8 +242,6 @@ function drawCategories(data) {
 
 
 function drawCategory(category, length) {
-    const INCOME = "INCOME";
-    const EXPENSE = "EXPENSE";
     let categorySpace = document.querySelector('.categories-space');
     let newCategory = document.createElement('div');
     newCategory.className = "category";

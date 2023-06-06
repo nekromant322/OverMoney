@@ -152,7 +152,7 @@ public class CategoryServiceTest {
     public void deleteKeywordTest() {
         final KeywordId keywordId = new KeywordId();
         keywordId.setName("Тест");
-        keywordId.setAccountId(123l);
+        keywordId.setAccountId(123L);
         categoryService.deleteKeyword(keywordId);
         verify(keywordRepository, times(1)).deleteByKeywordId(keywordId);
     }
