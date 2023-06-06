@@ -32,7 +32,7 @@ public class CategoryMapper {
     private List<String> getCategoryKeywords(Category category) {
         List<String> allKeywords = new ArrayList<>();
         category.getKeywords().forEach(keyword -> {
-            allKeywords.add(keyword.getKeyword());
+            allKeywords.add(keyword.getKeywordId().getName());
         });
         return allKeywords;
     }

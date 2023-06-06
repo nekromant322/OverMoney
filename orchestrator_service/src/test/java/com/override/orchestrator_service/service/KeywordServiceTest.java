@@ -4,8 +4,10 @@ import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.Keyword;
+import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.KeywordRepository;
+import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -66,7 +68,7 @@ public class KeywordServiceTest {
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
         transaction.setMessage("message");
-        final Keyword keyword = new Keyword(transaction.getMessage(), category);
+        final Keyword keyword = TestFieldsUtil.generateTestKeyword();
 
         keywordService.saveKeyword(keyword);
 
@@ -77,8 +79,12 @@ public class KeywordServiceTest {
     public void setKeywordCategorySaveKeywordWhenCategoryAndTransactionFound() {
         final Category category = new Category();
         category.setId(12345L);
+        OverMoneyAccount overMoneyAccount = new OverMoneyAccount();
+        overMoneyAccount.setId(123L);
+        category.setAccount(overMoneyAccount);
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
+        transaction.setMessage("пиво");
 
         when(categoryService.getCategoryById(category.getId())).thenReturn(category);
         when(transactionService.getTransactionById(transaction.getId())).thenReturn(transaction);
