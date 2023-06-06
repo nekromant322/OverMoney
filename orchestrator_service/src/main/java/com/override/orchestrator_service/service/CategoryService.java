@@ -82,9 +82,10 @@ public class CategoryService {
         transactionRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
         categoryRepository.deleteById(categoryToMergeId);
     }
-
+  
     @Transactional
     public void deleteKeyword(Long categoryId, String keywordValue){
         keywordRepository.deleteKeywordByCategoryIdAndValue(categoryId, keywordValue);
     }
+
 }

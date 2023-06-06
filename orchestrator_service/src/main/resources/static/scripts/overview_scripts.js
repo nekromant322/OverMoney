@@ -562,4 +562,5 @@ function deleteKeyword(keyword, categoryId) {
             console.log(error)
         }
     })
+
 }
