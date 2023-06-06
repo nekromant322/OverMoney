@@ -47,7 +47,7 @@ public class TransactionProcessingService {
         }
 
         Keyword matchingKeyword = getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
-        return matchingKeyword.getKeyword();
+        return matchingKeyword.getKeywordId().getName();
     }
 
     private Category getTransactionCategory(TransactionMessageDTO transactionMessageDTO, OverMoneyAccount overMoneyAccount) throws InstanceNotFoundException {
@@ -110,7 +110,7 @@ public class TransactionProcessingService {
             Set<Keyword> keywords = category.getKeywords();
             for (Keyword keyword : keywords) {
                 for (String word : words) {
-                    if (word.equalsIgnoreCase(keyword.getKeyword())) {
+                    if (word.equalsIgnoreCase(keyword.getKeywordId().getName())) {
                         matchingKeyword = keyword;
                         break;
                     }
