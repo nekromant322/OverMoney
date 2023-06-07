@@ -5,6 +5,7 @@ let working = false;
 $(document).ready(function() {
     getTransactions()
 })
+
 $(window).scroll(function() {
     if ($(window).scrollTop() >= $(document).height() - $(window).height() - 10) {
         if (working === false) {
@@ -17,7 +18,7 @@ $(window).scroll(function() {
 function getTransactions() {
     $.ajax({
         type: "GET",
-        url: "./transactions-history?pageSize=" + pageSize  + "&pageNumber=" + pageNumber,
+        url: "./transactions/history?pageSize=" + pageSize  + "&pageNumber=" + pageNumber,
         contentType: "application/json; charset=utf8",
         async: false,
         success: function(data) {

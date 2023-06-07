@@ -26,22 +26,17 @@ public class TransactionMapper {
     }
 
     public TransactionDTO mapTransactionToDTO(Transaction transaction) {
-        if (transaction.getCategory() == null) {
-            return TransactionDTO.builder()
-                    .id(transaction.getId())
-                    .amount(transaction.getAmount())
-                    .message(transaction.getMessage())
-                    .date(transaction.getDate())
-                    .build();
-        }
-
-        return TransactionDTO.builder()
+        TransactionDTO.TransactionDTOBuilder builder = TransactionDTO.builder()
                 .id(transaction.getId())
                 .amount(transaction.getAmount())
                 .message(transaction.getMessage())
-                .date(transaction.getDate())
-                .categoryName(transaction.getCategory().getName())
-                .build();
+                .date(transaction.getDate());
+
+        if (transaction.getCategory() != null) {
+            builder.categoryName(transaction.getCategory().getName());
+        }
+
+        return builder.build();
     }
 
     private String getTransactionType(Transaction transaction) throws InstanceNotFoundException {

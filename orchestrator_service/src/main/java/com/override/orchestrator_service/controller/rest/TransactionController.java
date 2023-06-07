@@ -50,7 +50,7 @@ public class TransactionController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/transactions-history")
+    @GetMapping("/transactions/history")
     public List<TransactionDTO> getTransactionsHistory(Principal principal,
                                                 @RequestParam(defaultValue = "50") Integer pageSize,
                                                 @RequestParam(defaultValue = "0") Integer pageNumber)
