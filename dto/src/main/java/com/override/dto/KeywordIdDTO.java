@@ -1,19 +1,15 @@
 package com.override.dto;
 
-import com.override.dto.constants.Type;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class CategoryDTO {
-    private Long id;
+public class KeywordIdDTO {
+    private Long accountId;
     private String name;
-    private Type type;
-    private List<KeywordIdDTO> keywords;
 }

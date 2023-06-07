@@ -1,12 +1,14 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.MergeCategoryDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.config.DefaultCategoryProperties;
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.mapper.AccountMapper;
 import com.override.orchestrator_service.mapper.CategoryMapper;
 import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.KeywordId;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
@@ -69,10 +71,24 @@ public class CategoryService {
         categoryRepository.save(categoryMapper.mapCategoryDTOToCategory(categoryDTO, account));
     }
 
+    public void updateCategoryForAcc(Long id, CategoryDTO categoryDTO) throws InstanceNotFoundException {
+        OverMoneyAccount account = accountService.getAccountByUserId(id);
+        Category updatedCategory = categoryMapper.mapCategoryDTOToCategory(categoryDTO, account);
+        updatedCategory.setId(categoryDTO.getId());
+        categoryRepository.save(updatedCategory);
+    }
+
     @Transactional
-    public void mergeCategory(Long categoryToMergeId, Long categoryToChangeId) {
+    public void mergeCategory(MergeCategoryDTO categoryIDs) {
+        Long categoryToMergeId = categoryIDs.getCategoryToMergeId();
+        Long categoryToChangeId = categoryIDs.getCategoryToChangeId();
         keywordRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
         transactionRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
         categoryRepository.deleteById(categoryToMergeId);
+    }
+  
+    @Transactional
+    public void deleteKeyword(KeywordId keywordId){
+        keywordRepository.deleteByKeywordId(keywordId);
     }
 }

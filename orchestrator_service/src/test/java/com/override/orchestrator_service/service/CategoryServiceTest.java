@@ -1,11 +1,12 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.MergeCategoryDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.mapper.CategoryMapper;
 import com.override.orchestrator_service.model.Category;
-import com.override.orchestrator_service.model.Keyword;
+import com.override.orchestrator_service.model.KeywordId;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
@@ -121,17 +122,38 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void mergeCategoryTest() throws InstanceNotFoundException {
+    public void mergeCategoryTest() {
         final Category categoryToChange = TestFieldsUtil.generateTestCategory();
         final Category categoryToMerge = TestFieldsUtil.generateTestCategory();
         categoryToMerge.setId(12346L);
         categoryToMerge.setName("Тест2");
+        MergeCategoryDTO categoryIDsTest =
+                 MergeCategoryDTO.builder()
+                .categoryToMergeId(categoryToMerge.getId())
+                .categoryToChangeId(categoryToChange.getId())
+                .build();
 
-        categoryService.mergeCategory(categoryToMerge.getId(), categoryToChange.getId());
+        categoryService.mergeCategory(categoryIDsTest);
 
         verify(keywordRepository, times(1)).updateCategoryId(categoryToMerge.getId(), categoryToChange.getId());
         verify(transactionRepository, times(1)).updateCategoryId(categoryToMerge.getId(), categoryToChange.getId());
         verify(categoryRepository, times(1)).deleteById(categoryToMerge.getId());
     }
 
+    @Test
+    public void updateCategoryTest() throws InstanceNotFoundException {
+        final CategoryDTO category = TestFieldsUtil.generateTestCategoryDTO();
+        when(categoryMapper.mapCategoryDTOToCategory(any(),any())).thenReturn(TestFieldsUtil.generateTestCategory());
+        categoryService.updateCategoryForAcc(any(), category);
+        verify(categoryRepository, times(1)).save(any());
+    }
+
+    @Test
+    public void deleteKeywordTest() {
+        final KeywordId keywordId = new KeywordId();
+        keywordId.setName("Тест");
+        keywordId.setAccountId(123L);
+        categoryService.deleteKeyword(keywordId);
+        verify(keywordRepository, times(1)).deleteByKeywordId(keywordId);
+    }
 }

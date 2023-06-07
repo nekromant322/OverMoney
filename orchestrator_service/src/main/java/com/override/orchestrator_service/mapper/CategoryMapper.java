@@ -2,6 +2,7 @@ package com.override.orchestrator_service.mapper;
 
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.KeywordIdDTO;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import lombok.extern.slf4j.Slf4j;
@@ -29,10 +30,14 @@ public class CategoryMapper {
                 .collect(Collectors.toList());
     }
 
-    private List<String> getCategoryKeywords(Category category) {
-        List<String> allKeywords = new ArrayList<>();
+    private List<KeywordIdDTO> getCategoryKeywords(Category category) {
+        List<KeywordIdDTO> allKeywords = new ArrayList<>();
         category.getKeywords().forEach(keyword -> {
-            allKeywords.add(keyword.getKeywordId().getName());
+            KeywordIdDTO keywordIdDTO = KeywordIdDTO.builder()
+                    .accountId(keyword.getKeywordId().getAccountId())
+                    .name(keyword.getKeywordId().getName())
+                    .build();
+            allKeywords.add(keywordIdDTO);
         });
         return allKeywords;
     }

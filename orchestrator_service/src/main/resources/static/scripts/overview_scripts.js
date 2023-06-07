@@ -1,5 +1,6 @@
 "use strict";
-
+const INCOME = "INCOME";
+const EXPENSE = "EXPENSE";
 window.onload = function () {
     getUndefinedTransactionsData();
     getCategoriesData();
@@ -82,7 +83,6 @@ function getCategoryById(id) {
         async: false,
         success: function (data) {
             console.log("Successfully get category")
-            console.log(data)
             category = data
             if (data.length === 0) {
                 console.log("data is null")
@@ -92,7 +92,6 @@ function getCategoryById(id) {
             console.log("ERROR! Something wrong happened")
         }
     })
-    console.log(category)
     return category;
 }
 
@@ -248,47 +247,70 @@ function drawCategory(category, length) {
     newCategory.className = "category";
     newCategory.innerText = category.name;
     newCategory.style.height = 85 / length + '%';
-    let keywords = writeKeywordsOfCategory(category)
     newCategory.dataset.id = category.id;
     newCategory.dataset.name = category.name;
-    let type;
-    if (category.type == "INCOME") {
-        type = "Доходы";
-    } else if (category.type == "EXPENSE") {
-        type = "Расходы"
+    let actualType;
+    let secondTypeValue;
+    let notActualType;
+    if (category.type === INCOME) {
+        actualType = "Доходы";
+        secondTypeValue = EXPENSE
+        notActualType = "Расходы";
+    } else if (category.type === EXPENSE) {
+        actualType = "Расходы"
+        secondTypeValue = INCOME
+        notActualType = "Доходы";
     }
-    newCategory.dataset.type = type;
-    newCategory.dataset.keywords = keywords;
+    newCategory.dataset.type = actualType;
     newCategory.onclick = function () {
-        keywords = writeKeywordsOfCategory(getCategoryById(newCategory.dataset.id));
         let body = `<h3>Информация о категории</h3>
-                    <form class="modal-category">
+                    <form class="modal-category" id="formModalCategory">
                    <p class="modal-category-close" href="#">X</p>
+                   <a href="" class="open-merge-form">Слияние</a>
                         <div>
                             <label for="name">Наименование категории:</label>
-                            <input type="text" class="input-modal-category" readonly id="name" value="${newCategory.dataset.name}" >
+                            <input type="text" class="input-modal-category" id="name" value="${newCategory.dataset.name}" >
                         </div>
                         <div>
-                            <label for="type">Тип категории:</label>
-                            <input type="text" readonly class="input-modal-category" id="type" value="${newCategory.dataset.type}" >
+                            <label>Тип категории:</label>
+                            <select class="select-category-type" id="selectCategoryType">
+                            <option selected value="${category.type}">${newCategory.dataset.type}</option>
+                            <option value="${secondTypeValue}">${notActualType}</option>
+                        </select>
                         </div>
-                        <div>
+                          <div>
                             <label for="keywords">Ключевые слова категории:</label>
-                            <input type="text" readonly class="input-modal-category" id="keywords" value="${keywords}">
+                            <div class="space-for-keywords">
+                            <div class="keywords-list"></div>
+                           </div>
                         </div>
-                        <div>
+                        <div class="space-button-edit-category">
+                        <button type="button" class="button-edit-category">Сохранить</button>
+                        </div>
+                        </form>
+                        <div class="space-merge-functional" id="spaceForMergeForm">
                         <label>Категории для слияния:</label>
                         <select class="Select-Categories-Merge" id="selectCategoryMerge">
                         </select>
-                        </div>
-                         </form>
-                        <div>
-                        <button type="button" class="button-merge-category">Слияние категории</button>
+                        <button type="button" class="button-merge-category" id="buttonMergeCategory">Слияние категории</button>
                         </div>`
         $('.modal-category-content').html(body)
-
+        writeKeywordsOfCategory(getCategoryById(newCategory.dataset.id));
         drawSelectCategoryForMerge(getCategoryByType(category.type), category.id)
         $('.modal-category-fade').fadeIn()
+
+        $('.button-delete-keyword').on("click", function (evt) {
+            evt.preventDefault();
+            let keywordToDeleteValue = $(this).attr('data-keywordValue');
+            let keywordToDeleteId = $(this).attr('id');
+            verificationToDeleteKeyword(keywordToDeleteValue, keywordToDeleteId)
+        });
+
+        $('.open-merge-form').click(function (event) {
+            event.preventDefault();
+            let mergeForm = document.getElementById("spaceForMergeForm");
+            mergeForm.style.display = "block";
+        });
 
         $('.button-merge-category').click(function (event) {
             event.preventDefault();
@@ -296,6 +318,25 @@ function drawCategory(category, length) {
             let categoryIdForMerge = category.id;
             if (!(categoryIdForChange === '') & !(categoryIdForMerge === '')) {
                 verificationToMerge(categoryIdForChange, categoryIdForMerge);
+            }
+        });
+
+        $('.button-edit-category').click(function () {
+            let idCategory = newCategory.dataset.id;
+            let keywordsCategory = category.keywords;
+            let nameValue = $('#formModalCategory').find('#name').val();
+            let typeValue = $('#selectCategoryType option:selected').val();
+
+            if (!(nameValue === '') && !(keywordsCategory === '')) {
+                let data = {
+                    id: idCategory,
+                    name: nameValue,
+                    type: typeValue,
+                    keywords: keywordsCategory
+                }
+                updateCategory(data);
+                $(this).parents('.modal-category-fade').fadeOut();
+                location.reload();
             }
         });
 
@@ -309,16 +350,18 @@ function drawCategory(category, length) {
 }
 
 function writeKeywordsOfCategory(category) {
-    let allKeywords = '';
-    for (let j = 0; j < category.keywords.length; j++) {
-        let keywordStr = category.keywords[j]
-        if (j != category.keywords.length - 1) {
-            allKeywords += String(keywordStr + ', ')
-        } else {
-            allKeywords += String(keywordStr)
-        }
+    if(category.keywords.length === 0){
+        $('.keywords-list').append("Нет ключевых слов")
     }
-    return allKeywords
+    for (let j = 0; j < category.keywords.length; j++) {
+        $('.keywords-list').append(
+            `<span class="keyword-info" id="keyword-value-${category.keywords[j].name}">
+                ${category.keywords[j].name}
+                <button class="button-delete-keyword" 
+                id="${category.keywords[j].accountId}" 
+                data-keywordValue="${category.keywords[j].name}" type="button">x
+             </button></span>`)
+    }
 }
 
 function drawModalToAddCategory() {
@@ -359,7 +402,6 @@ function drawModalToAddCategory() {
                 name: nameValue,
                 type: typeValue,
             }
-            console.log(JSON.stringify(data));
             createNewCategory(data);
             $(this).parents('.modal-category-fade').fadeOut();
             location.reload();
@@ -386,15 +428,33 @@ function createNewCategory(category) {
     })
 }
 
-function mergeCategory(categoryToChangeId, categoryToMergeId) {
-    let url = './categories/merger/' + categoryToMergeId;
+function updateCategory(category) {
     $.ajax({
-        type: 'POST',
-        url: url,
+        type: 'PUT',
+        url: './categories/',
         headers: {
             'Content-Type': 'application/json',
         },
-        data: JSON.stringify(categoryToChangeId),
+        data: JSON.stringify(category),
+        async: false,
+        dataType: 'json',
+        success: function () {
+            console.log("Successfully updated categories")
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    })
+}
+
+function mergeCategory(mergeCategoryDTO) {
+    $.ajax({
+        type: 'POST',
+        url: './categories/merge/',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(mergeCategoryDTO),
         async: false,
         dataType: 'json',
         success: function () {
@@ -449,13 +509,64 @@ function drawSelectCategoryForMerge(categories, id) {
 }
 
 function verificationToMerge(categoryToChangeId, categoryToMergeId) {
+    let infoAboutMerge = 'Транзакции и ключевые слова из категории \"' + getCategoryById(categoryToMergeId).name +
+        '\" будут перенесены в категорию \"' + getCategoryById(categoryToChangeId).name + '\", после чего первая категория' +
+        ' будет удалена. '
+    console.log(infoAboutMerge)
+    $('.information-merge').html(infoAboutMerge);
     $('.modal-verification-merge').fadeIn();
-    $('.formVerification').submit(function (e) {
+    $('.formVerificationMerge').submit(function (e) {
         e.preventDefault();
-        mergeCategory(categoryToChangeId, categoryToMergeId)
+        let mergeCategoryDTO = {
+            categoryToChangeId: categoryToChangeId,
+            categoryToMergeId: categoryToMergeId
+        }
+        mergeCategory(mergeCategoryDTO)
     })
 }
 
+function verificationToDeleteKeyword(keywordValue, keywordAccId) {
+    let infoAboutMerge = 'Ключевое слово \"' + keywordValue +
+        '\" будет безвозратно удалено'
+    $('.information-delete-keyword').html(infoAboutMerge);
+    $('.modal-verification-delete-keyword').fadeIn();
+    $('.formVerificationDeleteKeyword').submit(function (e) {
+        e.preventDefault();
+        let keywordIDtoDelete = {
+            accountId: keywordAccId,
+            name: keywordValue,
+        }
+        deleteKeyword(keywordIDtoDelete)
+    })
+}
+
+
 function closeModalVerification() {
     $('.modal-verification-merge').fadeOut();
+}
+
+function closeModalDeleteKeyword() {
+    $('.modal-verification-delete-keyword').fadeOut();
+}
+
+function deleteKeyword(keywordId) {
+    $.ajax({
+        type: 'DELETE',
+        url: './categories/keywords',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        data: JSON.stringify(keywordId),
+        async: false,
+        dataType: 'json',
+        success: function () {
+            console.log("Successfully deleted keyword")
+            document.getElementById(String('keyword-value-' + keywordId.name)).remove()
+            $('.modal-verification-delete-keyword').fadeOut();
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    })
+
 }

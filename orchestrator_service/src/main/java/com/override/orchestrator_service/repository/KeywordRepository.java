@@ -9,10 +9,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.UUID;
 
 @Repository
-public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
-
+public interface KeywordRepository extends JpaRepository<Keyword, UUID> {
     @Modifying
     @Query("UPDATE Keyword k SET k.category.id = :newCategory WHERE k.category.id= :oldCategory")
     void updateCategoryId(@Param("oldCategory") Long oldCategoryId, @Param("newCategory") Long newCategoryId);
@@ -23,5 +23,5 @@ public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
 
     List<Keyword> findAllByKeywordId_Name(String name);
 
-    Keyword deleteByKeywordId(KeywordId keywordId);
+    void deleteByKeywordId(KeywordId keywordId);
 }
