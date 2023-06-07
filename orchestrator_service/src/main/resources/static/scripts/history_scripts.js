@@ -1,43 +1,34 @@
-let limit = 50;
-let start = 0;
+let pageSize = 50;
+let pageNumber = 0;
 let working = false;
 
 $(document).ready(function() {
-    $.ajax({
-        type: "GET",
-        url: "./transaction/history?limit=" + limit + "&start=" + start,
-        processData: false,
-        contentType: "application/json",
-        data: '',
-        success: function(data) {
-            prepareAndDraw(data)
-        },
-        error: function() {
-            console.log("Something went wrong!");
-        }
-    })
+    getTransactions()
 })
 $(window).scroll(function() {
     if ($(window).scrollTop() >= $(document).height() - $(window).height() - 10) {
         if (working === false) {
             working = true;
-            $.ajax({
-                type: "GET",
-                url: "./transaction/history?limit=" + limit  + "&start=" + start,
-                processData: false,
-                contentType: "application/json",
-                data: '',
-                success: function(data) {
-                    prepareAndDraw(data)
-                    working = false;
-                },
-                error: function(data) {
-                    console.log("Something went wrong!");
-                }
-            });
+            getTransactions()
         }
     }
 })
+
+function getTransactions() {
+    $.ajax({
+        type: "GET",
+        url: "./transactions-history?pageSize=" + pageSize  + "&pageNumber=" + pageNumber,
+        contentType: "application/json; charset=utf8",
+        async: false,
+        success: function(data) {
+            prepareAndDraw(data)
+            working = false;
+        },
+        error: function() {
+            console.log("Something went wrong!");
+        }
+    });
+}
 
 function prepareAndDraw(data) {
     let transactionsData = []
@@ -52,7 +43,7 @@ function prepareAndDraw(data) {
     }
 
     drawTable(transactionsData)
-    start += 50;
+    pageNumber++;
 }
 
 function drawTable(data) {

@@ -5,6 +5,9 @@ import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
@@ -42,8 +45,10 @@ public class TransactionService {
         }
     }
 
-    public List<Transaction> findTransactionsLimitedByUserId(Long id, Integer limit, Integer start) throws InstanceNotFoundException {
+    public List<Transaction> findTransactionsByUserIdLimited(Long id, Integer pageSize, Integer pageNumber) throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
-        return transactionRepository.findTransactionsLimited(accID, limit, start);
+        Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("date").descending());
+
+        return transactionRepository.findAllByAccountId(accID, pageable).getContent();
     }
 }

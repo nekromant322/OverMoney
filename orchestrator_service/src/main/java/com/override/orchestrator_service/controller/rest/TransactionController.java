@@ -50,12 +50,15 @@ public class TransactionController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/transaction/history")
-    public List<TransactionDTO> getTransactions(Principal principal,
-                                                @RequestParam(defaultValue = "50") Integer limit,
-                                                @RequestParam(defaultValue = "0") Integer start) throws InstanceNotFoundException {
+    @GetMapping("/transactions-history")
+    public List<TransactionDTO> getTransactionsHistory(Principal principal,
+                                                @RequestParam(defaultValue = "50") Integer pageSize,
+                                                @RequestParam(defaultValue = "0") Integer pageNumber)
+            throws InstanceNotFoundException {
+
         List<Transaction> transactions =
-                transactionService.findTransactionsLimitedByUserId(telegramUtils.getTelegramId(principal), limit, start);
+                transactionService
+                        .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
 
         return transactions.stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))

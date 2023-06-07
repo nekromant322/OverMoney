@@ -14,6 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
@@ -115,15 +117,14 @@ public class TransactionServiceTest {
         account.setUsers(null);
         User user = TestFieldsUtil.generateTestUser();
         user.setAccount(account);
-        int limit = 50;
-        int start = 0;
         Transaction transaction1 = TestFieldsUtil.generateTestTransaction();
         Transaction transaction2 = TestFieldsUtil.generateTestTransaction();
-        when(transactionRepository.findTransactionsLimited(any(), any(), any()))
-                .thenReturn(List.of(transaction1, transaction2));
+        Page<Transaction> page = new PageImpl<>(List.of(transaction1, transaction2));
+        when(transactionRepository.findAllByAccountId(any(), any()))
+                .thenReturn(page);
         when(userService.getUserById(any())).thenReturn(user);
         List<Transaction> testListTransaction =
-                transactionService.findTransactionsLimitedByUserId(user.getId(), limit, start);
+                transactionService.findTransactionsByUserIdLimited(user.getId(), 50, 0);
         Assertions.assertEquals(List.of(transaction1, transaction2), testListTransaction);
     }
 
