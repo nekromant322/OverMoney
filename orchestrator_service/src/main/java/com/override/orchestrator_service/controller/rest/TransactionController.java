@@ -55,13 +55,7 @@ public class TransactionController {
                                                 @RequestParam(defaultValue = "50") Integer pageSize,
                                                 @RequestParam(defaultValue = "0") Integer pageNumber)
             throws InstanceNotFoundException {
-
-        List<Transaction> transactions =
-                transactionService
-                        .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
-
-        return transactions.stream()
-                .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
-                .collect(Collectors.toList());
+        return transactionService
+                .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
     }
 }

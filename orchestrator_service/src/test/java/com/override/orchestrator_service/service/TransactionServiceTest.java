@@ -1,7 +1,9 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
+import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
@@ -39,6 +41,8 @@ public class TransactionServiceTest {
     private CategoryService categoryService;
     @Mock
     private UserService userService;
+    @Mock
+    private TransactionMapper transactionMapper;
 
     @Test
     public void setTransactionCategoryThrowExceptionWhenCategoryNotFound() {
@@ -119,13 +123,18 @@ public class TransactionServiceTest {
         user.setAccount(account);
         Transaction transaction1 = TestFieldsUtil.generateTestTransaction();
         Transaction transaction2 = TestFieldsUtil.generateTestTransaction();
+        TransactionDTO transactionDTO1 = TestFieldsUtil.generateTestTransactionDTO();
+        TransactionDTO transactionDTO2 = TestFieldsUtil.generateTestTransactionDTO();
         Page<Transaction> page = new PageImpl<>(List.of(transaction1, transaction2));
-        when(transactionRepository.findAllByAccountId(any(), any()))
-                .thenReturn(page);
+
+        when(transactionRepository.findAllByAccountId(any(), any())).thenReturn(page);
         when(userService.getUserById(any())).thenReturn(user);
-        List<Transaction> testListTransaction =
+        when(transactionMapper.mapTransactionToDTO(transaction1)).thenReturn(transactionDTO1);
+        when(transactionMapper.mapTransactionToDTO(transaction2)).thenReturn(transactionDTO2);
+
+        List<TransactionDTO> testListTransaction =
                 transactionService.findTransactionsByUserIdLimited(user.getId(), 50, 0);
-        Assertions.assertEquals(List.of(transaction1, transaction2), testListTransaction);
+        Assertions.assertEquals(List.of(transactionDTO1, transactionDTO2), testListTransaction);
     }
 
 }
