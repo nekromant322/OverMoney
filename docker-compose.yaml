@@ -42,6 +42,7 @@ services:
       - '8761:8761'
     environment:
       _JAVA_OPTIONS: -Xmx256m
+      SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
 
   orchestrator:
     container_name: orchestrator
@@ -58,6 +59,7 @@ services:
       TELEGRAM_BOT_NAME: ${TELEGRAM_BOT_NAME}
       JWT_ACCESS_KEY: ${JWT_ACCESS_KEY}
       JWT_REFRESH_KEY: ${JWT_REFRESH_KEY}
+      SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
     depends_on:
       - orchestrator-db
 
@@ -72,6 +74,7 @@ services:
       RECOGNIZER_DB_PASSWORD: ${RECOGNIZER_DB_PASSWORD}
       RECOGNIZER_DB_HOST: ${RECOGNIZER_DB_HOST}
       RECOGNIZER_DB_PORT: ${RECOGNIZER_DB_PORT}
+      SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
     depends_on:
       - recognizer-db
 
@@ -87,5 +90,6 @@ services:
       TELEGRAM_BOT_DB_HOST: ${TELEGRAM_BOT_DB_HOST}
       TELEGRAM_BOT_DB_PORT: ${TELEGRAM_BOT_DB_PORT}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
     depends_on:
       - telegram-bot-db

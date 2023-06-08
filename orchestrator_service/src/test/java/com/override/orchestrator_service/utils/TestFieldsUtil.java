@@ -2,6 +2,7 @@ package com.override.orchestrator_service.utils;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.TransactionDTO;
+import com.override.dto.KeywordIdDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.*;
 
@@ -12,8 +13,7 @@ public class TestFieldsUtil {
 
     public static Keyword generateTestKeyword() {
         return Keyword.builder()
-                .id(UUID.fromString("6620d7e6-c60f-4928-94d7-40ac77c24fc6"))
-                .keyword("пиво")
+                .keywordId(new KeywordId("пиво", 123L))
                 .category(Category.builder()
                         .id(12345L)
                         .name("продукты")
@@ -22,6 +22,12 @@ public class TestFieldsUtil {
                 .build();
     }
 
+    public static KeywordIdDTO generateTestKeywordIdDTO() {
+        return KeywordIdDTO.builder()
+                .accountId(123L)
+                .name("Тест")
+                .build();
+    }
     public static Category generateTestCategory() {
         Set<Keyword> keywordSet = new HashSet<>();
         keywordSet.add(generateTestKeyword());
@@ -47,14 +53,12 @@ public class TestFieldsUtil {
 
 
     public static CategoryDTO generateTestCategoryDTO() {
-        List<String> keywordList = new ArrayList<>();
-        keywordList.add("Тест");
-
+        List<KeywordIdDTO> keywordIdDTOList = List.of(generateTestKeywordIdDTO());
         return CategoryDTO.builder()
                 .id(12345L)
                 .name("продукты")
                 .type(Type.EXPENSE)
-                .keywords(keywordList)
+                .keywords(keywordIdDTOList)
                 .build();
     }
 

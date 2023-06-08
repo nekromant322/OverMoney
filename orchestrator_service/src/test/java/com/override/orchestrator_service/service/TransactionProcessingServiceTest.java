@@ -16,7 +16,6 @@ import org.mockito.quality.Strictness;
 import javax.management.InstanceNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static com.override.orchestrator_service.utils.TestFieldsUtil.generateTestUser;
@@ -31,7 +30,6 @@ public class TransactionProcessingServiceTest {
 
     @Mock
     private OverMoneyAccountService overMoneyAccountService;
-
 
     @ParameterizedTest
     @MethodSource("provideTransactionArguments")
@@ -93,8 +91,7 @@ public class TransactionProcessingServiceTest {
 
     private Keyword generateTestKeyword() {
         return Keyword.builder()
-                .id(UUID.fromString("6620d7e6-c60f-4928-94d7-40ac77c24fc6"))
-                .keyword("пиво")
+                .keywordId(new KeywordId("пиво", 123L))
                 .category(Category.builder()
                         .id(12345L)
                         .name("продукты")
