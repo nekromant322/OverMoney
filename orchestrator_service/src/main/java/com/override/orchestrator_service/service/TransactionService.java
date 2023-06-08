@@ -45,4 +45,7 @@ public class TransactionService {
             transactionRepository.save(transaction);
         }
     }
+    public Long getSumOfTransactionsByCategoryId(Long categoryId){
+        return transactionRepository.getSumTransactionsByCategoryId(categoryId);
+    }
 }

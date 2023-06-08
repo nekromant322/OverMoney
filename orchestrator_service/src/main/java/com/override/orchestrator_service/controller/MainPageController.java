@@ -10,4 +10,9 @@ public class MainPageController {
     public String getMainPage() {
         return "overview";
     }
+
+    @GetMapping("/analytics")
+    public String getAnalytics() {
+        return "analytics";
+    }
 }

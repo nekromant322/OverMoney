@@ -18,4 +18,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     @Modifying
     @Query("UPDATE Transaction t SET t.category.id = :newCategory WHERE t.category.id= :oldCategory")
     void updateCategoryId(@Param("oldCategory") Long oldCategoryId, @Param("newCategory") Long newCategoryId);
+
+    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.category.id= :categoryId")
+    Long getSumTransactionsByCategoryId(@Param("categoryId") Long categoryId);
 }
