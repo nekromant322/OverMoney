@@ -9,10 +9,7 @@ import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
@@ -51,5 +48,14 @@ public class TransactionController {
         return transactions.stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                 .collect(Collectors.toList());
+    }
+
+    @GetMapping("/transactions/history")
+    public List<TransactionDTO> getTransactionsHistory(Principal principal,
+                                                @RequestParam(defaultValue = "50") Integer pageSize,
+                                                @RequestParam(defaultValue = "0") Integer pageNumber)
+            throws InstanceNotFoundException {
+        return transactionService
+                .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
     }
 }
