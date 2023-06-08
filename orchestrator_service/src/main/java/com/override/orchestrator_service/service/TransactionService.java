@@ -1,6 +1,8 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
+import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.TransactionRepository;

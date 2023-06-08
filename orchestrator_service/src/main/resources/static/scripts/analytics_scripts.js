@@ -27,38 +27,18 @@ window.onload = function () {
 }
 
 function getAnalyticsData(type, place) {
-    let data = getCategoriesByType(type)
+    let data = getCategoriesAndSumAmountByType(type)
     let categoriesName = [];
     let color = [];
     let sumOfTransactions = [];
     let dataSorted = data.sort(comparatorByFieldName)
 
     for (let i = 0; i < dataSorted.length & i < 50; i++) {
-        console.log(colors[i])
         color.push(colors[i])
-
-        categoriesName.push(data[i].name)
-        sumOfTransactions.push(getSumOfTransactionsOfCategory(data[i].id))
+        categoriesName.push(dataSorted[i].category.name)
+        sumOfTransactions.push(dataSorted[i].sumOfTransactions)
     }
     drawAnalytics(categoriesName, sumOfTransactions, color, place)
-}
-
-function getSumOfTransactionsOfCategory(categoryId) {
-    let url = './transactions/sum/' + categoryId;
-    let sum;
-    $.ajax({
-        method: 'GET',
-        url: url,
-        contentType: "application/json; charset=utf8",
-        async: false,
-        success: function (data) {
-            sum = data
-        },
-        error: function () {
-            console.log("ERROR! Something wrong happened")
-        }
-    })
-    return sum;
 }
 
 function drawAnalytics(categories, transactionSums, color, place) {
@@ -84,17 +64,17 @@ function drawAnalytics(categories, transactionSums, color, place) {
     });
 }
 function comparatorByFieldName(dataOne, dataTwo) {
-    if (dataOne.name.toLowerCase() < dataTwo.name.toLowerCase()) {
+    if (dataOne.category.name.toLowerCase() < dataTwo.category.name.toLowerCase()) {
         return -1;
     }
-    if (dataOne.name.toLowerCase() > dataTwo.name.toLowerCase()) {
+    if (dataOne.category.name.toLowerCase() > dataTwo.category.name.toLowerCase()) {
         return 1;
     }
     return 0;
 }
 
-function getCategoriesByType(type) {
-    let url = './categories/types/' + type;
+function getCategoriesAndSumAmountByType(type) {
+    let url = './analytics/totalCategorySums/' + type;
     let categories;
     $.ajax({
         method: 'GET',
