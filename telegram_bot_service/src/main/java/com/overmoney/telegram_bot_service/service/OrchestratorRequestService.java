@@ -17,10 +17,6 @@ public class OrchestratorRequestService {
        return orchestratorFeign.sendTransaction(transaction);
     }
 
-    public void sendVoiceMessage(byte[] voiceMessage) {
-        orchestratorFeign.sendVoiceMessage(voiceMessage);
-    }
-
     public void registerOverMoneyAccount(RegistrationDataDTO accountData) {
         orchestratorFeign.registerOverMoneyAccount(accountData);
     }

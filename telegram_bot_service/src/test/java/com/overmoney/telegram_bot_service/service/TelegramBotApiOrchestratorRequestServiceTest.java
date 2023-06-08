@@ -14,7 +14,7 @@ import static com.overmoney.telegram_bot_service.utils.TestFieldsUtil.generateTe
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class TelegramBotApiRequestServiceTest {
+public class TelegramBotApiOrchestratorRequestServiceTest {
 
     @InjectMocks
     private TelegramBotApiRequestService telegramBotApiRequestService;

@@ -18,8 +18,8 @@ public class VoiceMessageController {
 
     // voiceMessageBytes - байты файла голосового сообщения в формате .ogg, учитывайте это при дальнейшей конвертации
     @PostMapping("/voice_message")
-    public void processVoiceMessage(@RequestBody byte[] voiceMessageBytes) throws IOException, InterruptedException {
-        voiceMessageService.convertOggBytesToWav(voiceMessageBytes);
+    public String processVoiceMessage(@RequestBody byte[] voiceMessage) throws IOException, InterruptedException {
         log.info("Received voice message");
+        return voiceMessageService.processVoiceMessage(voiceMessage);
     }
 }
