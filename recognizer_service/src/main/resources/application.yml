@@ -2,32 +2,32 @@
     port: 8080
 
   spring:
-    datasource:
-      url: jdbc:postgresql://${RECOGNIZER_DB_HOST:localhost}:${RECOGNIZER_DB_PORT:5434}/recognizer-db
-      username: ${RECOGNIZER_DB_USER:postgres}
-      password: ${RECOGNIZER_DB_PASSWORD:postgres}
-      driver-class-name: org.postgresql.Driver
-
-    jpa:
-      database: postgresql
-      database-platform: org.hibernate.dialect.PostgreSQLDialect
-      generate-ddl: false
-      hibernate:
-        ddl-auto: none
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQLDialect
-          current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+#    datasource:
+#      url: jdbc:postgresql://${RECOGNIZER_DB_HOST:localhost}:${RECOGNIZER_DB_PORT:5434}/recognizer-db
+#      username: ${RECOGNIZER_DB_USER:postgres}
+#      password: ${RECOGNIZER_DB_PASSWORD:postgres}
+#      driver-class-name: org.postgresql.Driver
+#
+#    jpa:
+#      database: postgresql
+#      database-platform: org.hibernate.dialect.PostgreSQLDialect
+#      generate-ddl: false
+#      hibernate:
+#        ddl-auto: none
+#      properties:
+#        hibernate:
+#          dialect: org.hibernate.dialect.PostgreSQLDialect
+#          current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 
     application:
       name: recognizer-service
 
-    liquibase:
-      enabled: true
-      change-log: /db/changelog/db.changelog-1.0.xml
+#    liquibase:
+#      enabled: true
+#      change-log: /db/changelog/db.changelog-1.0.xml
 
     profiles:
-      active: ${SPRING_APPLICATION_PROFILE:dev}
+      active: ${SPRING_APPLICATION_PROFILE:test}
 
   eureka:
     client:

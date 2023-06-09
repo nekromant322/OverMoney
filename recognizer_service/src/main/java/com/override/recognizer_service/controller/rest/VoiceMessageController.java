@@ -15,8 +15,9 @@ public class VoiceMessageController {
     @Autowired
     private VoiceMessageService voiceMessageService;
 
+
     @PostMapping("/voice")
-    public String processVoiceMessage(@RequestBody byte[] voiceMessage) throws IOException, InterruptedException, UnsupportedAudioFileException {
+    public String processVoiceMessage(@RequestBody byte[] voiceMessage) throws IOException, InterruptedException {
         return voiceMessageService.processVoiceMessage(voiceMessage);
     }
 }

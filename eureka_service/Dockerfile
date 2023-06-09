@@ -5,7 +5,7 @@ COPY /eureka_service/pom.xml /eureka
 COPY /eureka_service/src /eureka/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
-FROM openjdk:11-jdk-slim
+FROM openjdk:17-jdk-slim
 COPY --from=build /eureka/target/*.jar app.jar
 EXPOSE 8761
 ENTRYPOINT ["java","-jar","app.jar"]

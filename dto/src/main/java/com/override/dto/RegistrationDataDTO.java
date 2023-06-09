@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RegistrationDataDTO {
     private Long chatId;
-    private String username;
+    private Long userId;
 }

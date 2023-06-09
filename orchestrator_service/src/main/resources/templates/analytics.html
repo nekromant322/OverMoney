@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analytics</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <link href="/css/analytics.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<header id="header">
+    <nav class="links" style="--items: 3;">
+        <a href="/overview">Overview</a>
+        <a href="/history">History</a>
+        <a href="/analytics">Analytics</a>
+        <span class="line"></span>
+    </nav>
+</header>
+<div class="content">
+    <div class="info">
+        <input id="info__body_1" class="info__switch" type="checkbox">
+        <label for="info__body_1" class="info__headline">Расходы по категориям</label>
+        <div class="info__body">
+            <canvas id="expenseAnalytics"></canvas>
+        </div>
+    </div>
+    <div class="info">
+        <input id="info__body_2" class="info__switch" type="checkbox">
+        <label for="info__body_2" class="info__headline">Доходы по категориям</label>
+        <div class="info__body">
+            <canvas id="incomeAnalytics"></canvas>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<script src="/scripts/analytics_scripts.js"></script>
+</html>

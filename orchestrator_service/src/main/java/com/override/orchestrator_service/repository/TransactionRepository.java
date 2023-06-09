@@ -23,4 +23,23 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 
     @Query("SELECT t FROM Transaction t WHERE t.account.id = :id")
     Page<Transaction> findAllByAccountId(@Param("id") Long id, Pageable pageable);
+
+    @Query(
+            nativeQuery = true,
+            value = "SELECT * FROM transactions t WHERE t.account_id = :id ORDER BY t.date DESC LIMIT :limit OFFSET :start"
+    )
+    List<Transaction> findTransactionsLimited(@Param("id") Long id, @Param("limit") Integer limit, @Param("start") Integer start);
+
+    @Query("SELECT SUM(t.amount) FROM Transaction t WHERE t.category.id= :categoryId")
+    Long getSumTransactionsByCategoryId(@Param("categoryId") Long categoryId);
+
+    @Modifying
+    @Query("UPDATE Transaction t SET t.category.id = :newCategory " +
+            "WHERE t.account.id= :accId AND t.category.id IS NULL AND t.message = :message")
+    void updateCategoryIdWhereCategoryIsNull(@Param("newCategory") Long newCategoryId,
+                                             @Param("message") String message,
+                                             @Param("accId") Long accId);
+
+    @Query("SELECT t.account.id FROM Transaction t WHERE t.id= :transactionId")
+    Long findAccountIdByTransactionId(@Param("transactionId") UUID transactionId);
 }
