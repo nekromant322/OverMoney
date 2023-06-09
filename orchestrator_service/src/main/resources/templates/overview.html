@@ -8,54 +8,69 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link href="/css/overview.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<div class="row">
-    <div class="undefined-space">
-    </div>
-    <div class="categories-space">
-        <div class="space-button-add-category">
-            <button class="button-add-category" type="submit" onclick="drawModalToAddCategory()">+</button>
+<header id="header">
+    <nav class="links" style="--items: 3;">
+        <a href="/overview">Overview</a>
+        <a href="/history">History</a>
+        <a href="/analytics">Analytics</a>
+        <span class="line"></span>
+    </nav>
+</header>
+<div class="content">
+
+
+    <div class="row">
+        <div class="undefined-space">
+        </div>
+        <div class="categories-space">
+            <div class="space-button-add-category">
+                <button class="button-add-category" type="submit" onclick="drawModalToAddCategory()">+</button>
+            </div>
+        </div>
+        <div class="modal-category-fade">
+            <div class="modal-category-content">
+            </div>
         </div>
     </div>
-    <div class="modal-category-fade">
-        <div class="modal-category-content">
+    <div class="modal-default-category" id="modal-default-category">
+        <div class="modal-default-category-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <form>
+                <p>Мы обнаружили, что у Вас нет категорий.</p>
+                <p>Добавить стандартный набор категорий?</p>
+                <input type="submit" class="submit-default-modal-category" onclick="addDefaultCategories()" value="Да">
+                <input type="button" class="modal-default-category-close" onclick="closeModal()" value="Нет">
+            </form>
         </div>
     </div>
-</div>
-<div class="modal-default-category" id="modal-default-category">
-    <div class="modal-default-category-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <form>
-            <p>Мы обнаружили, что у Вас нет категорий.</p>
-            <p>Добавить стандартный набор категорий?</p>
-            <input type="submit" class="submit-default-modal-category" onclick="addDefaultCategories()" value="Да">
-            <input type="button" class="modal-default-category-close" onclick="closeModal()" value="Нет">
-        </form>
+    <div class="modal-verification-merge" id="modal-verification-merge">
+        <div class="modal-verification-merge-content">
+            <span class="close" onclick="closeModalVerification()">&times;</span>
+            <form class="formVerificationMerge">
+                <p>Вы уверены, что хотите произвести слияние категорий?
+                <p class="information-merge"></p>
+                <p>Произвести слияние категорий?</p>
+                <input type="submit" class="submit-verification-merge" value="Да">
+                <input type="button" class="modal-verification-merge-close" onclick="closeModalVerification()"
+                       value="Нет">
+            </form>
+        </div>
     </div>
-</div>
-<div class="modal-verification-merge" id="modal-verification-merge">
-    <div class="modal-verification-merge-content">
-        <span class="close" onclick="closeModalVerification()">&times;</span>
-        <form class="formVerificationMerge">
-            <p>Вы уверены, что хотите произвести слияние категорий?
-            <p class="information-merge"></p>
-            <p>Произвести слияние категорий?</p>
-            <input type="submit" class="submit-verification-merge" value="Да">
-            <input type="button" class="modal-verification-merge-close" onclick="closeModalVerification()" value="Нет">
-        </form>
-    </div>
-</div>
-<div class="modal-verification-delete-keyword" id="modal-verification-delete-keyword">
-    <div class="modal-verification-delete-keyword-content">
-        <span class="close" onclick="closeModalDeleteKeyword()">&times;</span>
-        <form class="formVerificationDeleteKeyword">
-            <p>Вы уверены, что хотите удалить ключевое слово?
-            <p class="information-delete-keyword"></p>
-            <p>Выполнить удаление ключевого слова?</p>
-            <input type="submit" class="submit-delete-keyword" value="Да">
-            <input type="button" class="modal-verification-delete-keyword-close" onclick="closeModalDeleteKeyword()" value="Нет">
-        </form>
+    <div class="modal-verification-delete-keyword" id="modal-verification-delete-keyword">
+        <div class="modal-verification-delete-keyword-content">
+            <span class="close" onclick="closeModalDeleteKeyword()">&times;</span>
+            <form class="formVerificationDeleteKeyword">
+                <p>Вы уверены, что хотите удалить ключевое слово?
+                <p class="information-delete-keyword"></p>
+                <p>Выполнить удаление ключевого слова?</p>
+                <input type="submit" class="submit-delete-keyword" value="Да">
+                <input type="button" class="modal-verification-delete-keyword-close" onclick="closeModalDeleteKeyword()"
+                       value="Нет">
+            </form>
+        </div>
     </div>
 </div>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
