@@ -69,7 +69,7 @@ services:
     ports:
       - '8080:8080'
     environment:
-      _JAVA_OPTIONS: -Xmx256m
+      _JAVA_OPTIONS: -Xmx512m
       RECOGNIZER_DB_USER: ${RECOGNIZER_DB_USER}
       RECOGNIZER_DB_PASSWORD: ${RECOGNIZER_DB_PASSWORD}
       RECOGNIZER_DB_HOST: ${RECOGNIZER_DB_HOST}

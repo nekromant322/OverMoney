@@ -73,15 +73,30 @@
             <version>6.5.0</version>
             <scope>compile</scope>
         </dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.override</groupId>-->
+<!--			<artifactId>dto</artifactId>-->
+<!--			<version>0.0.1</version>-->
+<!--		</dependency>-->
 		<dependency>
-			<groupId>com.override</groupId>
-			<artifactId>dto</artifactId>
-			<version>0.0.1</version>
+			<groupId>com.alphacephei</groupId>
+			<artifactId>vosk</artifactId>
+			<version>0.3.45</version>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.jna</groupId>
+			<artifactId>jna</artifactId>
+			<version>5.13.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.nekromant322</groupId>
+			<artifactId>whisper.cpp</artifactId>
+			<version>388f22bb39</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -95,7 +110,12 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 	<build>
 		<plugins>
 			<plugin>
@@ -164,5 +184,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

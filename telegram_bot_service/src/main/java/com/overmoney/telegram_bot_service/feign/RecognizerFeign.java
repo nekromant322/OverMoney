@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name="recognizer-service")
 public interface RecognizerFeign {
 
-    @PostMapping("/voice_message")
+    @PostMapping("/voice")
     String sendVoiceMessage(@RequestBody byte[] voiceMessage);
 }
