@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.repository;
 
+import com.override.dto.AnalyticsDataDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,12 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("SELECT c FROM Category c WHERE c.account.id = :id AND c.type = :type")
     List<Category> findAllByTypeAndAccId(@Param("id") Long accountId, @Param("type") Type type);
+
+    @Query("SELECT new com.override.dto.AnalyticsDataDTO(c.id, c.name, SUM(t.amount))\n" +
+            "FROM Category c \n" +
+            "LEFT JOIN Transaction t ON t.category.id = c.id\n" +
+            "WHERE c.account.id = :accId\n" +
+            "AND c.type = :type\n" +
+            "GROUP BY c.id")
+    List<AnalyticsDataDTO> findTotalSumOfAllCategoriesByAccIdAndType(@Param("accId") Long accId, @Param("type") Type type);
 }
