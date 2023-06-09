@@ -62,8 +62,4 @@ public class TransactionService {
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                 .collect(Collectors.toList());
     }
-
-    public Long getSumOfTransactionsByCategoryId(Long categoryId){
-        return transactionRepository.getSumTransactionsByCategoryId(categoryId);
-    }
 }
