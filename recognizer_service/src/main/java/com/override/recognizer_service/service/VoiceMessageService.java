@@ -14,6 +14,12 @@ public class VoiceMessageService {
     private final String OGG_FORMAT = ".ogg";
     private final String WAV_FORMAT = ".wav";
 
+    public String processVoiceMessage(byte[] voiceMessage) throws IOException, InterruptedException {
+        byte[] voiceMessageWav = convertOggBytesToWav(voiceMessage);
+
+        return "заглушка 5000";
+    }
+
     public byte[] convertOggBytesToWav(byte[] voiceMessage) throws IOException, InterruptedException {
         UUID voiceId = UUID.randomUUID();
         StringBuilder oggFileName = new StringBuilder();

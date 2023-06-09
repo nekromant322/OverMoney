@@ -13,9 +13,6 @@ public interface OrchestratorFeign {
     @PostMapping("/transaction")
     TransactionResponseDTO sendTransaction(@RequestBody TransactionMessageDTO transaction);
 
-    @PostMapping("/voice_message")
-    void sendVoiceMessage(@RequestBody byte[] voiceMessage);
-
     @PostMapping("/register")
     void registerOverMoneyAccount(@RequestBody RegistrationDataDTO accountData);
 }
