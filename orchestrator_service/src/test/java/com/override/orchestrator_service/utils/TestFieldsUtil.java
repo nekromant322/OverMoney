@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.utils;
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.TransactionDTO;
 import com.override.dto.KeywordIdDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.*;
@@ -58,6 +59,15 @@ public class TestFieldsUtil {
                 .name("продукты")
                 .type(Type.EXPENSE)
                 .keywords(keywordIdDTOList)
+                .build();
+    }
+
+    public static TransactionDTO generateTestTransactionDTO() {
+        return TransactionDTO.builder()
+                .message("продукты")
+                .amount(200F)
+                .date(LocalDateTime.now())
+                .categoryName(generateTestCategory().getName())
                 .build();
     }
 
