@@ -27,7 +27,7 @@ public class AnalyticsController {
     private TelegramUtils telegramUtils;
 
     @GetMapping("/totalCategorySums/{type}")
-    public List<AnalyticsDataDTO> getAnalyticsData(Principal principal, @PathVariable("type") Type type) throws InstanceNotFoundException {
-        return analyticService.getAnalyticsData(telegramUtils.getTelegramId(principal), type);
+    public List<AnalyticsDataDTO> getAnalyticsTotalCategorySums(Principal principal, @PathVariable("type") Type type) throws InstanceNotFoundException {
+        return analyticService.getTotalCategorySumsForAnalytics(telegramUtils.getTelegramId(principal), type);
     }
 }

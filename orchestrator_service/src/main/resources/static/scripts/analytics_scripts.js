@@ -35,7 +35,7 @@ function getAnalyticsData(type, place) {
 
     for (let i = 0; i < dataSorted.length & i < 50; i++) {
         color.push(colors[i])
-        categoriesName.push(dataSorted[i].category.name)
+        categoriesName.push(dataSorted[i].categoryName)
         sumOfTransactions.push(dataSorted[i].sumOfTransactions)
     }
     drawAnalytics(categoriesName, sumOfTransactions, color, place)
@@ -64,10 +64,10 @@ function drawAnalytics(categories, transactionSums, color, place) {
     });
 }
 function comparatorByFieldName(dataOne, dataTwo) {
-    if (dataOne.category.name.toLowerCase() < dataTwo.category.name.toLowerCase()) {
+    if (dataOne.categoryName.toLowerCase() < dataTwo.categoryName.toLowerCase()) {
         return -1;
     }
-    if (dataOne.category.name.toLowerCase() > dataTwo.category.name.toLowerCase()) {
+    if (dataOne.categoryName.toLowerCase() > dataTwo.categoryName.toLowerCase()) {
         return 1;
     }
     return 0;

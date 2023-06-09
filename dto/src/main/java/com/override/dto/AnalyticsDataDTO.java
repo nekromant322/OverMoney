@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class AnalyticsDataDTO {
-    private CategoryDTO category;
-    private Long sumOfTransactions;
+    private Long categoryId;
+    private String categoryName;
+    private Double sumOfTransactions;
 }
