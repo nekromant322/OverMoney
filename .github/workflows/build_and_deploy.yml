@@ -96,14 +96,15 @@ jobs:
       - name: Copy nginx.conf and /sites-enabled via SSH
         if: ${{ needs.paths-filter.outputs.nginx == 'true' }}
         uses: appleboy/scp-action@master
-          with:
-            host: overridetech.ru
-            username: ${{ secrets.SSH_USER }}
-            password: ${{ secrets.SSH_PASSWORD }}
-            port: 22
-            source: "nginx/*"
-            target: "/home/${{ secrets.SSH_USER }}"
-            overwrite: true
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          source: "nginx/*"
+          target: "/home/${{ secrets.SSH_USER }}"
+          overwrite: true
+
 
   deploy:
     name: Deploy
