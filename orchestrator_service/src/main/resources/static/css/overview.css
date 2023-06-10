@@ -13,6 +13,7 @@ body, html {
 }
 
 .categories-space {
+    font-size: 32px;
     border: 1px solid #000;
     width: 29%;
     height: 100%;
@@ -23,7 +24,9 @@ body, html {
 }
 
 .category {
-    display: table;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     border: 1px solid #000;
     text-align: center;
