@@ -80,7 +80,7 @@ services:
 
   telegram-bot:
     container_name: telegram-bot
-    image: nekromant322/overmoney:telegram_bot
+    image: nekromant322/overmoney:telegram-bot
     ports:
       - '8082:8082'
     environment:
@@ -90,6 +90,7 @@ services:
       TELEGRAM_BOT_DB_HOST: ${TELEGRAM_BOT_DB_HOST}
       TELEGRAM_BOT_DB_PORT: ${TELEGRAM_BOT_DB_PORT}
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+      TELEGRAM_BOT_NAME: ${TELEGRAM_BOT_NAME}
       SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
     depends_on:
       - telegram-bot-db
