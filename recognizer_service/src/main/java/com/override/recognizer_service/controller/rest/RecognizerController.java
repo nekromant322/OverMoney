@@ -31,9 +31,9 @@ public class RecognizerController {
         return "Recognizer";
     }
 
-    @GetMapping("/recognizer/category")
-    public CategoryDTO processVoiceMessage( @RequestParam(name = "message") String message,
-                                            @RequestBody List<CategoryDTO> categories) {
+    @PostMapping("/recognizer/category")
+    public CategoryDTO recognizeCategory(@RequestParam(name = "message") String message,
+                                           @RequestBody List<CategoryDTO> categories) {
         return categoryRecognizerService.recognizeCategory(message, categories);
     }
 }

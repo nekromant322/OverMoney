@@ -3,7 +3,6 @@ package com.override.recognizer_service.service;
 import com.override.dto.CategoryDTO;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,7 @@ public class CategoryRecognizerService {
         strTwo = strTwo.toLowerCase();
         float maxLength = Integer.max(strOne.length(), strTwo.length());
         if (maxLength > 0) {
-            return (float) ((maxLength - LevenshteinDistance.getDefaultInstance().apply(strOne, strTwo)) / maxLength);
+            return (maxLength - LevenshteinDistance.getDefaultInstance().apply(strOne, strTwo)) / maxLength;
         }
         return 0.0f;
     }
