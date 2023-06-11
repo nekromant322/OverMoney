@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
 
 @RestController
@@ -15,7 +16,7 @@ public class VoiceMessageController {
     private VoiceMessageService voiceMessageService;
 
     @PostMapping("/voice")
-    public String processVoiceMessage(@RequestBody byte[] voiceMessage) throws IOException, InterruptedException {
+    public String processVoiceMessage(@RequestBody byte[] voiceMessage) throws IOException, InterruptedException, UnsupportedAudioFileException {
         return voiceMessageService.processVoiceMessage(voiceMessage);
     }
 }
