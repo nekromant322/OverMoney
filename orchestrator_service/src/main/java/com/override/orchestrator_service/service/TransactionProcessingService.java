@@ -106,14 +106,13 @@ public class TransactionProcessingService {
 
     private Keyword getMatchingKeyword(Set<Category> categories, Set<String> words) {
         Keyword matchingKeyword = null;
+        String word = String.join(" ", words);
         for (Category category : categories) {
             Set<Keyword> keywords = category.getKeywords();
             for (Keyword keyword : keywords) {
-                for (String word : words) {
-                    if (word.equalsIgnoreCase(keyword.getKeywordId().getName())) {
-                        matchingKeyword = keyword;
-                        break;
-                    }
+                if (word.equalsIgnoreCase(keyword.getKeywordId().getName())) {
+                    matchingKeyword = keyword;
+                    break;
                 }
             }
         }
