@@ -131,7 +131,7 @@ function handleDragStart(e) {
     this.style.opacity = 0.4;
     e.dataTransfer.setData("amount", this.dataset.amount);
     e.dataTransfer.setData("comment", this.dataset.comment);
-    e.dataTransfer.setData("transactionId", this.dataset.id);
+    e.dataTransfer.setData("transactionComment", this.dataset.comment);
     e.dataTransfer.setData("elementId", this.id);
 }
 
@@ -143,25 +143,39 @@ function handleDrop(e) {
     e.preventDefault();
     const categoryId = this.dataset.id;
     const categoryName = this.dataset.name;
-    const transactionId = e.dataTransfer.getData("transactionId");
-    const circleId = e.dataTransfer.getData("elementId");
+    const transactionComment = e.dataTransfer.getData("transactionComment");
 
     const transactionDefined = {
-        transactionId: transactionId,
+        transactionComment: transactionComment,
         categoryId: categoryId
     }
+    console.log(transactionComment)
     let url = './qualifier'
     $.ajax({
         url: url,
         type: 'POST',
-        contentType: "application/json; charset=utf-8",
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        async: false,
         data: JSON.stringify(transactionDefined),
-        dataType: "json"
+        dataType: "json",
+        success: function () {
+            console.log("Successfully updated transactions")
+        },
+        error: function (error) {
+            console.log(error)
+        }
     });
-
     drawToast(e, categoryName)
     this.classList.remove('over');
-    document.getElementById(circleId).remove();
+
+    var circles = document.querySelectorAll(".undefined-circle")
+    for (var i = 0; i < circles.length; i++) {
+        if (circles[i].dataset.comment === transactionComment) {
+            circles[i].remove();
+        }
+    }
 }
 
 function drawToast(e, categoryName) {
@@ -350,7 +364,7 @@ function drawCategory(category, length) {
 }
 
 function writeKeywordsOfCategory(category) {
-    if(category.keywords.length === 0){
+    if (category.keywords.length === 0) {
         $('.keywords-list').append("Нет ключевых слов")
     }
     for (let j = 0; j < category.keywords.length; j++) {
