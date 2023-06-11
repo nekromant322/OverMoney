@@ -24,10 +24,10 @@ public class QualifierController {
     @PostMapping("/qualifier")
     public ResponseEntity<String> qualify(@RequestBody TransactionQualifierDTO transactionQualifierDTO) {
         try {
-            transactionService.setTransactionCategory(transactionQualifierDTO.getTransactionId(),
+            transactionService.setTransactionCategoryByMessage(transactionQualifierDTO.getTransactionComment(),
                     transactionQualifierDTO.getCategoryId());
 
-            keywordService.setKeywordCategory(transactionQualifierDTO.getTransactionId(),
+            keywordService.setKeywordCategoryByTransactionMessage(transactionQualifierDTO.getTransactionComment(),
                     transactionQualifierDTO.getCategoryId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {

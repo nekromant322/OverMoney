@@ -37,4 +37,12 @@ public class KeywordService {
         keyword.setCategory(category);
         saveKeyword(keyword);
     }
+
+    public void setKeywordCategoryByTransactionMessage(String transactionComment, Long categoryId) {
+        Category category = categoryService.getCategoryById(categoryId);
+        Keyword keyword = new Keyword();
+        keyword.setKeywordId(new KeywordId(transactionComment, category.getAccount().getId()));
+        keyword.setCategory(category);
+        keywordRepository.save(keyword);
+    }
 }
