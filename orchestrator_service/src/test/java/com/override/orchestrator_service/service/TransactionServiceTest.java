@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
@@ -137,4 +138,9 @@ public class TransactionServiceTest {
         Assertions.assertEquals(List.of(transactionDTO1, transactionDTO2), testListTransaction);
     }
 
+    @Test
+    public void setTransactionCategoryByMessageTest() {
+        transactionService.setTransactionCategoryByMessage(any(), any());
+        verify(transactionRepository, times(1)).updateCategoryIdWhereCategoryIsNull(any(), any());
+    }
 }
