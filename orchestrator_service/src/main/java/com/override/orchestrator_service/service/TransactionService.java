@@ -54,6 +54,19 @@ public class TransactionService {
         }
     }
 
+    public void setTransactionsWithSameMessageAndAccountIdNoCategory(UUID transactionId){
+        Transaction transaction = getTransactionById(transactionId);
+        List<Transaction> transactionsToUpdate = transactionRepository
+                .findAllByAccountIdAndMessage(transaction.getAccount().getId(), transaction.getMessage());
+        transactionsToUpdate.forEach(t -> setTransactionNoCategory(t.getId()));
+    }
+
+    public void setTransactionNoCategory(UUID transactionId) {
+        Transaction transaction = getTransactionById(transactionId);
+        transaction.setCategory(null);
+        transactionRepository.save(transaction);
+    }
+
     public List<TransactionDTO> findTransactionsByUserIdLimited(Long id, Integer pageSize, Integer pageNumber) throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("date").descending());

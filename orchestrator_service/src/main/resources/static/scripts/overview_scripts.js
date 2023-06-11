@@ -150,7 +150,7 @@ function handleDrop(e) {
         transactionId: transactionId,
         categoryId: categoryId
     }
-    let url = './qualifier'
+    let url = './transaction/define'
     $.ajax({
         url: url,
         type: 'POST',
@@ -159,20 +159,38 @@ function handleDrop(e) {
         dataType: "json"
     });
 
-    drawToast(e, categoryName)
+    drawSnackbar(e, categoryName, transactionDefined)
     this.classList.remove('over');
     document.getElementById(circleId).remove();
 }
 
-function drawToast(e, categoryName) {
-    Toastify({
-        text: "\n \"" + e.dataTransfer.getData("comment") + " " + e.dataTransfer.getData("amount") + "\" "
-            + "добавлено в категорию \"" + categoryName + "\"",
-        duration: 5000,
-        position: "left",
-        gravity: "bottom",
-        close: true
-    }).showToast()
+function drawSnackbar(e, categoryName, transactionDefined) {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    $(document).find('#snackbar-text').empty();
+    $(document).find('#snackbar-text').append(
+        e.dataTransfer.getData("comment") + " " + e.dataTransfer.getData("amount") + " добавлено в категорию " + categoryName
+    );
+    const button = document.querySelector('#undefineButton');
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 5000);
+    button.onclick = () => {
+        undefineTransaction(transactionDefined);
+        let circles = document.querySelectorAll('.undefined-circle')
+        circles.forEach(circle => document.getElementById(circle.id).remove())
+        setTimeout(function () {getUndefinedTransactionsData();}, 200)
+        x.className = x.className.replace("show", "");
+    };
+}
+
+function undefineTransaction(transactionDefined) {
+    let url = './transaction/undefine'
+    $.ajax({
+        url: url,
+        type: 'POST',
+        contentType: "application/json; charset=utf-8",
+        data: JSON.stringify(transactionDefined),
+        dataType: "json"
+    });
 }
 
 function handleDragEnter(e) {

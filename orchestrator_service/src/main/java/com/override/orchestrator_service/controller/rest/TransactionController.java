@@ -10,6 +10,7 @@ import com.override.orchestrator_service.service.KeywordService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import com.override.orchestrator_service.util.TelegramUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 public class TransactionController {
 
@@ -67,13 +69,24 @@ public class TransactionController {
     }
 
     @PostMapping("/transaction/define")
-    public ResponseEntity<String> qualify(@RequestBody TransactionDefineDTO transactionDefineDTO) {
+    public ResponseEntity<String> define(@RequestBody TransactionDefineDTO transactionDefineDTO) {
         try {
             transactionService.setTransactionCategory(transactionDefineDTO.getTransactionId(),
                     transactionDefineDTO.getCategoryId());
 
             keywordService.setKeywordCategory(transactionDefineDTO.getTransactionId(),
                     transactionDefineDTO.getCategoryId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_GATEWAY);
+        }
+    }
+
+    @PostMapping("/transaction/undefine")
+    public ResponseEntity<String> undefine(@RequestBody TransactionDefineDTO transactionDefineDTO) {
+        try {
+            transactionService.setTransactionsWithSameMessageAndAccountIdNoCategory(transactionDefineDTO.getTransactionId());
+            keywordService.setKeywordNoCategory(transactionDefineDTO.getTransactionId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
