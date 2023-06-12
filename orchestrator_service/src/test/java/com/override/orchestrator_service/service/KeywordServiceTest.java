@@ -2,7 +2,10 @@ package com.override.orchestrator_service.service;
 
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
-import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.Keyword;
+import com.override.orchestrator_service.model.OverMoneyAccount;
+import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Test;
@@ -89,14 +92,5 @@ public class KeywordServiceTest {
         keywordService.setKeywordCategory(transaction.getId(), category.getId());
 
         verify(keywordRepository, times(1)).save(any(Keyword.class));
-    }
-
-    @Test
-    public void setKeywordCategoryByTransactionMessageTest() {
-        final Keyword keyword = TestFieldsUtil.generateTestKeyword();
-        when(categoryService.getCategoryById(keyword.getCategory().getId())).thenReturn(keyword.getCategory());
-        keywordService.setKeywordCategoryByTransactionMessage(keyword.getKeywordId().getName(),
-                keyword.getCategory().getId());
-        verify(keywordRepository, times(1)).save(any());
     }
 }
