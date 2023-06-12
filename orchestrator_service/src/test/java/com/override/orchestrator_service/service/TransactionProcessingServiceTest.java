@@ -36,7 +36,7 @@ public class TransactionProcessingServiceTest {
     public void processTransactionTest(String message, String messageResponse, Float amount, String categoryName) throws InstanceNotFoundException {
         TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
                 .message(message)
-                .username("kyomexd")
+                .userId(123L)
                 .chatId(404723191L)
                 .build();
         OverMoneyAccount account = generateTestAccount();
