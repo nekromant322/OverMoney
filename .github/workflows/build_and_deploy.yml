@@ -3,7 +3,7 @@ name: Build & Deploy
 on:
   push:
     branches:
-      - master
+      - actions/restart-services-on-push
 
 jobs:
   push_compose:
