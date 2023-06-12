@@ -47,7 +47,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public void setTransactionCategory(UUID transactionId, Long categoryId) {
+    public void setCategoryForAllUndefinedTransactionsWithSameKeywords(UUID transactionId, Long categoryId) {
         Long accId = transactionRepository.findAccountIdByTransactionId(transactionId);
         String transactionMessage = getTransactionById(transactionId).getMessage();
         transactionRepository.updateCategoryIdWhereCategoryIsNull(categoryId, transactionMessage, accId);

@@ -48,13 +48,13 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void setTransactionCategorySaveTransactionWhenCategoryAndTransactionFound() throws InstanceNotFoundException {
+    public void setCategoryForAllUndefinedTransactionsWithSameKeywordsTest() {
         final Category category = TestFieldsUtil.generateTestCategory();
         final Transaction transaction = TestFieldsUtil.generateTestTransaction();
         final OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
         when(transactionRepository.findById(any())).thenReturn(Optional.of(transaction));
         when(transactionRepository.findAccountIdByTransactionId(transaction.getId())).thenReturn(account.getId());
-        transactionService.setTransactionCategory(transaction.getId(), category.getId());
+        transactionService.setCategoryForAllUndefinedTransactionsWithSameKeywords(transaction.getId(), category.getId());
         verify(transactionRepository, times(1))
                 .updateCategoryIdWhereCategoryIsNull(category.getId(), transaction.getMessage(), account.getId());
     }

@@ -24,7 +24,7 @@ public class QualifierController {
     @PostMapping("/qualifier")
     public ResponseEntity<String> qualify(@RequestBody TransactionQualifierDTO transactionQualifierDTO) {
         try {
-            transactionService.setTransactionCategory(transactionQualifierDTO.getTransactionId(),
+            transactionService.setCategoryForAllUndefinedTransactionsWithSameKeywords(transactionQualifierDTO.getTransactionId(),
                                                       transactionQualifierDTO.getCategoryId());
 
             keywordService.setKeywordCategory(transactionQualifierDTO.getTransactionId(),
