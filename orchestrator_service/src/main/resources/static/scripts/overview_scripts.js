@@ -144,12 +144,12 @@ function handleDrop(e) {
     const categoryId = this.dataset.id;
     const categoryName = this.dataset.name;
     const transactionComment = e.dataTransfer.getData("transactionComment");
-
+    const transactionId = e.dataTransfer.getData("elementId");
+    console.log(transactionId)
     const transactionDefined = {
-        transactionComment: transactionComment,
+        transactionId: transactionId,
         categoryId: categoryId
     }
-    console.log(transactionComment)
     let url = './qualifier'
     $.ajax({
         url: url,

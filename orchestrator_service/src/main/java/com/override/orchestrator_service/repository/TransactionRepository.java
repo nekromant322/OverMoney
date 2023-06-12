@@ -25,6 +25,9 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     Page<Transaction> findAllByAccountId(@Param("id") Long id, Pageable pageable);
 
     @Modifying
-    @Query("UPDATE Transaction t SET t.category.id = :newCategory WHERE t.category.id is null AND t.message = :message")
-    void updateCategoryIdWhereCategoryIsNull(@Param("newCategory") Long newCategoryId, @Param("message") String message);
+    @Query("UPDATE Transaction t SET t.category.id = :newCategory " +
+            "WHERE t.account.id= :accId AND t.category.id IS NULL AND t.message = :message")
+    void updateCategoryIdWhereCategoryIsNull(@Param("newCategory") Long newCategoryId,
+                                             @Param("message") String message,
+                                             @Param("accId")Long accId);
 }

@@ -25,7 +25,7 @@ public class KeywordService {
         keywordRepository.save(keyword);
     }
 
-    public void updateCategory(Long categoryToMergeId, Long categoryToChangeId){
+    public void updateCategory(Long categoryToMergeId, Long categoryToChangeId) {
         keywordRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
     }
 
@@ -36,13 +36,5 @@ public class KeywordService {
         keyword.setKeywordId(new KeywordId(transaction.getMessage(), category.getAccount().getId()));
         keyword.setCategory(category);
         saveKeyword(keyword);
-    }
-
-    public void setKeywordCategoryByTransactionMessage(String transactionComment, Long categoryId) {
-        Category category = categoryService.getCategoryById(categoryId);
-        Keyword keyword = new Keyword();
-        keyword.setKeywordId(new KeywordId(transactionComment, category.getAccount().getId()));
-        keyword.setCategory(category);
-        keywordRepository.save(keyword);
     }
 }

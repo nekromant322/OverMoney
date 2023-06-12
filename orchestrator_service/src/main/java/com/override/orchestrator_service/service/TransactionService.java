@@ -3,7 +3,6 @@ package com.override.orchestrator_service.service;
 import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
-import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +22,12 @@ public class TransactionService {
     @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
-    private CategoryService categoryService;
-    @Autowired
     private UserService userService;
     @Autowired
     private TransactionMapper transactionMapper;
+
+    @Autowired
+    private OverMoneyAccountService accountService;
 
     public void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
@@ -46,18 +46,11 @@ public class TransactionService {
         transactionRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
     }
 
-    public void setTransactionCategory(UUID transactionId, Long categoryId) {
-        Transaction transaction = getTransactionById(transactionId);
-        Category category = categoryService.getCategoryById(categoryId);
-        if (Objects.nonNull(transaction) && Objects.nonNull(category)) {
-            transaction.setCategory(category);
-            transactionRepository.save(transaction);
-        }
-    }
-
     @Transactional
-    public void setTransactionCategoryByMessage(String transactionComment, Long categoryId) {
-        transactionRepository.updateCategoryIdWhereCategoryIsNull(categoryId, transactionComment);
+    public void setTransactionCategory(UUID transactionId, Long categoryId, Long userId) throws InstanceNotFoundException {
+        Long accId = accountService.getAccountByUserId(userId).getId();
+        String transactionMessage = getTransactionById(transactionId).getMessage();
+        transactionRepository.updateCategoryIdWhereCategoryIsNull(categoryId, transactionMessage, accId);
     }
 
     public List<TransactionDTO> findTransactionsByUserIdLimited(Long id, Integer pageSize, Integer pageNumber) throws InstanceNotFoundException {
