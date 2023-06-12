@@ -4,6 +4,7 @@ import com.override.orchestrator_service.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
+
 import javax.management.InstanceNotFoundException;
 import java.util.HashSet;
 import java.util.Objects;
@@ -34,11 +35,9 @@ public class TransactionProcessingService {
         if (Objects.isNull(overMoneyAccount.getCategories()) ||
                 Objects.isNull(getMatchingCategory(overMoneyAccount.getCategories(),
                         getWords(transactionMessageDTO.getMessage()))) &&
-                Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
-                        getWords(transactionMessageDTO.getMessage())))) {
-            StringBuilder message = new StringBuilder();
-            getWords(transactionMessageDTO.getMessage()).forEach(word -> message.append(word).append(" "));
-            return message.toString().trim();
+                        Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
+                                getWords(transactionMessageDTO.getMessage())))) {
+            return getWords(transactionMessageDTO.getMessage());
         }
 
         Category matchingCategory = getMatchingCategory(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
@@ -54,8 +53,8 @@ public class TransactionProcessingService {
         if (Objects.isNull(overMoneyAccount.getCategories()) ||
                 Objects.isNull(getMatchingCategory(overMoneyAccount.getCategories(),
                         getWords(transactionMessageDTO.getMessage()))) &&
-                Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
-                        getWords(transactionMessageDTO.getMessage())))) {
+                        Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
+                                getWords(transactionMessageDTO.getMessage())))) {
             return null;
         }
 
@@ -68,31 +67,23 @@ public class TransactionProcessingService {
         return matchingKeyword.getCategory();
     }
 
-    private Category getMatchingCategory(Set<Category> categories, Set<String> words) {
+    private Category getMatchingCategory(Set<Category> categories, String words) {
         Category matchingCategory = null;
         for (Category category : categories) {
-            for (String word : words) {
-                if (word.equalsIgnoreCase(category.getName())) {
-                    matchingCategory = category;
-                    break;
-                }
+            if (words.equalsIgnoreCase(category.getName())) {
+                matchingCategory = category;
+                break;
             }
         }
         return matchingCategory;
     }
 
-    private Set<String> getWords(String message) throws InstanceNotFoundException {
-        String[] messageSplit = message.split(" ");
-        Set<String> words = new HashSet<>();
-        for (String word : messageSplit) {
-            if (!word.matches("^[0-9]*[.|,]{0,1}[0-9]+$")) {
-                words.add(word);
-            }
-        }
-        if (words.isEmpty()) {
+    private String getWords(String message) throws InstanceNotFoundException {
+        String word = message.replaceAll("\\d+(\\.\\d+)?", "").trim();
+        if (word.equals("")) {
             throw new InstanceNotFoundException("No keywords present in the message");
         }
-        return words;
+        return word;
     }
 
     private Float getAmount(String message) throws InstanceNotFoundException {
@@ -104,7 +95,7 @@ public class TransactionProcessingService {
         throw new InstanceNotFoundException("No amount stated");
     }
 
-    private Keyword getMatchingKeyword(Set<Category> categories, Set<String> words) {
+    private Keyword getMatchingKeyword(Set<Category> categories, String words) {
         Keyword matchingKeyword = null;
         String word = String.join(" ", words);
         for (Category category : categories) {
