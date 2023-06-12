@@ -137,4 +137,41 @@ public class TransactionServiceTest {
         Assertions.assertEquals(List.of(transactionDTO1, transactionDTO2), testListTransaction);
     }
 
+    @Test
+    public void setTransactionNoCategorySaveTransactionWhenTransactionFound() {
+        final Transaction transaction = new Transaction();
+        transaction.setId(UUID.randomUUID());
+
+        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.of(transaction));
+
+        transactionService.setTransactionNoCategory(transaction.getId());
+
+        verify(transactionRepository, times(1)).save(any(Transaction.class));
+    }
+
+    @Test
+    public void setTransactionNoCategoryThrowExceptionWhenTransactionNotFound() {
+
+        final Transaction transaction = new Transaction();
+        transaction.setId(UUID.randomUUID());
+
+        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.empty());
+
+        assertThrows(TransactionNotFoundException.class, () ->
+                transactionService.setTransactionNoCategory(transaction.getId()));
+    }
+
+    @Test
+    public void setTransactionsWithSameMessageAndAccountIdNoCategoryThrowExceptionWhenTransactionNotFound() {
+
+        final Transaction transaction = new Transaction();
+        transaction.setId(UUID.randomUUID());
+
+        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.empty());
+
+        assertThrows(TransactionNotFoundException.class, () ->
+                transactionService.setTransactionsWithSameMessageAndAccountIdNoCategory(transaction.getId()));
+    }
+
+
 }

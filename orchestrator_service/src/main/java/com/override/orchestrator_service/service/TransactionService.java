@@ -54,7 +54,7 @@ public class TransactionService {
         }
     }
 
-    public void setTransactionsWithSameMessageAndAccountIdNoCategory(UUID transactionId){
+    public void setTransactionsWithSameMessageAndAccountIdNoCategory(UUID transactionId) {
         Transaction transaction = getTransactionById(transactionId);
         List<Transaction> transactionsToUpdate = transactionRepository
                 .findAllByAccountIdAndMessage(transaction.getAccount().getId(), transaction.getMessage());

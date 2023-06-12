@@ -93,4 +93,31 @@ public class KeywordServiceTest {
 
         verify(keywordRepository, times(1)).save(any(Keyword.class));
     }
+
+    @Test
+    public void setKeywordNoCategoryThrowExceptionWhenCategoryNotFound() {
+        final Transaction transaction = new Transaction();
+        transaction.setId(UUID.randomUUID());
+
+        when(transactionService.getTransactionById(transaction.getId())).thenThrow(TransactionNotFoundException.class);
+
+        assertThrows(TransactionNotFoundException.class, () ->
+                keywordService.setKeywordNoCategory(transaction.getId()));
+    }
+
+    @Test
+    public void setKeywordNoCategorySaveKeywordWhenTransactionFound() {
+        OverMoneyAccount overMoneyAccount = new OverMoneyAccount();
+        overMoneyAccount.setId(123L);
+        final Transaction transaction = new Transaction();
+        transaction.setId(UUID.randomUUID());
+        transaction.setMessage("пиво");
+        transaction.setAccount(overMoneyAccount);
+
+        when(transactionService.getTransactionById(transaction.getId())).thenReturn(transaction);
+
+        keywordService.setKeywordNoCategory(transaction.getId());
+
+        verify(keywordRepository, times(1)).save(any(Keyword.class));
+    }
 }
