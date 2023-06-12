@@ -1,4 +1,4 @@
-package com.override.recognizer_service;
+package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.KeywordIdDTO;

@@ -20,7 +20,7 @@ public class Transaction {
     @Id
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @GeneratedValue(generator = "UUID")
-    @Column(unique = true)
+    @Column(unique = true, columnDefinition = "UUID")
     private UUID id;
 
     @Column
