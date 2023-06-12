@@ -29,5 +29,8 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             "WHERE t.account.id= :accId AND t.category.id IS NULL AND t.message = :message")
     void updateCategoryIdWhereCategoryIsNull(@Param("newCategory") Long newCategoryId,
                                              @Param("message") String message,
-                                             @Param("accId")Long accId);
+                                             @Param("accId") Long accId);
+
+    @Query("SELECT t.account.id FROM Transaction t WHERE t.id= :transactionId")
+    Long findAccountIdByTransactionId(@Param("transactionId") UUID transactionId);
 }

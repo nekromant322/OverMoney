@@ -47,8 +47,8 @@ public class TransactionService {
     }
 
     @Transactional
-    public void setTransactionCategory(UUID transactionId, Long categoryId, Long userId) throws InstanceNotFoundException {
-        Long accId = accountService.getAccountByUserId(userId).getId();
+    public void setTransactionCategory(UUID transactionId, Long categoryId) {
+        Long accId = transactionRepository.findAccountIdByTransactionId(transactionId);
         String transactionMessage = getTransactionById(transactionId).getMessage();
         transactionRepository.updateCategoryIdWhereCategoryIsNull(categoryId, transactionMessage, accId);
     }

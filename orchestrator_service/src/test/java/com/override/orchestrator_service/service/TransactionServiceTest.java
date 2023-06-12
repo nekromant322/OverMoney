@@ -35,8 +35,6 @@ public class TransactionServiceTest {
     @Mock
     private TransactionRepository transactionRepository;
     @Mock
-    private OverMoneyAccountService accountService;
-    @Mock
     private UserService userService;
     @Mock
     private TransactionMapper transactionMapper;
@@ -53,12 +51,10 @@ public class TransactionServiceTest {
     public void setTransactionCategorySaveTransactionWhenCategoryAndTransactionFound() throws InstanceNotFoundException {
         final Category category = TestFieldsUtil.generateTestCategory();
         final Transaction transaction = TestFieldsUtil.generateTestTransaction();
-        final User user = TestFieldsUtil.generateTestUser();
         final OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
-        when(accountService.getAccountByUserId(user.getId())).thenReturn(account);
         when(transactionRepository.findById(any())).thenReturn(Optional.of(transaction));
-        transactionService.setTransactionCategory(transaction.getId(), category.getId(),
-                user.getId());
+        when(transactionRepository.findAccountIdByTransactionId(transaction.getId())).thenReturn(account.getId());
+        transactionService.setTransactionCategory(transaction.getId(), category.getId());
         verify(transactionRepository, times(1))
                 .updateCategoryIdWhereCategoryIsNull(category.getId(), transaction.getMessage(), account.getId());
     }
