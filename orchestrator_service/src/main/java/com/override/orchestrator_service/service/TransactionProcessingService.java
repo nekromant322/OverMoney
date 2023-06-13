@@ -1,11 +1,14 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.CategoryDTO;
+import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
 import javax.management.InstanceNotFoundException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -17,16 +20,26 @@ public class TransactionProcessingService {
     @Autowired
     private OverMoneyAccountService overMoneyAccountService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private RecognizerFeign recognizerFeign;
+
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
+        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
+
+       String transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
 
         return Transaction.builder()
                 .account(overMoneyAccount)
                 .amount(getAmount(transactionMessageDTO.getMessage()))
-                .message(getTransactionMessage(transactionMessageDTO, overMoneyAccount))
+                .message(transactionMessage)
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
                 .date(transactionMessageDTO.getDate())
+                .suggestedCategoryId(recognizerFeign.recognizeCategory(transactionMessage, categories).getId())
                 .build();
     }
 
