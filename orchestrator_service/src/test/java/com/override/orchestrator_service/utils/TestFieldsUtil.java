@@ -18,6 +18,10 @@ public class TestFieldsUtil {
                         .id(12345L)
                         .name("продукты")
                         .type(Type.EXPENSE)
+                        .account(OverMoneyAccount
+                                .builder()
+                                .id(123L)
+                                .build())
                         .build())
                 .build();
     }
@@ -28,6 +32,7 @@ public class TestFieldsUtil {
                 .name("Тест")
                 .build();
     }
+
     public static Category generateTestCategory() {
         Set<Keyword> keywordSet = new HashSet<>();
         keywordSet.add(generateTestKeyword());

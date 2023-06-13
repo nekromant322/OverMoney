@@ -1,8 +1,6 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.TransactionDTO;
-import com.override.orchestrator_service.exception.CategoryNotFoundException;
-import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
@@ -19,12 +17,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
+
 import javax.management.InstanceNotFoundException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -36,64 +34,29 @@ public class TransactionServiceTest {
 
     @Mock
     private TransactionRepository transactionRepository;
-
-    @Mock
-    private CategoryService categoryService;
     @Mock
     private UserService userService;
     @Mock
     private TransactionMapper transactionMapper;
 
     @Test
-    public void setTransactionCategoryThrowExceptionWhenCategoryNotFound() {
-        final Category category = new Category();
-        category.setId(12345L);
-        final Transaction transaction = new Transaction();
-        transaction.setId(UUID.randomUUID());
-
-        when(categoryService.getCategoryById(category.getId())).thenThrow(CategoryNotFoundException.class);
-        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.of(transaction));
-
-        assertThrows(CategoryNotFoundException.class, () ->
-                transactionService.setTransactionCategory(transaction.getId(), category.getId()));
-    }
-
-    @Test
-    public void setTransactionCategoryThrowExceptionWhenTransactionNotFound() {
-        final Category category = new Category();
-        category.setId(12345L);
-        final Transaction transaction = new Transaction();
-        transaction.setId(UUID.randomUUID());
-
-        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.empty());
-
-        assertThrows(TransactionNotFoundException.class, () ->
-                transactionService.setTransactionCategory(transaction.getId(), category.getId()));
-    }
-
-    @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
-
         transactionService.saveTransaction(transaction);
-
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
 
     @Test
-    public void setTransactionCategorySaveTransactionWhenCategoryAndTransactionFound() {
-        final Category category = new Category();
-        category.setId(12345L);
-        final Transaction transaction = new Transaction();
-        transaction.setId(UUID.randomUUID());
-
-        when(categoryService.getCategoryById(category.getId())).thenReturn(category);
-        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.of(transaction));
-
-        transactionService.setTransactionCategory(transaction.getId(), category.getId());
-
-        verify(transactionRepository, times(1)).save(any(Transaction.class));
+    public void setCategoryForAllUndefinedTransactionsWithSameKeywordsTest() {
+        final Category category = TestFieldsUtil.generateTestCategory();
+        final Transaction transaction = TestFieldsUtil.generateTestTransaction();
+        final OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
+        when(transactionRepository.findById(any())).thenReturn(Optional.of(transaction));
+        when(transactionRepository.findAccountIdByTransactionId(transaction.getId())).thenReturn(account.getId());
+        transactionService.setCategoryForAllUndefinedTransactionsWithSameKeywords(transaction.getId(), category.getId());
+        verify(transactionRepository, times(1))
+                .updateCategoryIdWhereCategoryIsNull(category.getId(), transaction.getMessage(), account.getId());
     }
 
     @Test
@@ -136,5 +99,4 @@ public class TransactionServiceTest {
                 transactionService.findTransactionsByUserIdLimited(user.getId(), 50, 0);
         Assertions.assertEquals(List.of(transactionDTO1, transactionDTO2), testListTransaction);
     }
-
 }
