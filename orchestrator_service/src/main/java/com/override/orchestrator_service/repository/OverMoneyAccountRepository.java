@@ -16,4 +16,7 @@ public interface OverMoneyAccountRepository extends CrudRepository<OverMoneyAcco
 
     @Query("SELECT DISTINCT chatId from OverMoneyAccount WHERE id IN (SELECT DISTINCT t.account.id FROM Transaction t WHERE t.date > :minimalDate)")
     List<Long> findAllActivityUsersByAccId(@Param("minimalDate") LocalDateTime minimalDate);
+
+    @Query("SELECT a FROM OverMoneyAccount a JOIN User u ON u.account.id = a.id WHERE u.id = :userId")
+    OverMoneyAccount findNewAccountByUserId(@Param("userId") Long userId);
 }
