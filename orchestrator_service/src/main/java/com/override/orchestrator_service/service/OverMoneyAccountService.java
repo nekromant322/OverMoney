@@ -11,6 +11,7 @@ import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.time.LocalDateTime;
@@ -43,14 +44,16 @@ public class OverMoneyAccountService {
         return overMoneyAccountRepository.findAllActivityUsersByAccId(minimalDate);
     }
 
-    public void mergeToGroupAccountWithCategories(Long userId) {
+    @Transactional
+    public void mergeToGroupAccountWithCategoriesAndWithoutTransactions(Long userId) {
         OverMoneyAccount oldAccount = getOldAccount(userId);
         Set<Category> categories = oldAccount.getCategories();
 
         OverMoneyAccount newAccount = getNewAccount(userId);
-        updateAccount(newAccount, categories);
+        updateAccountCategories(newAccount, categories);
     }
 
+    @Transactional
     public void mergeToGroupAccountWithCategoriesAndTransactions(Long userId) {
         OverMoneyAccount oldAccount = getOldAccount(userId);
         Set<Category> categories = oldAccount.getCategories();
@@ -68,22 +71,22 @@ public class OverMoneyAccountService {
         return overMoneyAccountRepository.findNewAccountByUserId(userId);
     }
 
-    public void updateAccount(OverMoneyAccount account, Set<Category> categories) {
-        categories.forEach(category -> {
-            category.setAccount(account);
-            categoryRepository.save(category);
-        });
+    @Transactional
+    public void updateAccount(OverMoneyAccount account, Set<Category> categories, Set<Transaction> transactions) {
+        updateAccountCategories(account, categories);
+        updateAccountTransactions(account, transactions);
     }
 
-    public void updateAccount(OverMoneyAccount account, Set<Category> categories, Set<Transaction> transactions) {
-        categories.forEach(category -> {
-            category.setAccount(account);
-            categoryRepository.save(category);
-        });
-        transactions.forEach(transaction -> {
-            transaction.setAccount(account);
-            transactionRepository.save(transaction);
-        });
+    @Transactional
+    public void updateAccountCategories(OverMoneyAccount account, Set<Category> categories) {
+        categories.forEach(category ->
+                categoryRepository.updateAccountId(account.getId()));
+    }
+
+    @Transactional
+    public void updateAccountTransactions(OverMoneyAccount account, Set<Transaction> transactions) {
+        transactions.forEach(transaction ->
+                transactionRepository.updateAccountId(account.getId()));
     }
 
     public void registerOverMoneyAccount(Long chatId, Long userId) throws InstanceNotFoundException {

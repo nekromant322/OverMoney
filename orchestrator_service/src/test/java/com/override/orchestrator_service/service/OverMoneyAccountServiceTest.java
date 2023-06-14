@@ -10,7 +10,6 @@ import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,34 +40,34 @@ public class OverMoneyAccountServiceTest {
     private TransactionRepository transactionRepository;
 
     @Test
-    public void mergeToGroupAccountWithCategoriesTest() {
+    public void mergeToGroupAccountWithCategoriesAndWithoutTransactionsTest() {
         OverMoneyAccount oldAccount = TestFieldsUtil.generateTestAccount();
-        oldAccount.setUsers(null);
         Set<Category> categories = oldAccount.getCategories();
 
         OverMoneyAccount newAccount = TestFieldsUtil.generateTestAccount();
         newAccount.setCategories(null);
         newAccount.setId(-123L);
 
-        accountService.updateAccount(newAccount, categories);
+        accountService.updateAccountCategories(newAccount, categories);
 
-        verify(categoryRepository, times(1)).save(any(Category.class));
+        verify(categoryRepository, times(1)).updateAccountId(newAccount.getId());
     }
 
     @Test
     public void mergeToGroupAccountWithCategoriesAndTransactionsTest() {
         OverMoneyAccount oldAccount = TestFieldsUtil.generateTestAccount();
-        oldAccount.setUsers(null);
+        oldAccount.setTransactions(Set.of(TestFieldsUtil.generateTestTransaction()));
         Set<Category> categories = oldAccount.getCategories();
+        Set<Transaction> transactions = oldAccount.getTransactions();
 
         OverMoneyAccount newAccount = TestFieldsUtil.generateTestAccount();
         newAccount.setCategories(null);
         newAccount.setId(-123L);
 
-        accountService.updateAccount(newAccount, categories);
+        accountService.updateAccount(newAccount, categories, transactions);
 
-        verify(categoryRepository, times(1)).save(any(Category.class));
-        verify(transactionRepository, times(0)).save(any(Transaction.class));
+        verify(categoryRepository, times(1)).updateAccountId(newAccount.getId());
+        verify(transactionRepository, times(1)).updateAccountId(newAccount.getId());
     }
 
     @Test

@@ -20,7 +20,7 @@ public class AccountController {
 
     @PostMapping("/mergeWithCategories")
     public void mergeAccountWithCategories(@RequestParam Long userId) {
-        accountService.mergeToGroupAccountWithCategories(userId);
+        accountService.mergeToGroupAccountWithCategoriesAndWithoutTransactions(userId);
     }
 
     @PostMapping("/mergeWithCategoriesAndTransactions")
