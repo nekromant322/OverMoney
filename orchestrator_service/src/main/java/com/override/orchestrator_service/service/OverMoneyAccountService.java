@@ -32,6 +32,7 @@ public class OverMoneyAccountService {
     private CategoryRepository categoryRepository;
     @Autowired
     private TransactionRepository transactionRepository;
+    private final int ACCOUNT_DEFINER = 0;
 
     public List<OverMoneyAccount> getAllAccounts() {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
@@ -59,11 +60,11 @@ public class OverMoneyAccountService {
         updateAccount(newAccount, categories, transactions);
     }
 
-    private OverMoneyAccount getOldAccount(Long userId) {
+    public OverMoneyAccount getOldAccount(Long userId) {
         return getOverMoneyAccountByChatId(userId);
     }
 
-    private OverMoneyAccount getNewAccount(Long userId) {
+    public OverMoneyAccount getNewAccount(Long userId) {
         return overMoneyAccountRepository.findNewAccountByUserId(userId);
     }
 
@@ -93,7 +94,7 @@ public class OverMoneyAccountService {
         User user = userService.getUserById(userId);
         user.setAccount(overMoneyAccount);
         saveOverMoneyAccount(overMoneyAccount);
-        if (chatId < 0) {
+        if (chatId < ACCOUNT_DEFINER) {
             telegramBotFeign.sendMergeRequest(userId);
         }
     }
