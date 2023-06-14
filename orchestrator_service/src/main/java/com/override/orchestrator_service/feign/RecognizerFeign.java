@@ -11,6 +11,6 @@ import java.util.List;
 @FeignClient(name="recognizer-service")
 public interface RecognizerFeign {
 
-    @PostMapping("/recognizer/category")
+    @PostMapping("/recognizer/category/suggested")
     CategoryDTO recognizeCategory(@RequestParam String message, @RequestBody List<CategoryDTO> categories);
 }
