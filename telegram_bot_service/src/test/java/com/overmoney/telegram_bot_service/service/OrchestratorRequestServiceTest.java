@@ -1,7 +1,6 @@
 package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
-import com.overmoney.telegram_bot_service.feign.RecognizerFeign;
 import com.override.dto.TransactionMessageDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

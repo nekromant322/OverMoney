@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 public class TransactionMessageDTO {
     private String message;
-    private String username;
+    private Long userId;
     private Long chatId;
     private LocalDateTime date;
 }
