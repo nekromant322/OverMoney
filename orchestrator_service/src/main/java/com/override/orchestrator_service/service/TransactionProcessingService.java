@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
 
 import javax.management.InstanceNotFoundException;
-import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -79,11 +78,12 @@ public class TransactionProcessingService {
     }
 
     private String getWords(String message) throws InstanceNotFoundException {
-        String word = message.replaceAll("\\d+(\\.\\d+)?", "").trim();
-        if (word.equals("")) {
+        int lastSpaceIndex = message.lastIndexOf(" ");
+        String words = message.substring(0, lastSpaceIndex).trim();
+        if (words.equals("")) {
             throw new InstanceNotFoundException("No keywords present in the message");
         }
-        return word;
+        return words;
     }
 
     private Float getAmount(String message) throws InstanceNotFoundException {
@@ -95,18 +95,16 @@ public class TransactionProcessingService {
         throw new InstanceNotFoundException("No amount stated");
     }
 
-    private Keyword getMatchingKeyword(Set<Category> categories, String words) {
-        Keyword matchingKeyword = null;
-        String word = String.join(" ", words);
+    private Keyword getMatchingKeyword(Set<Category> categories, String keywords) {
+        String words = String.join(" ", keywords);
         for (Category category : categories) {
-            Set<Keyword> keywords = category.getKeywords();
-            for (Keyword keyword : keywords) {
-                if (word.equalsIgnoreCase(keyword.getKeywordId().getName())) {
-                    matchingKeyword = keyword;
-                    break;
+            Set<Keyword> keywordsSet = category.getKeywords();
+            for (Keyword keyword : keywordsSet) {
+                if (words.equalsIgnoreCase(keyword.getKeywordId().getName())) {
+                    return keyword;
                 }
             }
         }
-        return matchingKeyword;
+        return null;
     }
 }
