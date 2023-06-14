@@ -27,7 +27,7 @@
       change-log: /db/changelog/db.changelog-1.0.xml
 
     profiles:
-      active: ${SPRING_APPLICATION_PROFILE:test} #todo  не забудь сменить обратно на dev как соберешь все локально
+      active: ${SPRING_APPLICATION_PROFILE:dev}
 
   eureka:
     client:
