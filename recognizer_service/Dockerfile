@@ -13,14 +13,16 @@ RUN apt-get update -y \
     && cd build \
     && wget https://ggml.ggerganov.com/ggml-model-whisper-base.bin
 
+
+
+
+FROM maven:3.6.3-jdk-11-slim AS build
 RUN mkdir -p /dto
 WORKDIR /dto
 COPY /dto/pom.xml /dto
 COPY /dto/src /dto/src
 RUN mvn -B -f pom.xml clean install -DskipTests -Dcheckstyle.skip
 
-
-FROM maven:3.6.3-jdk-11-slim AS build
 RUN mkdir -p /recognizer
 WORKDIR /recognizer
 COPY /recognizer_service/pom.xml /recognizer
