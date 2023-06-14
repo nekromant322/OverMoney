@@ -8,7 +8,7 @@ public class TestFieldsUtil {
     public static TransactionMessageDTO generateTransactionDTO() {
         return TransactionMessageDTO.builder()
                 .message("message")
-                .username("username")
+                .userId(123L)
                 .build();
     }
 
