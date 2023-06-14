@@ -1,6 +1,8 @@
 package com.override.recognizer_service.service;
 
+import com.override.recognizer_service.service.voice.VoiceRecognitionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -10,14 +12,19 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 public class VoiceMessageService {
+
+    @Autowired
+    private VoiceRecognitionService voiceRecognitionService;
+
     private final String VOICE_FILE_NAME = "voiceMessage";
     private final String OGG_FORMAT = ".ogg";
     private final String WAV_FORMAT = ".wav";
 
     public String processVoiceMessage(byte[] voiceMessage) throws IOException, InterruptedException {
         byte[] voiceMessageWav = convertOggBytesToWav(voiceMessage);
-
-        return "заглушка 5000";
+        String recognizedText = voiceRecognitionService.voiceToText(voiceMessageWav);
+        log.info("Recognition result " + recognizedText);
+        return recognizedText;
     }
 
     public byte[] convertOggBytesToWav(byte[] voiceMessage) throws IOException, InterruptedException {
