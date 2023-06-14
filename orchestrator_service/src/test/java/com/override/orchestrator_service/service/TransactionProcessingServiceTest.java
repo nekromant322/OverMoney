@@ -1,8 +1,11 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.CategoryDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.constants.Type;
+import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,6 +18,7 @@ import org.mockito.quality.Strictness;
 
 import javax.management.InstanceNotFoundException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
@@ -31,16 +35,24 @@ public class TransactionProcessingServiceTest {
     @Mock
     private OverMoneyAccountService overMoneyAccountService;
 
+    @Mock
+    private RecognizerFeign recognizerFeign;
+
+    @Mock
+    private CategoryService categoryService;
+
     @ParameterizedTest
     @MethodSource("provideTransactionArguments")
     public void processTransactionTest(String message, String messageResponse, Float amount, String categoryName) throws InstanceNotFoundException {
         TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
                 .message(message)
-                .username("kyomexd")
+                .userId(123L)
                 .chatId(404723191L)
                 .build();
         OverMoneyAccount account = generateTestAccount();
-
+        List<CategoryDTO> categories = List.of(TestFieldsUtil.generateTestCategoryDTO());
+        when(recognizerFeign.recognizeCategory(any(), any())).thenReturn(TestFieldsUtil.generateTestCategoryDTO());
+        when(categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId())).thenReturn(categories);
         when(overMoneyAccountService.getOverMoneyAccountByChatId(transactionMessageDTO.getChatId())).thenReturn(account);
         Transaction transactionTest = transactionProcessingService.processTransaction(transactionMessageDTO);
 

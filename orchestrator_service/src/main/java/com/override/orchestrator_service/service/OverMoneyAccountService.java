@@ -31,18 +31,18 @@ public class OverMoneyAccountService {
         return overMoneyAccountRepository.findAllActivityUsersByAccId(minimalDate);
     }
 
-    public void saveOverMoneyAccount(Long chatId, String username) {
+    public void saveOverMoneyAccount(Long chatId, Long userId) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
                 .chatId(chatId)
-                .users(getUser(username))
+                .users(getUser(userId))
                 .build();
-        User user = userService.getUserByUsername(username);
+        User user = userService.getUserById(userId);
         user.setAccount(overMoneyAccount);
         saveOverMoneyAccount(overMoneyAccount);
     }
 
-    private Set<User> getUser(String username) {
-        User user = userService.getUserByUsername(username);
+    private Set<User> getUser(Long userId) throws InstanceNotFoundException {
+        User user = userService.getUserById(userId);
         Set<User> accountUsers = new HashSet<>();
         accountUsers.add(user);
         return accountUsers;

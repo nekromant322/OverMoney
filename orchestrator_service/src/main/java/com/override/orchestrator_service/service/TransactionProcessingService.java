@@ -1,11 +1,15 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.CategoryDTO;
+import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
 
 import javax.management.InstanceNotFoundException;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -17,16 +21,26 @@ public class TransactionProcessingService {
     @Autowired
     private OverMoneyAccountService overMoneyAccountService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private RecognizerFeign recognizerFeign;
+
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
+        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
 
+        String transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
+        Long suggestedCategoryId = recognizerFeign.recognizeCategory(transactionMessage, categories).getId();
         return Transaction.builder()
                 .account(overMoneyAccount)
                 .amount(getAmount(transactionMessageDTO.getMessage()))
-                .message(getTransactionMessage(transactionMessageDTO, overMoneyAccount))
+                .message(transactionMessage)
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
                 .date(transactionMessageDTO.getDate())
+                .suggestedCategoryId(suggestedCategoryId)
                 .build();
     }
 
@@ -36,7 +50,9 @@ public class TransactionProcessingService {
                         getWords(transactionMessageDTO.getMessage()))) &&
                         Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
                                 getWords(transactionMessageDTO.getMessage())))) {
-            return getWords(transactionMessageDTO.getMessage());
+            StringBuilder message = new StringBuilder();
+            getWords(transactionMessageDTO.getMessage()).forEach(word -> message.append(word).append(" "));
+            return message.toString().trim();
         }
 
         Category matchingCategory = getMatchingCategory(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
@@ -66,21 +82,28 @@ public class TransactionProcessingService {
         return matchingKeyword.getCategory();
     }
 
-    private Category getMatchingCategory(Set<Category> categories, String words) {
+    private Category getMatchingCategory(Set<Category> categories, Set<String> words) {
         Category matchingCategory = null;
         for (Category category : categories) {
-            if (words.equalsIgnoreCase(category.getName())) {
-                matchingCategory = category;
-                break;
+            for (String word : words) {
+                if (word.equalsIgnoreCase(category.getName())) {
+                    matchingCategory = category;
+                    break;
+                }
             }
         }
         return matchingCategory;
     }
 
-    private String getWords(String message) throws InstanceNotFoundException {
-        int lastSpaceIndex = message.lastIndexOf(" ");
-        String words = message.substring(0, lastSpaceIndex).trim();
-        if (words.equals("")) {
+    private Set<String> getWords(String message) throws InstanceNotFoundException {
+        String[] messageSplit = message.split(" ");
+        Set<String> words = new HashSet<>();
+        for (String word : messageSplit) {
+            if (!word.matches("^[0-9]*[.|,]{0,1}[0-9]+$")) {
+                words.add(word);
+            }
+        }
+        if (words.isEmpty()) {
             throw new InstanceNotFoundException("No keywords present in the message");
         }
         return words;
@@ -95,16 +118,19 @@ public class TransactionProcessingService {
         throw new InstanceNotFoundException("No amount stated");
     }
 
-    private Keyword getMatchingKeyword(Set<Category> categories, String keywords) {
-        String words = String.join(" ", keywords);
+    private Keyword getMatchingKeyword(Set<Category> categories, Set<String> words) {
+        Keyword matchingKeyword = null;
         for (Category category : categories) {
-            Set<Keyword> keywordsSet = category.getKeywords();
-            for (Keyword keyword : keywordsSet) {
-                if (words.equalsIgnoreCase(keyword.getKeywordId().getName())) {
-                    return keyword;
+            Set<Keyword> keywords = category.getKeywords();
+            for (Keyword keyword : keywords) {
+                for (String word : words) {
+                    if (word.equalsIgnoreCase(keyword.getKeywordId().getName())) {
+                        matchingKeyword = keyword;
+                        break;
+                    }
                 }
             }
         }
-        return null;
+        return matchingKeyword;
     }
 }
