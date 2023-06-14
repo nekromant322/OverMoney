@@ -18,13 +18,19 @@ public class AccountController {
         accountService.registerOverMoneyAccount(accountDataDTO.getChatId(), accountDataDTO.getUserId());
     }
 
-    @PostMapping("/mergeWithCategories")
-    public void mergeAccountWithCategories(@RequestParam Long userId) {
+    /**
+     * Метод POST-запроса, переносящий только категории в новый аккаунт
+     */
+    @PostMapping("/merge/categories")
+    public void mergeCategories(@RequestParam Long userId) {
         accountService.mergeToGroupAccountWithCategoriesAndWithoutTransactions(userId);
     }
 
-    @PostMapping("/mergeWithCategoriesAndTransactions")
-    public void mergeAccountWithCategoriesAndTransactions(@RequestParam Long userId) {
+    /**
+     * Метод POST-запроса, переносящий и категории, и транзакции в новый аккаунт
+     */
+    @PostMapping("/merge/transactions")
+    public void mergeTransactions(@RequestParam Long userId) {
         accountService.mergeToGroupAccountWithCategoriesAndTransactions(userId);
     }
 }

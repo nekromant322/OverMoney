@@ -2,9 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.orchestrator_service.config.RecentActivityProperties;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
-import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
-import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
@@ -47,20 +45,17 @@ public class OverMoneyAccountService {
     @Transactional
     public void mergeToGroupAccountWithCategoriesAndWithoutTransactions(Long userId) {
         OverMoneyAccount oldAccount = getOldAccount(userId);
-        Set<Category> categories = oldAccount.getCategories();
-
         OverMoneyAccount newAccount = getNewAccount(userId);
-        updateAccountCategories(newAccount, categories);
+
+        updateAccountCategories(oldAccount, newAccount);
     }
 
     @Transactional
     public void mergeToGroupAccountWithCategoriesAndTransactions(Long userId) {
         OverMoneyAccount oldAccount = getOldAccount(userId);
-        Set<Category> categories = oldAccount.getCategories();
-        Set<Transaction> transactions = oldAccount.getTransactions();
-
         OverMoneyAccount newAccount = getNewAccount(userId);
-        updateAccount(newAccount, categories, transactions);
+
+        updateAccount(oldAccount, newAccount);
     }
 
     public OverMoneyAccount getOldAccount(Long userId) {
@@ -72,21 +67,19 @@ public class OverMoneyAccountService {
     }
 
     @Transactional
-    public void updateAccount(OverMoneyAccount account, Set<Category> categories, Set<Transaction> transactions) {
-        updateAccountCategories(account, categories);
-        updateAccountTransactions(account, transactions);
+    public void updateAccount(OverMoneyAccount oldAccount, OverMoneyAccount newAccount) {
+        updateAccountCategories(oldAccount, newAccount);
+        updateAccountTransactions(oldAccount, newAccount);
     }
 
     @Transactional
-    public void updateAccountCategories(OverMoneyAccount account, Set<Category> categories) {
-        categories.forEach(category ->
-                categoryRepository.updateAccountId(account.getId()));
+    public void updateAccountCategories(OverMoneyAccount oldAccount, OverMoneyAccount newAccount) {
+        categoryRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
     @Transactional
-    public void updateAccountTransactions(OverMoneyAccount account, Set<Transaction> transactions) {
-        transactions.forEach(transaction ->
-                transactionRepository.updateAccountId(account.getId()));
+    public void updateAccountTransactions(OverMoneyAccount oldAccount, OverMoneyAccount newAccount) {
+        transactionRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
     public void registerOverMoneyAccount(Long chatId, Long userId) throws InstanceNotFoundException {

@@ -2,9 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.orchestrator_service.config.RecentActivityProperties;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
-import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
-import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
@@ -42,32 +40,29 @@ public class OverMoneyAccountServiceTest {
     @Test
     public void mergeToGroupAccountWithCategoriesAndWithoutTransactionsTest() {
         OverMoneyAccount oldAccount = TestFieldsUtil.generateTestAccount();
-        Set<Category> categories = oldAccount.getCategories();
 
         OverMoneyAccount newAccount = TestFieldsUtil.generateTestAccount();
         newAccount.setCategories(null);
         newAccount.setId(-123L);
 
-        accountService.updateAccountCategories(newAccount, categories);
+        accountService.updateAccountCategories(oldAccount, newAccount);
 
-        verify(categoryRepository, times(1)).updateAccountId(newAccount.getId());
+        verify(categoryRepository, times(1)).updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
     @Test
     public void mergeToGroupAccountWithCategoriesAndTransactionsTest() {
         OverMoneyAccount oldAccount = TestFieldsUtil.generateTestAccount();
         oldAccount.setTransactions(Set.of(TestFieldsUtil.generateTestTransaction()));
-        Set<Category> categories = oldAccount.getCategories();
-        Set<Transaction> transactions = oldAccount.getTransactions();
 
         OverMoneyAccount newAccount = TestFieldsUtil.generateTestAccount();
         newAccount.setCategories(null);
         newAccount.setId(-123L);
 
-        accountService.updateAccount(newAccount, categories, transactions);
+        accountService.updateAccount(oldAccount, newAccount);
 
-        verify(categoryRepository, times(1)).updateAccountId(newAccount.getId());
-        verify(transactionRepository, times(1)).updateAccountId(newAccount.getId());
+        verify(categoryRepository, times(1)).updateAccountId(oldAccount.getId(), newAccount.getId());
+        verify(transactionRepository, times(1)).updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
     @Test

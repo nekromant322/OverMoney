@@ -35,6 +35,6 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     Long findAccountIdByTransactionId(@Param("transactionId") UUID transactionId);
 
     @Modifying
-    @Query("UPDATE Transaction t SET t.account.id = :accountId")
-    void updateAccountId(@Param("accountId") Long accountId);
+    @Query("UPDATE Transaction t SET t.account.id = :newAccountId WHERE t.account.id = :oldAccountId")
+    void updateAccountId(@Param("oldAccountId") Long oldAccountId, @Param("newAccountId") Long newAccountId);
 }

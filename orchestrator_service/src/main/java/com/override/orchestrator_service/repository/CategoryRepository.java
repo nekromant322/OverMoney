@@ -28,6 +28,6 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<AnalyticsDataDTO> findTotalSumOfAllCategoriesByAccIdAndType(@Param("accId") Long accId, @Param("type") Type type);
 
     @Modifying
-    @Query("UPDATE Category c SET c.account.id = :accountId")
-    void updateAccountId(@Param("accountId") Long accountId);
+    @Query("UPDATE Category c SET c.account.id = :newAccountId WHERE c.account.id = :oldAccountId")
+    void updateAccountId(@Param("oldAccountId") Long oldAccountId, @Param("newAccountId") Long newAccountId);
 }
