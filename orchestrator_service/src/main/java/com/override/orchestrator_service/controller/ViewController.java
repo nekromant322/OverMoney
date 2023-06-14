@@ -20,4 +20,14 @@ public class ViewController {
     public String getLoginPage() {
         return "login";
     }
+  
+    @GetMapping("/analytics")
+    public String getAnalytics() {
+        return "analytics";
+    }
+
+    @GetMapping("/admin/panel")
+    public String getPanel() {
+        return "admin_panel";
+    }
 }

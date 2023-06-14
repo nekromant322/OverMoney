@@ -68,9 +68,6 @@ server {
                 proxy_set_header Upgrade                $http_upgrade;
                 proxy_set_header Connection             "upgrade";
                 proxy_read_timeout                      600;
-#                proxy_set_header Host                   $host;
-#                proxy_set_header X-Forwarded-For        $proxy_add_x_forwarded_for;
-#                proxy_set_header X-Real-IP              $remote_addr;
         }
 
         location /telegram/ {
@@ -83,11 +80,5 @@ server {
         location /review-bot/ {
             proxy_pass http://localhost:9100/;
         }
-#        location ~ \.css {
-#                    add_header  Content-Type    text/css;
-#        }
-#        location ~ \.js {
-#                    add_header  Content-Type    application/x-javascript;
-#        }
 
 }

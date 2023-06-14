@@ -25,7 +25,7 @@ public class KeywordService {
         keywordRepository.save(keyword);
     }
 
-    public void updateCategory(Long categoryToMergeId, Long categoryToChangeId){
+    public void updateCategory(Long categoryToMergeId, Long categoryToChangeId) {
         keywordRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
     }
 

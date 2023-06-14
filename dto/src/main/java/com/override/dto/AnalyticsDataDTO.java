@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationDataDTO {
-    private Long chatId;
-    private Long userId;
+public class AnalyticsDataDTO {
+    private Long categoryId;
+    private String categoryName;
+    private Double sumOfTransactions;
 }
