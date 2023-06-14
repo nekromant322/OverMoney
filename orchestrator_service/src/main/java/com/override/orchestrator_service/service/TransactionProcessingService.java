@@ -6,6 +6,7 @@ import com.override.orchestrator_service.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
+
 import javax.management.InstanceNotFoundException;
 import java.util.HashSet;
 import java.util.List;
@@ -31,15 +32,15 @@ public class TransactionProcessingService {
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
         List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
 
-       String transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
-
+        String transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
+        Long suggestedCategoryId = recognizerFeign.recognizeCategory(transactionMessage, categories).getId();
         return Transaction.builder()
                 .account(overMoneyAccount)
                 .amount(getAmount(transactionMessageDTO.getMessage()))
                 .message(transactionMessage)
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
                 .date(transactionMessageDTO.getDate())
-                .suggestedCategoryId(recognizerFeign.recognizeCategory(transactionMessage, categories).getId())
+                .suggestedCategoryId(suggestedCategoryId)
                 .build();
     }
 
@@ -47,8 +48,8 @@ public class TransactionProcessingService {
         if (Objects.isNull(overMoneyAccount.getCategories()) ||
                 Objects.isNull(getMatchingCategory(overMoneyAccount.getCategories(),
                         getWords(transactionMessageDTO.getMessage()))) &&
-                Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
-                        getWords(transactionMessageDTO.getMessage())))) {
+                        Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
+                                getWords(transactionMessageDTO.getMessage())))) {
             StringBuilder message = new StringBuilder();
             getWords(transactionMessageDTO.getMessage()).forEach(word -> message.append(word).append(" "));
             return message.toString().trim();
@@ -67,8 +68,8 @@ public class TransactionProcessingService {
         if (Objects.isNull(overMoneyAccount.getCategories()) ||
                 Objects.isNull(getMatchingCategory(overMoneyAccount.getCategories(),
                         getWords(transactionMessageDTO.getMessage()))) &&
-                Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
-                        getWords(transactionMessageDTO.getMessage())))) {
+                        Objects.isNull(getMatchingKeyword(overMoneyAccount.getCategories(),
+                                getWords(transactionMessageDTO.getMessage())))) {
             return null;
         }
 
