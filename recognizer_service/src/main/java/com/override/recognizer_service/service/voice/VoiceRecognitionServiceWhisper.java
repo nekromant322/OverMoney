@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 
 @Service
 @Profile("!dev")
@@ -22,9 +21,6 @@ public class VoiceRecognitionServiceWhisper implements VoiceRecognitionService {
 
     @Autowired
     private WhisperCpp whisper;
-
-    private boolean modelInitialised = false;
-
 
     @SneakyThrows
     @Override

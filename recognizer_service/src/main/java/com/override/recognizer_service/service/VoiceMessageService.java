@@ -1,17 +1,9 @@
 package com.override.recognizer_service.service;
 
-import lombok.SneakyThrows;
+import com.override.recognizer_service.service.voice.VoiceRecognitionService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.io.FileInputStream;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import javax.sound.sampled.AudioSystem;
-
-import org.vosk.Recognizer;
-import org.vosk.Model;
 
 import java.io.*;
 import java.util.UUID;
@@ -20,14 +12,19 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 public class VoiceMessageService {
+
+    @Autowired
+    private VoiceRecognitionService voiceRecognitionService;
+
     private final String VOICE_FILE_NAME = "voiceMessage";
     private final String OGG_FORMAT = ".ogg";
     private final String WAV_FORMAT = ".wav";
 
     public String processVoiceMessage(byte[] voiceMessage) throws IOException, InterruptedException {
         byte[] voiceMessageWav = convertOggBytesToWav(voiceMessage);
-
-        return convertVoiceToText(voiceMessageWav);
+        String recognizedText = voiceRecognitionService.voiceToText(voiceMessageWav);
+        log.info("Recognition result " + recognizedText);
+        return recognizedText;
     }
 
     public byte[] convertOggBytesToWav(byte[] voiceMessage) throws IOException, InterruptedException {
@@ -72,33 +69,5 @@ public class VoiceMessageService {
             throw new IOException("WAV voice file was not deleted");
         }
         return wavVoiceBytes;
-    }
-
-    @SneakyThrows
-    public static void main(String[] args) {
-        new VoiceMessageService().convertVoiceToText(null);
-    }
-
-    @SneakyThrows
-    private String convertVoiceToText(byte[] voiceMessageWav) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream("C:\\Users\\ПК\\IdeaProjects\\OverMoney\\recognizer_service\\src\\main\\java\\com\\override\\recognizer_service\\service\\Recording.wav");
-        Model model = new Model("C:\\Users\\ПК\\IdeaProjects\\OverMoney\\recognizer_service\\src\\main\\java\\com\\override\\recognizer_service\\service\\vosk-model-small-ru-0.22"); // <- тут абсолютный путь, если не получится, посмотри демку на гите
-        InputStream ais = AudioSystem.getAudioInputStream(fileInputStream);
-        Recognizer recognizer = new Recognizer(model, 16000);
-
-        int nbytes;
-        byte[] b = new byte[4096];
-        while ((nbytes = ais.read(b)) >= 0) {
-            if (recognizer.acceptWaveForm(b, nbytes)) {
-                log.info(recognizer.getResult());
-            } else {
-                log.info(recognizer.getPartialResult());
-            }
-        }
-        System.out.println(recognizer.getFinalResult());
-        log.info(recognizer.getFinalResult());
-
-
-        return "заглушка 5000";
     }
 }
