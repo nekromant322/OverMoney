@@ -31,7 +31,7 @@ public class RecognizerController {
         return "Recognizer";
     }
 
-    @PostMapping("/recognizer/category")
+    @PostMapping("/recognizer/category/suggested")
     public CategoryDTO recognizeCategory(@RequestParam(name = "message") String message,
                                            @RequestBody List<CategoryDTO> categories) {
         return categoryRecognizerService.recognizeCategory(message, categories);

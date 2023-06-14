@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name="transactions")
+@Table(name = "transactions")
 @Getter
 @Setter
 @Builder
@@ -35,6 +35,10 @@ public class Transaction {
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
+
+    @Column(name = "suggested_category_id")
+    @Nullable
+    private Long suggestedCategoryId;
 
     @ManyToOne
     private OverMoneyAccount account;
