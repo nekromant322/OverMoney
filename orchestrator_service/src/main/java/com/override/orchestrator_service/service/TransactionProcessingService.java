@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
 
 import javax.management.InstanceNotFoundException;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -24,6 +25,8 @@ public class TransactionProcessingService {
 
     @Autowired
     private RecognizerFeign recognizerFeign;
+
+    private static final String SPACE = " ";
 
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
@@ -90,9 +93,9 @@ public class TransactionProcessingService {
     }
 
     private String getWords(String message) throws InstanceNotFoundException {
-        int lastSpaceIndex = message.lastIndexOf(" ");
+        int lastSpaceIndex = message.lastIndexOf(SPACE);
         String words = message.substring(0, lastSpaceIndex).trim();
-        if (words.equals("")) {
+        if (words.isEmpty()) {
             throw new InstanceNotFoundException("No keywords present in the message");
         }
         return words;
@@ -107,16 +110,17 @@ public class TransactionProcessingService {
         throw new InstanceNotFoundException("No amount stated");
     }
 
-    private Keyword getMatchingKeyword(Set<Category> categories, String keywords) {
-        String words = String.join(" ", keywords);
+    private Keyword getMatchingKeyword(Set<Category> categories, String words) {
+        Keyword matchingKeyword = null;
         for (Category category : categories) {
             Set<Keyword> keywordsSet = category.getKeywords();
             for (Keyword keyword : keywordsSet) {
                 if (words.equalsIgnoreCase(keyword.getKeywordId().getName())) {
-                    return keyword;
+                    matchingKeyword = keyword;
+                    break;
                 }
             }
         }
-        return null;
+        return matchingKeyword;
     }
 }
