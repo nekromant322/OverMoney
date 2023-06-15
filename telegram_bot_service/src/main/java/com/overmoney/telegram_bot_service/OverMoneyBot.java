@@ -49,34 +49,35 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+
         LocalDateTime date = Instant.ofEpochMilli((long) update.getMessage().getDate() * MILLISECONDS_CONVERSION)
                 .atOffset(MOSCOW_OFFSET).toLocalDateTime();
         Long chatId = update.getMessage().getChatId();
-        String username = update.getMessage().getFrom().getUserName();
+        Long userId = update.getMessage().getFrom().getId();
 
         if (update.getMessage().hasText()) {
             String receivedMessage = update.getMessage().getText();
-            botAnswer(receivedMessage, chatId, username, date);
+            botAnswer(receivedMessage, chatId, userId, date);
         }
 
         if (update.getMessage().hasVoice()) {
             String receivedMessage = voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice());
-            botAnswer(receivedMessage, chatId, username, date);
+            botAnswer(receivedMessage, chatId, userId, date);
         }
     }
 
-    private void botAnswer(String receivedMessage, Long chatId, String username, LocalDateTime date) {
+    private void botAnswer(String receivedMessage, Long chatId, Long userId, LocalDateTime date) {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());
-                orchestratorRequestService.registerOverMoneyAccount(new RegistrationDataDTO(chatId, username));
+                orchestratorRequestService.registerOverMoneyAccount(new RegistrationDataDTO(chatId, userId));
                 break;
             case "/money":
                 sendMessage(chatId, Command.MONEY.getDescription());
                 break;
             default:
                 try {
-                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, username, chatId, date));
+                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, userId, chatId, date));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
                     sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);

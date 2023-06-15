@@ -25,4 +25,9 @@ public class ViewController {
     public String getAnalytics() {
         return "analytics";
     }
+
+    @GetMapping("/admin/panel")
+    public String getPanel() {
+        return "admin_panel";
+    }
 }
