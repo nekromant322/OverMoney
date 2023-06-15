@@ -134,19 +134,20 @@ function handleDragStart(e) {
     e.dataTransfer.setData("comment", this.dataset.comment);
     e.dataTransfer.setData("transactionComment", this.dataset.comment);
     e.dataTransfer.setData("elementId", this.id);
-    e.dataTransfer.setData("suggestedCategoryId", this.suggestedCategoryId);
-    let suggestedCategoryId = this.dataset.suggestedCategoryId;
-    let suggestedCategory = document.querySelector('div[data-id=\"' + suggestedCategoryId +'\"]');
-    console.log('[data-id=' + suggestedCategoryId + ']');
-    console.log(suggestedCategory)
-    suggestedCategory.style.backgroundColor = "green";
+    if (this.dataset.suggestedCategoryId != "null") {
+        let suggestedCategoryId = this.dataset.suggestedCategoryId;
+        let suggestedCategory = document.querySelector('div[data-id=\"' + suggestedCategoryId + '\"]');
+        suggestedCategory.style.backgroundColor = "green";
+    }
 }
 
 function handleDragEnd(e) {
     this.style.opacity = 1.0;
-    let suggestedCategoryId = this.dataset.suggestedCategoryId;
-    let suggestedCategory = document.querySelector('div[data-id=\"' + suggestedCategoryId +'\"]');
-    suggestedCategory.style.backgroundColor = "transparent";
+    if (this.dataset.suggestedCategoryId != "null") {
+        let suggestedCategoryId = this.dataset.suggestedCategoryId;
+        let suggestedCategory = document.querySelector('div[data-id=\"' + suggestedCategoryId + '\"]');
+        suggestedCategory.style.backgroundColor = "transparent";
+    }
 }
 
 function handleDrop(e) {
