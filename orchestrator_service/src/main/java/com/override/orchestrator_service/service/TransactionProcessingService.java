@@ -26,7 +26,7 @@ public class TransactionProcessingService {
     @Autowired
     private RecognizerFeign recognizerFeign;
 
-    private static final String SPACE = " ";
+    private final String SPACE = " ";
 
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
@@ -112,12 +112,13 @@ public class TransactionProcessingService {
 
     private Keyword getMatchingKeyword(Set<Category> categories, String words) {
         Keyword matchingKeyword = null;
+        outer:
         for (Category category : categories) {
             Set<Keyword> keywordsSet = category.getKeywords();
             for (Keyword keyword : keywordsSet) {
                 if (words.equalsIgnoreCase(keyword.getKeywordId().getName())) {
                     matchingKeyword = keyword;
-                    break;
+                    break outer;
                 }
             }
         }
