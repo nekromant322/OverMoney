@@ -18,4 +18,5 @@ public class TransactionDTO {
     private String message;
     private Float amount;
     private LocalDateTime date;
+    private Long suggestedCategoryId;
 }
