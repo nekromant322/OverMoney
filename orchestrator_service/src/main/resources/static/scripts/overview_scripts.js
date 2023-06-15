@@ -34,7 +34,8 @@ function getUndefinedTransactionsData() {
                 undefinedTransactionsData.push({
                     "id": data[i].id,
                     "comment": data[i].message,
-                    "amount": data[i].amount
+                    "amount": data[i].amount,
+                    "suggestedCategoryId": data[i].suggestedCategoryId
                 })
             }
             Object.freeze(undefinedTransactionsData)
@@ -133,10 +134,19 @@ function handleDragStart(e) {
     e.dataTransfer.setData("comment", this.dataset.comment);
     e.dataTransfer.setData("transactionComment", this.dataset.comment);
     e.dataTransfer.setData("elementId", this.id);
+    e.dataTransfer.setData("suggestedCategoryId", this.suggestedCategoryId);
+    let suggestedCategoryId = this.dataset.suggestedCategoryId;
+    let suggestedCategory = document.querySelector('div[data-id=\"' + suggestedCategoryId +'\"]');
+    console.log('[data-id=' + suggestedCategoryId + ']');
+    console.log(suggestedCategory)
+    suggestedCategory.style.backgroundColor = "green";
 }
 
 function handleDragEnd(e) {
     this.style.opacity = 1.0;
+    let suggestedCategoryId = this.dataset.suggestedCategoryId;
+    let suggestedCategory = document.querySelector('div[data-id=\"' + suggestedCategoryId +'\"]');
+    suggestedCategory.style.backgroundColor = "transparent";
 }
 
 function handleDrop(e) {
@@ -216,6 +226,7 @@ function drawCircle(transaction) {
     newCircle.dataset.comment = transaction.comment;
     newCircle.dataset.amount = transaction.amount;
     newCircle.dataset.id = transaction.id;
+    newCircle.dataset.suggestedCategoryId = transaction.suggestedCategoryId;
     newCircle.innerText = transaction.comment + '\n' + transaction.amount
     setCircleDimensions(newCircle, transaction.amount, getMaxSingleTransactionAmount());
     undefinedSpace.insertAdjacentElement('beforeend', newCircle);
