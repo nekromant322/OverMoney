@@ -25,24 +25,22 @@ public class CategoryRecognizerService {
 
     public CategoryDTO recognizeCategory(String message, List<CategoryDTO> categories) {
         if (categories.isEmpty()) {
-           return null;
-        }  
-            CategoryDTO[] mostSuitableCategory = {categories.get(0)};
-            float[] maxLevenshteinDistance = {0};
-            categories.forEach(c -> {
-                c.getKeywords().add(new KeywordIdDTO(123L, c.getName()));
-            });
-            categories.forEach(c -> {
-                c.getKeywords().forEach(k -> {
-                    float currentValue = calculateLevenshteinDistance(message, k.getName());
-                    if (currentValue > maxLevenshteinDistance[0]) {
-                        mostSuitableCategory[0] = c;
-                        maxLevenshteinDistance[0] = currentValue;
-                    }
-                });
-            });
-            return mostSuitableCategory[0];
+            return null;
         }
-        return null;
+        CategoryDTO[] mostSuitableCategory = {categories.get(0)};
+        float[] maxLevenshteinDistance = {0};
+        categories.forEach(c -> {
+            c.getKeywords().add(new KeywordIdDTO(123L, c.getName()));
+        });
+        categories.forEach(c -> {
+            c.getKeywords().forEach(k -> {
+                float currentValue = calculateLevenshteinDistance(message, k.getName());
+                if (currentValue > maxLevenshteinDistance[0]) {
+                    mostSuitableCategory[0] = c;
+                    maxLevenshteinDistance[0] = currentValue;
+                }
+            });
+        });
+        return mostSuitableCategory[0];
     }
 }
