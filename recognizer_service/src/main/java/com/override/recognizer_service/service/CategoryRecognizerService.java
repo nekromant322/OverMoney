@@ -2,6 +2,7 @@ package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
 
+import com.override.dto.KeywordIdDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.stereotype.Service;
@@ -23,17 +24,23 @@ public class CategoryRecognizerService {
     }
 
     public CategoryDTO recognizeCategory(String message, List<CategoryDTO> categories) {
-        CategoryDTO[] mostSuitableCategory = {categories.get(0)};
-        float[] maxLevenshteinDistance = {0};
-        categories.forEach(c -> {
-            c.getKeywords().forEach(k -> {
-                float currentValue = calculateLevenshteinDistance(message, k.getName());
-                if (currentValue > maxLevenshteinDistance[0]) {
-                    mostSuitableCategory[0] = c;
-                    maxLevenshteinDistance[0] = currentValue;
-                }
+        if (!categories.isEmpty()) {
+            CategoryDTO[] mostSuitableCategory = {categories.get(0)};
+            float[] maxLevenshteinDistance = {0};
+            categories.forEach(c -> {
+                c.getKeywords().add(new KeywordIdDTO(123L, c.getName()));
             });
-        });
-        return mostSuitableCategory[0];
+            categories.forEach(c -> {
+                c.getKeywords().forEach(k -> {
+                    float currentValue = calculateLevenshteinDistance(message, k.getName());
+                    if (currentValue > maxLevenshteinDistance[0]) {
+                        mostSuitableCategory[0] = c;
+                        maxLevenshteinDistance[0] = currentValue;
+                    }
+                });
+            });
+            return mostSuitableCategory[0];
+        }
+        return null;
     }
 }
