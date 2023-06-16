@@ -34,7 +34,10 @@ public class TransactionProcessingService {
         List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
 
         String transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
-        Long suggestedCategoryId = recognizerFeign.recognizeCategory(transactionMessage, categories).getId();
+        Long suggestedCategoryId = null;
+        if (!categories.isEmpty()) {
+            suggestedCategoryId = recognizerFeign.recognizeCategory(transactionMessage, categories).getId();
+        }
         return Transaction.builder()
                 .account(overMoneyAccount)
                 .amount(getAmount(transactionMessageDTO.getMessage()))
@@ -58,7 +61,6 @@ public class TransactionProcessingService {
         if (matchingCategory != null) {
             return matchingCategory.getName();
         }
-
         Keyword matchingKeyword = getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         return matchingKeyword.getKeywordId().getName();
     }

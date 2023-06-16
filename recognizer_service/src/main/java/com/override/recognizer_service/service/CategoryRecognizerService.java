@@ -2,6 +2,7 @@ package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
 
+import com.override.dto.KeywordIdDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.stereotype.Service;
@@ -23,8 +24,17 @@ public class CategoryRecognizerService {
     }
 
     public CategoryDTO recognizeCategory(String message, List<CategoryDTO> categories) {
+        if (categories.isEmpty()) {
+            return null;
+        }
         CategoryDTO[] mostSuitableCategory = {categories.get(0)};
         float[] maxLevenshteinDistance = {0};
+        categories.forEach(c -> {
+            c.getKeywords().add(
+                    KeywordIdDTO.builder()
+                    .name(c.getName())
+                    .build());
+        });
         categories.forEach(c -> {
             c.getKeywords().forEach(k -> {
                 float currentValue = calculateLevenshteinDistance(message, k.getName());
