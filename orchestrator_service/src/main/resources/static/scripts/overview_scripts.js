@@ -161,7 +161,7 @@ function handleDrop(e) {
         transactionId: transactionId,
         categoryId: categoryId
     }
-    let url = './qualifier'
+    let url = './transaction/define'
     $.ajax({
         url: url,
         type: 'POST',
