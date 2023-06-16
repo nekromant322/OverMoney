@@ -2,19 +2,25 @@ package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionMessageDTO;
+import com.override.dto.TransactionDefineDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.service.DefineService;
+import com.override.orchestrator_service.service.KeywordService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -31,6 +37,12 @@ public class TransactionController {
 
     @Autowired
     private TelegramUtils telegramUtils;
+
+    @Autowired
+    private KeywordService keywordService;
+
+    @Autowired
+    private DefineService defineService;
 
     @PostMapping("/transaction")
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
@@ -57,5 +69,19 @@ public class TransactionController {
             throws InstanceNotFoundException {
         return transactionService
                 .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
+    }
+
+    @PostMapping("/transaction/define")
+    public ResponseEntity<String> define(@RequestBody TransactionDefineDTO transactionDefineDTO) {
+        defineService.defineTransactionCategoryByTransactionIdAndCategoryId(transactionDefineDTO.getTransactionId(),
+                transactionDefineDTO.getCategoryId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/transaction/undefine")
+    public ResponseEntity<String> undefine(@RequestBody TransactionDefineDTO transactionDefineDTO) {
+        defineService.undefineTransactionCategoryAndKeywordCategory(transactionDefineDTO.getTransactionId());
+        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 }

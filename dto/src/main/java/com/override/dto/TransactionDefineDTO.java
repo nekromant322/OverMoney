@@ -11,7 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TransactionQualifierDTO {
+public class TransactionDefineDTO {
     private UUID transactionId;
     private Long categoryId;
 }

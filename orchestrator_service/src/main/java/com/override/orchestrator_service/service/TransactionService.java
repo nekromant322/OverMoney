@@ -61,4 +61,11 @@ public class TransactionService {
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void removeCategoryFromTransactionsWithSameMessage(UUID transactionId) {
+        Long accountId = transactionRepository.findAccountIdByTransactionId(transactionId);
+        String transactionMessage = getTransactionById(transactionId).getMessage();
+        transactionRepository.removeCategoryIdFromTransactionsWithSameMessage(transactionMessage, accountId);
+    }
 }

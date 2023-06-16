@@ -24,4 +24,8 @@ public interface KeywordRepository extends JpaRepository<Keyword, UUID> {
     List<Keyword> findAllByKeywordId_Name(String name);
 
     void deleteByKeywordId(KeywordId keywordId);
+
+    @Modifying
+    @Query("UPDATE Keyword k SET k.category.id = null WHERE k.keywordId = :keywordId")
+    void removeCategoryId(@Param("keywordId") KeywordId keywordId);
 }
