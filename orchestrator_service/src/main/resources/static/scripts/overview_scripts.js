@@ -161,7 +161,7 @@ function handleDrop(e) {
         transactionId: transactionId,
         categoryId: categoryId
     }
-    let url = './qualifier'
+    let url = './transaction/define'
     $.ajax({
         url: url,
         type: 'POST',
@@ -178,7 +178,7 @@ function handleDrop(e) {
             console.log(error)
         }
     });
-    drawToast(e, categoryName)
+    drawToast(e, categoryName, transactionDefined);
     this.classList.remove('over');
 
     var circles = document.querySelectorAll(".undefined-circle")
@@ -189,16 +189,68 @@ function handleDrop(e) {
     }
 }
 
-function drawToast(e, categoryName) {
-    Toastify({
-        text: "\n \"" + e.dataTransfer.getData("comment") + " " + e.dataTransfer.getData("amount") + "\" "
-            + "добавлено в категорию \"" + categoryName + "\"",
-        duration: 5000,
-        position: "left",
-        gravity: "bottom",
-        close: true
-    }).showToast()
+function drawToast(e, categoryName, transactionDefined) {
+    toastr["success"](
+        '<table>'+
+        '<tr><td style="text-align:left"><h1>' +
+        e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' добавлено в категорию ' + categoryName +
+        '</h1></td><tr/>' +
+        '<tr><td style="text-align:right">' +
+        '<p><button type="button" class="buttonUndefine" id="undefineButtonFor' +categoryName + '">Отменить</button></p>' +
+        '</tr></td>' +
+        '</table>'
+    )
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": true,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "7000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    const button = document.querySelector('#undefineButtonFor' +categoryName);
+
+    button.onclick = () => {
+        undefineTransaction(transactionDefined);
+        let circles = document.querySelectorAll('.undefined-circle')
+        circles.forEach(circle => document.getElementById(circle.id).remove())
+        setTimeout(function () {
+            getUndefinedTransactionsData();
+        }, 200)
+    };
 }
+
+function undefineTransaction(transactionDefined) {
+    let url = './transaction/undefine'
+    $.ajax({
+        url: url,
+        type: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        async: false,
+        data: JSON.stringify(transactionDefined),
+        dataType: "json",
+        success: function () {
+            console.log("Successfully updated transactions")
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    });
+}
+
 
 function handleDragEnter(e) {
     this.classList.add('over');
