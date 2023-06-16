@@ -24,7 +24,9 @@ public class CategoryRecognizerService {
     }
 
     public CategoryDTO recognizeCategory(String message, List<CategoryDTO> categories) {
-        if (!categories.isEmpty()) {
+        if (categories.isEmpty()) {
+           return null;
+        }  
             CategoryDTO[] mostSuitableCategory = {categories.get(0)};
             float[] maxLevenshteinDistance = {0};
             categories.forEach(c -> {
