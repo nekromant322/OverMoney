@@ -30,7 +30,10 @@ public class CategoryRecognizerService {
         CategoryDTO[] mostSuitableCategory = {categories.get(0)};
         float[] maxLevenshteinDistance = {0};
         categories.forEach(c -> {
-            c.getKeywords().add(new KeywordIdDTO(123L, c.getName()));
+            c.getKeywords().add(
+                    KeywordIdDTO.builder()
+                    .name(c.getName())
+                    .build());
         });
         categories.forEach(c -> {
             c.getKeywords().forEach(k -> {

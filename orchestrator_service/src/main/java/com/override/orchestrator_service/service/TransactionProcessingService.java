@@ -35,7 +35,7 @@ public class TransactionProcessingService {
 
         String transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
         Long suggestedCategoryId = null;
-        if(!categories.isEmpty()){
+        if (!categories.isEmpty()) {
             suggestedCategoryId = recognizerFeign.recognizeCategory(transactionMessage, categories).getId();
         }
         return Transaction.builder()
@@ -61,7 +61,6 @@ public class TransactionProcessingService {
         if (matchingCategory != null) {
             return matchingCategory.getName();
         }
-
         Keyword matchingKeyword = getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         return matchingKeyword.getKeywordId().getName();
     }
