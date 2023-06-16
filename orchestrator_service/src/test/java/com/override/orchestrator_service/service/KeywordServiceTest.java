@@ -45,7 +45,7 @@ public class KeywordServiceTest {
         when(categoryService.getCategoryById(category.getId())).thenThrow(CategoryNotFoundException.class);
 
         assertThrows(CategoryNotFoundException.class, () ->
-                keywordService.setKeywordCategory(transaction.getId(), category.getId()));
+                keywordService.associateTransactionsKeywordWithCategory(transaction.getId(), category.getId()));
     }
 
     @Test
@@ -58,7 +58,7 @@ public class KeywordServiceTest {
         when(transactionService.getTransactionById(transaction.getId())).thenThrow(TransactionNotFoundException.class);
 
         assertThrows(TransactionNotFoundException.class, () ->
-                keywordService.setKeywordCategory(transaction.getId(), category.getId()));
+                keywordService.associateTransactionsKeywordWithCategory(transaction.getId(), category.getId()));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class KeywordServiceTest {
         when(categoryService.getCategoryById(category.getId())).thenReturn(category);
         when(transactionService.getTransactionById(transaction.getId())).thenReturn(transaction);
 
-        keywordService.setKeywordCategory(transaction.getId(), category.getId());
+        keywordService.associateTransactionsKeywordWithCategory(transaction.getId(), category.getId());
 
         verify(keywordRepository, times(1)).save(any(Keyword.class));
     }

@@ -72,12 +72,10 @@ public class OverMoneyAccountService {
         updateAccountTransactions(oldAccount, newAccount);
     }
 
-    @Transactional
     public void updateAccountCategories(OverMoneyAccount oldAccount, OverMoneyAccount newAccount) {
         categoryRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
-    @Transactional
     public void updateAccountTransactions(OverMoneyAccount oldAccount, OverMoneyAccount newAccount) {
         transactionRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
     }
