@@ -4,6 +4,7 @@ import com.override.dto.AnalyticsDataDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -25,4 +26,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "AND c.type = :type\n" +
             "GROUP BY c.id")
     List<AnalyticsDataDTO> findTotalSumOfAllCategoriesByAccIdAndType(@Param("accId") Long accId, @Param("type") Type type);
+
+    @Modifying
+    @Query("UPDATE Category c SET c.account.id = :newAccountId WHERE c.account.id = :oldAccountId")
+    void updateAccountId(@Param("oldAccountId") Long oldAccountId, @Param("newAccountId") Long newAccountId);
 }
