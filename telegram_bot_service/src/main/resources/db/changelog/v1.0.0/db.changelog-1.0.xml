@@ -16,4 +16,5 @@
             <column name="auth_date" type="DATE"/>
         </createTable>
     </changeSet>
+
 </databaseChangeLog>
