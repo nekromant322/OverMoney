@@ -5,7 +5,7 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <changeSet id="17.06.23-createAnnounceMailing" author="NikitaAkimov">
-        <createTable tableName="announse_mailing">
+        <createTable tableName="announсe_mailing">
             <column name="id" type="BIGSERIAL">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
