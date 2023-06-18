@@ -5,11 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class RegistrationDataDTO {
-    private Long chatId;
-    private String username;
+public class TransactionDefineDTO {
+    private UUID transactionId;
+    private Long categoryId;
 }

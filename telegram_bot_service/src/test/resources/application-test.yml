@@ -1,0 +1,31 @@
+server:
+  port: 8082
+  address: localhost
+---
+spring:
+  datasource:
+    password: postgres
+    username: postgres
+    url: jdbc:postgresql://localhost:8123/postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+  eureka:
+    client:
+      serviceUrl:
+        defaultZone: http://eureka:8761/eureka
+
+bot:
+  token: 6205395260:AAFJraVO3m7ManWLUMDbrYGgjjSjmSipd0M
+  name: DONTDELETEFORTESTBOT

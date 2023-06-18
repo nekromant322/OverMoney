@@ -1,4 +1,4 @@
-package com.override.recognizer_service;
+package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.KeywordIdDTO;
@@ -9,6 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
@@ -22,8 +23,10 @@ public class CategoryRecognizerServiceTests {
                 .accountId(1L)
                 .name("пиво")
                 .build();
+        List<KeywordIdDTO> listOfKeywords = new ArrayList<>();
+        listOfKeywords.add(keywordBeer);
         final CategoryDTO categoryWithBeer = CategoryDTO.builder()
-                .keywords(List.of(keywordBeer))
+                .keywords(listOfKeywords)
                 .name("Категория с пивом")
                 .build();
         final String message = "пиво";
@@ -41,12 +44,18 @@ public class CategoryRecognizerServiceTests {
                 .accountId(1L)
                 .name("")
                 .build();
+
+        List<KeywordIdDTO> listOfKeywordBeer = new ArrayList<>();
+        listOfKeywordBeer.add(keywordBeer);
+        List<KeywordIdDTO> listOfKeywordBlank = new ArrayList<>();
+        listOfKeywordBlank.add(keywordBlank);
+
         final CategoryDTO categoryWithBeer = CategoryDTO.builder()
-                .keywords(List.of(keywordBeer))
+                .keywords(listOfKeywordBeer)
                 .name("Категория с пивом")
                 .build();
         final CategoryDTO categoryWithBlank = CategoryDTO.builder()
-                .keywords(List.of(keywordBlank))
+                .keywords(listOfKeywordBlank)
                 .name("Категория без ключевых слов")
                 .build();
         final String message = "молоко";
@@ -65,12 +74,17 @@ public class CategoryRecognizerServiceTests {
                 .accountId(1L)
                 .name("пупа")
                 .build();
+        List<KeywordIdDTO> listOfKeywordPupa = new ArrayList<>();
+        listOfKeywordPupa.add(keywordPupa);
+        List<KeywordIdDTO> listOfKeywordLupa = new ArrayList<>();
+        listOfKeywordLupa.add(keywordLupa);
+
         final CategoryDTO categoryWithLupa = CategoryDTO.builder()
-                .keywords(List.of(keywordLupa))
+                .keywords(listOfKeywordLupa)
                 .name("Категория с Лупой")
                 .build();
         final CategoryDTO categoryWithPupa = CategoryDTO.builder()
-                .keywords(List.of(keywordPupa))
+                .keywords(listOfKeywordPupa)
                 .name("Категория с Пупой")
                 .build();
         final String message = "пупв";

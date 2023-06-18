@@ -17,7 +17,7 @@
         <java.version>11</java.version>
         <spring-cloud.version>2021.0.6</spring-cloud.version>
         <logstash-logback-encoder.version>6.1</logstash-logback-encoder.version>
-        <jacoco.min.coverage>0.49</jacoco.min.coverage>
+        <jacoco.min.coverage>0.54</jacoco.min.coverage>
     </properties>
     <dependencies>
         <dependency>
@@ -112,6 +112,13 @@
             <groupId>com.override</groupId>
             <artifactId>dto</artifactId>
             <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.opentable.components</groupId>
+            <artifactId>otj-pg-embedded</artifactId>
+            <version>0.13.4</version>
+            <scope>test</scope>
         </dependency>
 
         <dependency>

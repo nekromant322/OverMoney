@@ -1,7 +1,7 @@
 package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
-import com.override.dto.RegistrationDataDTO;
+import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,15 @@ public class OrchestratorRequestService {
        return orchestratorFeign.sendTransaction(transaction);
     }
 
-    public void registerOverMoneyAccount(RegistrationDataDTO accountData) {
-        orchestratorFeign.registerOverMoneyAccount(accountData);
+    public void registerAccount(AccountDataDTO accountData) {
+        orchestratorFeign.registerAccount(accountData);
+    }
+
+    public void mergeWithCategoriesAndWithoutTransactions(Long userId) {
+        orchestratorFeign.mergeAccountWithCategoriesWithoutTransactions(userId);
+    }
+
+    public void mergeWithCategoryAndTransactions(Long userId) {
+        orchestratorFeign.mergeAccountWithCategoriesAndTransactions(userId);
     }
 }

@@ -50,5 +50,8 @@
         <module name="RedundantModifier"/>
         <!-- Проверки бесполезных импортов -->
         <module name="UnusedImports" />
+        <!--Проверяет, что за токеном следует пробел,
+        за исключением пробела после точки с запятой пустого для итератора. -->
+        <module name="WhitespaceAfter"/>
     </module>
 </module>
