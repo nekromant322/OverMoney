@@ -19,8 +19,8 @@ public class AnnounceMailing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "telegram_id")
-    private Long telegramId;
+    @Column(name = "user_tg_id")
+    private Long userTgId;
 
     @Column(name = "status_mailing")
     private StatusMailing statusMailing;

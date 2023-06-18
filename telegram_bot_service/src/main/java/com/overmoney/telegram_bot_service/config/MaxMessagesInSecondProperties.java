@@ -10,5 +10,5 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class MaxMessagesInSecondProperties {
-    public long maxMessagesOfAnnouncePerSecond;
+    private long maxMessagesOfAnnouncePerSecond;
 }
