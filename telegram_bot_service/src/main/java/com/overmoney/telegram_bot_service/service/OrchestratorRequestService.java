@@ -20,4 +20,12 @@ public class OrchestratorRequestService {
     public void registerAccount(AccountDataDTO accountData) {
         orchestratorFeign.registerAccount(accountData);
     }
+
+    public void mergeWithCategoriesAndWithoutTransactions(Long userId) {
+        orchestratorFeign.mergeAccountWithCategoriesWithoutTransactions(userId);
+    }
+
+    public void mergeWithCategoryAndTransactions(Long userId) {
+        orchestratorFeign.mergeAccountWithCategoriesAndTransactions(userId);
+    }
 }
