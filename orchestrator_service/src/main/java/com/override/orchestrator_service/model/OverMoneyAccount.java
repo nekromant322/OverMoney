@@ -20,12 +20,12 @@ public class OverMoneyAccount {
     @Column(name = "chat_id", unique = true)
     private Long chatId;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     private Set<Category> categories;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     private Set<Transaction> transactions;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     private Set<User> users;
 }
