@@ -28,7 +28,7 @@ public class Category {
     @OneToMany(mappedBy="category")
     private Set<Transaction> transactions;
 
-    @OneToMany(mappedBy="category", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy="category", cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     private Set<Keyword> keywords;
 
     @ManyToOne

@@ -7,10 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.UUID;
 
 @FeignClient(name="recognizer-service")
 public interface RecognizerFeign {
 
     @PostMapping("/recognizer/category/suggested")
-    CategoryDTO recognizeCategory(@RequestParam String message, @RequestBody List<CategoryDTO> categories);
+    CategoryDTO recognizeCategory(@RequestParam String message,
+                                  @RequestParam UUID transactionId,
+                                  @RequestBody List<CategoryDTO> categories);
 }

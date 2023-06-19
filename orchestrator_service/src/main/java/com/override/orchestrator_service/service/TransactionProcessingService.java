@@ -3,6 +3,7 @@ package com.override.orchestrator_service.service;
 import com.override.dto.CategoryDTO;
 import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.*;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
@@ -11,6 +12,9 @@ import javax.management.InstanceNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,21 +35,45 @@ public class TransactionProcessingService {
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
-        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
-
         String transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
-        Long suggestedCategoryId = null;
-        if (!categories.isEmpty()) {
-            suggestedCategoryId = recognizerFeign.recognizeCategory(transactionMessage, categories).getId();
-        }
         return Transaction.builder()
                 .account(overMoneyAccount)
                 .amount(getAmount(transactionMessageDTO.getMessage()))
                 .message(transactionMessage)
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
                 .date(transactionMessageDTO.getDate())
-                .suggestedCategoryId(suggestedCategoryId)
                 .build();
+    }
+
+    public void suggestCategoriesToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId) throws InstanceNotFoundException {
+
+        ExecutorService service = Executors.newSingleThreadExecutor();
+             service.execute(new Runnable() {
+            public void run() {
+                OverMoneyAccount overMoneyAccount = overMoneyAccountService
+                        .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
+                String transactionMessage = null;
+                try {
+                    transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+
+                System.out.println("Another thread was executed");
+                List<CategoryDTO> categories;
+
+                try {
+                    categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+
+                if (!categories.isEmpty()) {
+                    Hibernate.initialize(categories); // Инициализация коллекции
+                    recognizerFeign.recognizeCategory(transactionMessage, transactionId, categories).getId();
+                }
+            }
+        });
     }
 
     private String getTransactionMessage(TransactionMessageDTO transactionMessageDTO, OverMoneyAccount overMoneyAccount) throws InstanceNotFoundException {

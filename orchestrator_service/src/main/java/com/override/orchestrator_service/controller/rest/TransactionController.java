@@ -4,12 +4,15 @@ import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionDefineDTO;
 import com.override.dto.TransactionResponseDTO;
+import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.service.CategoryService;
 import com.override.orchestrator_service.service.DefineService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import com.override.orchestrator_service.util.TelegramUtils;
+import net.minidev.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +22,7 @@ import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -39,10 +43,24 @@ public class TransactionController {
     @Autowired
     private DefineService defineService;
 
+    @Autowired
+    RecognizerFeign recognizerFeign;
+
+    @Autowired
+    CategoryService categoryService;
+
+
     @PostMapping("/transaction")
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
         Transaction transaction = transactionProcessingService.processTransaction(transactionMessage);
         transactionService.saveTransaction(transaction);
+
+        UUID transactionId = transaction.getId();
+        System.out.println("Transaction ID: " + transactionId);
+
+        transactionProcessingService.suggestCategoriesToProcessedTransaction(transactionMessage, transactionId);
+
+
         return transactionMapper.mapTransactionToTelegramResponse(transaction);
     }
 
@@ -78,4 +96,13 @@ public class TransactionController {
         defineService.undefineTransactionCategoryAndKeywordCategory(transactionDefineDTO.getTransactionId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PutMapping("/transaction")
+    public ResponseEntity<String> editTransaction(@RequestBody TransactionDTO transactionDTO) {
+        Transaction transaction = transactionService.getTransactionById(transactionDTO.getId());
+        transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
+        transactionService.saveTransaction(transaction);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

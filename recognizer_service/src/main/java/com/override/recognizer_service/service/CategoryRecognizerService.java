@@ -1,17 +1,26 @@
 package com.override.recognizer_service.service;
 
+import com.netflix.discovery.converters.Auto;
 import com.override.dto.CategoryDTO;
 
 import com.override.dto.KeywordIdDTO;
+import com.override.dto.TransactionDTO;
+import com.override.recognizer_service.feign.OrchestratorFeign;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transaction;
 import java.util.*;
 
 @Service
 @Slf4j
 public class CategoryRecognizerService {
+
+    @Autowired
+    OrchestratorFeign orchestratorFeign;
+
 
     private float calculateLevenshteinDistance(String strOne, String strTwo) {
         strOne = strOne.toLowerCase();
@@ -45,5 +54,15 @@ public class CategoryRecognizerService {
             });
         });
         return mostSuitableCategory[0];
+    }
+
+
+    public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
+        Long suggestedCategoryId = recognizeCategory(message, categories).getId();
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setSuggestedCategoryId(suggestedCategoryId);
+        transactionDTO.setId(transactionId);
+        orchestratorFeign.editTransaction(transactionDTO);
+
     }
 }
