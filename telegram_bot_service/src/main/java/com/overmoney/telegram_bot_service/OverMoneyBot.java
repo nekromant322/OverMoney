@@ -53,7 +53,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private final String MERGE_REQUEST_COMPLETED_DEFAULT_TEXT =
             "Удачного совместного использования!";
     private final String MERGE_REQUEST_COMPLETED_TEXT =
-            "Данные аккаунта были перенесены, удачного совместного использования!";
+            "Данные аккаунта были перенесены.";
 
     @Override
     public String getBotUsername() {
@@ -89,23 +89,19 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             Integer messageToDeleteId = mergeRequestService.getMergeRequestByChatId(chatId).getMessageId();
             CallbackQuery callbackQuery = update.getCallbackQuery();
 
-            if (callbackQuery.getData().equals(InlineKeyboardCallback.DEFAULT.getData())) {
-                mergeRequestService.updateMergeRequestCompletionByChatId(chatId);
-                deleteMessageMarkup(messageToDeleteId, chatId);
-                sendMessage(chatId, MERGE_REQUEST_COMPLETED_DEFAULT_TEXT);
-            }
-            if (callbackQuery.getData().equals(InlineKeyboardCallback.MERGE_CATEGORIES.getData())) {
+            if (callbackQuery.getData()
+                    .equals(InlineKeyboardCallback.MERGE_CATEGORIES.getData())) {
                 orchestratorRequestService.mergeWithCategoriesAndWithoutTransactions(callbackQuery.getFrom().getId());
-                mergeRequestService.updateMergeRequestCompletionByChatId(chatId);
-                deleteMessageMarkup(messageToDeleteId, chatId);
                 sendMessage(chatId, MERGE_REQUEST_COMPLETED_TEXT);
-            }
-            if (callbackQuery.getData().equals(InlineKeyboardCallback.MERGE_CATEGORIES_AND_TRANSACTIONS.getData())) {
+            } else if (callbackQuery.getData()
+                    .equals(InlineKeyboardCallback.MERGE_CATEGORIES_AND_TRANSACTIONS.getData())) {
                 orchestratorRequestService.mergeWithCategoryAndTransactions(callbackQuery.getFrom().getId());
-                mergeRequestService.updateMergeRequestCompletionByChatId(chatId);
-                deleteMessageMarkup(messageToDeleteId, chatId);
                 sendMessage(chatId, MERGE_REQUEST_COMPLETED_TEXT);
             }
+
+            mergeRequestService.updateMergeRequestCompletionByChatId(chatId);
+            deleteMessageMarkup(messageToDeleteId, chatId);
+            sendMessage(chatId, MERGE_REQUEST_COMPLETED_DEFAULT_TEXT);
         }
     }
 
