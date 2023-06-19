@@ -14,7 +14,7 @@
 	<name>recognizer_service</name>
 	<description>Recognizer service for OverMoney</description>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>11</java.version>
 		<spring-cloud.version>2021.0.6</spring-cloud.version>
 		<logstash-logback-encoder.version>6.1</logstash-logback-encoder.version>
 		<jacoco.min.coverage>0.0</jacoco.min.coverage>
@@ -86,12 +86,6 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>io.github.givimad</groupId>
-			<artifactId>whisper-jni</artifactId>
-			<version>1.4.2-0</version>
 		</dependency>
 
 		<dependency>

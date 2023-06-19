@@ -1,0 +1,95 @@
+-----------
+What's it?
+----------
+
+This is a free Russian speech recognition database. It's collected
+in order to train Russian models for free speech recognition. Thanks
+a lot for everyone contributed!
+
+We intend to develop a database for continuous free wide-band recognitions.
+Everything below is recorded with a usual microphone on desktop and laptop.
+The prompts are collected from license-free texts and intended to cover
+generic speech.
+
+--------
+Licence
+--------
+
+Copyright (C) 2006 Marina Pribyl <zcd043@sectorb.msk.ru>
+Copyright (C) 2006 Nickolay V. Shmyrev <nshmyrev@yandex.ru>
+Copyright (C) 2006 Sergey Udaltsov <svu@gnome.org>
+Copyright (C) 2006 Sergey Kvyato <kvantos@plotinka.ru>
+Copyright (C) 2007 Oleg Matviychuk <mathway@i.ua>
+Copyright (C) 2007 MaGIc2laNTern <me@lantern.fatal.ru>
+Copyright (C) 2007 Alexey Kaverin ICQ:295519363
+Copyright (C) 2007 Elena Tchernyshova ICQ:131780103
+Copyright (C) 2007 Irina Shmyrova <ira_shmyrova@mail.ru>
+Copyright (C) 2007 Evgeny Doubravsky <edoubrav@mail.ru>    
+Copyright (C) 2007 Pedro <roginovicci@nm.ru>
+Copyright (C) 2007 Elena Shmyreva <contact-l@yandex.ru>
+Copyright (C) 2007 Vladimir Shmyrev <contact-l@yandex.ru>
+
+These files are free software; you can redistribute them and/or modify
+them under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+
+These files are distributed in the hope that they will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+-----------
+Corrections
+-----------
+
+sun_ru_0021 - missing word
+sun_ru_0064 - noise
+
+nsh_ru_0000 - bad quality
+len_ru_0000 - a lot of missing text, too bad quality sometimes
+
+----------
+History
+-----------
+
+ski added:
+
+SENTENCE ERROR: 22.588% (302/1337)   WORD ERROR RATE: 4.946% (422/8533) 
+
+len added:
+
+SENTENCE ERROR: 28.493% (414/1453)   WORD ERROR RATE: 7.515% (696/9262) 
+
+ira & joh added:
+
+SENTENCE ERROR: 35.456% (657/1853)   WORD ERROR RATE: 9.755% (1145/11738)
+
+grapheme-based with single decision tree:
+
+SENTENCE ERROR: 43.389% (804/1853) WORD ERROR RATE: 13.324% (1564/11738)
+
+test and train data splitted, much more reasonable results:
+
+SENTENCE ERROR: 52.973% (98/185)   WORD ERROR RATE: 19.172% (227/1184)
+
+hand-made tree questions, WER degraded but I hope it's a correct thing
+
+SENTENCE ERROR: 55.676% (103/185)   WORD ERROR RATE: 20.608% (244/1184)
+
+evg added
+
+SENTENCE ERROR: 53.299% (105/197)   WORD ERROR RATE: 24.057% (319/1326)
+
+rdc added (50 prompts)
+
+SENTENCE ERROR: 53.807% (106/197)   WORD ERROR RATE: 21.870% (290/1326)
+
+esh and vsh added:
+
+SENTENCE ERROR: 59.361% (130/219)   WORD ERROR RATE: 28.709% (447/1557)
+
+Mistakes fixed:
+
+SENTENCE ERROR: 57.534% (126/219)   WORD ERROR RATE: 28.195% (439/1557)
+
