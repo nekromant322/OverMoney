@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet id="19.06.23-createAnnounce" author="NikitaAkimov">
+        <createTable tableName="announcements">
+            <column name="id" type="BIGSERIAL">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="text_announce" type="TEXT"/>
+            <column name="date" type="TIMESTAMP"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="19.06.23-createMail" author="NikitaAkimov">
+        <createTable tableName="mails">
+            <column name="id" type="BIGSERIAL">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="user_tg_id" type="BIGINT"/>
+            <column name="status_mailing" type="INTEGER"/>
+            <column name="announce_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="NikitaAkimov" id="19.06.23-mailsTableAddForeignKeyConstraintAnnounceId">
+        <addForeignKeyConstraint baseColumnNames="announce_id" baseTableName="mails"
+                                 constraintName="foreign_key_constraint_announce_id_for_mail" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="announcements" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
