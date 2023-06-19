@@ -4,6 +4,25 @@ const EXPENSE = "EXPENSE";
 window.onload = function () {
     getUndefinedTransactionsData();
     getCategoriesData();
+    let toast = toastr["success"]("Загрузка нераспознанных транзакций");
+    toastr.options = {
+        "closeButton": false,
+        "debug": true,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "7000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    toast.focus().click();
 }
 
 const minUndefinedCircleSize = 100;
@@ -178,7 +197,7 @@ function handleDrop(e) {
             console.log(error)
         }
     });
-    drawToast(e, categoryName, transactionDefined);
+    drawToast(e, categoryName, transactionDefined, transactionComment);
     this.classList.remove('over');
 
     var circles = document.querySelectorAll(".undefined-circle")
@@ -189,16 +208,14 @@ function handleDrop(e) {
     }
 }
 
-function drawToast(e, categoryName, transactionDefined) {
+function drawToast(e, categoryName, transactionDefined, transactionComment) {
     toastr["success"](
-        '<table>'+
-        '<tr><td style="text-align:left"><h1>' +
+        '<div><text font-size="30">' +
         e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' добавлено в категорию ' + categoryName +
-        '</h1></td><tr/>' +
-        '<tr><td style="text-align:right">' +
-        '<p><button type="button" class="buttonUndefine" id="undefineButtonFor' +categoryName + '">Отменить</button></p>' +
-        '</tr></td>' +
-        '</table>'
+        '</text>' +
+        '<div class="buttonUndefine" id="undefineButtonFor' +transactionComment + '">' +
+        '<a>Отменить</a>' +
+        '</div></div>'
     )
 
     toastr.options = {
@@ -219,7 +236,7 @@ function drawToast(e, categoryName, transactionDefined) {
         "hideMethod": "fadeOut"
     }
 
-    const button = document.querySelector('#undefineButtonFor' +categoryName);
+    const button = document.querySelector('#undefineButtonFor' + transactionComment);
 
     button.onclick = () => {
         undefineTransaction(transactionDefined);
