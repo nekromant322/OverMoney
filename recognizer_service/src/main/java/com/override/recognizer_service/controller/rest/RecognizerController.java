@@ -34,15 +34,6 @@ public class RecognizerController {
         return "Recognizer";
     }
 
-//    @PostMapping("/recognizer/category/suggested")
-//    public CategoryDTO recognizeCategory(@RequestParam(name = "message") String message,
-//                                         @RequestBody List<CategoryDTO> categories,
-//                                         @RequestParam(name = "transactionId") UUID transactionId) {
-////        return categoryRecognizerService.recognizeCategory(message, categories);
-//        return categoryRecognizerService.sendTransactionWithSuggestedCategory(message, categories, transactionId);
-//
-//    }
-
 
     @PostMapping("/recognizer/category/suggested")
     public ResponseEntity<String> recognizeCategory(@RequestParam(name = "message") String message,

@@ -63,6 +63,5 @@ public class CategoryRecognizerService {
         transactionDTO.setSuggestedCategoryId(suggestedCategoryId);
         transactionDTO.setId(transactionId);
         orchestratorFeign.editTransaction(transactionDTO);
-
     }
 }

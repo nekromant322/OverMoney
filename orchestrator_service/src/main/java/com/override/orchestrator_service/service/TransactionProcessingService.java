@@ -45,32 +45,29 @@ public class TransactionProcessingService {
                 .build();
     }
 
-    public void suggestCategoriesToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId) throws InstanceNotFoundException {
-
+    public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId) throws InstanceNotFoundException {
         ExecutorService service = Executors.newSingleThreadExecutor();
              service.execute(new Runnable() {
             public void run() {
                 OverMoneyAccount overMoneyAccount = overMoneyAccountService
                         .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
-                String transactionMessage = null;
+                String transactionMessage;
+                List<CategoryDTO> categories;
+
                 try {
                     transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-
-                System.out.println("Another thread was executed");
-                List<CategoryDTO> categories;
-
                 try {
                     categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
                 } catch (InstanceNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-
                 if (!categories.isEmpty()) {
                     Hibernate.initialize(categories); // Инициализация коллекции
                     recognizerFeign.recognizeCategory(transactionMessage, transactionId, categories).getId();
+                    
                 }
             }
         });

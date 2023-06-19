@@ -54,13 +54,8 @@ public class TransactionController {
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
         Transaction transaction = transactionProcessingService.processTransaction(transactionMessage);
         transactionService.saveTransaction(transaction);
-
         UUID transactionId = transaction.getId();
-        System.out.println("Transaction ID: " + transactionId);
-
-        transactionProcessingService.suggestCategoriesToProcessedTransaction(transactionMessage, transactionId);
-
-
+        transactionProcessingService.suggestCategoryToProcessedTransaction(transactionMessage, transactionId);
         return transactionMapper.mapTransactionToTelegramResponse(transaction);
     }
 
@@ -97,11 +92,9 @@ public class TransactionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/transaction")
+    @PutMapping("/suggested-category")
     public ResponseEntity<String> editTransaction(@RequestBody TransactionDTO transactionDTO) {
-        Transaction transaction = transactionService.getTransactionById(transactionDTO.getId());
-        transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
-        transactionService.saveTransaction(transaction);
+        transactionService.saveTransaction(transactionService.setSuggestedCategory(transactionDTO));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
