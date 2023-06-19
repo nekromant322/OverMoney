@@ -5,5 +5,5 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
     <include file="v1.0.0/db.changelog-1.0.xml" relativeToChangelogFile="true"/>
-    <include file="v1.0.0/001-db.changelog-createAnnounceMailingModel.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/001-db.changelog-createAnnounceAndMailModel.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

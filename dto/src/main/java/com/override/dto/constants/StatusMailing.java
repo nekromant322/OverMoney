@@ -1,9 +1,12 @@
 package com.override.dto.constants;
 
+import lombok.Getter;
+
+@Getter
 public enum StatusMailing {
-    SUCCESSFULLY("Успешно"),
+    SUCCESS("Успешно"),
     ERROR("Ошибка"),
-    AWAIT_SENDING("Ожидание отправки");
+    PENDING("В ожидании");
 
     private final String value;
 

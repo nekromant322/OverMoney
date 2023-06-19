@@ -1,29 +1,30 @@
 package com.overmoney.telegram_bot_service.model;
 
-import com.override.dto.constants.StatusMailing;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
-@Table(name = "announсe_mailing")
+@Table(name = "announcements")
 @Getter
 @Setter
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class AnnounceMailing {
+public class Announce {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_tg_id")
-    private Long userTgId;
+    @Column(name = "text_announce")
+    private String textAnnounce;
 
-    @Column(name = "status_mailing")
-    private StatusMailing statusMailing;
+    @Column
+    @OneToMany(mappedBy="announce")
+    private Set<Mail> mails;
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
