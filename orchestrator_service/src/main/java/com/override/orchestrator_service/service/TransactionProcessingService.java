@@ -3,7 +3,6 @@ package com.override.orchestrator_service.service;
 import com.override.dto.CategoryDTO;
 import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.*;
-import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
@@ -14,7 +13,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -29,6 +27,9 @@ public class TransactionProcessingService {
 
     @Autowired
     private RecognizerFeign recognizerFeign;
+
+    @Autowired
+    private ExecutorService executorService;
 
     private final String SPACE = " ";
 
@@ -45,30 +46,20 @@ public class TransactionProcessingService {
                 .build();
     }
 
-    public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId) throws InstanceNotFoundException {
-        ExecutorService service = Executors.newSingleThreadExecutor();
-             service.execute(new Runnable() {
-            public void run() {
-                OverMoneyAccount overMoneyAccount = overMoneyAccountService
-                        .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
-                String transactionMessage;
-                List<CategoryDTO> categories;
-
-                try {
-                    transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
-                } catch (InstanceNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-                try {
-                    categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
-                } catch (InstanceNotFoundException e) {
-                    throw new RuntimeException(e);
-                }
-                if (!categories.isEmpty()) {
-                    Hibernate.initialize(categories); // Инициализация коллекции
-                    recognizerFeign.recognizeCategory(transactionMessage, transactionId, categories).getId();
-                    
-                }
+    public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId)  {
+        executorService.execute(() -> {
+            OverMoneyAccount overMoneyAccount = overMoneyAccountService
+                    .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
+            String transactionMessage;
+            List<CategoryDTO> categories;
+            try {
+                transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
+                categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
+            } catch (InstanceNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+            if (!categories.isEmpty()) {
+                recognizerFeign.recognizeCategory(transactionMessage, transactionId, categories).getId();
             }
         });
     }
@@ -98,12 +89,10 @@ public class TransactionProcessingService {
                                 getWords(transactionMessageDTO.getMessage())))) {
             return null;
         }
-
         Category matchingCategory = getMatchingCategory(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         if (matchingCategory != null) {
             return matchingCategory;
         }
-
         Keyword matchingKeyword = getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         return matchingKeyword.getCategory();
     }

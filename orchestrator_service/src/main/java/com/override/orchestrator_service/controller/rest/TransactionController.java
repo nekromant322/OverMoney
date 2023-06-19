@@ -12,12 +12,10 @@ import com.override.orchestrator_service.service.DefineService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import com.override.orchestrator_service.util.TelegramUtils;
-import net.minidev.json.JSONUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.Comparator;
@@ -48,7 +46,6 @@ public class TransactionController {
 
     @Autowired
     CategoryService categoryService;
-
 
     @PostMapping("/transaction")
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
@@ -92,10 +89,9 @@ public class TransactionController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/suggested-category")
-    public ResponseEntity<String> editTransaction(@RequestBody TransactionDTO transactionDTO) {
+    @PutMapping("/transaction")
+    public ResponseEntity<String> setSuggestedCategory(@RequestBody TransactionDTO transactionDTO) {
         transactionService.saveTransaction(transactionService.setSuggestedCategory(transactionDTO));
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }
