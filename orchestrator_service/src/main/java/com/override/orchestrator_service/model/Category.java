@@ -31,7 +31,7 @@ public class Category {
     @OneToMany(mappedBy="category", cascade = CascadeType.PERSIST)
     private Set<Keyword> keywords;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private OverMoneyAccount account;
 
     public Category(String name, Type type, OverMoneyAccount account) {

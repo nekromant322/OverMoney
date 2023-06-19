@@ -35,6 +35,6 @@ public class User {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private OverMoneyAccount account;
 }
