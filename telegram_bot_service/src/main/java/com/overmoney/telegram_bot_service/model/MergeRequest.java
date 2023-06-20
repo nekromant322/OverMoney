@@ -3,6 +3,7 @@ package com.overmoney.telegram_bot_service.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 /**
  * @author etozhealexis
@@ -40,8 +41,14 @@ public class MergeRequest {
     private Integer messageId;
 
     /**
-     * Поле, отображающее завершенность переноса данных
+     * Поле, содержаещее завершенность переноса данных
      */
     @Column(name = "completed")
     private Boolean completed;
+
+    /**
+     * Поле, содержаещее дату запроса о переносе данных
+     */
+    @Column(name = "date", columnDefinition = "TIMESTAMP")
+    private LocalDateTime date;
 }

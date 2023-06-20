@@ -31,7 +31,7 @@ public class TransactionProcessingService {
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
-        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
+        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getUserId());
 
         String transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
         Long suggestedCategoryId = null;

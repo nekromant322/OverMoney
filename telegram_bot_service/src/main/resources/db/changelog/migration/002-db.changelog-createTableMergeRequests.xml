@@ -12,6 +12,7 @@
             <column name="chat_id" type="BIGINT"/>
             <column name="message_id" type="INT"/>
             <column name="completed" type="BOOLEAN"/>
+            <column name="date" type="TIMESTAMP"/>
         </createTable>
     </changeSet>
 

@@ -1,7 +1,9 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.ChatMemberDTO;
 import com.override.orchestrator_service.config.RecentActivityProperties;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
+import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
@@ -15,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -36,6 +40,8 @@ public class OverMoneyAccountServiceTest {
     private CategoryRepository categoryRepository;
     @Mock
     private TransactionRepository transactionRepository;
+    @Mock
+    private UserMapper userMapper;
 
     @Test
     public void mergeToGroupAccountWithCategoriesAndWithoutTransactionsTest() {
@@ -75,7 +81,7 @@ public class OverMoneyAccountServiceTest {
         when(userService.getUserById(any())).thenReturn(user);
         when(accountRepository.save(any())).thenReturn(account);
 
-        accountService.registerOverMoneyAccount(chatId, userId);
+        accountService.registerSingleOverMoneyAccount(chatId, userId);
 
         verify(accountRepository, times(1)).save(any(OverMoneyAccount.class));
     }
@@ -91,9 +97,30 @@ public class OverMoneyAccountServiceTest {
         when(userService.getUserById(any())).thenReturn(user);
         when(accountRepository.save(any())).thenReturn(account);
 
-        accountService.registerOverMoneyAccount(chatId, userId);
+        accountService.registerGroupOverMoneyAccount(chatId, userId);
 
         verify(accountRepository, times(1)).save(any(OverMoneyAccount.class));
-        verify(telegramBotFeign, times(1)).sendMergeRequest(userId);
+    }
+
+    @Test
+    public void addNewChatMemberToAccountTest() {
+        ChatMemberDTO chatMemberDTO = ChatMemberDTO.builder()
+                .chatId(-123L)
+                .lastName("")
+                .firstName("")
+                .username("etozhealexis")
+                .build();
+        User user = User.builder()
+                .id(123L)
+                .firstName("")
+                .lastName("")
+                .username("etozhealexis")
+                .build();
+
+        when(userMapper.mapChatMemberDTOToUser(chatMemberDTO)).thenReturn(user);
+        accountService.addNewChatMemberToAccount(chatMemberDTO);
+
+        verify(userMapper, times(1)).mapChatMemberDTOToUser(chatMemberDTO);
+        verify(userService, times(1)).saveUser(user);
     }
 }
