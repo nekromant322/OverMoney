@@ -14,6 +14,6 @@ public interface RecognizerFeign {
 
     @PostMapping("/recognizer/category/suggested")
     CategoryDTO recognizeCategory(@RequestParam String message,
-                                  @RequestParam UUID transactionId,
-                                  @RequestBody List<CategoryDTO> categories);
+                                                  @RequestParam UUID transactionId,
+                                                  @RequestBody List<CategoryDTO> categories);
 }

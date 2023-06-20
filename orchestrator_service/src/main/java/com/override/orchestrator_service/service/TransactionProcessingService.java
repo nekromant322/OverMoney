@@ -46,20 +46,12 @@ public class TransactionProcessingService {
                 .build();
     }
 
-    public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId)  {
+    public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId) throws InstanceNotFoundException {
+        Transaction transaction = processTransaction(transactionMessageDTO);
+        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
         executorService.execute(() -> {
-            OverMoneyAccount overMoneyAccount = overMoneyAccountService
-                    .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
-            String transactionMessage;
-            List<CategoryDTO> categories;
-            try {
-                transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
-                categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
-            } catch (InstanceNotFoundException e) {
-                throw new RuntimeException(e);
-            }
             if (!categories.isEmpty()) {
-                recognizerFeign.recognizeCategory(transactionMessage, transactionId, categories).getId();
+                recognizerFeign.recognizeCategory(transaction.getMessage(), transactionId, categories);
             }
         });
     }

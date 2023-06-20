@@ -20,7 +20,6 @@ import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -51,8 +50,7 @@ public class TransactionController {
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
         Transaction transaction = transactionProcessingService.processTransaction(transactionMessage);
         transactionService.saveTransaction(transaction);
-        UUID transactionId = transaction.getId();
-        transactionProcessingService.suggestCategoryToProcessedTransaction(transactionMessage, transactionId);
+        transactionProcessingService.suggestCategoryToProcessedTransaction(transactionMessage, transaction.getId());
         return transactionMapper.mapTransactionToTelegramResponse(transaction);
     }
 
