@@ -48,7 +48,7 @@ public class TransactionProcessingService {
 
     public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId) throws InstanceNotFoundException {
         Transaction transaction = processTransaction(transactionMessageDTO);
-        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
+        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getUserId());
         executorService.execute(() -> {
             if (!categories.isEmpty()) {
                 recognizerFeign.recognizeCategory(transaction.getMessage(), transactionId, categories);

@@ -39,8 +39,8 @@ public class CategoryRecognizerService {
         categories.forEach(c -> {
             c.getKeywords().add(
                     KeywordIdDTO.builder()
-                    .name(c.getName())
-                    .build());
+                            .name(c.getName())
+                            .build());
         });
         categories.forEach(c -> {
             c.getKeywords().forEach(k -> {
@@ -56,9 +56,9 @@ public class CategoryRecognizerService {
 
     public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
         Long suggestedCategoryId = recognizeCategory(message, categories).getId();
-        TransactionDTO transactionDTO = new TransactionDTO();
-        transactionDTO.setSuggestedCategoryId(suggestedCategoryId);
-        transactionDTO.setId(transactionId);
+        TransactionDTO transactionDTO = TransactionDTO.builder()
+                .suggestedCategoryId(suggestedCategoryId)
+                .id(transactionId).build();
         orchestratorFeign.setSuggestedCategory(transactionDTO);
     }
 }
