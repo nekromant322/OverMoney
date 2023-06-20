@@ -4,10 +4,8 @@ import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionDefineDTO;
 import com.override.dto.TransactionResponseDTO;
-import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
-import com.override.orchestrator_service.service.CategoryService;
 import com.override.orchestrator_service.service.DefineService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
@@ -39,12 +37,6 @@ public class TransactionController {
 
     @Autowired
     private DefineService defineService;
-
-    @Autowired
-    RecognizerFeign recognizerFeign;
-
-    @Autowired
-    CategoryService categoryService;
 
     @PostMapping("/transaction")
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {

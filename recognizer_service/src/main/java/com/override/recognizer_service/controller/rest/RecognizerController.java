@@ -36,11 +36,10 @@ public class RecognizerController {
 
 
     @PostMapping("/recognizer/category/suggested")
-    public ResponseEntity<String> recognizeCategory(@RequestParam(name = "message") String message,
-                                                    @RequestParam(name = "transactionId") UUID transactionId,
-                                                    @RequestBody List<CategoryDTO> categories) {
+    public void recognizeCategory(@RequestParam(name = "message") String message,
+                                  @RequestParam(name = "transactionId") UUID transactionId,
+                                  @RequestBody List<CategoryDTO> categories) {
         categoryRecognizerService.sendTransactionWithSuggestedCategory(message, categories, transactionId);
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 

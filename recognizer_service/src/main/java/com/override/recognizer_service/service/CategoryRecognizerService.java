@@ -1,6 +1,5 @@
 package com.override.recognizer_service.service;
 
-import com.netflix.discovery.converters.Auto;
 import com.override.dto.CategoryDTO;
 
 import com.override.dto.KeywordIdDTO;
@@ -11,7 +10,6 @@ import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transaction;
 import java.util.*;
 
 @Service
@@ -19,7 +17,7 @@ import java.util.*;
 public class CategoryRecognizerService {
 
     @Autowired
-    OrchestratorFeign orchestratorFeign;
+    private OrchestratorFeign orchestratorFeign;
 
 
     private float calculateLevenshteinDistance(String strOne, String strTwo) {
@@ -55,7 +53,6 @@ public class CategoryRecognizerService {
         });
         return mostSuitableCategory[0];
     }
-
 
     public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
         Long suggestedCategoryId = recognizeCategory(message, categories).getId();
