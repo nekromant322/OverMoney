@@ -26,9 +26,6 @@ public class TransactionService {
     @Autowired
     private TransactionMapper transactionMapper;
 
-    @Autowired
-    private OverMoneyAccountService accountService;
-
     public void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
     }
@@ -69,7 +66,7 @@ public class TransactionService {
         transactionRepository.removeCategoryIdFromTransactionsWithSameMessage(transactionMessage, accountId);
     }
 
-    public Transaction setSuggestedCategory(TransactionDTO transactionDTO){
+    public Transaction getTransactionWithSuggestedCategory(TransactionDTO transactionDTO) {
         Transaction transaction = getTransactionById(transactionDTO.getId());
         transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
         return transaction;

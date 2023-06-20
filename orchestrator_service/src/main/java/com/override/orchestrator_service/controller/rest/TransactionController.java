@@ -81,7 +81,7 @@ public class TransactionController {
 
     @PutMapping("/transaction")
     public ResponseEntity<String> setSuggestedCategory(@RequestBody TransactionDTO transactionDTO) {
-        transactionService.saveTransaction(transactionService.setSuggestedCategory(transactionDTO));
+        transactionService.saveTransaction(transactionService.getTransactionWithSuggestedCategory(transactionDTO));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
