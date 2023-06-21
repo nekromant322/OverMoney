@@ -337,15 +337,11 @@ body, html {
 }
 
 .select-category-type {
-    display: block;
     font-size: 16px;
     font-family: Arial;
-    width: 324px;
     color: #444;
-    padding: 10px 10px;
-    margin: 0 auto 10px;
-    border-radius: 10px;
-    border: 2px solid lightgray;
+    padding: 0px 24px;
+    margin: 18px 0px;
 }
 
 .modal-verification-merge {
