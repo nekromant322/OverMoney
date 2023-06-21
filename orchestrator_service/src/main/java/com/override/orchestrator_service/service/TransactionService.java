@@ -26,9 +26,6 @@ public class TransactionService {
     @Autowired
     private TransactionMapper transactionMapper;
 
-    @Autowired
-    private OverMoneyAccountService accountService;
-
     public void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
     }
@@ -67,5 +64,11 @@ public class TransactionService {
         Long accountId = transactionRepository.findAccountIdByTransactionId(transactionId);
         String transactionMessage = getTransactionById(transactionId).getMessage();
         transactionRepository.removeCategoryIdFromTransactionsWithSameMessage(transactionMessage, accountId);
+    }
+
+    public Transaction enrichTransactionWithSuggestedCategory(TransactionDTO transactionDTO) {
+        Transaction transaction = getTransactionById(transactionDTO.getId());
+        transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
+        return transaction;
     }
 }

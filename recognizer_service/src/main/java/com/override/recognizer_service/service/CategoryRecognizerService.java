@@ -3,8 +3,11 @@ package com.override.recognizer_service.service;
 import com.override.dto.CategoryDTO;
 
 import com.override.dto.KeywordIdDTO;
+import com.override.dto.TransactionDTO;
+import com.override.recognizer_service.feign.OrchestratorFeign;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -12,6 +15,10 @@ import java.util.*;
 @Service
 @Slf4j
 public class CategoryRecognizerService {
+
+    @Autowired
+    private OrchestratorFeign orchestratorFeign;
+
 
     private float calculateLevenshteinDistance(String strOne, String strTwo) {
         strOne = strOne.toLowerCase();
@@ -32,8 +39,8 @@ public class CategoryRecognizerService {
         categories.forEach(c -> {
             c.getKeywords().add(
                     KeywordIdDTO.builder()
-                    .name(c.getName())
-                    .build());
+                            .name(c.getName())
+                            .build());
         });
         categories.forEach(c -> {
             c.getKeywords().forEach(k -> {
@@ -45,5 +52,13 @@ public class CategoryRecognizerService {
             });
         });
         return mostSuitableCategory[0];
+    }
+
+    public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
+        Long suggestedCategoryId = recognizeCategory(message, categories).getId();
+        TransactionDTO transactionDTO = TransactionDTO.builder()
+                .suggestedCategoryId(suggestedCategoryId)
+                .id(transactionId).build();
+        orchestratorFeign.editTransaction(transactionDTO);
     }
 }

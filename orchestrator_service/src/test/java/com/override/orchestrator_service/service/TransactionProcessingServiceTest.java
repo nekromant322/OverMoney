@@ -51,7 +51,7 @@ public class TransactionProcessingServiceTest {
                 .build();
         OverMoneyAccount account = generateTestAccount();
         List<CategoryDTO> categories = List.of(TestFieldsUtil.generateTestCategoryDTO());
-        when(recognizerFeign.recognizeCategory(any(), any())).thenReturn(TestFieldsUtil.generateTestCategoryDTO());
+        when(recognizerFeign.recognizeCategory(any(), any(), any())).thenReturn(TestFieldsUtil.generateTestCategoryDTO());
         when(categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId())).thenReturn(categories);
         when(overMoneyAccountService.getOverMoneyAccountByChatId(transactionMessageDTO.getChatId())).thenReturn(account);
         Transaction transactionTest = transactionProcessingService.processTransaction(transactionMessageDTO);

@@ -11,6 +11,8 @@ import javax.management.InstanceNotFoundException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,26 +28,32 @@ public class TransactionProcessingService {
     @Autowired
     private RecognizerFeign recognizerFeign;
 
+    @Autowired
+    private ExecutorService executorService;
+
     private final String SPACE = " ";
 
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
-        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId());
-
         String transactionMessage = getTransactionMessage(transactionMessageDTO, overMoneyAccount);
-        Long suggestedCategoryId = null;
-        if (!categories.isEmpty()) {
-            suggestedCategoryId = recognizerFeign.recognizeCategory(transactionMessage, categories).getId();
-        }
         return Transaction.builder()
                 .account(overMoneyAccount)
                 .amount(getAmount(transactionMessageDTO.getMessage()))
                 .message(transactionMessage)
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
                 .date(transactionMessageDTO.getDate())
-                .suggestedCategoryId(suggestedCategoryId)
                 .build();
+    }
+
+    public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId) throws InstanceNotFoundException {
+        Transaction transaction = processTransaction(transactionMessageDTO);
+        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getUserId());
+        executorService.execute(() -> {
+            if (!categories.isEmpty()) {
+                recognizerFeign.recognizeCategory(transaction.getMessage(), transactionId, categories);
+            }
+        });
     }
 
     private String getTransactionMessage(TransactionMessageDTO transactionMessageDTO, OverMoneyAccount overMoneyAccount) throws InstanceNotFoundException {
@@ -73,12 +81,10 @@ public class TransactionProcessingService {
                                 getWords(transactionMessageDTO.getMessage())))) {
             return null;
         }
-
         Category matchingCategory = getMatchingCategory(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         if (matchingCategory != null) {
             return matchingCategory;
         }
-
         Keyword matchingKeyword = getMatchingKeyword(overMoneyAccount.getCategories(), getWords(transactionMessageDTO.getMessage()));
         return matchingKeyword.getCategory();
     }
