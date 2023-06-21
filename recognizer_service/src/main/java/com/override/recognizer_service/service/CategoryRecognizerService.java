@@ -59,6 +59,6 @@ public class CategoryRecognizerService {
         TransactionDTO transactionDTO = TransactionDTO.builder()
                 .suggestedCategoryId(suggestedCategoryId)
                 .id(transactionId).build();
-        orchestratorFeign.setSuggestedCategory(transactionDTO);
+        orchestratorFeign.editTransaction(transactionDTO);
     }
 }
