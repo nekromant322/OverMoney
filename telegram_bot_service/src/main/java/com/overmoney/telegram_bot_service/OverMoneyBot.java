@@ -7,6 +7,7 @@ import com.overmoney.telegram_bot_service.service.VoiceMessageProcessingService;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
+import com.override.dto.constants.StatusMailing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -86,12 +87,14 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    public void sendMessage(Long chatId, String messageText) {
+    public StatusMailing sendMessage(Long chatId, String messageText) {
         SendMessage message = new SendMessage(chatId.toString(), messageText);
         try {
             execute(message);
+            return StatusMailing.SUCCESS;
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
+            return StatusMailing.ERROR;
         }
     }
 }
