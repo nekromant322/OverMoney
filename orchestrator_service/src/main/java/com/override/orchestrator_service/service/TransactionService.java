@@ -66,7 +66,7 @@ public class TransactionService {
         transactionRepository.removeCategoryIdFromTransactionsWithSameMessage(transactionMessage, accountId);
     }
 
-    public Transaction getTransactionWithSuggestedCategory(TransactionDTO transactionDTO) {
+    public Transaction enrichTransactionWithSuggestedCategory(TransactionDTO transactionDTO) {
         Transaction transaction = getTransactionById(transactionDTO.getId());
         transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
         return transaction;

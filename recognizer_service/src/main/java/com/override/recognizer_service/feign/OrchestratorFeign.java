@@ -15,5 +15,5 @@ public interface OrchestratorFeign {
     String getOrchestra();
 
     @PutMapping("/transaction")
-    ResponseEntity<String> setSuggestedCategory(@RequestBody TransactionDTO transactionDTO);
+    ResponseEntity<String> editTransaction(@RequestBody TransactionDTO transactionDTO);
 }
