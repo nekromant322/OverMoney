@@ -42,4 +42,8 @@ public class Transaction {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OverMoneyAccount account;
+
+    @Column(name = "telegram_user_id")
+    @Nullable
+    private Long telegramUserId;
 }

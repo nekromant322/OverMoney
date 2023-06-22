@@ -43,6 +43,7 @@ public class TransactionProcessingService {
                 .message(transactionMessage)
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount))
                 .date(transactionMessageDTO.getDate())
+                .telegramUserId(transactionMessageDTO.getUserId())
                 .build();
     }
 

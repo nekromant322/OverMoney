@@ -19,4 +19,5 @@ public class TransactionDTO {
     private Float amount;
     private LocalDateTime date;
     private Long suggestedCategoryId;
+    private Long telegramUserId;
 }
