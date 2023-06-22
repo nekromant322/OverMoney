@@ -15,6 +15,7 @@ function sendAnnounce() {
             }
         })
     }
+
     let statusList = getStatusMailList();
     drawStatusListOnPage(statusList);
     document.getElementById("send-announce-button").disabled = true;
