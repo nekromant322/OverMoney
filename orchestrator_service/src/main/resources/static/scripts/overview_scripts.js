@@ -213,7 +213,7 @@ function drawToast(e, categoryName, transactionDefined, transactionComment) {
         '<div><text font-size="30">' +
         e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' добавлено в категорию ' + categoryName +
         '</text>' +
-        '<div class="buttonUndefine" id="undefineButtonFor' +transactionComment + '">' +
+        '<div class="buttonUndefine" id="undefineButtonFor' + transactionComment + '">' +
         '<a>Отменить</a>' +
         '</div></div>'
     )
@@ -344,19 +344,14 @@ function drawCategory(category, length) {
     newCategory.style.height = 85 / length + '%';
     newCategory.dataset.id = category.id;
     newCategory.dataset.name = category.name;
-    let actualType;
-    let secondTypeValue;
-    let notActualType;
+    let typeCategory;
     if (category.type === INCOME) {
-        actualType = "Доходы";
-        secondTypeValue = EXPENSE
-        notActualType = "Расходы";
+        typeCategory = "Доходы";
     } else if (category.type === EXPENSE) {
-        actualType = "Расходы"
-        secondTypeValue = INCOME
-        notActualType = "Доходы";
+        typeCategory = "Расходы";
+
     }
-    newCategory.dataset.type = actualType;
+    newCategory.dataset.type = typeCategory;
     newCategory.onclick = function () {
         let body = `<h3>Информация о категории</h3>
                     <form class="modal-category" id="formModalCategory">
@@ -366,13 +361,13 @@ function drawCategory(category, length) {
                             <label for="name">Наименование категории:</label>
                             <input type="text" class="input-modal-category" id="name" value="${newCategory.dataset.name}" >
                         </div>
+                        
                         <div>
                             <label>Тип категории:</label>
-                            <select class="select-category-type" id="selectCategoryType">
-                            <option selected value="${category.type}">${newCategory.dataset.type}</option>
-                            <option value="${secondTypeValue}">${notActualType}</option>
-                        </select>
-                        </div>
+                            <div class="select-category-type" id="selectCategoryType">
+                                <p>${typeCategory}</p>
+                             </div>
+                         </div>
                           <div>
                             <label for="keywords">Ключевые слова категории:</label>
                             <div class="space-for-keywords">
@@ -420,7 +415,7 @@ function drawCategory(category, length) {
             let idCategory = newCategory.dataset.id;
             let keywordsCategory = category.keywords;
             let nameValue = $('#formModalCategory').find('#name').val();
-            let typeValue = $('#selectCategoryType option:selected').val();
+            let typeValue = category.type;
 
             if (!(nameValue === '') && !(keywordsCategory === '')) {
                 let data = {
@@ -440,7 +435,6 @@ function drawCategory(category, length) {
         });
     }
     categorySpace.insertAdjacentElement('beforeend', newCategory);
-
 
 }
 
