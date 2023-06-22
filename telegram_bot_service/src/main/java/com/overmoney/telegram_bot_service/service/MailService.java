@@ -31,7 +31,7 @@ public class MailService {
         return mailRepository.findAll();
     }
 
-    public List<Mail> findAllMailsByStatus(StatusMailing statusMailing) {
-        return mailRepository.findAllMailsByStatusMailing(statusMailing);
+    public List<Mail> findAllMailsByStatusAndAnnounce(StatusMailing statusMailing, Announce announce) {
+        return mailRepository.findAllMailsByStatusMailing(statusMailing, announce);
     }
 }

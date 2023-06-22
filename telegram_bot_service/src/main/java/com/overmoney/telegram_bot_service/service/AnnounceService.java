@@ -35,29 +35,22 @@ public class AnnounceService {
 
     public void sendAnnounce(String announceText, Set<Long> userIds) {
         Announce announce = saveAnnounce(announceText);
-        long countMessage = 0;
         List<Mail> mails = new ArrayList<>();
         for (Long userTgId : userIds) {
-            if (countMessage < MAX_MESSAGES_PER_SECOND) {
-                StatusMailing statusMailing = overMoneyBot.sendMessage(userTgId, announceText);
-                mails.add(mailService.createMail(announce, statusMailing, userTgId));
-                countMessage++;
-            } else {
-                mails.add(mailService.createMail(announce, StatusMailing.PENDING, userTgId));
-            }
+            mails.add(mailService.createMail(announce, StatusMailing.PENDING, userTgId));
         }
         mailService.saveListOfMails(mails);
-        sendAnnounceForUsersInPending(announceText);
+        sendAnnounceForUsersInPending(announceText, announce);
     }
 
-    private void sendAnnounceForUsersInPending(String announceText) {
+    private void sendAnnounceForUsersInPending(String announceText, Announce announce) {
         executorService.execute(() -> {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-            List<Mail> mailsInPending = mailService.findAllMailsByStatus(StatusMailing.PENDING);
+            List<Mail> mailsInPending = mailService.findAllMailsByStatusAndAnnounce(StatusMailing.PENDING, announce);
             long countMessage = 0;
             for (Mail mail : mailsInPending) {
                 long userTgId = mail.getUserTgId();
