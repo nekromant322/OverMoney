@@ -117,11 +117,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            echo RECOGNIZER_DB_USER = ${{ secrets.RECOGNIZER_DB_USER }} > overmoney-env.txt
-            echo RECOGNIZER_DB_PASSWORD = ${{ secrets.RECOGNIZER_DB_PASSWORD }} >> overmoney-env.txt
-            echo RECOGNIZER_DB_PORT = 5432 >> overmoney-env.txt
-            echo RECOGNIZER_DB_HOST = recognizer-db >> overmoney-env.txt
-            echo ORCHESTRATOR_DB_USER = ${{ secrets.ORCHESTRATOR_DB_USER }} >> overmoney-env.txt
+            echo ORCHESTRATOR_DB_USER = ${{ secrets.ORCHESTRATOR_DB_USER }} > overmoney-env.txt
             echo ORCHESTRATOR_DB_PASSWORD = ${{ secrets.ORCHESTRATOR_DB_PASSWORD }} >> overmoney-env.txt
             echo ORCHESTRATOR_DB_PORT = 5432 >> overmoney-env.txt
             echo ORCHESTRATOR_DB_HOST = orchestrator-db >> overmoney-env.txt
@@ -133,6 +129,7 @@ jobs:
             echo TELEGRAM_BOT_NAME = OverMoneyBot >> overmoney-env.txt
             echo JWT_ACCESS_KEY = ${{ secrets.JWT_ACCESS_KEY }} >> overmoney-env.txt
             echo JWT_REFRESH_KEY = ${{ secrets.JWT_REFRESH_KEY }} >> overmoney-env.txt
+            echo WIT_AI_TOKEN = ${{ secrets.WIT_AI_TOKEN }} >> overmoney.txt
             echo SPRING_APPLICATION_PROFILE = test >> overmoney-env.txt
             
             if ${{ needs.paths-filter.outputs.eureka}}; then

@@ -1,6 +1,6 @@
 package com.override.recognizer_service.service;
 
-import com.override.recognizer_service.service.voice.WitAiRecognizeService;
+import com.override.recognizer_service.service.voice.VoiceRecognitionService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,24 +21,22 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class VoiceMessageService {
 
-//    @Autowired
-//    private VoiceConvertingService voiceConvertingService;
     @Autowired
-    private WitAiRecognizeService witAiRecognizeService;
+    private VoiceRecognitionService voiceRecognitionService;
+    @Autowired
+    private WordsToNumbersService wordsToNumbersService;
 
     private final String VOICE_FILE_NAME = "voiceMessage";
     private final String OGG_FORMAT = ".ogg";
     private final String WAV_FORMAT = ".wav";
 
-    public String processVoiceMessage(byte[] voiceMessage) throws IOException, InterruptedException {
-//        byte[] voiceMessageWav = convertOggBytesToWav(voiceMessage);
-//        String recognizedText = voiceConvertingService.processWithSphinx(voiceMessageWav);
-//        log.info("Recognition result " + recognizedText);
-        return convertOggBytesToWav(voiceMessage);
+    public String processVoiceMessage(byte[] voiceMessage) {
+        String messageFullText = convertOggBytesToWavAndRecognizeText(voiceMessage);
+        return wordsToNumbersService.wordsToNumbers(messageFullText);
     }
 
     @SneakyThrows
-    public String convertOggBytesToWav(byte[] voiceMessage) throws IOException, InterruptedException {
+    public String convertOggBytesToWavAndRecognizeText(byte[] voiceMessage) {
         UUID voiceId = UUID.randomUUID();
         StringBuilder oggFileName = new StringBuilder();
         oggFileName
@@ -65,20 +63,15 @@ public class VoiceMessageService {
         } else {
             throw new IOException("OGG voice file was not deleted");
         }
-        byte[] wavVoiceBytes = null;
-        try (InputStream in = new FileInputStream(wavFileName)) {
-            wavVoiceBytes = in.readAllBytes();
-            log.info("OGG bytes have been converted to WAV");
-        } catch (IOException e) {
-            log.error("WAV voice file bytes not written");
-        }
         File wavVoiceFile = new File(wavFileName);
 
-        //toDo: удалять файлик, нормально считывать json'ку,
-        // переводить числительные в числа, вернуть интерфейс, покрасивше сделать конвертер
-        String text = witAiRecognizeService.recognizeSpeech(wavVoiceFile);
-        log.info(text);
+        String text = voiceRecognitionService.voiceToText(wavVoiceFile);
 
+        if (wavVoiceFile.delete()) {
+            log.info("WAV voice file has been deleted");
+        } else {
+            throw new IOException("WAV voice file was not deleted");
+        }
 
         return text;
     }

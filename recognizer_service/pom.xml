@@ -53,18 +53,6 @@
 			<artifactId>logbook-spring-boot-starter</artifactId>
 			<version>2.16.0</version>
 		</dependency>
-
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-meta</artifactId>
-            <version>6.5.0</version>
-            <scope>compile</scope>
-        </dependency>
-<!--		<dependency>-->
-<!--			<groupId>com.override</groupId>-->
-<!--			<artifactId>dto</artifactId>-->
-<!--			<version>0.0.1</version>-->
-<!--		</dependency>-->
 		<dependency>
 			<groupId>com.alphacephei</groupId>
 			<artifactId>vosk</artifactId>
@@ -92,11 +80,6 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-text</artifactId>
 			<version>1.10.0</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>

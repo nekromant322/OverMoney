@@ -1,33 +1,26 @@
   server:
     port: 8080
 
-  spring:
-#    datasource:
-#      url: jdbc:postgresql://${RECOGNIZER_DB_HOST:localhost}:${RECOGNIZER_DB_PORT:5434}/recognizer-db
-#      username: ${RECOGNIZER_DB_USER:postgres}
-#      password: ${RECOGNIZER_DB_PASSWORD:postgres}
-#      driver-class-name: org.postgresql.Driver
-#
-#    jpa:
-#      database: postgresql
-#      database-platform: org.hibernate.dialect.PostgreSQLDialect
-#      generate-ddl: false
-#      hibernate:
-#        ddl-auto: none
-#      properties:
-#        hibernate:
-#          dialect: org.hibernate.dialect.PostgreSQLDialect
-#          current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+  wit-ai:
+    secret:
+      url: https://api.wit.ai/speech
+      token: ${WIT_AI_TOKEN}
+      version: 20230215
+    connection:
+      charset: UTF-8
+      method: POST
+      authProperty: Authorization
+      contentTypeProperty: Content-Type
+      contentTypeValue: audio/wav
+      paramSeparator: "?"
+      versionParam: v=%s
 
+  spring:
     application:
       name: recognizer-service
 
-#    liquibase:
-#      enabled: true
-#      change-log: /db/changelog/db.changelog-1.0.xml
-
     profiles:
-      active: ${SPRING_APPLICATION_PROFILE:test}
+      active: ${SPRING_APPLICATION_PROFILE:dev}
 
   eureka:
     client:

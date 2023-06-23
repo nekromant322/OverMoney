@@ -13,7 +13,7 @@ COPY /orchestrator_service/src /orchestrator/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
 
-FROM openjdk:17-jdk-slim
+FROM openjdk:11-jdk-slim
 COPY --from=build /orchestrator/target/*.jar app.jar
 EXPOSE 8081
 ENTRYPOINT ["java","-jar","app.jar"]

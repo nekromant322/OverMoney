@@ -12,7 +12,7 @@ COPY /telegram_bot_service/pom.xml /telegram_bot
 COPY /telegram_bot_service/src /telegram_bot/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
-FROM openjdk:17-jdk-slim
+FROM openjdk:11-jdk-slim
 COPY --from=build /telegram_bot/target/*.jar app.jar
 EXPOSE 8082
 ENTRYPOINT ["java","-jar","app.jar"]
