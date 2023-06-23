@@ -18,7 +18,7 @@ $(window).scroll(function() {
 function getTransactions() {
     $.ajax({
         type: "GET",
-        url: "./transactions/history?pageSize=" + pageSize  + "&pageNumber=" + pageNumber,
+        url: "./transaction/history?pageSize=" + pageSize  + "&pageNumber=" + pageNumber,
         contentType: "application/json; charset=utf8",
         async: false,
         success: function(data) {

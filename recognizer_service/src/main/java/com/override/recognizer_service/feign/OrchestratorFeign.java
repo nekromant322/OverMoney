@@ -14,6 +14,6 @@ public interface OrchestratorFeign {
     @GetMapping("/orchestra")
     String getOrchestra();
 
-    @PutMapping("/transaction")
+    @PutMapping("/transaction/edit")
     ResponseEntity<String> editTransaction(@RequestBody TransactionDTO transactionDTO);
 }

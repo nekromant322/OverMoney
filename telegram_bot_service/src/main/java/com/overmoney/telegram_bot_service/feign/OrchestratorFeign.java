@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @FeignClient(name="orchestrator-service")
 public interface OrchestratorFeign {
 
-    @PostMapping("/transaction")
+    @PostMapping("/transaction/process")
     TransactionResponseDTO sendTransaction(@RequestBody TransactionMessageDTO transaction);
 
     @PostMapping("/account/register")

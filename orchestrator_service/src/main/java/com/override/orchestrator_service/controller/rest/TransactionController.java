@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequestMapping("/transaction")
 public class TransactionController {
 
     @Autowired
@@ -38,7 +39,7 @@ public class TransactionController {
     @Autowired
     private DefineService defineService;
 
-    @PostMapping("/transaction")
+    @PostMapping("/process")
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
         Transaction transaction = transactionProcessingService.processTransaction(transactionMessage);
         transactionService.saveTransaction(transaction);
@@ -46,7 +47,7 @@ public class TransactionController {
         return transactionMapper.mapTransactionToTelegramResponse(transaction);
     }
 
-    @GetMapping("/transactions")
+    @GetMapping("/list")
     public List<TransactionDTO> getTransactionsList(Principal principal) throws InstanceNotFoundException {
         List<Transaction> transactions =
                 transactionService.findTransactionsListByUserIdWithoutCategories(telegramUtils.getTelegramId(principal));
@@ -57,7 +58,7 @@ public class TransactionController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/transactions/history")
+    @GetMapping("/history")
     public List<TransactionDTO> getTransactionsHistory(Principal principal,
                                                        @RequestParam(defaultValue = "50") Integer pageSize,
                                                        @RequestParam(defaultValue = "0") Integer pageNumber)
@@ -66,20 +67,20 @@ public class TransactionController {
                 .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
     }
 
-    @PostMapping("/transaction/define")
+    @PostMapping("/define")
     public ResponseEntity<String> define(@RequestBody TransactionDefineDTO transactionDefineDTO) {
         defineService.defineTransactionCategoryByTransactionIdAndCategoryId(transactionDefineDTO.getTransactionId(),
                 transactionDefineDTO.getCategoryId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/transaction/undefine")
+    @PostMapping("/undefine")
     public ResponseEntity<String> undefine(@RequestBody TransactionDefineDTO transactionDefineDTO) {
         defineService.undefineTransactionCategoryAndKeywordCategory(transactionDefineDTO.getTransactionId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/transaction")
+    @PutMapping("/edit")
     public ResponseEntity<String> editTransaction(@RequestBody TransactionDTO transactionDTO) {
         transactionService.saveTransaction(transactionService.enrichTransactionWithSuggestedCategory(transactionDTO));
         return new ResponseEntity<>(HttpStatus.OK);

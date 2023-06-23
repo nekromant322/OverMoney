@@ -40,7 +40,7 @@ function getMaxSingleTransactionAmount() {
 function getUndefinedTransactionsData() {
     $.ajax({
         method: 'GET',
-        url: './transactions',
+        url: './transaction/list',
         contentType: "application/json; charset=utf8",
         success: function (data) {
             let undefinedTransactionsData = []
