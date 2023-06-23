@@ -11,5 +11,4 @@ public class JwtUtils {
         jwtInfoToken.setUsername(claims.get("username", String.class));
         return jwtInfoToken;
     }
-
 }

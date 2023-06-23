@@ -17,5 +17,4 @@ public class UserMapper {
         user.setAuthDate(telegramAuthRequest.getAuth_date());
         return user;
     }
-
 }
