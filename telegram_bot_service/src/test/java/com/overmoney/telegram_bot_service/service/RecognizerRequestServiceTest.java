@@ -1,6 +1,7 @@
 package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.RecognizerFeign;
+import com.override.dto.VoiceMessageDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,10 +21,10 @@ public class RecognizerRequestServiceTest {
 
     @Test
     public void sendVoiceMessageTest() {
-        byte[] voiceMessageByteArray = {1, 2, 3};
+        VoiceMessageDTO voiceMessageDTO = VoiceMessageDTO.builder().build();
 
-        recognizerRequestService.sendVoiceMessage(voiceMessageByteArray);
+        recognizerRequestService.sendVoiceMessage(voiceMessageDTO);
 
-        verify(recognizerFeign, times(1)).sendVoiceMessage(voiceMessageByteArray);
+        verify(recognizerFeign, times(1)).sendVoiceMessage(voiceMessageDTO);
     }
 }

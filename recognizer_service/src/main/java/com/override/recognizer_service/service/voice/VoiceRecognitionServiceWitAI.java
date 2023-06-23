@@ -1,9 +1,10 @@
 package com.override.recognizer_service.service.voice;
 
-import com.override.recognizer_service.config.WitAIConnectionProperties;
-import com.override.recognizer_service.config.WitAISecretProperties;
+import com.override.recognizer_service.config.ConnectionConfig;
+import com.override.recognizer_service.config.WitAIProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -13,14 +14,16 @@ import java.net.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+/**
+ * Ссылка на доку распознавания голоса wit.ai (необходим vpn, чтобы зайти):
+ * https://wit.ai/docs/http/20230215/#post__speech_link
+ */
 @Service
 @Profile("!dev")
 @Slf4j
 public class VoiceRecognitionServiceWitAI implements VoiceRecognitionService {
     @Autowired
-    private WitAISecretProperties witAISecretProperties;
-    @Autowired
-    private WitAIConnectionProperties witAIConnectionProperties;
+    private ConnectionConfig connectionConfig;
 
     private final int BYTE_BUFFER_CAPACITY = 1024;
     private final int END_OF_FILE = -1;
@@ -30,24 +33,18 @@ public class VoiceRecognitionServiceWitAI implements VoiceRecognitionService {
     private final int SYMBOL_COUNT_TO_MESSAGE_BEGINNING = 9;
     private final int SYMBOL_COUNT_TO_MESSAGE_ENDING = 1;
 
+    /**
+     * Метод, открывающий соединение с помощью URLConnection и отправляющий запрос
+     * на распознавание файла в wit.ai
+     * референс: https://stackoverflow.com/questions/35358232/wit-ai-how-to-send-request-in-java
+     * @param wavFile принимает на вход для отправки в wit.ai
+     * @return Возвращает распознанную строку (цифры приходят прописью)
+     */
     @Override
     @SneakyThrows
     public String voiceToText(File wavFile) {
-        String query = String.format(
-                witAIConnectionProperties.getVersionParam(),
-                URLEncoder.encode(witAISecretProperties.getVersion(), witAIConnectionProperties.getCharset())
-        );
+        HttpURLConnection connection = connectionConfig.getConnection();
 
-        URLConnection connectionURL =
-                new URL(witAISecretProperties.getUrl() +
-                        witAIConnectionProperties.getParamSeparator() +
-                        query).openConnection();
-        HttpURLConnection connection = (HttpURLConnection) connectionURL;
-        connection.setRequestMethod(witAIConnectionProperties.getMethod());
-        connection.setRequestProperty(witAIConnectionProperties.getAuthProperty(), witAISecretProperties.getToken());
-        connection.setRequestProperty(witAIConnectionProperties.getContentTypeProperty(),
-                witAIConnectionProperties.getContentTypeValue());
-        connection.setDoOutput(true);
         OutputStream outputStream = connection.getOutputStream();
         FileChannel fileChannel = new FileInputStream(wavFile.getAbsolutePath()).getChannel();
         ByteBuffer byteBuffer = ByteBuffer.allocate(BYTE_BUFFER_CAPACITY);
@@ -73,15 +70,10 @@ public class VoiceRecognitionServiceWitAI implements VoiceRecognitionService {
         while ((line = response.readLine()) != null) {
             responseLines.append(line).append("\n");
         }
-        log.info(responseLines.toString());
 
         int firstIndexOfMessage = responseLines.lastIndexOf(START_OF_RECOGNITION) + SYMBOL_COUNT_TO_MESSAGE_BEGINNING;
         int lastIndexOfMessage = responseLines.lastIndexOf(END_OF_RECOGNITION) - SYMBOL_COUNT_TO_MESSAGE_ENDING;
 
-        String message = responseLines.substring(firstIndexOfMessage, lastIndexOfMessage).trim();
-
-        log.info(message);
-
-        return message;
+        return responseLines.substring(firstIndexOfMessage, lastIndexOfMessage).trim();
     }
 }

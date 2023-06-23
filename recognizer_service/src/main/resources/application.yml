@@ -2,18 +2,16 @@
     port: 8080
 
   wit-ai:
-    secret:
-      url: https://api.wit.ai/speech
-      token: ${WIT_AI_TOKEN}
-      version: 20230215
-    connection:
-      charset: UTF-8
-      method: POST
-      authProperty: Authorization
-      contentTypeProperty: Content-Type
-      contentTypeValue: audio/wav
-      paramSeparator: "?"
-      versionParam: v=%s
+    url: https://api.wit.ai/speech
+    token: ${WIT_AI_TOKEN}
+    version: 20230215
+    charset: UTF-8
+    method: POST
+    authProperty: Authorization
+    contentTypeProperty: Content-Type
+    contentTypeValue: audio/wav
+    paramSeparator: "?"
+    versionParam: v=%s
 
   spring:
     application:

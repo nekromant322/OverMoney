@@ -2,64 +2,66 @@ package com.override.recognizer_service.service;
 
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 
 @Service
 public class WordsToNumbersService {
-    private static final HashMap<String, Long> wordMap = new HashMap<>();
+    private final HashMap<String, Long> vocabulary = new HashMap<>();
     private final String SPACE = " ";
 
-    static {
-        wordMap.put("ноль", 0L);
-        wordMap.put("один", 1L);
-        wordMap.put("одна", 1L);
-        wordMap.put("два", 2L);
-        wordMap.put("две", 2L);
-        wordMap.put("три", 3L);
-        wordMap.put("четыре", 4L);
-        wordMap.put("пять", 5L);
-        wordMap.put("шесть", 6L);
-        wordMap.put("семь", 7L);
-        wordMap.put("восемь", 8L);
-        wordMap.put("девять", 9L);
-        wordMap.put("десять", 10L);
-        wordMap.put("одиннадцать", 11L);
-        wordMap.put("двенадцать", 12L);
-        wordMap.put("тринадцать", 13L);
-        wordMap.put("четырнадцать", 14L);
-        wordMap.put("пятнадцать", 15L);
-        wordMap.put("шестнадцать", 16L);
-        wordMap.put("семнадцать", 17L);
-        wordMap.put("восемнадцать", 18L);
-        wordMap.put("девятнадцать", 19L);
-        wordMap.put("двадцать", 20L);
-        wordMap.put("тридцать", 30L);
-        wordMap.put("сорок", 40L);
-        wordMap.put("пятьдесят", 50L);
-        wordMap.put("шестьдесят", 60L);
-        wordMap.put("семьдесят", 70L);
-        wordMap.put("восемьдесят", 80L);
-        wordMap.put("девяносто", 90L);
-        wordMap.put("сто", 100L);
-        wordMap.put("двести", 200L);
-        wordMap.put("триста", 300L);
-        wordMap.put("четыреста", 400L);
-        wordMap.put("пятьсот", 500L);
-        wordMap.put("шестьсот", 600L);
-        wordMap.put("семьсот", 700L);
-        wordMap.put("восемьсот", 800L);
-        wordMap.put("девятьсот", 900L);
-        wordMap.put("тысяча", 1000L);
-        wordMap.put("тысячи", 1000L);
-        wordMap.put("тыща", 1000L);
-        wordMap.put("тыщи", 1000L);
-        wordMap.put("тысяч", 1000L);
-        wordMap.put("миллион", 1000000L);
-        wordMap.put("миллиона", 1000000L);
-        wordMap.put("миллионов", 1000000L);
-        wordMap.put("миллиард", 1000000000L);
-        wordMap.put("миллиарда", 1000000000L);
-        wordMap.put("миллиардов", 1000000000L);
+    @PostConstruct
+    private void fillVocabulary() {
+        vocabulary.put("ноль", 0L);
+        vocabulary.put("один", 1L);
+        vocabulary.put("одна", 1L);
+        vocabulary.put("два", 2L);
+        vocabulary.put("две", 2L);
+        vocabulary.put("три", 3L);
+        vocabulary.put("четыре", 4L);
+        vocabulary.put("пять", 5L);
+        vocabulary.put("шесть", 6L);
+        vocabulary.put("семь", 7L);
+        vocabulary.put("восемь", 8L);
+        vocabulary.put("девять", 9L);
+        vocabulary.put("десять", 10L);
+        vocabulary.put("одиннадцать", 11L);
+        vocabulary.put("двенадцать", 12L);
+        vocabulary.put("тринадцать", 13L);
+        vocabulary.put("четырнадцать", 14L);
+        vocabulary.put("пятнадцать", 15L);
+        vocabulary.put("шестнадцать", 16L);
+        vocabulary.put("семнадцать", 17L);
+        vocabulary.put("восемнадцать", 18L);
+        vocabulary.put("девятнадцать", 19L);
+        vocabulary.put("двадцать", 20L);
+        vocabulary.put("тридцать", 30L);
+        vocabulary.put("сорок", 40L);
+        vocabulary.put("пятьдесят", 50L);
+        vocabulary.put("шестьдесят", 60L);
+        vocabulary.put("семьдесят", 70L);
+        vocabulary.put("восемьдесят", 80L);
+        vocabulary.put("девяносто", 90L);
+        vocabulary.put("сто", 100L);
+        vocabulary.put("двести", 200L);
+        vocabulary.put("триста", 300L);
+        vocabulary.put("четыреста", 400L);
+        vocabulary.put("пятьсот", 500L);
+        vocabulary.put("шестьсот", 600L);
+        vocabulary.put("семьсот", 700L);
+        vocabulary.put("восемьсот", 800L);
+        vocabulary.put("девятьсот", 900L);
+        vocabulary.put("тысяча", 1000L);
+        vocabulary.put("тысячи", 1000L);
+        vocabulary.put("тыща", 1000L);
+        vocabulary.put("тыщи", 1000L);
+        vocabulary.put("тысяч", 1000L);
+        vocabulary.put("миллион", 1000000L);
+        vocabulary.put("миллиона", 1000000L);
+        vocabulary.put("миллионов", 1000000L);
+        vocabulary.put("миллиард", 1000000000L);
+        vocabulary.put("миллиарда", 1000000000L);
+        vocabulary.put("миллиардов", 1000000000L);
     }
 
     public String wordsToNumbers(String words) {
@@ -68,8 +70,8 @@ public class WordsToNumbersService {
         String[] splitWords = words.split("\\s+");
         StringBuilder message = new StringBuilder();
         for (String word : splitWords) {
-            if (wordMap.containsKey(word)) {
-                long value = wordMap.get(word);
+            if (vocabulary.containsKey(word)) {
+                long value = vocabulary.get(word);
                 if (value >= 1000) {
                     number += prevNumber * value;
                     prevNumber = 0;
