@@ -1,13 +1,11 @@
 package com.override.orchestrator_service.config.jwt;
 
-import com.override.orchestrator_service.model.Role;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -17,11 +15,10 @@ public class JwtAuthentication implements Authentication {
     private String username;
     private String firstName;
     private Long telegramId;
-    private Set<Role> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return null;
     }
 
     @Override

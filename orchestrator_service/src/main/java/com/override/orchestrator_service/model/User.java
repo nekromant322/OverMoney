@@ -3,7 +3,6 @@ package com.override.orchestrator_service.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -31,9 +30,6 @@ public class User {
 
     @Column
     private String authDate;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OverMoneyAccount account;
