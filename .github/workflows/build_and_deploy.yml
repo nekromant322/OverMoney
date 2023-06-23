@@ -105,10 +105,11 @@ jobs:
           target: "/home/${{ secrets.SSH_USER }}"
           overwrite: true
 
+
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: [build_and_push_images, paths-filter]
+    needs: [ build_and_push_images, paths-filter ]
     steps:
       - name: Connect with SSH and Deploy
         uses: appleboy/ssh-action@v0.1.8
@@ -164,3 +165,113 @@ jobs:
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S cp -r '/home/${{ secrets.SSH_USER }}/nginx'/* /etc/nginx
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S systemctl restart nginx
             fi
+  
+
+  healthcheck-eureka:
+    name: HealthCheckEureka
+    if: ${{ needs.paths-filter.outputs.eureka }}
+    runs-on: ubuntu-latest
+    needs: [ deploy, paths-filter ]
+    steps:
+      - name: Connect with SSH and Deploy
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            URL="localhost:8761/actuator/health";
+            counter=0;
+            while [ $counter -lt 10 ]; do 
+             RESPONSE=$(curl $URL); 
+             if [ "$RESPONSE" = "{\"status\":\"UP\"}" ]; then 
+              echo "Eureka started"; 
+              exit 0; 
+             else echo "Eureka not started yet"; 
+             fi; 
+             sleep 5s; 
+             counter=`expr $counter + 1`
+            done; 
+            exit 1
+
+  healthcheck-orchestrator:
+    name: HealthCheckOrchestrator
+    if: ${{ needs.paths-filter.outputs.orchestrator }}
+    runs-on: ubuntu-latest
+    needs: [ deploy, paths-filter ]
+    steps:
+      - name: Connect with SSH and Deploy
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            URL="localhost:8081/actuator/health";
+            counter=0;
+            while [ $counter -lt 10 ]; do 
+              RESPONSE=$(curl $URL); 
+              if [ "$RESPONSE" = "{\"status\":\"UP\"}" ]; then 
+                echo "Orchestrator started"; exit 0; 
+              else echo "Orchestrator not started yet"; 
+              fi; 
+              sleep 5s; 
+              counter=`expr $counter + 1` 
+            done; 
+            exit 1
+            
+
+  healthcheck-recognizer:
+    name: HealthCheckRecognizer
+    if: ${{ needs.paths-filter.outputs.recognizer }}
+    runs-on: ubuntu-latest
+    needs: [ deploy, paths-filter ]
+    steps:
+      - name: Connect with SSH and Deploy
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            URL="localhost:8080/actuator/health";
+            counter=0;
+            while [ $counter -lt 10 ]; do 
+             RESPONSE=$(curl $URL); 
+             if [ "$RESPONSE" = "{\"status\":\"UP\"}" ]; then 
+              echo "Recognizer started"; 
+              exit 0; 
+             else echo "Recognizer not started yet"; 
+             fi; 
+             sleep 5s; 
+             counter=`expr $counter + 1` 
+            done; 
+            exit 1
+
+
+  healthcheck-telegram-bot:
+    name: HealthCheckTelegram-Bot
+    if: ${{ needs.paths-filter.outputs.recognizer }}
+    runs-on: ubuntu-latest
+    needs: [ deploy, paths-filter ]
+    steps:
+      - name: Connect with SSH and Deploy
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            URL="localhost:8082/actuator/health";
+            counter=0;
+            while [ $counter -lt 10 ]; do 
+             RESPONSE=$(curl $URL); 
+             if [ "$RESPONSE" = "{\"status\":\"UP\"}" ]; then 
+              echo "Recognizer started"; 
+              exit 0; 
+             else echo "Recognizer not started yet"; 
+             fi; 
+             sleep 5s; 
+             counter=`expr $counter + 1`
+            done; 
+            exit 1

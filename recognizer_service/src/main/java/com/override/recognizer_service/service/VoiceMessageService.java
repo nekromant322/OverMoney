@@ -5,13 +5,8 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.vosk.Model;
-import org.vosk.Recognizer;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import javax.sound.sampled.AudioSystem;
 
 import java.io.*;
 import java.util.UUID;
@@ -74,33 +69,5 @@ public class VoiceMessageService {
         }
 
         return text;
-    }
-
-
-    @SneakyThrows
-    public static void main(String[] args) {
-        new VoiceMessageService().convertVoiceToText(null);
-    }
-
-    @SneakyThrows
-    private String convertVoiceToText(byte[] voiceMessageWav) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream("C:\\Users\\ПК\\IdeaProjects\\OverMoney\\recognizer_service\\src\\main\\java\\com\\override\\recognizer_service\\service\\Recording.wav");
-        Model model = new Model("C:\\Users\\ПК\\IdeaProjects\\OverMoney\\recognizer_service\\src\\main\\java\\com\\override\\recognizer_service\\service\\vosk-model-small-ru-0.22"); // <- тут абсолютный путь, если не получится, посмотри демку на гите
-        InputStream ais = AudioSystem.getAudioInputStream(fileInputStream);
-        Recognizer recognizer = new Recognizer(model, 16000);
-
-        int nbytes;
-        byte[] b = new byte[4096];
-        while ((nbytes = ais.read(b)) >= 0) {
-            if (recognizer.acceptWaveForm(b, nbytes)) {
-                log.info(recognizer.getResult());
-            } else {
-                log.info(recognizer.getPartialResult());
-            }
-        }
-        System.out.println(recognizer.getFinalResult());
-        log.info(recognizer.getFinalResult());
-
-        return "заглушка 5000";
     }
 }

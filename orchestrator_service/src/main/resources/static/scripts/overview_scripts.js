@@ -4,6 +4,25 @@ const EXPENSE = "EXPENSE";
 window.onload = function () {
     getUndefinedTransactionsData();
     getCategoriesData();
+    let toast = toastr["success"]("Загрузка нераспознанных транзакций");
+    toastr.options = {
+        "closeButton": false,
+        "debug": true,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "7000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    toast.focus().click();
 }
 
 const minUndefinedCircleSize = 100;
@@ -34,7 +53,8 @@ function getUndefinedTransactionsData() {
                 undefinedTransactionsData.push({
                     "id": data[i].id,
                     "comment": data[i].message,
-                    "amount": data[i].amount
+                    "amount": data[i].amount,
+                    "suggestedCategoryId": data[i].suggestedCategoryId
                 })
             }
             Object.freeze(undefinedTransactionsData)
@@ -133,10 +153,20 @@ function handleDragStart(e) {
     e.dataTransfer.setData("comment", this.dataset.comment);
     e.dataTransfer.setData("transactionComment", this.dataset.comment);
     e.dataTransfer.setData("elementId", this.id);
+    if (this.dataset.suggestedCategoryId != "null") {
+        let suggestedCategoryId = this.dataset.suggestedCategoryId;
+        let suggestedCategory = document.querySelector('div[data-id=\"' + suggestedCategoryId + '\"]');
+        suggestedCategory.style.backgroundColor = "green";
+    }
 }
 
 function handleDragEnd(e) {
     this.style.opacity = 1.0;
+    if (this.dataset.suggestedCategoryId != "null") {
+        let suggestedCategoryId = this.dataset.suggestedCategoryId;
+        let suggestedCategory = document.querySelector('div[data-id=\"' + suggestedCategoryId + '\"]');
+        suggestedCategory.style.backgroundColor = "transparent";
+    }
 }
 
 function handleDrop(e) {
@@ -150,7 +180,7 @@ function handleDrop(e) {
         transactionId: transactionId,
         categoryId: categoryId
     }
-    let url = './qualifier'
+    let url = './transaction/define'
     $.ajax({
         url: url,
         type: 'POST',
@@ -167,7 +197,7 @@ function handleDrop(e) {
             console.log(error)
         }
     });
-    drawToast(e, categoryName)
+    drawToast(e, categoryName, transactionDefined, transactionComment);
     this.classList.remove('over');
 
     var circles = document.querySelectorAll(".undefined-circle")
@@ -178,16 +208,66 @@ function handleDrop(e) {
     }
 }
 
-function drawToast(e, categoryName) {
-    Toastify({
-        text: "\n \"" + e.dataTransfer.getData("comment") + " " + e.dataTransfer.getData("amount") + "\" "
-            + "добавлено в категорию \"" + categoryName + "\"",
-        duration: 5000,
-        position: "left",
-        gravity: "bottom",
-        close: true
-    }).showToast()
+function drawToast(e, categoryName, transactionDefined, transactionComment) {
+    toastr["success"](
+        '<div><text font-size="30">' +
+        e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' добавлено в категорию ' + categoryName +
+        '</text>' +
+        '<div class="buttonUndefine" id="undefineButtonFor' + transactionComment + '">' +
+        '<a>Отменить</a>' +
+        '</div></div>'
+    )
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": true,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "7000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    const button = document.querySelector('#undefineButtonFor' + transactionComment);
+
+    button.onclick = () => {
+        undefineTransaction(transactionDefined);
+        let circles = document.querySelectorAll('.undefined-circle')
+        circles.forEach(circle => document.getElementById(circle.id).remove())
+        setTimeout(function () {
+            getUndefinedTransactionsData();
+        }, 200)
+    };
 }
+
+function undefineTransaction(transactionDefined) {
+    let url = './transaction/undefine'
+    $.ajax({
+        url: url,
+        type: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        async: false,
+        data: JSON.stringify(transactionDefined),
+        dataType: "json",
+        success: function () {
+            console.log("Successfully updated transactions")
+        },
+        error: function (error) {
+            console.log(error)
+        }
+    });
+}
+
 
 function handleDragEnter(e) {
     this.classList.add('over');
@@ -216,6 +296,7 @@ function drawCircle(transaction) {
     newCircle.dataset.comment = transaction.comment;
     newCircle.dataset.amount = transaction.amount;
     newCircle.dataset.id = transaction.id;
+    newCircle.dataset.suggestedCategoryId = transaction.suggestedCategoryId;
     newCircle.innerText = transaction.comment + '\n' + transaction.amount
     setCircleDimensions(newCircle, transaction.amount, getMaxSingleTransactionAmount());
     undefinedSpace.insertAdjacentElement('beforeend', newCircle);
@@ -263,19 +344,14 @@ function drawCategory(category, length) {
     newCategory.style.height = 85 / length + '%';
     newCategory.dataset.id = category.id;
     newCategory.dataset.name = category.name;
-    let actualType;
-    let secondTypeValue;
-    let notActualType;
+    let typeCategory;
     if (category.type === INCOME) {
-        actualType = "Доходы";
-        secondTypeValue = EXPENSE
-        notActualType = "Расходы";
+        typeCategory = "Доходы";
     } else if (category.type === EXPENSE) {
-        actualType = "Расходы"
-        secondTypeValue = INCOME
-        notActualType = "Доходы";
+        typeCategory = "Расходы";
+
     }
-    newCategory.dataset.type = actualType;
+    newCategory.dataset.type = typeCategory;
     newCategory.onclick = function () {
         let body = `<h3>Информация о категории</h3>
                     <form class="modal-category" id="formModalCategory">
@@ -285,13 +361,13 @@ function drawCategory(category, length) {
                             <label for="name">Наименование категории:</label>
                             <input type="text" class="input-modal-category" id="name" value="${newCategory.dataset.name}" >
                         </div>
+                        
                         <div>
                             <label>Тип категории:</label>
-                            <select class="select-category-type" id="selectCategoryType">
-                            <option selected value="${category.type}">${newCategory.dataset.type}</option>
-                            <option value="${secondTypeValue}">${notActualType}</option>
-                        </select>
-                        </div>
+                            <div class="select-category-type" id="selectCategoryType">
+                                <p>${typeCategory}</p>
+                             </div>
+                         </div>
                           <div>
                             <label for="keywords">Ключевые слова категории:</label>
                             <div class="space-for-keywords">
@@ -339,7 +415,7 @@ function drawCategory(category, length) {
             let idCategory = newCategory.dataset.id;
             let keywordsCategory = category.keywords;
             let nameValue = $('#formModalCategory').find('#name').val();
-            let typeValue = $('#selectCategoryType option:selected').val();
+            let typeValue = category.type;
 
             if (!(nameValue === '') && !(keywordsCategory === '')) {
                 let data = {
@@ -359,7 +435,6 @@ function drawCategory(category, length) {
         });
     }
     categorySpace.insertAdjacentElement('beforeend', newCategory);
-
 
 }
 

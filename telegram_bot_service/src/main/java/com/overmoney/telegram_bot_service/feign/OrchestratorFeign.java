@@ -1,6 +1,6 @@
 package com.overmoney.telegram_bot_service.feign;
 
-import com.override.dto.RegistrationDataDTO;
+import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,6 +13,6 @@ public interface OrchestratorFeign {
     @PostMapping("/transaction")
     TransactionResponseDTO sendTransaction(@RequestBody TransactionMessageDTO transaction);
 
-    @PostMapping("/register")
-    void registerOverMoneyAccount(@RequestBody RegistrationDataDTO accountData);
+    @PostMapping("/account/register")
+    void registerAccount(@RequestBody AccountDataDTO accountData);
 }

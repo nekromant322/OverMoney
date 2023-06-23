@@ -2,10 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
-import com.override.orchestrator_service.model.Category;
-import com.override.orchestrator_service.model.Keyword;
-import com.override.orchestrator_service.model.OverMoneyAccount;
-import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Test;
@@ -14,6 +11,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.security.Key;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -45,7 +44,7 @@ public class KeywordServiceTest {
         when(categoryService.getCategoryById(category.getId())).thenThrow(CategoryNotFoundException.class);
 
         assertThrows(CategoryNotFoundException.class, () ->
-                keywordService.setKeywordCategory(transaction.getId(), category.getId()));
+                keywordService.associateTransactionsKeywordWithCategory(transaction.getId(), category.getId()));
     }
 
     @Test
@@ -58,7 +57,7 @@ public class KeywordServiceTest {
         when(transactionService.getTransactionById(transaction.getId())).thenThrow(TransactionNotFoundException.class);
 
         assertThrows(TransactionNotFoundException.class, () ->
-                keywordService.setKeywordCategory(transaction.getId(), category.getId()));
+                keywordService.associateTransactionsKeywordWithCategory(transaction.getId(), category.getId()));
     }
 
     @Test
@@ -89,8 +88,21 @@ public class KeywordServiceTest {
         when(categoryService.getCategoryById(category.getId())).thenReturn(category);
         when(transactionService.getTransactionById(transaction.getId())).thenReturn(transaction);
 
-        keywordService.setKeywordCategory(transaction.getId(), category.getId());
+        keywordService.associateTransactionsKeywordWithCategory(transaction.getId(), category.getId());
 
         verify(keywordRepository, times(1)).save(any(Keyword.class));
+    }
+
+    @Test
+    public void removeCategoryFromKeywordRemovesCategoryFromKeyword() {
+        Transaction transaction = TestFieldsUtil.generateTestTransaction();
+        Keyword keyword = new Keyword(new KeywordId(transaction.getMessage(), transaction.getAccount().getId()),
+                TestFieldsUtil.generateTestCategory());
+
+        when(transactionService.getTransactionById(transaction.getId())).thenReturn(transaction);
+
+        keywordService.removeCategoryFromKeywordByTransactionId(transaction.getId());
+        verify(keywordRepository, times(1))
+                .removeCategoryId(keyword.getKeywordId());
     }
 }

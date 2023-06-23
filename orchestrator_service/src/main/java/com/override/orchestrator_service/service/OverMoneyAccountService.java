@@ -1,11 +1,15 @@
 package com.override.orchestrator_service.service;
 
 import com.override.orchestrator_service.config.RecentActivityProperties;
+import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
+import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
+import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.time.LocalDateTime;
@@ -21,6 +25,13 @@ public class OverMoneyAccountService {
     private RecentActivityProperties recentActivityProperties;
     @Autowired
     private UserService userService;
+    @Autowired
+    private TelegramBotFeign telegramBotFeign;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private TransactionRepository transactionRepository;
+    private final int ACCOUNT_DEFINER = 0;
 
     public List<OverMoneyAccount> getAllAccounts() {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
@@ -31,7 +42,45 @@ public class OverMoneyAccountService {
         return overMoneyAccountRepository.findAllActivityUsersByAccId(minimalDate);
     }
 
-    public void saveOverMoneyAccount(Long chatId, Long userId) throws InstanceNotFoundException {
+    @Transactional
+    public void mergeToGroupAccountWithCategoriesAndWithoutTransactions(Long userId) {
+        OverMoneyAccount oldAccount = getOldAccount(userId);
+        OverMoneyAccount newAccount = getNewAccount(userId);
+
+        updateAccountCategories(oldAccount, newAccount);
+    }
+
+    @Transactional
+    public void mergeToGroupAccountWithCategoriesAndTransactions(Long userId) {
+        OverMoneyAccount oldAccount = getOldAccount(userId);
+        OverMoneyAccount newAccount = getNewAccount(userId);
+
+        updateAccount(oldAccount, newAccount);
+    }
+
+    public OverMoneyAccount getOldAccount(Long userId) {
+        return getOverMoneyAccountByChatId(userId);
+    }
+
+    public OverMoneyAccount getNewAccount(Long userId) {
+        return overMoneyAccountRepository.findNewAccountByUserId(userId);
+    }
+
+    @Transactional
+    public void updateAccount(OverMoneyAccount oldAccount, OverMoneyAccount newAccount) {
+        updateAccountCategories(oldAccount, newAccount);
+        updateAccountTransactions(oldAccount, newAccount);
+    }
+
+    public void updateAccountCategories(OverMoneyAccount oldAccount, OverMoneyAccount newAccount) {
+        categoryRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
+    }
+
+    public void updateAccountTransactions(OverMoneyAccount oldAccount, OverMoneyAccount newAccount) {
+        transactionRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
+    }
+
+    public void registerOverMoneyAccount(Long chatId, Long userId) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
                 .chatId(chatId)
                 .users(getUser(userId))
@@ -39,6 +88,9 @@ public class OverMoneyAccountService {
         User user = userService.getUserById(userId);
         user.setAccount(overMoneyAccount);
         saveOverMoneyAccount(overMoneyAccount);
+        if (chatId < ACCOUNT_DEFINER) {
+            telegramBotFeign.sendMergeRequest(userId);
+        }
     }
 
     private Set<User> getUser(Long userId) throws InstanceNotFoundException {
@@ -54,10 +106,6 @@ public class OverMoneyAccountService {
 
     public OverMoneyAccount getOverMoneyAccountByChatId(Long chatId) {
         return overMoneyAccountRepository.findByChatId(chatId);
-    }
-
-    public OverMoneyAccount getAccountByUsername(String username) {
-        return userService.getUserByUsername(username).getAccount();
     }
 
     public OverMoneyAccount getAccountByUserId(Long id) throws InstanceNotFoundException {

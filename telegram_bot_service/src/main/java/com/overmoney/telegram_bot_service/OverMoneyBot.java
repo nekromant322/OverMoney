@@ -2,11 +2,12 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
-import com.override.dto.RegistrationDataDTO;
+import com.override.dto.AccountDataDTO;
 import com.overmoney.telegram_bot_service.service.VoiceMessageProcessingService;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
+import com.override.dto.constants.StatusMailing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,6 +50,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+
         LocalDateTime date = Instant.ofEpochMilli((long) update.getMessage().getDate() * MILLISECONDS_CONVERSION)
                 .atOffset(MOSCOW_OFFSET).toLocalDateTime();
         Long chatId = update.getMessage().getChatId();
@@ -71,7 +73,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         switch (receivedMessage) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription());
-                orchestratorRequestService.registerOverMoneyAccount(new RegistrationDataDTO(chatId, userId));
+                orchestratorRequestService.registerAccount(new AccountDataDTO(chatId, userId));
                 break;
             case "/money":
                 sendMessage(chatId, Command.MONEY.getDescription());
@@ -87,12 +89,14 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    public void sendMessage(Long chatId, String messageText) {
+    public StatusMailing sendMessage(Long chatId, String messageText) {
         SendMessage message = new SendMessage(chatId.toString(), messageText);
         try {
             execute(message);
+            return StatusMailing.SUCCESS;
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
+            return StatusMailing.ERROR;
         }
     }
 }

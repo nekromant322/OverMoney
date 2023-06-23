@@ -29,12 +29,19 @@ public class KeywordService {
         keywordRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
     }
 
-    public void setKeywordCategory(UUID transactionId, Long categoryId) {
+    public void associateTransactionsKeywordWithCategory(UUID transactionId, Long categoryId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         Category category = categoryService.getCategoryById(categoryId);
         Keyword keyword = new Keyword();
         keyword.setKeywordId(new KeywordId(transaction.getMessage(), category.getAccount().getId()));
         keyword.setCategory(category);
         saveKeyword(keyword);
+    }
+
+    public void removeCategoryFromKeywordByTransactionId(UUID transactionId) {
+        Transaction transaction = transactionService.getTransactionById(transactionId);
+        KeywordId keywordId = new KeywordId(transaction.getMessage(),
+                transaction.getAccount().getId());
+        keywordRepository.removeCategoryId(keywordId);
     }
 }

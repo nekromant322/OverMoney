@@ -30,8 +30,9 @@ public class TransactionMapper {
                 .id(transaction.getId())
                 .amount(transaction.getAmount())
                 .message(transaction.getMessage())
-                .date(transaction.getDate());
-
+                .date(transaction.getDate())
+                .suggestedCategoryId(transaction.getSuggestedCategoryId())
+                .telegramUserId(transaction.getTelegramUserId());
         if (transaction.getCategory() != null) {
             builder.categoryName(transaction.getCategory().getName());
         }

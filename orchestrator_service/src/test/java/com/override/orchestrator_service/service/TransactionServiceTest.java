@@ -99,4 +99,17 @@ public class TransactionServiceTest {
                 transactionService.findTransactionsByUserIdLimited(user.getId(), 50, 0);
         Assertions.assertEquals(List.of(transactionDTO1, transactionDTO2), testListTransaction);
     }
+
+    @Test
+    public void removeCategoryFromTransactionsWithSameMessageRemovesCategoryFromKeyword() {
+        Transaction transaction = TestFieldsUtil.generateTestTransaction();
+
+        when(transactionRepository.findAccountIdByTransactionId(transaction.getId())).thenReturn(transaction.getAccount().getId());
+        when(transactionRepository.findById(transaction.getId())).thenReturn(Optional.of(transaction));
+
+
+        transactionService.removeCategoryFromTransactionsWithSameMessage(transaction.getId());
+        verify(transactionRepository, times(1))
+                .removeCategoryIdFromTransactionsWithSameMessage(transaction.getMessage(), transaction.getAccount().getId());
+    }
 }

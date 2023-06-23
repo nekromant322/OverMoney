@@ -19,7 +19,7 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-1.0.xml
+    change-log: classpath:db/changelog/db.changelog-master.xml
 
   eureka:
     client:
