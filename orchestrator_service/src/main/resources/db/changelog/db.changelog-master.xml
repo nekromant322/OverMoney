@@ -7,4 +7,5 @@
     <include file="v1.0.0/db.changelog-createTables.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/001-db.changelog-setSuggestedCategoryIdInTransaction.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/002-db.changelog-setTelegramUserIdInTransaction.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/003-db.changelog-deleteRolesInUsersTableAndDropRoleTable.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
