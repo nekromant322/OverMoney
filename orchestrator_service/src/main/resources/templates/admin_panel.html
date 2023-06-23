@@ -7,6 +7,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/admin_panel.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <header id="header">
@@ -17,13 +18,22 @@
         <span class="line"></span>
     </nav>
 </header>
-<div class="content">
-    <form name="send_announce">
+<div class="content" style="padding: 20px">
+    <form name="send_announce" class="send_announce">
         <label for="announce_text">Announce text:</label>
         <input type="text" id="announce_text" name="announce_text"/>
     </form>
-    <button type="button" onclick="sendAnnounce();">Send announce</button>
+    <div class="space-for-button">
+        <button type="button" class="send-announce-button" id="send-announce-button" onclick="sendAnnounce();">Отправить анонс</button>
+    </div>
 
+    <div class="space-for-button">
+        <button type="button" class="update-announce-button" onclick="updateStatusList();">Обновить статусы рассылки
+        </button>
+    </div>
+
+</div>
+<div class="status-list" id="statusList">
 </div>
 <script
         src="https://code.jquery.com/jquery-3.6.4.min.js"
