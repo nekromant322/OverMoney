@@ -17,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.management.InstanceNotFoundException;
-import java.text.ParseException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -71,7 +70,19 @@ public class TransactionProcessingServiceTest {
                 Arguments.of("пиво200 пиво"),
                 Arguments.of("пиво пиво200"),
                 Arguments.of("200пиво пиво"),
-                Arguments.of("пиво 200пиво")
+                Arguments.of("пиво 200пиво"),
+
+                Arguments.of("200пиво 200 пиво"),
+                Arguments.of("200.5пиво 200.5 пиво"),
+                Arguments.of("200,5пиво 200,5 пиво"),
+
+                Arguments.of("пиво 200 пиво200"),
+                Arguments.of("пиво 200.5 пиво200.5"),
+                Arguments.of("пиво 200,5 пиво200,5"),
+
+                Arguments.of("200пиво 200 пиво200"),
+                Arguments.of("200.5пиво 200.5 пиво200.5"),
+                Arguments.of("200,5пиво 200,5 пиво200,5")
         );
     }
 
