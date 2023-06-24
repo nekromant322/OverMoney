@@ -70,4 +70,8 @@ public class UserService {
         roles.add(new Role(1L, "ROLE_USER"));
         return roles;
     }
+
+    public List<User> getUsersByIds(List<Long> userIds) {
+        return userRepository.findAllUsersByIds(userIds);
+    }
 }

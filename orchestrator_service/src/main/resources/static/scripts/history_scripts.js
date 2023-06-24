@@ -39,6 +39,7 @@ function prepareAndDraw(data) {
             "categoryName": data[i].categoryName,
             "comment": data[i].message,
             "amount": data[i].amount,
+            "telegramUserName": data[i].telegramUserName,
             "date": moment(new Date(data[i].date)).format("DD.MM.YY HH:mm")
         })
     }
@@ -63,6 +64,7 @@ function addRow(data) {
     insertTd(data.amount, tr)
     insertTd(data.comment, tr)
     insertTd(data.date, tr)
+    insertTd(data.telegramUserName, tr)
 }
 
 function insertTd(value, parent) {
