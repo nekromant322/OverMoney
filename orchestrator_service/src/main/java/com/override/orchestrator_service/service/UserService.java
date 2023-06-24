@@ -1,15 +1,18 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AccountDataDTO;
 import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -30,9 +33,32 @@ public class UserService {
         userRepository.save(user);
     }
 
+    public void saveUser(AccountDataDTO accountDataDTO) {
+        try {
+            getUserById(accountDataDTO.getUserId());
+        } catch (InstanceNotFoundException e) {
+            User user = new User();
+            user.setId(accountDataDTO.getUserId());
+            user.setUsername("Anonymous");
+            userRepository.save(user);
+        }
+    }
+
+    @Transactional
     public void saveUser(TelegramAuthRequest telegramAuthRequest) {
         try {
-            getUserById(telegramAuthRequest.getId());
+            User user = getUserById(telegramAuthRequest.getId());
+            if (!(Objects.equals(user.getUsername(), telegramAuthRequest.getUsername()) &&
+                    Objects.equals(user.getFirstName(), telegramAuthRequest.getFirst_name()) &&
+                    Objects.equals(user.getLastName(), telegramAuthRequest.getLast_name()) &&
+                    Objects.equals(user.getPhotoUrl(), telegramAuthRequest.getPhoto_url()))) {
+                userRepository.updateUserDetailsByUserId(telegramAuthRequest.getId(),
+                        telegramAuthRequest.getUsername(),
+                        telegramAuthRequest.getFirst_name(),
+                        telegramAuthRequest.getLast_name(),
+                        telegramAuthRequest.getPhoto_url(),
+                        telegramAuthRequest.getAuth_date());
+            }
         } catch (InstanceNotFoundException e) {
             userRepository.save(userMapper.mapTelegramAuthToUser(telegramAuthRequest));
         }

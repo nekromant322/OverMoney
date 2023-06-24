@@ -28,6 +28,7 @@ public class JwtAuthenticationService {
 
     public JwtResponse login(TelegramAuthRequest telegramAuthRequest) throws NoSuchAlgorithmException, InvalidKeyException, InstanceNotFoundException {
         if (telegramVerificationService.verify(telegramAuthRequest)) {
+
             userService.saveUser(telegramAuthRequest);
             final User user = userService.getUserById(telegramAuthRequest.getId());
             return new JwtResponse(jwtProvider.generateAccessToken(user), jwtProvider.generateRefreshToken(user));
