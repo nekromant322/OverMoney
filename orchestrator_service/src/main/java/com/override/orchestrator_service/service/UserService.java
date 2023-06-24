@@ -1,14 +1,14 @@
 package com.override.orchestrator_service.service;
 
 import com.override.orchestrator_service.mapper.UserMapper;
-import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.model.TelegramAuthRequest;
+import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -53,7 +53,6 @@ public class UserService {
         foundUser.setUsername(user.getUsername());
         foundUser.setPhotoUrl(user.getPhotoUrl());
         foundUser.setAuthDate(user.getAuthDate());
-        foundUser.setRoles(user.getRoles());
         userRepository.save(foundUser);
     }
 
@@ -63,15 +62,5 @@ public class UserService {
 
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
-    }
-
-    private Set<Role> getUserRole() {
-        Set<Role> roles = new HashSet<>();
-        roles.add(new Role(1L, "ROLE_USER"));
-        return roles;
-    }
-
-    public List<User> getUsersByIds(List<Long> userIds) {
-        return userRepository.findAllUsersByIds(userIds);
     }
 }
