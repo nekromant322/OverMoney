@@ -56,13 +56,15 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         Long chatId = update.getMessage().getChatId();
         Long userId = update.getMessage().getFrom().getId();
 
-        if (update.getMessage().hasText()) {
-            String receivedMessage = update.getMessage().getText();
+        if (update.getMessage().hasVoice()) {
+            log.info("user with id " + userId + " and chatId " + chatId + "sending voice");
+            String receivedMessage = voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice(), userId, chatId);
+            log.info("recognition result of user with id " + userId + " and chatId " + chatId + " is: " + receivedMessage);
             botAnswer(receivedMessage, chatId, userId, date);
         }
 
-        if (update.getMessage().hasVoice()) {
-            String receivedMessage = voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice());
+        if (update.getMessage().hasText()) {
+            String receivedMessage = update.getMessage().getText();
             botAnswer(receivedMessage, chatId, userId, date);
         }
     }
