@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
 
 import javax.management.InstanceNotFoundException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 
 @Service
@@ -30,10 +27,10 @@ public class TransactionProcessingService {
     private ExecutorService executorService;
 
     private enum AmountPositionType {
-        AMOUNT_IN_FRONT,
-        AMOUNT_BEHIND,
-        AMOUNT_IN_FRONT_RU_LOCALE,
-        AMOUNT_BEHIND_RU_LOCALE,
+        AMOUNT_AT_BEGINNING,
+        AMOUNT_AT_END,
+        AMOUNT_AT_BEGINNING_RU_LOCALE,
+        AMOUNT_AT_END_RU_LOCALE,
     }
 
     private enum RegularExpressions {
@@ -70,25 +67,37 @@ public class TransactionProcessingService {
         }
         String firstWord = transactionMessage.substring(0, firstIndexOfSpace);
         String lastWord = transactionMessage.substring(lastIndexOfSpace + 1);
-        try {
-            Float.parseFloat(firstWord);
-            return AmountPositionType.AMOUNT_IN_FRONT;
-        } catch (NumberFormatException ignored) {}
-        try {
-            Float.parseFloat(firstWord.replace(RegularExpressions.RU_DECIMAL_DELIMITER.value,
-                    RegularExpressions.EN_DECIMAL_DELIMITER.value));
-            return AmountPositionType.AMOUNT_IN_FRONT_RU_LOCALE;
-        } catch (NumberFormatException ignored) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(firstWord).append(RegularExpressions.SPACE.value)
+                .append(firstWord.replace(RegularExpressions.RU_DECIMAL_DELIMITER.value,
+                        RegularExpressions.EN_DECIMAL_DELIMITER.value)).append(RegularExpressions.SPACE.value)
+                .append(lastWord).append(RegularExpressions.SPACE.value)
+                .append(lastWord.replace(RegularExpressions.RU_DECIMAL_DELIMITER.value,
+                        RegularExpressions.EN_DECIMAL_DELIMITER.value)).append(RegularExpressions.SPACE.value);
+        Scanner scanner = new Scanner(stringBuilder.toString());
+        scanner.useLocale(Locale.ENGLISH);
+        if (scanner.hasNextFloat()) {
+            return AmountPositionType.AMOUNT_AT_BEGINNING;
+        } else {
+            scanner.next();
         }
-        try {
-            Float.parseFloat(lastWord);
-            return AmountPositionType.AMOUNT_BEHIND;
-        } catch (NumberFormatException ignored) {}
-        try {
-            Float.parseFloat(lastWord.replace(RegularExpressions.RU_DECIMAL_DELIMITER.value,
-                    RegularExpressions.EN_DECIMAL_DELIMITER.value));
-            return AmountPositionType.AMOUNT_BEHIND_RU_LOCALE;
-        } catch (NumberFormatException ignored) {}
+        if (scanner.hasNextFloat()) {
+            return AmountPositionType.AMOUNT_AT_BEGINNING_RU_LOCALE;
+        } else {
+            scanner.next();
+        }
+        if (scanner.hasNextFloat()) {
+            return AmountPositionType.AMOUNT_AT_END;
+        } else {
+            scanner.next();
+        }
+        if (scanner.hasNextFloat()) {
+            return AmountPositionType.AMOUNT_AT_END_RU_LOCALE;
+        } else {
+            scanner.next();
+        }
+        scanner.close();
+
         throw new InstanceNotFoundException("Invalid message");
     }
 
@@ -139,13 +148,13 @@ public class TransactionProcessingService {
         int firstIndexOfSpace;
         int lastIndexOfSpace;
         switch (type) {
-            case AMOUNT_IN_FRONT:
-            case AMOUNT_IN_FRONT_RU_LOCALE:
+            case AMOUNT_AT_BEGINNING:
+            case AMOUNT_AT_BEGINNING_RU_LOCALE:
                 firstIndexOfSpace = message.indexOf(RegularExpressions.SPACE.value);
                 words = message.substring(firstIndexOfSpace + 1);
                 return words;
-            case AMOUNT_BEHIND:
-            case AMOUNT_BEHIND_RU_LOCALE:
+            case AMOUNT_AT_END:
+            case AMOUNT_AT_END_RU_LOCALE:
                 lastIndexOfSpace = message.lastIndexOf(RegularExpressions.SPACE.value);
                 words = message.substring(0, lastIndexOfSpace);
                 return words;
@@ -159,20 +168,20 @@ public class TransactionProcessingService {
         int firstIndexOfSpace;
         int lastIndexOfSpace;
         switch (type) {
-            case AMOUNT_IN_FRONT:
+            case AMOUNT_AT_BEGINNING:
                 firstIndexOfSpace = message.indexOf(RegularExpressions.SPACE.value);
                 amountAsString = message.substring(0, firstIndexOfSpace);
                 return Float.parseFloat(amountAsString);
-            case AMOUNT_BEHIND:
+            case AMOUNT_AT_END:
                 lastIndexOfSpace = message.lastIndexOf(RegularExpressions.SPACE.value);
                 amountAsString = message.substring(lastIndexOfSpace + 1);
                 return Float.parseFloat(amountAsString);
-            case AMOUNT_IN_FRONT_RU_LOCALE:
+            case AMOUNT_AT_BEGINNING_RU_LOCALE:
                 firstIndexOfSpace = message.indexOf(RegularExpressions.SPACE.value);
                 amountAsString = message.substring(0, firstIndexOfSpace);
                 return Float.parseFloat(amountAsString.replace(RegularExpressions.RU_DECIMAL_DELIMITER.value,
                         RegularExpressions.EN_DECIMAL_DELIMITER.value));
-            case AMOUNT_BEHIND_RU_LOCALE:
+            case AMOUNT_AT_END_RU_LOCALE:
                 lastIndexOfSpace = message.lastIndexOf(RegularExpressions.SPACE.value);
                 amountAsString = message.substring(lastIndexOfSpace + 1);
                 return Float.parseFloat(amountAsString.replace(RegularExpressions.RU_DECIMAL_DELIMITER.value,
