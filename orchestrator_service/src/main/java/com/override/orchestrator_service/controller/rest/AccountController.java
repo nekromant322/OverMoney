@@ -2,6 +2,7 @@ package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.AccountDataDTO;
 import com.override.orchestrator_service.service.OverMoneyAccountService;
+import com.override.orchestrator_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,8 +14,12 @@ public class AccountController {
     @Autowired
     private OverMoneyAccountService accountService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/register")
     public void registerAccount(@RequestBody AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
+        userService.saveUser(accountDataDTO);
         accountService.registerOverMoneyAccount(accountDataDTO.getChatId(), accountDataDTO.getUserId());
     }
 
