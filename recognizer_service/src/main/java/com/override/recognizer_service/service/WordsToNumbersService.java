@@ -70,8 +70,8 @@ public class WordsToNumbersService {
         String[] splitWords = words.split("\\s+");
         StringBuilder message = new StringBuilder();
         for (String word : splitWords) {
-            if (vocabulary.containsKey(word)) {
-                long value = vocabulary.get(word);
+            if (vocabulary.containsKey(word.toLowerCase())) {
+                long value = vocabulary.get(word.toLowerCase());
                 if (value >= 1000) {
                     number += prevNumber * value;
                     prevNumber = 0;
