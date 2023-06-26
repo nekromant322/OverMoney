@@ -20,4 +20,5 @@ public class TransactionDTO {
     private LocalDateTime date;
     private Long suggestedCategoryId;
     private Long telegramUserId;
+    private String telegramUserName;
 }

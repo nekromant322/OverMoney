@@ -4,6 +4,7 @@ import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,9 +56,28 @@ public class TransactionService {
         Long accID = userService.getUserById(id).getAccount().getId();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("date").descending());
 
-        return transactionRepository.findAllByAccountId(accID, pageable).getContent().stream()
+        List<TransactionDTO> transactionList = transactionRepository.findAllByAccountId(accID, pageable).getContent().stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                 .collect(Collectors.toList());
+        return enrichTransactionsWithTgUsernames(transactionList);
+    }
+
+    private List<TransactionDTO> enrichTransactionsWithTgUsernames(List<TransactionDTO> transactionList) {
+        Map<Long, User> userMap = userService.getUsersByIds(transactionList.stream()
+                        .map(TransactionDTO::getTelegramUserId)
+                        .distinct()
+                        .collect(Collectors.toList()))
+                .stream()
+                .collect(Collectors.toMap(User::getId, Function.identity()));
+
+        transactionList.forEach(transactionDTO -> {
+            User user = userMap.get(transactionDTO.getTelegramUserId());
+            if (user != null) {
+                transactionDTO.setTelegramUserName(user.getUsername());
+            }
+        });
+
+        return transactionList;
     }
 
     @Transactional
