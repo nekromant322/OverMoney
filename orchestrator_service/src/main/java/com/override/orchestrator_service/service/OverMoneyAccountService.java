@@ -1,7 +1,9 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AccountDataDTO;
+import com.override.dto.ChatMemberDTO;
 import com.override.orchestrator_service.config.RecentActivityProperties;
-import com.override.orchestrator_service.feign.TelegramBotFeign;
+import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
@@ -26,12 +28,11 @@ public class OverMoneyAccountService {
     @Autowired
     private UserService userService;
     @Autowired
-    private TelegramBotFeign telegramBotFeign;
-    @Autowired
     private CategoryRepository categoryRepository;
     @Autowired
     private TransactionRepository transactionRepository;
-    private final int ACCOUNT_DEFINER = 0;
+    @Autowired
+    private UserMapper userMapper;
 
     public List<OverMoneyAccount> getAllAccounts() {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
@@ -80,17 +81,36 @@ public class OverMoneyAccountService {
         transactionRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
-    public void registerOverMoneyAccount(Long chatId, Long userId) throws InstanceNotFoundException {
+    @Transactional
+    public void addNewChatMembersToAccount(List<ChatMemberDTO> chatMemberDTOList) {
+        chatMemberDTOList.forEach(this::addNewChatMemberToAccount);
+    }
+
+    public void addNewChatMemberToAccount(ChatMemberDTO chatMemberDTO) {
+        OverMoneyAccount account = getOverMoneyAccountByChatId(chatMemberDTO.getChatId());
+        User user = userMapper.mapChatMemberDTOToUser(chatMemberDTO);
+        user.setAccount(account);
+        userService.saveUser(user);
+    }
+
+    public void registerSingleOverMoneyAccount(AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
-                .chatId(chatId)
-                .users(getUser(userId))
+                .chatId(accountDataDTO.getChatId())
+                .users(getUser(accountDataDTO.getUserId()))
                 .build();
-        User user = userService.getUserById(userId);
+        User user = userService.getUserById(accountDataDTO.getUserId());
         user.setAccount(overMoneyAccount);
         saveOverMoneyAccount(overMoneyAccount);
-        if (chatId < ACCOUNT_DEFINER) {
-            telegramBotFeign.sendMergeRequest(userId);
-        }
+    }
+
+    public void registerGroupOverMoneyAccount(AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
+        OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
+                .chatId(accountDataDTO.getChatId())
+                .users(getUser(accountDataDTO.getUserId()))
+                .build();
+        User user = userService.getUserById(accountDataDTO.getUserId());
+        user.setAccount(overMoneyAccount);
+        saveOverMoneyAccount(overMoneyAccount);
     }
 
     private Set<User> getUser(Long userId) throws InstanceNotFoundException {

@@ -1,11 +1,20 @@
 package com.override.orchestrator_service.mapper;
 
+import com.override.dto.ChatMemberDTO;
 import com.override.orchestrator_service.model.TelegramAuthRequest;
 import com.override.orchestrator_service.model.User;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
+    public User mapChatMemberDTOToUser(ChatMemberDTO chatMemberDTO) {
+        return User.builder()
+                .id(chatMemberDTO.getUserId())
+                .username(chatMemberDTO.getUsername())
+                .firstName(chatMemberDTO.getFirstName())
+                .lastName(chatMemberDTO.getLastName())
+                .build();
+    }
 
     public User mapTelegramAuthToUser(TelegramAuthRequest telegramAuthRequest) {
         User user = new User();
