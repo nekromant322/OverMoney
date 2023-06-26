@@ -5,6 +5,12 @@ on:
     branches:
       - master
 
+env:
+  HEALTHCHECK_MAX_ATTEMPTS_PING_DEPLOYED_SERVICE: 20
+  HEALTHCHECK_DELAY_BETWEEN_PING_ATTEMPTS: 10
+  HEALTHCHECK_REQUIRED_RESPONSE_UP: '{\"status\":\"UP\"}'
+
+
 jobs:
   push_compose:
     name: Push docker-compose.yaml to remote server
@@ -109,7 +115,7 @@ jobs:
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: [build_and_push_images, paths-filter]
+    needs: [ build_and_push_images, paths-filter, push_compose ]
     steps:
       - name: Connect with SSH and Deploy
         uses: appleboy/ssh-action@v0.1.8
@@ -118,11 +124,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
-            echo RECOGNIZER_DB_USER = ${{ secrets.RECOGNIZER_DB_USER }} > overmoney-env.txt
-            echo RECOGNIZER_DB_PASSWORD = ${{ secrets.RECOGNIZER_DB_PASSWORD }} >> overmoney-env.txt
-            echo RECOGNIZER_DB_PORT = 5432 >> overmoney-env.txt
-            echo RECOGNIZER_DB_HOST = recognizer-db >> overmoney-env.txt
-            echo ORCHESTRATOR_DB_USER = ${{ secrets.ORCHESTRATOR_DB_USER }} >> overmoney-env.txt
+            echo ORCHESTRATOR_DB_USER = ${{ secrets.ORCHESTRATOR_DB_USER }} > overmoney-env.txt
             echo ORCHESTRATOR_DB_PASSWORD = ${{ secrets.ORCHESTRATOR_DB_PASSWORD }} >> overmoney-env.txt
             echo ORCHESTRATOR_DB_PORT = 5432 >> overmoney-env.txt
             echo ORCHESTRATOR_DB_HOST = orchestrator-db >> overmoney-env.txt
@@ -134,6 +136,7 @@ jobs:
             echo TELEGRAM_BOT_NAME = OverMoneyBot >> overmoney-env.txt
             echo JWT_ACCESS_KEY = ${{ secrets.JWT_ACCESS_KEY }} >> overmoney-env.txt
             echo JWT_REFRESH_KEY = ${{ secrets.JWT_REFRESH_KEY }} >> overmoney-env.txt
+            echo WIT_AI_TOKEN = ${{ secrets.WIT_AI_TOKEN }} >> overmoney-env.txt
             echo SPRING_APPLICATION_PROFILE = test >> overmoney-env.txt
             
             if ${{ needs.paths-filter.outputs.eureka}}; then
@@ -168,3 +171,113 @@ jobs:
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S cp -r '/home/${{ secrets.SSH_USER }}/nginx'/* /etc/nginx
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S systemctl restart nginx
             fi
+  
+
+  healthcheck-eureka:
+    name: HealthCheckEureka
+    if: ${{ needs.paths-filter.outputs.eureka }}
+    runs-on: ubuntu-latest
+    needs: [ deploy, paths-filter ]
+    steps:
+      - name: Connect with SSH and Deploy
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            URL="localhost:8761/actuator/health";
+            counter=0;
+            while [ $counter -lt ${{env.HEALTHCHECK_MAX_ATTEMPTS_PING_DEPLOYED_SERVICE}} ]; do 
+             RESPONSE=$(curl $URL); 
+             if [ "$RESPONSE" = "${{env.HEALTHCHECK_REQUIRED_RESPONSE_UP}}" ]; then 
+              echo "Eureka started"; 
+              exit 0; 
+             else echo "Eureka not started yet"; 
+             fi; 
+             sleep ${{env.HEALTHCHECK_DELAY_BETWEEN_PING_ATTEMPTS}}; 
+             counter=`expr $counter + 1`
+            done; 
+            exit 1
+
+  healthcheck-orchestrator:
+    name: HealthCheckOrchestrator
+    if: ${{ needs.paths-filter.outputs.orchestrator }}
+    runs-on: ubuntu-latest
+    needs: [ deploy, paths-filter ]
+    steps:
+      - name: Connect with SSH and Deploy
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            URL="localhost:8081/actuator/health";
+            counter=0;
+            while [ $counter -lt ${{env.HEALTHCHECK_MAX_ATTEMPTS_PING_DEPLOYED_SERVICE}} ]; do 
+              RESPONSE=$(curl $URL); 
+              if [ "$RESPONSE" = "${{env.HEALTHCHECK_REQUIRED_RESPONSE_UP}}" ]; then 
+                echo "Orchestrator started"; exit 0; 
+              else echo "Orchestrator not started yet"; 
+              fi; 
+              sleep ${{env.HEALTHCHECK_DELAY_BETWEEN_PING_ATTEMPTS}};
+              counter=`expr $counter + 1` 
+            done; 
+            exit 1
+            
+
+  healthcheck-recognizer:
+    name: HealthCheckRecognizer
+    if: ${{ needs.paths-filter.outputs.recognizer }}
+    runs-on: ubuntu-latest
+    needs: [ deploy, paths-filter ]
+    steps:
+      - name: Connect with SSH and Deploy
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            URL="localhost:8080/actuator/health";
+            counter=0;
+            while [ $counter -lt ${{env.HEALTHCHECK_MAX_ATTEMPTS_PING_DEPLOYED_SERVICE}} ]; do 
+             RESPONSE=$(curl $URL); 
+             if [ "$RESPONSE" = "${{env.HEALTHCHECK_REQUIRED_RESPONSE_UP}}" ]; then 
+              echo "Recognizer started"; 
+              exit 0; 
+             else echo "Recognizer not started yet"; 
+             fi; 
+             sleep ${{env.HEALTHCHECK_DELAY_BETWEEN_PING_ATTEMPTS}};
+             counter=`expr $counter + 1` 
+            done; 
+            exit 1
+
+
+  healthcheck-telegram-bot:
+    name: HealthCheckTelegram-Bot
+    if: ${{ needs.paths-filter.outputs.telegram-bot }}
+    runs-on: ubuntu-latest
+    needs: [ deploy, paths-filter ]
+    steps:
+      - name: Connect with SSH and Deploy
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            URL="localhost:8082/actuator/health";
+            counter=0;
+            while [ $counter -lt ${{env.HEALTHCHECK_MAX_ATTEMPTS_PING_DEPLOYED_SERVICE}} ]; do 
+             RESPONSE=$(curl $URL); 
+             if [ "$RESPONSE" = "${{env.HEALTHCHECK_REQUIRED_RESPONSE_UP}}" ]; then 
+              echo "Telegram Bot started"; 
+              exit 0; 
+             else echo "Telegram Bot not started yet"; 
+             fi; 
+             sleep ${{env.HEALTHCHECK_DELAY_BETWEEN_PING_ATTEMPTS}}; 
+             counter=`expr $counter + 1`
+            done; 
+            exit 1

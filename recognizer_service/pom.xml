@@ -21,14 +21,6 @@
 	</properties>
 	<dependencies>
 		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
@@ -41,11 +33,6 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
-		</dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -67,31 +54,10 @@
 			<version>2.16.0</version>
 		</dependency>
 
-        <dependency>
-            <groupId>org.telegram</groupId>
-            <artifactId>telegrambots-meta</artifactId>
-            <version>6.5.0</version>
-            <scope>compile</scope>
-        </dependency>
 		<dependency>
 			<groupId>com.override</groupId>
 			<artifactId>dto</artifactId>
 			<version>0.0.1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>net.java.dev.jna</groupId>
-			<artifactId>jna</artifactId>
-			<version>5.13.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.github.nekromant322</groupId>
-			<artifactId>whisper.cpp</artifactId>
-			<version>388f22bb39</version>
 		</dependency>
 
 		<dependency>
@@ -101,10 +67,14 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.opentable.components</groupId>
-			<artifactId>otj-pg-embedded</artifactId>
-			<version>0.13.4</version>
-			<scope>test</scope>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.override</groupId>
+			<artifactId>dto</artifactId>
+			<version>0.0.1</version>
+			<scope>compile</scope>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -118,12 +88,6 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-	</repositories>
 	<build>
 		<plugins>
 			<plugin>

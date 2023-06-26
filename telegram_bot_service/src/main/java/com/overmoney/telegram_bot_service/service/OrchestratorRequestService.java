@@ -5,7 +5,6 @@ import com.override.dto.AccountDataDTO;
 import com.override.dto.ChatMemberDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
-import com.override.dto.GroupAccountDataDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,18 +24,18 @@ public class OrchestratorRequestService {
         orchestratorFeign.registerSingleAccount(accountData);
     }
 
-    public void registerGroupAccountAndMergeWithCategoriesAndWithoutTransactions(GroupAccountDataDTO groupAccountData) {
-        registerGroupAccount(groupAccountData);
-        mergeWithCategoriesAndWithoutTransactions(groupAccountData.getUserId());
+    public void registerGroupAccountAndMergeWithCategoriesAndWithoutTransactions(AccountDataDTO accountDataDTO) {
+        registerGroupAccount(accountDataDTO);
+        mergeWithCategoriesAndWithoutTransactions(accountDataDTO.getUserId());
     }
 
-    public void registerGroupAccountAndWithCategoriesAndTransactions(GroupAccountDataDTO groupAccountData) {
-        registerGroupAccount(groupAccountData);
-        mergeWithCategoryAndTransactions(groupAccountData.getUserId());
+    public void registerGroupAccountAndWithCategoriesAndTransactions(AccountDataDTO accountDataDTO) {
+        registerGroupAccount(accountDataDTO);
+        mergeWithCategoryAndTransactions(accountDataDTO.getUserId());
     }
 
-    public void registerGroupAccount(GroupAccountDataDTO groupAccountData) {
-        orchestratorFeign.registerGroupAccount(groupAccountData);
+    public void registerGroupAccount(AccountDataDTO accountDataDTO) {
+        orchestratorFeign.registerGroupAccount(accountDataDTO);
     }
 
     public void mergeWithCategoriesAndWithoutTransactions(Long userId) {

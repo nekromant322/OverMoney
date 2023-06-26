@@ -1,0 +1,75 @@
+.space-for-button {
+    padding-top: 10px;
+}
+
+.send-announce-button{
+    font-size: 20px;
+    padding: 5px 13px;
+    font-style: revert;
+    border-radius: 20px;
+    background-color: green; /* Green */
+    color: black;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.2s;
+}
+
+.update-announce-button {
+    font-size: 20px;
+    font-style: revert;
+    padding: 5px 13px;
+    border-radius: 20px;
+    background-color: dodgerblue; /* Green */
+    color: black;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.2s;
+}
+
+.send-announce-button:hover {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.update-announce-button:hover {
+    background-color: #7070f5;
+    color: white;
+}
+
+.send_announce input {
+    font-size: 16px;
+    font-family: "Arial";
+    display: block;
+    width: 300px;
+    border-color: lightgray;
+    border-radius: 10px;
+    padding: 7px 7px;
+}
+
+.status-list {
+    padding: 10px;
+}
+
+.status-list label {
+    font-size: 20px;
+    font-family: "Arial";
+    display: block;
+    width: 150px;
+    padding: 10px 10px;
+}
+
+.status-list input {
+    font-size: 16px;
+    font-family: "Arial";
+    display: block;
+    width: 167px;
+    border-color: lightgray;
+    border-radius: 10px;
+    padding: 10px 10px;
+}
+
+.send_announce label {
+    font-size: 20px;
+    font-family: "Arial";
+    display: block;
+    width: 150px;
+    padding: 10px 10px;
+}

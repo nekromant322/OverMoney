@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.Comparator;
@@ -43,6 +42,7 @@ public class TransactionController {
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
         Transaction transaction = transactionProcessingService.processTransaction(transactionMessage);
         transactionService.saveTransaction(transaction);
+        transactionProcessingService.suggestCategoryToProcessedTransaction(transactionMessage, transaction.getId());
         return transactionMapper.mapTransactionToTelegramResponse(transaction);
     }
 
@@ -76,6 +76,12 @@ public class TransactionController {
     @PostMapping("/transaction/undefine")
     public ResponseEntity<String> undefine(@RequestBody TransactionDefineDTO transactionDefineDTO) {
         defineService.undefineTransactionCategoryAndKeywordCategory(transactionDefineDTO.getTransactionId());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/transaction")
+    public ResponseEntity<String> editTransaction(@RequestBody TransactionDTO transactionDTO) {
+        transactionService.saveTransaction(transactionService.enrichTransactionWithSuggestedCategory(transactionDTO));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

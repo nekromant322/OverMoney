@@ -2,8 +2,8 @@ package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.AccountDataDTO;
 import com.override.dto.ChatMemberDTO;
-import com.override.dto.GroupAccountDataDTO;
 import com.override.orchestrator_service.service.OverMoneyAccountService;
+import com.override.orchestrator_service.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,14 +16,24 @@ public class AccountController {
     @Autowired
     private OverMoneyAccountService accountService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping("/register/single")
-    public void registerAccount(@RequestBody AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
-        accountService.registerSingleOverMoneyAccount(accountDataDTO.getChatId(), accountDataDTO.getUserId());
+    public void registerSingleAccount(@RequestBody AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
+        userService.saveUser(accountDataDTO);
+        accountService.registerSingleOverMoneyAccount(accountDataDTO);
     }
 
+    /**
+     * метод добавлен для возможного расширения функционала бота
+     * @param accountDataDTO - данные аккаунта (предполагается, что туда можно будет добавить
+     *                       список юзеров или юзернеймов)
+     * @throws InstanceNotFoundException
+     */
     @PostMapping("/register/group")
-    public void registerAccount(@RequestBody GroupAccountDataDTO groupAccountDataDTO) throws InstanceNotFoundException {
-        accountService.registerGroupOverMoneyAccount(groupAccountDataDTO.getChatId(), groupAccountDataDTO.getUserId());
+    public void registerGroupAccount(@RequestBody AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
+        accountService.registerGroupOverMoneyAccount(accountDataDTO);
     }
 
     @PostMapping("/add/users")

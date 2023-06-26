@@ -11,7 +11,7 @@ import com.overmoney.telegram_bot_service.service.VoiceMessageProcessingService;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
-import com.override.dto.GroupAccountDataDTO;
+import com.override.dto.constants.StatusMailing;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,18 +82,18 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     @SneakyThrows
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
-            Long chatId = update.getMessage().getChatId();
-            Long userId = update.getMessage().getFrom().getId();
-            String receivedMessage = getReceivedMessage(update);
-            LocalDateTime date = Instant.ofEpochMilli((long) update.getMessage().getDate() * MILLISECONDS_CONVERSION)
+            Message receivedMessage = update.getMessage();
+            Long chatId = receivedMessage.getChatId();
+            Long userId = receivedMessage.getFrom().getId();
+            String receivedMessageText = getReceivedMessage(receivedMessage);
+            LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
                     .atOffset(MOSCOW_OFFSET).toLocalDateTime();
 
-            if (!update.getMessage().getNewChatMembers().isEmpty()) {
-                List<User> newUsers = update.getMessage().getNewChatMembers();
+            if (!receivedMessage.getNewChatMembers().isEmpty()) {
+                List<User> newUsers = receivedMessage.getNewChatMembers();
                 HashMap<Boolean, User> usersTypes = getUsersTypes(newUsers);
 
                 if (usersTypes.containsKey(BOT)) {
-                    newUsers.remove(usersTypes.get(BOT));
                     sendRegistrationGroupAccountInfo(chatId);
                     sendMergeRequest(chatId);
                 } else {
@@ -104,8 +104,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 }
             }
 
-            if (!receivedMessage.equals(BLANK_MESSAGE)) {
-                botAnswer(receivedMessage, chatId, userId, date);
+            if (!receivedMessageText.equals(BLANK_MESSAGE)) {
+                botAnswer(receivedMessageText, chatId, userId, date);
             }
         }
         if (update.hasCallbackQuery()) {
@@ -116,14 +116,14 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
             if (callbackQuery.getData().equals(InlineKeyboardCallback.MERGE_CATEGORIES.getData())) {
                 orchestratorRequestService.registerGroupAccountAndMergeWithCategoriesAndWithoutTransactions(
-                        new GroupAccountDataDTO(chatId, userId));
+                        new AccountDataDTO(chatId, userId));
                 sendMessage(chatId, MERGE_REQUEST_COMPLETED_TEXT);
             } else if (callbackQuery.getData().equals(InlineKeyboardCallback.MERGE_CATEGORIES_AND_TRANSACTIONS.getData())) {
                 orchestratorRequestService.registerGroupAccountAndWithCategoriesAndTransactions(
-                        new GroupAccountDataDTO(chatId, userId));
+                        new AccountDataDTO(chatId, userId));
                 sendMessage(chatId, MERGE_REQUEST_COMPLETED_TEXT);
             } else if (callbackQuery.getData().equals(InlineKeyboardCallback.DEFAULT.getData())) {
-                orchestratorRequestService.registerGroupAccount(new GroupAccountDataDTO(chatId, userId));
+                orchestratorRequestService.registerGroupAccount(new AccountDataDTO(chatId, userId));
             }
 
             mergeRequestService.updateMergeRequestCompletionByChatId(chatId);
@@ -156,14 +156,18 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         mergeRequestService.saveMergeRequestMessage(mergeRequestMessage);
     }
 
-    private String getReceivedMessage(Update update) {
-        String receivedMessage = BLANK_MESSAGE;
-        if (update.getMessage().hasVoice()) {
-            receivedMessage = voiceMessageProcessingService.processVoiceMessage(update.getMessage().getVoice());
-        } else if (update.getMessage().hasText()) {
-            receivedMessage = update.getMessage().getText();
+    private String getReceivedMessage(Message message) {
+        String receivedMessageText = BLANK_MESSAGE;
+        Long userId = message.getFrom().getId();
+        Long chatId = message.getChatId();
+        if (message.hasVoice()) {
+            log.info("user with id " + userId + " and chatId " + chatId + " sending voice");
+            receivedMessageText = voiceMessageProcessingService.processVoiceMessage(message.getVoice(), userId, chatId);
+            log.info("recognition result of user with id " + userId + " and chatId " + chatId + " is: " + receivedMessageText);
+        } else if (message.hasText()) {
+            receivedMessageText = message.getText();
         }
-        return receivedMessage;
+        return receivedMessageText;
     }
 
     private void botAnswer(String receivedMessage, Long chatId, Long userId, LocalDateTime date) {
@@ -186,12 +190,14 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
     }
 
-    public void sendMessage(Long chatId, String messageText) {
+    public StatusMailing sendMessage(Long chatId, String messageText) {
         SendMessage message = new SendMessage(chatId.toString(), messageText);
         try {
             execute(message);
+            return StatusMailing.SUCCESS;
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
+            return StatusMailing.ERROR;
         }
     }
 

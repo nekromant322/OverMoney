@@ -4,6 +4,25 @@ const EXPENSE = "EXPENSE";
 window.onload = function () {
     getUndefinedTransactionsData();
     getCategoriesData();
+    let toast = toastr["success"]("Загрузка нераспознанных транзакций");
+    toastr.options = {
+        "closeButton": false,
+        "debug": true,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "7000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+    toast.focus().click();
 }
 
 const minUndefinedCircleSize = 100;
@@ -178,7 +197,7 @@ function handleDrop(e) {
             console.log(error)
         }
     });
-    drawToast(e, categoryName, transactionDefined);
+    drawToast(e, categoryName, transactionDefined, transactionComment);
     this.classList.remove('over');
 
     var circles = document.querySelectorAll(".undefined-circle")
@@ -189,16 +208,14 @@ function handleDrop(e) {
     }
 }
 
-function drawToast(e, categoryName, transactionDefined) {
+function drawToast(e, categoryName, transactionDefined, transactionComment) {
     toastr["success"](
-        '<table>'+
-        '<tr><td style="text-align:left"><h1>' +
+        '<div><text font-size="30">' +
         e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' добавлено в категорию ' + categoryName +
-        '</h1></td><tr/>' +
-        '<tr><td style="text-align:right">' +
-        '<p><button type="button" class="buttonUndefine" id="undefineButtonFor' +categoryName + '">Отменить</button></p>' +
-        '</tr></td>' +
-        '</table>'
+        '</text>' +
+        '<div class="buttonUndefine" id="undefineButtonFor' + transactionComment + '">' +
+        '<a>Отменить</a>' +
+        '</div></div>'
     )
 
     toastr.options = {
@@ -219,7 +236,7 @@ function drawToast(e, categoryName, transactionDefined) {
         "hideMethod": "fadeOut"
     }
 
-    const button = document.querySelector('#undefineButtonFor' +categoryName);
+    const button = document.querySelector('#undefineButtonFor' + transactionComment);
 
     button.onclick = () => {
         undefineTransaction(transactionDefined);
@@ -327,19 +344,14 @@ function drawCategory(category, length) {
     newCategory.style.height = 85 / length + '%';
     newCategory.dataset.id = category.id;
     newCategory.dataset.name = category.name;
-    let actualType;
-    let secondTypeValue;
-    let notActualType;
+    let typeCategory;
     if (category.type === INCOME) {
-        actualType = "Доходы";
-        secondTypeValue = EXPENSE
-        notActualType = "Расходы";
+        typeCategory = "Доходы";
     } else if (category.type === EXPENSE) {
-        actualType = "Расходы"
-        secondTypeValue = INCOME
-        notActualType = "Доходы";
+        typeCategory = "Расходы";
+
     }
-    newCategory.dataset.type = actualType;
+    newCategory.dataset.type = typeCategory;
     newCategory.onclick = function () {
         let body = `<h3>Информация о категории</h3>
                     <form class="modal-category" id="formModalCategory">
@@ -349,13 +361,13 @@ function drawCategory(category, length) {
                             <label for="name">Наименование категории:</label>
                             <input type="text" class="input-modal-category" id="name" value="${newCategory.dataset.name}" >
                         </div>
+                        
                         <div>
                             <label>Тип категории:</label>
-                            <select class="select-category-type" id="selectCategoryType">
-                            <option selected value="${category.type}">${newCategory.dataset.type}</option>
-                            <option value="${secondTypeValue}">${notActualType}</option>
-                        </select>
-                        </div>
+                            <div class="select-category-type" id="selectCategoryType">
+                                <p>${typeCategory}</p>
+                             </div>
+                         </div>
                           <div>
                             <label for="keywords">Ключевые слова категории:</label>
                             <div class="space-for-keywords">
@@ -403,7 +415,7 @@ function drawCategory(category, length) {
             let idCategory = newCategory.dataset.id;
             let keywordsCategory = category.keywords;
             let nameValue = $('#formModalCategory').find('#name').val();
-            let typeValue = $('#selectCategoryType option:selected').val();
+            let typeValue = category.type;
 
             if (!(nameValue === '') && !(keywordsCategory === '')) {
                 let data = {
@@ -423,7 +435,6 @@ function drawCategory(category, length) {
         });
     }
     categorySpace.insertAdjacentElement('beforeend', newCategory);
-
 
 }
 

@@ -4,7 +4,6 @@ import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
 import com.override.dto.AccountDataDTO;
 import com.override.dto.ChatMemberDTO;
 import com.override.dto.TransactionMessageDTO;
-import com.override.dto.GroupAccountDataDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,51 +42,51 @@ public class OrchestratorRequestServiceTest {
 
     @Test
     public void registerGroupAccountAndMergeWithCategoriesAndWithoutTransactionsTest() {
-        GroupAccountDataDTO groupAccountDataDTO = new GroupAccountDataDTO();
+        AccountDataDTO accountDataDTO = new AccountDataDTO();
 
-        orchestratorRequestService.registerGroupAccount(groupAccountDataDTO);
-        orchestratorRequestService.mergeWithCategoriesAndWithoutTransactions(groupAccountDataDTO.getUserId());
+        orchestratorRequestService.registerGroupAccount(accountDataDTO);
+        orchestratorRequestService.mergeWithCategoriesAndWithoutTransactions(accountDataDTO.getUserId());
 
-        verify(orchestratorFeign, times(1)).registerGroupAccount(groupAccountDataDTO);
-        verify(orchestratorFeign, times(1)).mergeAccountWithCategoriesWithoutTransactions(groupAccountDataDTO.getUserId());
+        verify(orchestratorFeign, times(1)).registerGroupAccount(accountDataDTO);
+        verify(orchestratorFeign, times(1)).mergeAccountWithCategoriesWithoutTransactions(accountDataDTO.getUserId());
     }
 
     @Test
     public void registerGroupAccountAndWithCategoriesAndTransactions() {
-        GroupAccountDataDTO groupAccountDataDTO = new GroupAccountDataDTO();
+        AccountDataDTO accountDataDTO = new AccountDataDTO();
 
-        orchestratorRequestService.registerGroupAccount(groupAccountDataDTO);
-        orchestratorRequestService.mergeWithCategoryAndTransactions(groupAccountDataDTO.getUserId());
+        orchestratorRequestService.registerGroupAccount(accountDataDTO);
+        orchestratorRequestService.mergeWithCategoryAndTransactions(accountDataDTO.getUserId());
 
-        verify(orchestratorFeign, times(1)).registerGroupAccount(groupAccountDataDTO);
-        verify(orchestratorFeign, times(1)).mergeAccountWithCategoriesAndTransactions(groupAccountDataDTO.getUserId());
+        verify(orchestratorFeign, times(1)).registerGroupAccount(accountDataDTO);
+        verify(orchestratorFeign, times(1)).mergeAccountWithCategoriesAndTransactions(accountDataDTO.getUserId());
     }
 
     @Test
     public void registerGroupAccount() {
-        GroupAccountDataDTO groupAccountDataDTO = new GroupAccountDataDTO();
+        AccountDataDTO accountDataDTO = new AccountDataDTO();
 
-        orchestratorRequestService.registerGroupAccount(groupAccountDataDTO);
+        orchestratorRequestService.registerGroupAccount(accountDataDTO);
 
-        verify(orchestratorFeign, times(1)).registerGroupAccount(groupAccountDataDTO);
+        verify(orchestratorFeign, times(1)).registerGroupAccount(accountDataDTO);
     }
 
     @Test
     public void mergeWithCategoriesAndWithoutTransactions() {
-        GroupAccountDataDTO groupAccountDataDTO = new GroupAccountDataDTO();
+        AccountDataDTO accountDataDTO = new AccountDataDTO();
 
-        orchestratorRequestService.mergeWithCategoriesAndWithoutTransactions(groupAccountDataDTO.getUserId());
+        orchestratorRequestService.mergeWithCategoriesAndWithoutTransactions(accountDataDTO.getUserId());
 
-        verify(orchestratorFeign, times(1)).mergeAccountWithCategoriesWithoutTransactions(groupAccountDataDTO.getUserId());
+        verify(orchestratorFeign, times(1)).mergeAccountWithCategoriesWithoutTransactions(accountDataDTO.getUserId());
     }
 
     @Test
     public void mergeWithCategoryAndTransactions() {
-        GroupAccountDataDTO groupAccountDataDTO = new GroupAccountDataDTO();
+        AccountDataDTO accountDataDTO = new AccountDataDTO();
 
-        orchestratorRequestService.mergeWithCategoryAndTransactions(groupAccountDataDTO.getUserId());
+        orchestratorRequestService.mergeWithCategoryAndTransactions(accountDataDTO.getUserId());
 
-        verify(orchestratorFeign, times(1)).mergeAccountWithCategoriesAndTransactions(groupAccountDataDTO.getUserId());
+        verify(orchestratorFeign, times(1)).mergeAccountWithCategoriesAndTransactions(accountDataDTO.getUserId());
     }
 
     @Test

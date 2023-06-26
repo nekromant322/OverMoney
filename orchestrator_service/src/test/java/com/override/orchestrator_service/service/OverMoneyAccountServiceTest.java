@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AccountDataDTO;
 import com.override.dto.ChatMemberDTO;
 import com.override.orchestrator_service.config.RecentActivityProperties;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
@@ -75,13 +76,12 @@ public class OverMoneyAccountServiceTest {
     public void registerSingleOverMoneyAccountTest() throws InstanceNotFoundException {
         OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
         User user = account.getUsers().iterator().next();
-        Long userId = user.getId();
-        Long chatId = account.getChatId();
+        AccountDataDTO accountDataDTO = new AccountDataDTO();
 
         when(userService.getUserById(any())).thenReturn(user);
         when(accountRepository.save(any())).thenReturn(account);
 
-        accountService.registerSingleOverMoneyAccount(chatId, userId);
+        accountService.registerSingleOverMoneyAccount(accountDataDTO);
 
         verify(accountRepository, times(1)).save(any(OverMoneyAccount.class));
     }
@@ -91,13 +91,12 @@ public class OverMoneyAccountServiceTest {
         OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
         account.setChatId(-123L);
         User user = account.getUsers().iterator().next();
-        Long userId = user.getId();
-        Long chatId = account.getChatId();
+        AccountDataDTO accountDataDTO = new AccountDataDTO();
 
         when(userService.getUserById(any())).thenReturn(user);
         when(accountRepository.save(any())).thenReturn(account);
 
-        accountService.registerGroupOverMoneyAccount(chatId, userId);
+        accountService.registerGroupOverMoneyAccount(accountDataDTO);
 
         verify(accountRepository, times(1)).save(any(OverMoneyAccount.class));
     }

@@ -4,7 +4,6 @@ import com.override.dto.AccountDataDTO;
 import com.override.dto.ChatMemberDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
-import com.override.dto.GroupAccountDataDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +21,7 @@ public interface OrchestratorFeign {
     void registerSingleAccount(@RequestBody AccountDataDTO accountData);
 
     @PostMapping("/account/register/group")
-    void registerGroupAccount(@RequestBody GroupAccountDataDTO groupAccountData);
+    void registerGroupAccount(@RequestBody AccountDataDTO accountDataDTO);
 
     @PostMapping("/account/merge/categories")
     void mergeAccountWithCategoriesWithoutTransactions(@RequestParam Long userId);

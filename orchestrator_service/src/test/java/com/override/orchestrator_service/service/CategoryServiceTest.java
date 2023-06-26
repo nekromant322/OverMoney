@@ -3,6 +3,7 @@ package com.override.orchestrator_service.service;
 import com.override.dto.CategoryDTO;
 import com.override.dto.MergeCategoryDTO;
 import com.override.dto.constants.Type;
+import com.override.orchestrator_service.config.DefaultCategoryProperties;
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.mapper.CategoryMapper;
 import com.override.orchestrator_service.model.Category;
@@ -20,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,6 +45,9 @@ public class CategoryServiceTest {
     private KeywordRepository keywordRepository;
     @Mock
     private TransactionRepository transactionRepository;
+
+    @Mock
+    private DefaultCategoryProperties defaultCategoryProperties;
 
     @Test
     public void getCategoryByIdThrowExceptionWhenCategoryNotFound() {
@@ -155,5 +160,20 @@ public class CategoryServiceTest {
         keywordId.setAccountId(123L);
         categoryService.deleteKeyword(keywordId);
         verify(keywordRepository, times(1)).deleteByKeywordId(keywordId);
+    }
+
+    @Test
+    public void setDefaultCategoryForAccTest() throws InstanceNotFoundException {
+        OverMoneyAccount accountTest = TestFieldsUtil.generateTestAccount();
+        when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(accountTest);
+
+        DefaultCategoryProperties.DefaultCategory category1 = new DefaultCategoryProperties.DefaultCategory();
+        DefaultCategoryProperties.DefaultCategory category2 = new DefaultCategoryProperties.DefaultCategory();
+        DefaultCategoryProperties.DefaultCategory category3 = new DefaultCategoryProperties.DefaultCategory();
+
+        List<DefaultCategoryProperties.DefaultCategory> categories = List.of(category1, category2, category3);
+        when(defaultCategoryProperties.getCategories()).thenReturn(categories);
+        categoryService.setDefaultCategoryForAccount(accountTest.getId());
+        verify(categoryRepository, times(3)).save(any());
     }
 }

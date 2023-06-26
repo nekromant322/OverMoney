@@ -37,8 +37,8 @@ public class CategoryService {
     @Autowired
     private DefaultCategoryProperties defaultCategoryProperties;
 
-    public List<CategoryDTO> findCategoriesListByUserId(Long userId) throws InstanceNotFoundException {
-        OverMoneyAccount account = accountService.getAccountByUserId(userId);
+    public List<CategoryDTO> findCategoriesListByUserId(Long id) throws InstanceNotFoundException {
+        OverMoneyAccount account = accountService.getAccountByUserId(id);
         return categoryMapper.mapCategoriesListToJsonResponse(accountMapper.mapAccountToCategoryList(account));
     }
 

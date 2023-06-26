@@ -1,6 +1,8 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AccountDataDTO;
 import com.override.orchestrator_service.mapper.UserMapper;
+import com.override.orchestrator_service.model.TelegramAuthRequest;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
@@ -10,9 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.management.InstanceNotFoundException;
+import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,23 +30,98 @@ public class UserServiceTest {
     private UserMapper userMapper;
 
     @Test
-    public void getAllUsers() {
-        List<User> users = new ArrayList<>();
+    public void saveUserByAccountDataDTODontSaveIfUserExists() {
+        final User user = new User();
+        user.setId(1L);
+        user.setUsername("Anon");
+        AccountDataDTO accountDataDTO = new AccountDataDTO(1L, 1L);
 
-        when(userRepository.findAll()).thenReturn(users);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
 
-        List<User> newUsers = userService.getAllUsers();
+        userService.saveUser(accountDataDTO);
 
-        Assertions.assertEquals(users, newUsers);
-        verify(userRepository, times(1)).findAll();
+        verify(userRepository, times(0)).save(any(User.class));
     }
 
     @Test
-    public void saveOrUpdateUser() {
-        User user = new User();
+    public void saveUserByAccountDataDTOSaveNewUser() {
+        final User user = new User();
+        user.setId(1L);
+        user.setUsername("Anon");
+        AccountDataDTO accountDataDTO = new AccountDataDTO(1L, 1L);
 
-        userService.saveUser(user);
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
 
-        verify(userRepository, times(1)).save(user);
+        userService.saveUser(accountDataDTO);
+
+        verify(userRepository, times(1)).save(any(User.class));
     }
+
+    @Test
+    public void saveUserByTelegramAuthRequestSavesNewUser() {
+        TelegramAuthRequest telegramAuthRequest = new TelegramAuthRequest();
+        telegramAuthRequest.setId(1L);
+        telegramAuthRequest.setUsername("Anon");
+
+        final User user = new User();
+        user.setId(1L);
+        user.setUsername("Anon");
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.empty());
+        when(userMapper.mapTelegramAuthToUser(telegramAuthRequest)).thenReturn(user);
+
+        userService.saveUser(telegramAuthRequest);
+
+        verify(userRepository, times(1)).save(any(User.class));
+    }
+
+    @Test
+    public void saveUserByTelegramAuthRequestDontSaveIfUserExistsAndNotChanged() {
+        TelegramAuthRequest telegramAuthRequest = new TelegramAuthRequest();
+        telegramAuthRequest.setId(1L);
+        telegramAuthRequest.setUsername("Anon");
+
+        final User user = new User();
+        user.setId(1L);
+        user.setUsername("Anon");
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        userService.saveUser(telegramAuthRequest);
+
+        verify(userRepository, times(0)).save(any(User.class));
+    }
+
+    @Test
+    public void saveUserByTelegramAuthRequestUpdatesUserIfUserExistsAndChanged() {
+        final TelegramAuthRequest telegramAuthRequest = new TelegramAuthRequest();
+        telegramAuthRequest.setId(1L);
+        telegramAuthRequest.setUsername("Anon");
+
+        final User user = new User();
+        user.setId(1L);
+        user.setUsername("Anonymous");
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+
+        userService.saveUser(telegramAuthRequest);
+
+        verify(userRepository, times(1)).updateUserDetailsByUserId(any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    public void getUserByIdReturnsOptionalUserIfFound() throws InstanceNotFoundException {
+        final User user = new User();
+        user.setId(1L);
+        user.setUsername("Anonymous");
+
+        when(userRepository.findById(user.getId())).thenReturn(Optional.of(user));
+        User foundUser = userService.getUserById(user.getId());
+
+        Assertions.assertEquals(user, foundUser);
+    }
+
+
+
+
 }

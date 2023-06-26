@@ -13,17 +13,6 @@ services:
       POSTGRES_DB: orchestrator-db
     restart: always
 
-  recognizer-db:
-    container_name: recognizer-db
-    image: postgres:14.1-alpine
-    ports:
-      - '5434:5432'
-    environment:
-      POSTGRES_USER: ${RECOGNIZER_DB_USER:-postgres}
-      POSTGRES_PASSWORD: ${RECOGNIZER_DB_PASSWORD:-postgres}
-      POSTGRES_DB: recognizer-db
-    restart: always
-
   telegram-bot-db:
     container_name: telegram-bot-db
     image: postgres:14.1-alpine
@@ -70,13 +59,8 @@ services:
       - '8080:8080'
     environment:
       _JAVA_OPTIONS: -Xmx512m
-      RECOGNIZER_DB_USER: ${RECOGNIZER_DB_USER}
-      RECOGNIZER_DB_PASSWORD: ${RECOGNIZER_DB_PASSWORD}
-      RECOGNIZER_DB_HOST: ${RECOGNIZER_DB_HOST}
-      RECOGNIZER_DB_PORT: ${RECOGNIZER_DB_PORT}
       SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
-    depends_on:
-      - recognizer-db
+      WIT_AI_TOKEN: ${WIT_AI_TOKEN}
 
   telegram-bot:
     container_name: telegram-bot

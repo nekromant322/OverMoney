@@ -40,6 +40,10 @@ public class Transaction {
     @Nullable
     private Long suggestedCategoryId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private OverMoneyAccount account;
+
+    @Column(name = "telegram_user_id")
+    @Nullable
+    private Long telegramUserId;
 }

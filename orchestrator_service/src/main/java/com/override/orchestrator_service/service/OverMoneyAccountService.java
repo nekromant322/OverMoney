@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AccountDataDTO;
 import com.override.dto.ChatMemberDTO;
 import com.override.orchestrator_service.config.RecentActivityProperties;
 import com.override.orchestrator_service.mapper.UserMapper;
@@ -92,24 +93,23 @@ public class OverMoneyAccountService {
         userService.saveUser(user);
     }
 
-    public void registerSingleOverMoneyAccount(Long chatId, Long userId) throws InstanceNotFoundException {
+    public void registerSingleOverMoneyAccount(AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
-                .chatId(chatId)
-                .users(getUser(userId))
+                .chatId(accountDataDTO.getChatId())
+                .users(getUser(accountDataDTO.getUserId()))
                 .build();
-        User user = userService.getUserById(userId);
+        User user = userService.getUserById(accountDataDTO.getUserId());
         user.setAccount(overMoneyAccount);
         saveOverMoneyAccount(overMoneyAccount);
     }
 
-    public void registerGroupOverMoneyAccount(Long chatId, Long userId) throws InstanceNotFoundException {
+    public void registerGroupOverMoneyAccount(AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
-                .chatId(chatId)
-                .users(getUser(userId))
+                .chatId(accountDataDTO.getChatId())
+                .users(getUser(accountDataDTO.getUserId()))
                 .build();
-        User user = userService.getUserById(userId);
+        User user = userService.getUserById(accountDataDTO.getUserId());
         user.setAccount(overMoneyAccount);
-
         saveOverMoneyAccount(overMoneyAccount);
     }
 
