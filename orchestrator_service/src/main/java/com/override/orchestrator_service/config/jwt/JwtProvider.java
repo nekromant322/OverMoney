@@ -21,6 +21,9 @@ import java.util.Date;
 @Slf4j
 public class JwtProvider {
 
+    @Value("${jwt.token.lifetime-in-hours}")
+    private int tokenLifeTimeInHours;
+
     private final SecretKey jwtAccessSecret;
     private final SecretKey jwtRefreshSecret;
 
@@ -32,7 +35,7 @@ public class JwtProvider {
 
     public String generateAccessToken(@NonNull User user) {
         final LocalDateTime now = LocalDateTime.now();
-        final Instant accessExpirationInstant = now.plusMinutes(30).atZone(ZoneId.systemDefault()).toInstant();
+        final Instant accessExpirationInstant = now.plusHours(tokenLifeTimeInHours).atZone(ZoneId.systemDefault()).toInstant();
         final Date accessExpiration = Date.from(accessExpirationInstant);
         return Jwts.builder()
                 .setSubject(user.getId().toString())
@@ -44,6 +47,7 @@ public class JwtProvider {
     }
 
     public String generateRefreshToken(@NonNull User user) {
+
         final LocalDateTime now = LocalDateTime.now();
         final Instant refreshExpirationInstant = now.plusDays(30).atZone(ZoneId.systemDefault()).toInstant();
         final Date refreshExpiration = Date.from(refreshExpirationInstant);
