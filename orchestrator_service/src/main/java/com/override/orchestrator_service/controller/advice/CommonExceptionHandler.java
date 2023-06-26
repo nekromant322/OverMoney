@@ -1,54 +1,47 @@
 package com.override.orchestrator_service.controller.advice;
 
 import com.override.dto.CommonErrorDTO;
-import com.override.orchestrator_service.exception.CategoryNotFoundException;
+import com.override.orchestrator_service.exception.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.management.InstanceNotFoundException;
-import javax.naming.AuthenticationException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.time.Instant;
-
-import static com.override.orchestrator_service.controller.advice.OrchestractorError.*;
 
 @ControllerAdvice
 @Slf4j
 public class CommonExceptionHandler {
+    private final String INTERNAL_SERVER_ERROR_CODE = "ORCHESTRA_UNEXPECTED";
+
+    private final int INTERNAL_SERVER_STATUS_CODE = 500;
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<?> handleException(Exception e) {
         log.error(e.getMessage(), e);
-        OrchestractorError error = getError(e);
-        return ResponseEntity.status(error.getHttpStatus()).body(createDto(error, e));
+        String errorCode = getErrorCode(e);
+        int statusCode = getHttpStatusCode(e);
+        return ResponseEntity.status(statusCode).body(createDto(errorCode, e));
     }
 
-    private OrchestractorError getError(Exception exception) {
-        if (exception instanceof InstanceNotFoundException) {
-            return ORCHESTRA_INSTANCE_NOT_FOUND;
+    private String getErrorCode(Exception exception) {
+        if (exception instanceof BaseException) {
+            return ((BaseException) exception).getErrorCode();
         }
-        if (exception instanceof AuthenticationException) {
-            return ORCHESTRA_INVALID_TOKEN;
-        }
-        if (exception instanceof NoSuchAlgorithmException) {
-            return ORCHESTRA_TELEGRAM_VERIFY_FAILED;
-        }
-        if (exception instanceof InvalidKeyException) {
-            return ORCHESTRA_TELEGRAM_VERIFY_FAILED;
-        }
-        if (exception instanceof CategoryNotFoundException) {
-            return ORCHESTRA_CATEGORY_NOT_FOUND;
-        }
-        return ORCHESTRA_UNEXPECTED;
+        return INTERNAL_SERVER_ERROR_CODE;
     }
 
-    private CommonErrorDTO createDto(OrchestractorError error, Exception ex) {
+    private int getHttpStatusCode(Exception exception) {
+        if (exception instanceof BaseException) {
+            return ((BaseException) exception).getStatusCode();
+        }
+        return INTERNAL_SERVER_STATUS_CODE;
+    }
+
+    private CommonErrorDTO createDto(String errorCode, Exception ex) {
         return CommonErrorDTO
                 .builder()
-                .code(error.name())
+                .code(errorCode)
                 .message(ex.getMessage())
                 .timestamp(Instant.now())
                 .build();
