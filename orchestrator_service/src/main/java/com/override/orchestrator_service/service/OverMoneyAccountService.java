@@ -33,7 +33,6 @@ public class OverMoneyAccountService {
     private TransactionRepository transactionRepository;
     @Autowired
     private UserMapper userMapper;
-    private final int ACCOUNT_DEFINER = 0;
 
     public List<OverMoneyAccount> getAllAccounts() {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
@@ -82,6 +81,7 @@ public class OverMoneyAccountService {
         transactionRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
+    @Transactional
     public void addNewChatMembersToAccount(List<ChatMemberDTO> chatMemberDTOList) {
         chatMemberDTOList.forEach(this::addNewChatMemberToAccount);
     }

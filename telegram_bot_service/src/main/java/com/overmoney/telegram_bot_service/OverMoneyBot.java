@@ -63,8 +63,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private final String MERGE_REQUEST_COMPLETED_TEXT =
             "Данные аккаунта были перенесены.";
     private final String REGISTRATION_INFO_TEXT =
-            "Для корректной регистрации аккаунта убедитесь, что на момент добавления в бота" +
-                    "в чате с ботом только вы. После переноса данных можете добавлять других пользователей";
+            "Для корректной регистрации аккаунта убедитесь, что на момент добавления в чат бота" +
+                    " в чате с ботом только вы. После переноса данных можете добавлять других пользователей";
     private final String BLANK_MESSAGE = "";
     private final Boolean BOT = true;
 
