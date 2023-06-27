@@ -50,10 +50,9 @@ public class AnalyticService {
     }
 
     private List<AnalyticsDataMonthDTO> mapObjectListToDTO(List<Object[]> objectList){
-        List<Object[]> resultList = objectList;
         List<AnalyticsDataMonthDTO> analyticsDataMonthDTOS = new ArrayList<>();
 
-        analyticsDataMonthDTOS = resultList.stream()
+        analyticsDataMonthDTOS = objectList.stream()
                 .map(item -> new AnalyticsDataMonthDTO((String) item[0], (Float) item[1], (Float) item[2]))
                 .collect(Collectors.toList());
 
