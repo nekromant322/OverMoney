@@ -95,25 +95,35 @@ function getCategoriesAndSumAmountByType(type) {
 }
 
 //Расходы доходы по месяцам
-const currentYear = new Date().getFullYear();
-const yearSelect = document.getElementById('yearSelect');
-const checkbox = document.querySelector('.info__switch');
+const yearSelect = $('#yearSelect');
+const checkbox = $('.info__switch');
 
-checkbox.addEventListener('change', loadData(currentYear));
-yearSelect.addEventListener('change', function() {
-    const selectedYear = yearSelect.value;
+checkbox.on('change', function() {
+    loadData(new Date().getFullYear());
+});
+
+yearSelect.on('change', function() {
+    const selectedYear = yearSelect.val();
     loadData(selectedYear);
 });
 
-for (let i = currentYear; i >= 2020; i--) {
-    const option = document.createElement('option');
-    option.value = i;
-    option.text = i;
-    if (i === currentYear) {
-        option.selected = true; // Устанавливаем атрибут selected для текущего года
+$.ajax({
+    url: '/analytics/available-years',
+    type: 'GET',
+    dataType: 'json',
+    success: function(years) {
+        years.forEach(function(year) {
+            const option = $('<option>').val(year).text(year);
+            if (year === new Date().getFullYear()) {
+                option.attr('selected', true); // Устанавливаем атрибут selected для текущего года
+            }
+            yearSelect.append(option);
+        });
+    },
+    error: function(xhr, status, error) {
+        console.error(error);
     }
-    yearSelect.appendChild(option);
-}
+});
 
 function loadData(selectedYear) {
     $.ajax({
