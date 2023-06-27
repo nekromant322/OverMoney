@@ -30,4 +30,9 @@ public class AnalyticsController {
     public List<AnalyticsDataDTO> getAnalyticsTotalCategorySums(Principal principal, @PathVariable("type") Type type) throws InstanceNotFoundException {
         return analyticService.getTotalCategorySumsForAnalytics(telegramUtils.getTelegramId(principal), type);
     }
+
+    @GetMapping("/available-years")
+    public List<Integer> getAvailableYears(Principal principal) throws InstanceNotFoundException {
+        return analyticService.findAvailableYears(telegramUtils.getTelegramId(principal));
+    }
 }

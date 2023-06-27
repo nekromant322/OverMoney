@@ -92,4 +92,8 @@ public class TransactionService {
         transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
         return transaction;
     }
+
+    public List<Integer> findAvailableYears(Long accountId) {
+        return transactionRepository.findAvailableYearsForAccountByAccountId(accountId);
+    }
 }

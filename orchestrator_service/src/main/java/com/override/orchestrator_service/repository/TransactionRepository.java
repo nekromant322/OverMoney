@@ -43,4 +43,8 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             "WHERE t.account.id= :accountId AND t.message = :message")
     void removeCategoryIdFromTransactionsWithSameMessage(@Param("message") String message,
                                                          @Param("accountId") Long accountId);
+
+    @Modifying
+    @Query("SELECT DISTINCT EXTRACT(year from t.date) from Transaction t WHERE t.account.id = :accountId")
+    List<Integer> findAvailableYearsForAccountByAccountId(@Param("accountId") Long accountId);
 }

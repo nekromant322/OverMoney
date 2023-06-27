@@ -2,6 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.AnalyticsDataDTO;
 import com.override.dto.constants.Type;
+import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,9 +17,16 @@ public class AnalyticService {
     private OverMoneyAccountService accountService;
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private TransactionService transactionService;
 
     public List<AnalyticsDataDTO> getTotalCategorySumsForAnalytics(Long userId, Type type) throws InstanceNotFoundException {
         Long accId = accountService.getAccountByUserId(userId).getId();
         return categoryRepository.findTotalSumOfAllCategoriesByAccIdAndType(accId, type);
+    }
+
+    public List<Integer> findAvailableYears(Long telegramId) throws InstanceNotFoundException {
+        Long accountId = accountService.getAccountByUserId(telegramId).getId();
+        return transactionService.findAvailableYears(accountId);
     }
 }
