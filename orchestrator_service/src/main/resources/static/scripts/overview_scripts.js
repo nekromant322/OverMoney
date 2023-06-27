@@ -209,11 +209,14 @@ function handleDrop(e) {
 }
 
 function drawToast(e, categoryName, transactionDefined, transactionComment) {
+    let transactionCommentNoSpace = transactionComment.replaceAll(" ", "_");
+    let transactionCommentNoQuote = transactionCommentNoSpace.replaceAll("\'", "_");
+    let transactionCommentForButtonName = transactionCommentNoQuote.replaceAll("\"", "_");
     toastr["success"](
         '<div><text font-size="30">' +
         e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' добавлено в категорию ' + categoryName +
         '</text>' +
-        '<div class="buttonUndefine" id="undefineButtonFor' + transactionComment + '">' +
+        '<div class="buttonUndefine" id="undefineButtonFor_' + transactionCommentForButtonName + '">' +
         '<a>Отменить</a>' +
         '</div></div>'
     )
@@ -236,7 +239,7 @@ function drawToast(e, categoryName, transactionDefined, transactionComment) {
         "hideMethod": "fadeOut"
     }
 
-    const button = document.querySelector('#undefineButtonFor' + transactionComment);
+    const button = document.querySelector('#undefineButtonFor_' + transactionCommentForButtonName);
 
     button.onclick = () => {
         undefineTransaction(transactionDefined);
