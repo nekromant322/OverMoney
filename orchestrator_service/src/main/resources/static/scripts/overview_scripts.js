@@ -518,10 +518,8 @@ function createNewCategory(category) {
         dataType: 'json',
         success: function (data) {
             checkError = false;
-            console.log("Все заебись")
         },
         error: function (error) {
-            console.log("Произошла ошибка")
             checkError = true
             drawCategoryNotUniqueException(error)
         }

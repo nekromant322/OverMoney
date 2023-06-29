@@ -73,8 +73,8 @@ public class CategoryService {
         try {
             categoryRepository.save(categoryMapper.mapCategoryDTOToCategory(categoryDTO, account));
         } catch (DataIntegrityViolationException e) {
-            throw new CategoryNameIsNotUniqueException("Наименование категории не уникально! " +
-                                                        "Пожалуйста, внесите другое наименование.");
+            throw new CategoryNameIsNotUniqueException("Наименование категории \""
+                    + categoryDTO.getName() + "\" не уникально!");
         }
     }
 
