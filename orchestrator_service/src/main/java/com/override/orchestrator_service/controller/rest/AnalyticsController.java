@@ -1,9 +1,11 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.AnalyticsDataDTO;
+import com.override.dto.AnalyticsDataMonthDTO;
 import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.service.AnalyticService;
+import com.override.orchestrator_service.service.OverMoneyAccountService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,9 +29,19 @@ public class AnalyticsController {
     @Autowired
     private TelegramUtils telegramUtils;
 
+    @Autowired
+    private OverMoneyAccountService overMoneyAccountService;
+
     @GetMapping("/totalCategorySums/{type}")
     public List<AnalyticsDataDTO> getAnalyticsTotalCategorySums(Principal principal, @PathVariable("type") Type type) throws InstanceNotFoundException {
         return analyticService.getTotalCategorySumsForAnalytics(telegramUtils.getTelegramId(principal), type);
+    }
+
+    @GetMapping("/totalIncomeOutcome/{year}")
+    public List<AnalyticsDataMonthDTO> getIncomeOutcomePerMonth(Principal principal, @PathVariable("year") int year) throws InstanceNotFoundException {
+        Long userId = telegramUtils.getTelegramId(principal);
+        Long overMoneyAccountId = overMoneyAccountService.getAccountByUserId(userId).getId();
+        return analyticService.getTotalIncomeOutcomePerMonth(overMoneyAccountId, year);
     }
 
     @GetMapping("/available-years")

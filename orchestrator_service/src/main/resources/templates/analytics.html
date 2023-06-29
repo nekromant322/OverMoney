@@ -5,6 +5,7 @@
     <title>Analytics</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="/css/analytics.css" rel="stylesheet" type="text/css"/>
     <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
 </head>
@@ -30,6 +31,14 @@
         <label for="info__body_2" class="info__headline">Доходы по категориям</label>
         <div class="info__body">
             <canvas id="incomeAnalytics"></canvas>
+        </div>
+    </div>
+    <div class="info">
+        <input id="info__body_3" class="info__switch" type="checkbox">
+        <label for="info__body_3" class="info__headline">Расходы доходы по месяцам</label>
+        <div class="info__body">
+            <select id="yearSelect"></select>
+            <canvas id="totalExpenseAnalitics"></canvas>
         </div>
     </div>
 
