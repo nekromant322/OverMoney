@@ -73,7 +73,11 @@ public class TransactionService {
         transactionList.forEach(transactionDTO -> {
             User user = userMap.get(transactionDTO.getTelegramUserId());
             if (user != null) {
-                transactionDTO.setTelegramUserName(user.getUsername());
+                if (user.getUsername() != null) {
+                    transactionDTO.setTelegramUserName(user.getUsername());
+                } else {
+                    transactionDTO.setTelegramUserName(user.getFirstName());
+                }
             }
         });
 
