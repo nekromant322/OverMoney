@@ -7,7 +7,11 @@ import javax.persistence.*;
 import java.util.Set;
 
 @Entity
-@Table(name="categories")
+@Table(name = "categories",
+        uniqueConstraints =
+                {@UniqueConstraint
+                        (name = "UniqueAccIdAndCategoryName", columnNames = {"name", "account_id"})
+                })
 @RequiredArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -25,10 +29,10 @@ public class Category {
     @Column
     private Type type;
 
-    @OneToMany(mappedBy="category")
+    @OneToMany(mappedBy = "category")
     private Set<Transaction> transactions;
 
-    @OneToMany(mappedBy="category", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "category", cascade = CascadeType.PERSIST)
     private Set<Keyword> keywords;
 
     @ManyToOne(fetch = FetchType.LAZY)

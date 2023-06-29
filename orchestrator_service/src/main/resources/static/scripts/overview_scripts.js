@@ -462,6 +462,7 @@ function drawModalToAddCategory() {
                    <p class="modal-category-close" href="#">X</p>
                         <div>
                             <label for="newCategoryName">Наименование категории:</label>
+                            <p class="error-name" id="errorName" style="display:none; color:red; margin: 0 auto 10px; width: 322px;"></p>
                             <input type="text" required class="input-modal-category" id="newCategoryName">
                         </div>
                         <div>
@@ -494,14 +495,18 @@ function drawModalToAddCategory() {
                 name: nameValue,
                 type: typeValue,
             }
-            createNewCategory(data);
-            $(this).parents('.modal-category-fade').fadeOut();
-            location.reload();
+            let checkError = createNewCategory(data)
+            console.log(checkError)
+            if (!checkError) {
+                $(this).parents('.modal-category-fade').fadeOut();
+                location.reload();
+            }
         }
     });
 }
 
 function createNewCategory(category) {
+    let checkError = false;
     $.ajax({
         type: 'POST',
         url: './categories/',
@@ -511,13 +516,15 @@ function createNewCategory(category) {
         data: JSON.stringify(category),
         async: false,
         dataType: 'json',
-        success: function () {
-            console.log("Successfully created categories")
+        success: function (data) {
+            checkError = false;
         },
         error: function (error) {
-            console.log(error)
+            checkError = true
+            drawCategoryNotUniqueException(error)
         }
     })
+    return checkError;
 }
 
 function updateCategory(category) {
@@ -660,5 +667,13 @@ function deleteKeyword(keywordId) {
             console.log(error)
         }
     })
+}
+
+function drawCategoryNotUniqueException(error) {
+    console.log(error.responseJSON.code)
+    if (error.responseJSON.code == "ORCHESTRA_CATEGORY_NAME_NOT_UNIQUE_EXCEPTION") {
+        $("#errorName").text(error.responseJSON.message);
+        document.getElementById("errorName").style.display = "block";
+    }
 
 }
