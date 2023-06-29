@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.AnalyticsDataDTO;
+import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.service.AnalyticService;
 import com.override.orchestrator_service.util.TelegramUtils;
@@ -34,5 +35,11 @@ public class AnalyticsController {
     @GetMapping("/available-years")
     public List<Integer> getAvailableYears(Principal principal) throws InstanceNotFoundException {
         return analyticService.findAvailableYears(telegramUtils.getTelegramId(principal));
+    }
+
+    @GetMapping("/income/{year}")
+    public List<AnalyticsMonthlyReportForYearDTO> getYearIncomeStatistics(Principal principal, @PathVariable("year") Integer year) throws InstanceNotFoundException {
+        return analyticService.findMonthlyIncomeStatisticsForYearByAccountId(telegramUtils.getTelegramId(principal),
+                year);
     }
 }

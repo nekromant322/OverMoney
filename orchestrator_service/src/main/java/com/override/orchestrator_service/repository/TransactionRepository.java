@@ -47,4 +47,12 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     @Modifying
     @Query("SELECT DISTINCT EXTRACT(year from t.date) from Transaction t WHERE t.account.id = :accountId")
     List<Integer> findAvailableYearsForAccountByAccountId(@Param("accountId") Long accountId);
+
+    @Modifying
+    @Query("select SUM(t.amount), c.name, MONTH(t.date) " +
+            "from Transaction t join Category c on t.category.id = c.id " +
+            "where t.account.id = :accountId and YEAR(t.date) = :year and c.type = 0 " +
+            "group by c.id, MONTH(t.date), c.name ")
+    List<Object[]> findMonthlyIncomeStatisticsByYearAndAccountId(@Param("accountId") Long accountId,
+                                                                 @Param("year") Integer year);
 }

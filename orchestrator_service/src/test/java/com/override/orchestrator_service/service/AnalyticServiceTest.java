@@ -1,9 +1,11 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.AnalyticsDataDTO;
+import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.repository.CategoryRepository;
+import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
 import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -15,7 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -31,6 +36,12 @@ public class AnalyticServiceTest {
 
     @Mock
     private CategoryRepository categoryRepository;
+
+    @Mock
+    private TransactionService transactionService;
+
+    @Mock
+    private TransactionRepository transactionRepository;
 
     @Test
     public void getTotalCategorySumsForAnalyticsTest() throws InstanceNotFoundException {
@@ -52,5 +63,43 @@ public class AnalyticServiceTest {
         analyticService.getTotalCategorySumsForAnalytics(123L, Type.EXPENSE);
         Assertions.assertEquals(categoryRepository.findTotalSumOfAllCategoriesByAccIdAndType(acc.getId(), Type.EXPENSE).size(),
                                 analyticsDataListTest.size());
+    }
+
+    @Test
+    public void findAvailableYearsReturnsList() throws InstanceNotFoundException {
+        OverMoneyAccount acc = TestFieldsUtil.generateTestAccount();
+        when(accountService.getAccountByUserId(any())).thenReturn(acc);
+        List<Integer> listOfYears = List.of(1, 2, 3);
+
+        when(transactionRepository.findAvailableYearsForAccountByAccountId(any()))
+                .thenReturn(listOfYears);
+        when(transactionService.findAvailableYears(any()))
+                .thenReturn(listOfYears);
+        analyticService.findAvailableYears(123L);
+        Assertions.assertEquals(transactionRepository.findAvailableYearsForAccountByAccountId(acc.getId()).size(),
+                listOfYears.size());
+    }
+
+    @Test
+    public void findMonthlyIncomeStatisticsForYearByAccountIdReturnsCorrectList() throws InstanceNotFoundException {
+        OverMoneyAccount acc = TestFieldsUtil.generateTestAccount();
+        when(accountService.getAccountByUserId(any())).thenReturn(acc);
+        List<Object[]> listOfObjects = new ArrayList<>();
+        Map<Integer, Double> map = new HashMap<>();
+        for (int counter = 1; counter <= 12; counter++) {
+            map.put(counter, (double) counter);
+            Object[] array = new Object[] {(double) counter, "cat1", counter};
+            listOfObjects.add(array);
+        }
+        AnalyticsMonthlyReportForYearDTO dto1 = new AnalyticsMonthlyReportForYearDTO("cat1", map);
+
+        List<AnalyticsMonthlyReportForYearDTO> list = List.of(dto1);
+
+        when(transactionService.findMonthlyIncomeStatisticsForYearByAccountId(any(), any()))
+                .thenReturn(list);
+
+        List<AnalyticsMonthlyReportForYearDTO> resultList = analyticService.findMonthlyIncomeStatisticsForYearByAccountId(123L, 123);
+
+        Assertions.assertEquals(resultList, list);
     }
 }

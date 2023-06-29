@@ -1,8 +1,8 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.AnalyticsDataDTO;
+import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.constants.Type;
-import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,5 +28,10 @@ public class AnalyticService {
     public List<Integer> findAvailableYears(Long telegramId) throws InstanceNotFoundException {
         Long accountId = accountService.getAccountByUserId(telegramId).getId();
         return transactionService.findAvailableYears(accountId);
+    }
+
+    public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long telegramId, Integer year) throws InstanceNotFoundException {
+        Long accountId = accountService.getAccountByUserId(telegramId).getId();
+        return transactionService.findMonthlyIncomeStatisticsForYearByAccountId(accountId, year);
     }
 }
