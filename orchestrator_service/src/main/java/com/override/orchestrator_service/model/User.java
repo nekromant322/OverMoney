@@ -16,7 +16,7 @@ public class User {
     @Id
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private String username;
 
     @Column
