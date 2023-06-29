@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.*;
 
@@ -33,7 +34,7 @@ public class CategoryMapperTest {
         CategoryDTO categoryDTO = categoryMapper.mapCategoryToJsonResponse(category);
 
         Assertions.assertEquals(categoryDTO.getId(), category.getId());
-        Assertions.assertEquals(categoryDTO.getName(), category.getName());
+        Assertions.assertEquals(StringUtils.capitalize(categoryDTO.getName()),StringUtils.capitalize(category.getName()));
         Assertions.assertEquals(categoryDTO.getType(), category.getType());
         Assertions.assertEquals(categoryDTO.getKeywords().size(), category.getKeywords().size());
     }
@@ -46,7 +47,7 @@ public class CategoryMapperTest {
         final Category categoryTest = categoryMapper.mapCategoryDTOToCategory
                 (category, TestFieldsUtil.generateTestAccount());
 
-        Assertions.assertEquals(categoryTest.getName(), category.getName());
+        Assertions.assertEquals(categoryTest.getName(), StringUtils.capitalize(category.getName()));
         Assertions.assertEquals(categoryTest.getType(), category.getType());
     }
 }

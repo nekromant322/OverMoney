@@ -4,6 +4,7 @@ import com.override.dto.CategoryDTO;
 import com.override.dto.MergeCategoryDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.config.DefaultCategoryProperties;
+import com.override.orchestrator_service.exception.CategoryNameIsNotUniqueException;
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.mapper.AccountMapper;
 import com.override.orchestrator_service.mapper.CategoryMapper;
@@ -14,6 +15,7 @@ import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +70,12 @@ public class CategoryService {
 
     public void saveCategoryForAcc(Long id, CategoryDTO categoryDTO) throws InstanceNotFoundException {
         OverMoneyAccount account = accountService.getAccountByUserId(id);
-        categoryRepository.save(categoryMapper.mapCategoryDTOToCategory(categoryDTO, account));
+        try {
+            categoryRepository.save(categoryMapper.mapCategoryDTOToCategory(categoryDTO, account));
+        } catch (DataIntegrityViolationException e) {
+            throw new CategoryNameIsNotUniqueException("Наименование категории не уникально! " +
+                                                        "Пожалуйста, внесите другое наименование.");
+        }
     }
 
     public void updateCategoryForAcc(Long id, CategoryDTO categoryDTO) throws InstanceNotFoundException {
@@ -86,9 +93,9 @@ public class CategoryService {
         transactionRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
         categoryRepository.deleteById(categoryToMergeId);
     }
-  
+
     @Transactional
-    public void deleteKeyword(KeywordId keywordId){
+    public void deleteKeyword(KeywordId keywordId) {
         keywordRepository.deleteByKeywordId(keywordId);
     }
 }
