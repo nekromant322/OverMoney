@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
 import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
@@ -99,21 +100,21 @@ public class TransactionService {
     }
 
     public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long accountId, Integer year) {
-        List<Object[]> list = transactionRepository.findMonthlyIncomeStatisticsByYearAndAccountId(accountId, year);
+        List<AnalyticsMonthlyIncomeForCategoryDTO> list = transactionRepository.findMonthlyIncomeStatisticsByYearAndAccountId(accountId, year);
         return mapObjectToAnalyticsMonthIncomeDTO(list);
     }
 
-    private List<AnalyticsMonthlyReportForYearDTO> mapObjectToAnalyticsMonthIncomeDTO(List<Object[]> objects) {
+    private List<AnalyticsMonthlyReportForYearDTO> mapObjectToAnalyticsMonthIncomeDTO(List<AnalyticsMonthlyIncomeForCategoryDTO> objects) {
         Set<String> setOfCategoryNames = new HashSet<>();
         List<AnalyticsMonthlyReportForYearDTO> result = new ArrayList<>();
         objects.forEach(object -> {
-            setOfCategoryNames.add((String) object[1]);
+            setOfCategoryNames.add(object.getCategoryName());
         });
         setOfCategoryNames.forEach(categoryName -> {
             Map<Integer, Double> monthlyAnalytics = new HashMap<>();
             objects.forEach(object -> {
-                if (Objects.equals(categoryName, object[1])) {
-                    monthlyAnalytics.put((Integer) object[2], (Double) object[0]);
+                if (Objects.equals(categoryName, object.getCategoryName())) {
+                    monthlyAnalytics.put(object.getMonth(), object.getAmount());
                 }
             });
             for (Integer monthCounter = 1; monthCounter <= 12; monthCounter++) {

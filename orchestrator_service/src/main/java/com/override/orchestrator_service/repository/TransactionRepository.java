@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.repository;
 
+import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
 import com.override.orchestrator_service.model.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,15 +45,13 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     void removeCategoryIdFromTransactionsWithSameMessage(@Param("message") String message,
                                                          @Param("accountId") Long accountId);
 
-    @Modifying
     @Query("SELECT DISTINCT EXTRACT(year from t.date) from Transaction t WHERE t.account.id = :accountId")
     List<Integer> findAvailableYearsForAccountByAccountId(@Param("accountId") Long accountId);
 
-    @Modifying
-    @Query("select SUM(t.amount), c.name, MONTH(t.date) " +
+    @Query(value = "select new com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO(SUM(t.amount), c.name, cast(MONTH(t.date) as int)) " +
             "from Transaction t join Category c on t.category.id = c.id " +
             "where t.account.id = :accountId and YEAR(t.date) = :year and c.type = 0 " +
-            "group by c.id, MONTH(t.date), c.name ")
-    List<Object[]> findMonthlyIncomeStatisticsByYearAndAccountId(@Param("accountId") Long accountId,
-                                                                 @Param("year") Integer year);
+            "group by c.id, MONTH(t.date), c.name")
+    List<AnalyticsMonthlyIncomeForCategoryDTO> findMonthlyIncomeStatisticsByYearAndAccountId(@Param("accountId") Long accountId,
+                                                                                             @Param("year") Integer year);
 }

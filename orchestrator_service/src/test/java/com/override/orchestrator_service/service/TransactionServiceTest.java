@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
 import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.mapper.TransactionMapper;
@@ -12,6 +13,9 @@ import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,6 +25,7 @@ import org.springframework.data.domain.PageImpl;
 
 import javax.management.InstanceNotFoundException;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -127,24 +132,27 @@ public class TransactionServiceTest {
                 listOfYears.size());
     }
 
-    @Test
-    public void findMonthlyIncomeStatisticsForYearByAccountIdReturnsCorrectList() throws InstanceNotFoundException {
-        List<Object[]> listOfObjects = new ArrayList<>();
-        Map<Integer, Double> map = new HashMap<>();
-        for (int counter = 1; counter <= 12; counter++) {
-            map.put(counter, (double) counter);
-            Object[] array = new Object[] {(double) counter, "cat1", counter};
-            listOfObjects.add(array);
-        }
-        AnalyticsMonthlyReportForYearDTO dto1 = new AnalyticsMonthlyReportForYearDTO("cat1", map);
-
-        List<AnalyticsMonthlyReportForYearDTO> list = List.of(dto1);
+    @ParameterizedTest
+    @MethodSource("provideMonthlyIncomeStatisticsForYear")
+    public void findMonthlyIncomeStatisticsForYearByAccountIdReturnsCorrectList(List<AnalyticsMonthlyIncomeForCategoryDTO> inputList,
+                                                                                List<AnalyticsMonthlyReportForYearDTO> requeredList) {
 
         when(transactionRepository.findMonthlyIncomeStatisticsByYearAndAccountId(any(), any()))
-                .thenReturn(listOfObjects);
+                .thenReturn(inputList);
 
         List<AnalyticsMonthlyReportForYearDTO> resultList = transactionService.findMonthlyIncomeStatisticsForYearByAccountId(123L, 123);
 
-        Assertions.assertEquals(resultList, list);
+        Assertions.assertEquals(resultList, requeredList);
+    }
+
+    private static Stream<Arguments> provideMonthlyIncomeStatisticsForYear() {
+        return Stream.of(
+                Arguments.of(TestFieldsUtil.generateTestAnalyticsMonthlyIncomeForCategoryWithNullFields(),
+                        TestFieldsUtil.generateTestListOfAnalyticsMonthlyReportForYearDTOWithNull()),
+                Arguments.of(TestFieldsUtil.generateTestAnalyticsMonthlyIncomeForCategoryWithoutNullFields(),
+                        TestFieldsUtil.generateTestListOfAnalyticsMonthlyReportForYearDTOWithoutNull()),
+                Arguments.of(TestFieldsUtil.generateTestAnalyticsMonthlyIncomeForCategoryWithMixedFields(),
+                        TestFieldsUtil.generateTestListOfAnalyticsMonthlyReportForYearDTOMixed())
+        );
     }
 }
