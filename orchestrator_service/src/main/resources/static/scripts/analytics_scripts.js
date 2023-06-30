@@ -1,5 +1,6 @@
 const placeForExpense = document.getElementById('expenseAnalytics');
 const placeForIncome = document.getElementById('incomeAnalytics');
+const placeForMonthlyYearIncomeAnalytics = document.getElementById('monthlyYearIncomeAnalytics');
 const INCOME = "INCOME";
 const EXPENSE = "EXPENSE";
 const colors =
@@ -24,6 +25,7 @@ const colors =
 window.onload = function () {
     getAnalyticsData(EXPENSE, placeForExpense);
     getAnalyticsData(INCOME, placeForIncome);
+    setAvailableYearsForMonthlyAnalytics();
 }
 
 function getAnalyticsData(type, place) {
@@ -172,3 +174,117 @@ function loadData(selectedYear) {
         }
     });
 }
+
+
+const yearSelectForMonthlyAnalytics = $('#yearSelectForMonthlyAnalytics');
+const checkboxForMonthlyAnalytics = $('#info__body_4');
+
+checkboxForMonthlyAnalytics.on('change', function() {
+    drawMonthlyAnalyticsForYear(new Date().getFullYear());
+});
+
+yearSelectForMonthlyAnalytics.on('change', function() {
+    const selectedYear = yearSelectForMonthlyAnalytics.val();
+    drawMonthlyAnalyticsForYear(selectedYear);
+});
+
+function drawMonthlyAnalyticsForYear(year) {
+    if (window.placeForMonthlyYearIncomeAnalytics) {
+        removeData(placeForMonthlyYearIncomeAnalytics);
+    };
+    let monthlyReportData = getMonthlyReportData(year);
+    let months = ["Янв","Фев.","Мар.","Апр","Май","Июнь","Июль","Авг.","Сен.","Окт.","Ноя.","Дек."];
+
+
+    var ctx = document.getElementById('monthlyYearIncomeAnalytics').getContext('2d');
+    if (window.monthlyAnalyticsChart) {
+        window.monthlyAnalyticsChart.destroy();
+    }
+    // Очищаем canvas перед рисованием нового графика
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    let monthlyAnalyticsChart = new Chart(placeForMonthlyYearIncomeAnalytics, {
+        type: "line",
+        data: {
+            labels: months
+        },
+        options: {
+            legend: {display: true}
+        }
+    });
+    let counter = 0;
+    monthlyReportData.forEach(dataItem => {
+        let legend = dataItem.categoryName;
+        let object =  dataItem.monthlyAnalytics;
+        let array = Object.entries(object);
+        let values = [];
+        array.forEach(item => {
+            values.push(item[1]);
+        });
+        addDataset(monthlyAnalyticsChart, values, legend, colors[counter]);
+        counter++;
+    });
+    window.monthlyAnalyticsChart = monthlyAnalyticsChart;
+}
+
+function setAvailableYearsForMonthlyAnalytics() {
+    $.ajax({
+        url: '/analytics/available-years',
+        type: 'GET',
+        dataType: 'json',
+        success: function(years) {
+            years.forEach(function(year) {
+                const option = $('<option>').val(year).text(year);
+                if (year === new Date().getFullYear()) {
+                    option.attr('selected', true); // Устанавливаем атрибут selected для текущего года
+                }
+                yearSelectForMonthlyAnalytics.append(option);
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error(error);
+        }
+    });
+}
+
+function getMonthlyReportData(year) {
+    let url = './analytics/income/' + year;
+    let monthlyIncomeForYear;
+    $.ajax({
+        method: 'GET',
+        url: url,
+        contentType: "application/json; charset=utf8",
+        async: false,
+        success: function (data) {
+            monthlyIncomeForYear = data
+            if (data.length === 0) {
+                console.log("data is null")
+            }
+        },
+        error: function () {
+            console.log("ERROR! Something wrong happened")
+        }
+    })
+    return monthlyIncomeForYear;
+}
+
+function getMonthName(monthNumber) {
+    const date = new Date();
+    date.setMonth(monthNumber - 1);
+
+    return date.toLocaleString('en-US', { month: 'short' });
+}
+
+function addDataset(chart, dataset, labelName, color) {
+    chart.data.datasets.push({
+        label: labelName,
+        data: dataset,
+        borderColor: color
+    });
+    chart.update();
+}
+
+function removeData(chart) {
+    chart.data.datasets.delete();
+    chart.update();
+}
+

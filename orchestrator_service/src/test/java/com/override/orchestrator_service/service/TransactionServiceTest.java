@@ -1,5 +1,7 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
+import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Category;
@@ -11,6 +13,9 @@ import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -19,9 +24,8 @@ import org.springframework.data.domain.PageImpl;
 
 
 import javax.management.InstanceNotFoundException;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -38,6 +42,8 @@ public class TransactionServiceTest {
     private UserService userService;
     @Mock
     private TransactionMapper transactionMapper;
+    @Mock
+    private OverMoneyAccountService accountService;
 
     @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
@@ -111,5 +117,42 @@ public class TransactionServiceTest {
         transactionService.removeCategoryFromTransactionsWithSameMessage(transaction.getId());
         verify(transactionRepository, times(1))
                 .removeCategoryIdFromTransactionsWithSameMessage(transaction.getMessage(), transaction.getAccount().getId());
+    }
+
+    @Test
+    public void findAvailableYearsReturnsList() throws InstanceNotFoundException {
+        OverMoneyAccount acc = TestFieldsUtil.generateTestAccount();
+        List<Integer> listOfYears = List.of(1, 2, 3);
+
+        when(transactionRepository.findAvailableYearsForAccountByAccountId(any()))
+                .thenReturn(listOfYears);
+
+        transactionService.findAvailableYears(123L);
+        Assertions.assertEquals(transactionRepository.findAvailableYearsForAccountByAccountId(acc.getId()).size(),
+                listOfYears.size());
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideMonthlyIncomeStatisticsForYear")
+    public void findMonthlyIncomeStatisticsForYearByAccountIdReturnsCorrectList(List<AnalyticsMonthlyIncomeForCategoryDTO> inputList,
+                                                                                List<AnalyticsMonthlyReportForYearDTO> requeredList) {
+
+        when(transactionRepository.findMonthlyIncomeStatisticsByYearAndAccountId(any(), any()))
+                .thenReturn(inputList);
+
+        List<AnalyticsMonthlyReportForYearDTO> resultList = transactionService.findMonthlyIncomeStatisticsForYearByAccountId(123L, 123);
+
+        Assertions.assertEquals(resultList, requeredList);
+    }
+
+    private static Stream<Arguments> provideMonthlyIncomeStatisticsForYear() {
+        return Stream.of(
+                Arguments.of(TestFieldsUtil.generateTestAnalyticsMonthlyIncomeForCategoryWithNullFields(),
+                        TestFieldsUtil.generateTestListOfAnalyticsMonthlyReportForYearDTOWithNull()),
+                Arguments.of(TestFieldsUtil.generateTestAnalyticsMonthlyIncomeForCategoryWithoutNullFields(),
+                        TestFieldsUtil.generateTestListOfAnalyticsMonthlyReportForYearDTOWithoutNull()),
+                Arguments.of(TestFieldsUtil.generateTestAnalyticsMonthlyIncomeForCategoryWithMixedFields(),
+                        TestFieldsUtil.generateTestListOfAnalyticsMonthlyReportForYearDTOMixed())
+        );
     }
 }
