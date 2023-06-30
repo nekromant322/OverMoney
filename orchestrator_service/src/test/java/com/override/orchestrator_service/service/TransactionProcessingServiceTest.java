@@ -82,7 +82,16 @@ public class TransactionProcessingServiceTest {
 
                 Arguments.of("200пиво 200 пиво200"),
                 Arguments.of("200.5пиво 200.5 пиво200.5"),
-                Arguments.of("200,5пиво 200,5 пиво200,5")
+                Arguments.of("200,5пиво 200,5 пиво200,5"),
+
+                Arguments.of("100+100"),
+                Arguments.of("100,1+100,5пиво 100,5+100,5"),
+                Arguments.of("пиво 100+1-1"),
+                Arguments.of("пиво 100+1/1"),
+                Arguments.of("пиво 100+1*1"),
+                Arguments.of("пиво 100+1-1"),
+                Arguments.of("200+один+200 пиво"),
+                Arguments.of("200+1 +один пиво")
         );
     }
 
