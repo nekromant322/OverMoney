@@ -33,7 +33,6 @@ public class TransactionService {
     @Autowired
     private CategoryRepository categoryRepository;
 
-
     public void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
     }
