@@ -74,7 +74,7 @@ public class AnalyticServiceTest {
     public void findAvailableYearsReturnsList() throws InstanceNotFoundException {
         OverMoneyAccount acc = TestFieldsUtil.generateTestAccount();
         when(accountService.getAccountByUserId(any())).thenReturn(acc);
-        List<Integer> listOfYears = List.of(1, 2, 3);
+        List<Integer> listOfYears = List.of(2020, 2021, 2023);
 
         when(transactionRepository.findAvailableYearsForAccountByAccountId(any()))
                 .thenReturn(listOfYears);
