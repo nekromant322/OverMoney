@@ -23,6 +23,10 @@ public interface KeywordRepository extends JpaRepository<Keyword, UUID> {
 
     List<Keyword> findAllByKeywordId_Name(String name);
 
+    Keyword findKeywordByKeywordIdName(String name);
+
+    void deleteByKeywordIdName(String name);
+
     void deleteByKeywordId(KeywordId keywordId);
 
     @Modifying

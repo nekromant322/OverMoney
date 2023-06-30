@@ -16,14 +16,15 @@
     <link href="https://fonts.googleapis.com/css2?family=Inconsolata&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="/css/history.css" rel="stylesheet" type="text/css"/>
     <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
 <header id="header">
     <nav class="links" style="--items: 3;">
-        <a href="/overview">Overview</a>
-        <a href="/history">History</a>
-        <a href="/analytics">Analytics</a>
+        <a href="/overview">Обзор</a>
+        <a href="/history">История</a>
+        <a href="/analytics">Аналитика</a>
         <span class="line"></span>
     </nav>
 </header>
@@ -44,6 +45,58 @@
 
             </tbody>
         </table>
+    </div>
+
+    <div class="modal fade" id="editModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Редактировать транзакцию</h5>
+                    <button class="close" data-dismiss="modal">x</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row justify-content-center">
+                        <div class="col-7">
+                            <form method="post" action="#" autocomplete="off">
+
+                                <div hidden class="form-group text-center">
+                                    <label for="idTransactionInForm"><b>Категория</b></label>
+                                    <input name="idTransaction" type="text"
+                                           class="form-control form-control-sm"
+                                           id="idTransactionInForm">
+                                </div>
+
+                                <div class="form-group text-center">
+                                    <label for="nameCategoryEdit"><b>Категория</b></label>
+                                    <select id="nameCategoryEdit" class="custom-select">
+                                    </select>
+                                </div>
+
+                                <div class="form-group text-center">
+                                    <label for="amountEdit"><b>Сумма</b></label>
+                                    <input name="amount" type="number"
+                                           class="form-control form-control-sm"
+                                           id="amountEdit">
+                                </div>
+
+                                <div class="form-group text-center">
+                                    <label for="messageEdit"><b>Примечание</b></label>
+                                    <input name="message" type="text"
+                                           class="form-control form-control-sm"
+                                           id="messageEdit">
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-secondary">Закрыть</button>
+                    <button id="editBtn" type="submit" class="btn btn-primary">Редактировать</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

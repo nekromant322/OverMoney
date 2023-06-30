@@ -3,8 +3,9 @@ package com.override.orchestrator_service.service;
 import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
-import com.override.orchestrator_service.model.Transaction;
-import com.override.orchestrator_service.model.User;
+import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.repository.CategoryRepository;
+import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +28,11 @@ public class TransactionService {
     private UserService userService;
     @Autowired
     private TransactionMapper transactionMapper;
+    @Autowired
+    private KeywordRepository keywordRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+
 
     public void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
@@ -91,5 +97,28 @@ public class TransactionService {
         Transaction transaction = getTransactionById(transactionDTO.getId());
         transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
         return transaction;
+    }
+
+    @Transactional
+    public Transaction editTransaction(TransactionDTO transactionDTO) {
+        Transaction transactionUpdate = getTransactionById(transactionDTO.getId());
+        transactionUpdate.setAmount(transactionDTO.getAmount());
+
+        if (!transactionUpdate.getMessage().equals(transactionDTO.getMessage())) {
+            Keyword keyword = keywordRepository.findKeywordByKeywordIdName(transactionUpdate.getMessage());
+            if (keyword != null) {
+                keywordRepository.delete(keyword);
+            }
+        }
+        transactionUpdate.setMessage(transactionDTO.getMessage());
+
+        if (!transactionUpdate.getCategory().getName().equals(transactionDTO.getCategoryName())) {
+            Category category = categoryRepository.findByName(transactionDTO.getCategoryName());
+            transactionUpdate.setCategory(category);
+            keywordRepository.deleteByKeywordIdName(transactionUpdate.getMessage());
+        }
+
+        transactionRepository.save(transactionUpdate);
+        return transactionUpdate;
     }
 }
