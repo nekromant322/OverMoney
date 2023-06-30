@@ -17,7 +17,7 @@
         <java.version>11</java.version>
         <spring-cloud.version>2021.0.6</spring-cloud.version>
         <logstash-logback-encoder.version>6.1</logstash-logback-encoder.version>
-        <jacoco.min.coverage>0.60</jacoco.min.coverage>
+        <jacoco.min.coverage>0.65</jacoco.min.coverage>
     </properties>
     <dependencies>
         <dependency>

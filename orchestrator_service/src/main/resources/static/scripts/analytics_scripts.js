@@ -93,3 +93,82 @@ function getCategoriesAndSumAmountByType(type) {
     })
     return categories;
 }
+
+//Расходы доходы по месяцам
+const yearSelect = $('#yearSelect');
+const checkbox = $('.info__switch');
+
+checkbox.on('change', function() {
+    loadData(new Date().getFullYear());
+});
+
+yearSelect.on('change', function() {
+    const selectedYear = yearSelect.val();
+    loadData(selectedYear);
+});
+
+$.ajax({
+    url: '/analytics/available-years',
+    type: 'GET',
+    dataType: 'json',
+    success: function(years) {
+        years.forEach(function(year) {
+            const option = $('<option>').val(year).text(year);
+            if (year === new Date().getFullYear()) {
+                option.attr('selected', true); // Устанавливаем атрибут selected для текущего года
+            }
+            yearSelect.append(option);
+        });
+    },
+    error: function(xhr, status, error) {
+        console.error(error);
+    }
+});
+
+function loadData(selectedYear) {
+    $.ajax({
+        url: '/analytics/totalIncomeOutcome/' + selectedYear,
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            data.sort(function(a, b) {
+                return new Date(Date.parse('01 ' + a.month + ' 2000')) - new Date(Date.parse('01 ' + b.month + ' 2000'));
+            });
+            const labels = data.map(item => item.month);
+            const dataset1 = data.map(item => item.totalExpense);
+            const dataset2 = data.map(item => item.totalIncome);
+            const chartData = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Расходы',
+                        data: dataset1,
+                        borderColor: 'rgb(255, 99, 132)',
+                        backgroundColor: 'rgb(255, 99, 132)',
+                    },
+                    {
+                        label: 'Доходы',
+                        data: dataset2,
+                        borderColor: 'rgb(54, 162, 235)',
+                        backgroundColor: 'rgb(54, 162, 235)',
+                    }
+                ]
+            };
+            var ctx = document.getElementById('totalExpenseAnalitics').getContext('2d');
+            if (window.myChart) {
+                window.myChart.destroy();
+            }
+            // Очищаем canvas перед рисованием нового графика
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            var myChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData,
+                options: {}
+            });
+            window.myChart = myChart;
+        },
+        error: function(error) {
+            console.error(error);
+        }
+    });
+}

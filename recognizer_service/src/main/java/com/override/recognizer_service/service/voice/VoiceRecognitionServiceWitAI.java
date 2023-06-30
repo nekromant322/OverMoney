@@ -1,10 +1,8 @@
 package com.override.recognizer_service.service.voice;
 
-import com.override.recognizer_service.config.ConnectionConfig;
 import com.override.recognizer_service.config.WitAIProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -23,7 +21,7 @@ import java.nio.channels.FileChannel;
 @Slf4j
 public class VoiceRecognitionServiceWitAI implements VoiceRecognitionService {
     @Autowired
-    private ConnectionConfig connectionConfig;
+    private WitAIProperties witAIProperties;
 
     private final int BYTE_BUFFER_CAPACITY = 1024;
     private final int END_OF_FILE = -1;
@@ -43,7 +41,7 @@ public class VoiceRecognitionServiceWitAI implements VoiceRecognitionService {
     @Override
     @SneakyThrows
     public String voiceToText(File wavFile) {
-        HttpURLConnection connection = connectionConfig.getConnection();
+        HttpURLConnection connection = getConnection();
 
         OutputStream outputStream = connection.getOutputStream();
         FileChannel fileChannel = new FileInputStream(wavFile.getAbsolutePath()).getChannel();
@@ -75,5 +73,30 @@ public class VoiceRecognitionServiceWitAI implements VoiceRecognitionService {
         int lastIndexOfMessage = responseLines.lastIndexOf(END_OF_RECOGNITION) - SYMBOL_COUNT_TO_MESSAGE_ENDING;
 
         return responseLines.substring(firstIndexOfMessage, lastIndexOfMessage).trim();
+    }
+
+    /**
+     * Метод, открывающий соединение с wit.ai
+     * @return соединение с wit.ai
+     */
+    @SneakyThrows
+    private HttpURLConnection getConnection() {
+        String query = String.format(
+                witAIProperties.getVersionParam(),
+                URLEncoder.encode(witAIProperties.getVersion(), witAIProperties.getCharset())
+        );
+
+        URLConnection connectionURL =
+                new URL(witAIProperties.getUrl() +
+                        witAIProperties.getParamSeparator() +
+                        query).openConnection();
+        HttpURLConnection connection = (HttpURLConnection) connectionURL;
+        connection.setRequestMethod(witAIProperties.getMethod());
+        connection.setRequestProperty(witAIProperties.getAuthProperty(), witAIProperties.getToken());
+        connection.setRequestProperty(witAIProperties.getContentTypeProperty(),
+                witAIProperties.getContentTypeValue());
+        connection.setDoOutput(true);
+
+        return connection;
     }
 }

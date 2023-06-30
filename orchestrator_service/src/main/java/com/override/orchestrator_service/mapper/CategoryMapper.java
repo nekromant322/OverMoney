@@ -7,6 +7,7 @@ import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,7 +45,7 @@ public class CategoryMapper {
 
     public Category mapCategoryDTOToCategory(CategoryDTO categoryDTO, OverMoneyAccount account) {
         return Category.builder()
-                .name(categoryDTO.getName())
+                .name(StringUtils.capitalize(categoryDTO.getName()))
                 .type(categoryDTO.getType())
                 .account(account)
                 .build();
