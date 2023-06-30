@@ -93,6 +93,12 @@ public class OverMoneyAccountService {
         userService.saveUser(user);
     }
 
+    public void removeChatMemberFromAccount(ChatMemberDTO chatMemberDTO) throws InstanceNotFoundException {
+        User user = userService.getUserById(chatMemberDTO.getUserId());
+        user.setAccount(null);
+        userService.saveUser(user);
+    }
+
     public void registerSingleOverMoneyAccount(AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
                 .chatId(accountDataDTO.getChatId())

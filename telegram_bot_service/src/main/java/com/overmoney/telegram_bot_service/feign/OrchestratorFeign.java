@@ -34,4 +34,7 @@ public interface OrchestratorFeign {
 
     @PostMapping("/account/add/users")
     void addNewChatMembersToAccount(@RequestBody List<ChatMemberDTO> newChatMembers);
+
+    @PostMapping("/account/remove/user")
+    void removeChatMemberFromAccount(@RequestBody ChatMemberDTO chatMember);
 }
