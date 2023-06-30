@@ -122,4 +122,31 @@ public class OverMoneyAccountServiceTest {
         verify(userMapper, times(1)).mapChatMemberDTOToUser(chatMemberDTO);
         verify(userService, times(1)).saveUser(user);
     }
+    @Test
+    public void removeChatMemberToAccountTest() throws InstanceNotFoundException {
+        OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
+                .chatId(-123L)
+                .id(123L)
+                .build();
+        ChatMemberDTO chatMemberDTO = ChatMemberDTO.builder()
+                .chatId(-123L)
+                .userId(123L)
+                .lastName("")
+                .firstName("")
+                .username("borisat")
+                .build();
+        User user = User.builder()
+                .id(123L)
+                .firstName("")
+                .lastName("")
+                .username("borisat")
+                .account(overMoneyAccount)
+                .build();
+
+        when(userService.getUserById(chatMemberDTO.getUserId())).thenReturn(user);
+        accountService.removeChatMemberFromAccount(chatMemberDTO);
+
+        verify(userService, times(1)).getUserById(chatMemberDTO.getUserId());
+        verify(userService, times(1)).saveUser(user);
+    }
 }

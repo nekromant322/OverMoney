@@ -98,4 +98,13 @@ public class OrchestratorRequestServiceTest {
         verify(orchestratorFeign, times(1)).addNewChatMemberToAccount(newChatMember);
     }
 
+    @Test
+    public void removeLeftChatMemberFromAccount() {
+        ChatMemberDTO leftChatMember = new ChatMemberDTO();
+
+        orchestratorRequestService.removeChatMemberFromAccount(leftChatMember);
+
+        verify(orchestratorFeign, times(1)).removeChatMemberFromAccount(leftChatMember);
+    }
+
 }

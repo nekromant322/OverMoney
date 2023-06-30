@@ -53,4 +53,8 @@ public class OrchestratorRequestService {
     public void addNewChatMemberToAccount(ChatMemberDTO newChatMember) {
         orchestratorFeign.addNewChatMemberToAccount(newChatMember);
     }
+
+    public void removeChatMemberFromAccount(ChatMemberDTO leftChatMember) {
+        orchestratorFeign.removeChatMemberFromAccount(leftChatMember);
+    }
 }
