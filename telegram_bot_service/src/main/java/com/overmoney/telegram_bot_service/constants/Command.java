@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum Command {
 
-    START("/start", "OverMoney - бот для учета финансов!"),
+    START("/start", "OverMoney - бот для учета финансов!\n"),
     MONEY("/money", "Приложение OverMoney");
 
     private final String alias;

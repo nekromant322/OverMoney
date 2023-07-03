@@ -79,5 +79,6 @@ services:
       TELEGRAM_BOT_DB_PORT: 5432
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_BOT_NAME: ${TELEGRAM_BOT_NAME}
+      WEB_URL: ${WEB_URL}
     depends_on:
       - telegram-bot-db

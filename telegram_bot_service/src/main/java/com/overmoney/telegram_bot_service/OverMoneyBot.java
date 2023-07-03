@@ -38,6 +38,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private String botName;
     @Value("${bot.token}")
     private String botToken;
+    @Value("${web.url}")
+    private String webUrl;
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
     @Autowired
@@ -173,7 +175,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private void botAnswer(String receivedMessage, Long chatId, Long userId, LocalDateTime date) {
         switch (receivedMessage) {
             case "/start":
-                sendMessage(chatId, Command.START.getDescription());
+                sendMessage(chatId, Command.START.getDescription() + webUrl);
                 orchestratorRequestService.registerSingleAccount(new AccountDataDTO(chatId, userId));
                 break;
             case "/money":
