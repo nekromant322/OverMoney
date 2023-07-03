@@ -47,7 +47,7 @@ public class TransactionUtils {
     void generateRandomTransactions(float transactionPortion, int minRandomAmount, int maxRandomAmount,
                                     long telegramId, int totalTransactionsCount) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramId);
-        List<Keyword> accountKeyWords = keywordService.findAllByKeywordIdAccountId(overMoneyAccount);
+        List<Keyword> accountKeyWords = keywordService.findAllByOverMoneyAccount(overMoneyAccount);
         Random random = new Random();
         LocalDateTime periodStart = LocalDateTime.now().minusYears(YEARS_NUMBER);
         LocalDateTime periodEnd = LocalDateTime.now();

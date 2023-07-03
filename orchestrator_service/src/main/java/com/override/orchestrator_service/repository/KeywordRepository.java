@@ -14,7 +14,7 @@ import java.util.List;
 public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
 
     @Query("SELECT k FROM Keyword k WHERE k.keywordId.accountId = :accountId")
-    List<Keyword> findAllByKeywordIdAccountId(Long accountId);
+    List<Keyword> findAllByOverMoneyAccount(Long accountId);
 
     @Modifying
     @Query("UPDATE Keyword k SET k.category.id = :newCategory WHERE k.category.id= :oldCategory")

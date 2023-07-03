@@ -43,7 +43,7 @@ public class KeywordService {
         keywordRepository.removeCategoryId(keywordId);
     }
 
-    public List<Keyword> findAllByKeywordIdAccountId(OverMoneyAccount overMoneyAccount){
-        return keywordRepository.findAllByKeywordIdAccountId(overMoneyAccount.getId());
+    public List<Keyword> findAllByOverMoneyAccount(OverMoneyAccount overMoneyAccount){
+        return keywordRepository.findAllByOverMoneyAccount(overMoneyAccount.getId());
     }
 }
