@@ -10,10 +10,13 @@ import com.override.orchestrator_service.service.DefineService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import com.override.orchestrator_service.util.TelegramUtils;
+import com.override.orchestrator_service.util.TransactionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
+
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.Comparator;
@@ -37,6 +40,9 @@ public class TransactionController {
 
     @Autowired
     private DefineService defineService;
+
+    @Autowired
+    TransactionUtils transactionUtils;
 
     @PostMapping("/transaction")
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
@@ -83,5 +89,13 @@ public class TransactionController {
     public ResponseEntity<String> editTransaction(@RequestBody TransactionDTO transactionDTO) {
         transactionService.saveTransaction(transactionService.enrichTransactionWithSuggestedCategory(transactionDTO));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    //TODO убрать перед релизом
+    @GetMapping("/transactions/testData")
+    public RedirectView getTransactionsHistory(Principal principal,
+                                               @RequestParam(defaultValue = "2500") Integer count) throws InstanceNotFoundException {
+        transactionUtils.generateRandomTransactionsByPortion(telegramUtils.getTelegramId(principal), count);
+        return new RedirectView("/analytics");
     }
 }
