@@ -1,13 +1,11 @@
 package com.override.orchestrator_service.service;
 
-import com.override.orchestrator_service.model.Category;
-import com.override.orchestrator_service.model.Keyword;
-import com.override.orchestrator_service.model.KeywordId;
-import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -43,5 +41,9 @@ public class KeywordService {
         KeywordId keywordId = new KeywordId(transaction.getMessage(),
                 transaction.getAccount().getId());
         keywordRepository.removeCategoryId(keywordId);
+    }
+
+    public List<Keyword> findAllByOverMoneyAccount(OverMoneyAccount overMoneyAccount){
+        return keywordRepository.findAllByOverMoneyAccount(overMoneyAccount.getId());
     }
 }

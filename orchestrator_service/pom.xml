@@ -191,6 +191,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/override/orchestrator_service/OrchestratorServiceApplication.class</exclude>
+                        <exclude>**/override/orchestrator_service/util/TransactionUtils.class</exclude>
                         <exclude>**/model/**</exclude>
                         <exclude>**/config/**</exclude>
                         <exclude>**/controller/**</exclude>
