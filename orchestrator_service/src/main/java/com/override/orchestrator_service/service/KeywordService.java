@@ -46,6 +46,4 @@ public class KeywordService {
     public List<Keyword> findAllByKeywordId_AccountId(OverMoneyAccount overMoneyAccount){
         return keywordRepository.findAllByKeywordId_AccountId(overMoneyAccount.getId());
     }
-
-
 }
