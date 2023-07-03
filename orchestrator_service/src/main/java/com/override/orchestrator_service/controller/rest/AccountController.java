@@ -46,6 +46,11 @@ public class AccountController {
         accountService.addNewChatMemberToAccount(chatMemberDTO);
     }
 
+    @PostMapping("/remove/user")
+    public void removeChatMemberFromAccount(@RequestBody ChatMemberDTO chatMemberDTO) throws InstanceNotFoundException {
+        accountService.removeChatMemberFromAccount(chatMemberDTO);
+    }
+
     /**
      * Метод POST-запроса, переносящий только категории в новый аккаунт
      */

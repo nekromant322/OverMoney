@@ -1,13 +1,13 @@
 package com.override.orchestrator_service.utils;
 
-import com.override.dto.CategoryDTO;
-import com.override.dto.TransactionDTO;
-import com.override.dto.KeywordIdDTO;
+import com.override.dto.*;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.*;
 
 import java.time.LocalDateTime;
 import java.util.*;
+
+import static org.apache.http.client.methods.RequestBuilder.put;
 
 public class TestFieldsUtil {
 
@@ -113,4 +113,92 @@ public class TestFieldsUtil {
                 .authDate("")
                 .build();
     }
+
+    public static List<AnalyticsMonthlyReportForYearDTO> generateTestListOfAnalyticsMonthlyReportForYearDTOMixed() {
+        return List.of(generateTestAnalyticsMonthlyReportForYearDTOWithNullFields(),
+                generateTestAnalyticsMonthlyReportForYearDTOWithoutNullFields());
+    }
+
+    public static List<AnalyticsMonthlyReportForYearDTO> generateTestListOfAnalyticsMonthlyReportForYearDTOWithNull() {
+        return List.of(generateTestAnalyticsMonthlyReportForYearDTOWithNullFields());
+    }
+
+    public static List<AnalyticsMonthlyReportForYearDTO> generateTestListOfAnalyticsMonthlyReportForYearDTOWithoutNull() {
+        return List.of(generateTestAnalyticsMonthlyReportForYearDTOWithoutNullFields());
+    }
+
+    public static AnalyticsMonthlyReportForYearDTO generateTestAnalyticsMonthlyReportForYearDTOWithNullFields() {
+        AnalyticsMonthlyReportForYearDTO dto1 = new AnalyticsMonthlyReportForYearDTO("categoryWithNullFields",
+                new HashMap<>() {{
+                    put(1, 10000d);
+                    put(2, 20000d);
+                    put(3, 30000d);
+                    put(4, 30000d);
+                    put(5, 0d);
+                    put(6, 0d);
+                    put(7, 0d);
+                    put(8, 40000d);
+                    put(9, 30000d);
+                    put(10, 10000d);
+                    put(11, 20000d);
+                    put(12, 50000d);
+                }});
+        return dto1;
+    }
+
+    public static AnalyticsMonthlyReportForYearDTO generateTestAnalyticsMonthlyReportForYearDTOWithoutNullFields() {
+        AnalyticsMonthlyReportForYearDTO dto1 = new AnalyticsMonthlyReportForYearDTO("categoryWithoutNullFields",
+                new HashMap<>() {{
+                    put(1, 10000d);
+                    put(2, 20000d);
+                    put(3, 30000d);
+                    put(4, 30000d);
+                    put(5, 20000d);
+                    put(6, 40000d);
+                    put(7, 10000d);
+                    put(8, 40000d);
+                    put(9, 30000d);
+                    put(10, 10000d);
+                    put(11, 20000d);
+                    put(12, 50000d);
+                }});
+        return dto1;
+    }
+
+    public static List<AnalyticsMonthlyIncomeForCategoryDTO> generateTestAnalyticsMonthlyIncomeForCategoryWithoutNullFields() {
+        return List.of(new AnalyticsMonthlyIncomeForCategoryDTO(10000d, "categoryWithoutNullFields", 1),
+                new AnalyticsMonthlyIncomeForCategoryDTO(20000d, "categoryWithoutNullFields", 2),
+                new AnalyticsMonthlyIncomeForCategoryDTO(30000d, "categoryWithoutNullFields", 3),
+                new AnalyticsMonthlyIncomeForCategoryDTO(30000d, "categoryWithoutNullFields", 4),
+                new AnalyticsMonthlyIncomeForCategoryDTO(20000d, "categoryWithoutNullFields", 5),
+                new AnalyticsMonthlyIncomeForCategoryDTO(40000d, "categoryWithoutNullFields", 6),
+                new AnalyticsMonthlyIncomeForCategoryDTO(10000d, "categoryWithoutNullFields", 7),
+                new AnalyticsMonthlyIncomeForCategoryDTO(40000d, "categoryWithoutNullFields", 8),
+                new AnalyticsMonthlyIncomeForCategoryDTO(30000d, "categoryWithoutNullFields", 9),
+                new AnalyticsMonthlyIncomeForCategoryDTO(10000d, "categoryWithoutNullFields", 10),
+                new AnalyticsMonthlyIncomeForCategoryDTO(20000d, "categoryWithoutNullFields", 11),
+                new AnalyticsMonthlyIncomeForCategoryDTO(50000d, "categoryWithoutNullFields", 12));
+    }
+
+    public static List<AnalyticsMonthlyIncomeForCategoryDTO> generateTestAnalyticsMonthlyIncomeForCategoryWithNullFields() {
+        return List.of(new AnalyticsMonthlyIncomeForCategoryDTO(10000d, "categoryWithNullFields", 1),
+                new AnalyticsMonthlyIncomeForCategoryDTO(20000d, "categoryWithNullFields", 2),
+                new AnalyticsMonthlyIncomeForCategoryDTO(30000d, "categoryWithNullFields", 3),
+                new AnalyticsMonthlyIncomeForCategoryDTO(30000d, "categoryWithNullFields", 4),
+                new AnalyticsMonthlyIncomeForCategoryDTO(40000d, "categoryWithNullFields", 8),
+                new AnalyticsMonthlyIncomeForCategoryDTO(30000d, "categoryWithNullFields", 9),
+                new AnalyticsMonthlyIncomeForCategoryDTO(10000d, "categoryWithNullFields", 10),
+                new AnalyticsMonthlyIncomeForCategoryDTO(20000d, "categoryWithNullFields", 11),
+                new AnalyticsMonthlyIncomeForCategoryDTO(50000d, "categoryWithNullFields", 12));
+    }
+
+    public static List<AnalyticsMonthlyIncomeForCategoryDTO> generateTestAnalyticsMonthlyIncomeForCategoryWithMixedFields() {
+        List<AnalyticsMonthlyIncomeForCategoryDTO> result = new ArrayList<>(generateTestAnalyticsMonthlyIncomeForCategoryWithNullFields());
+        result.addAll(generateTestAnalyticsMonthlyIncomeForCategoryWithoutNullFields());
+        return result;
+    }
+
+
+
+
 }

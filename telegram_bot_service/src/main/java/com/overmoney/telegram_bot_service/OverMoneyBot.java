@@ -90,7 +90,10 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             String receivedMessageText = getReceivedMessage(receivedMessage);
             LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
                     .atOffset(MOSCOW_OFFSET).toLocalDateTime();
-
+            if (receivedMessage.getLeftChatMember() != null) {
+                User user = receivedMessage.getLeftChatMember();
+                orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, user));
+            }
             if (!receivedMessage.getNewChatMembers().isEmpty()) {
                 List<User> newUsers = receivedMessage.getNewChatMembers();
                 HashMap<Boolean, User> usersTypes = getUsersTypes(newUsers);

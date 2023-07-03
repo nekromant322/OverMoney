@@ -1,5 +1,7 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
+import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
@@ -95,5 +97,37 @@ public class TransactionService {
         Transaction transaction = getTransactionById(transactionDTO.getId());
         transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
         return transaction;
+    }
+
+    public List<Integer> findAvailableYears(Long accountId) {
+        return transactionRepository.findAvailableYearsForAccountByAccountId(accountId);
+    }
+
+    public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long accountId, Integer year) {
+        List<AnalyticsMonthlyIncomeForCategoryDTO> list = transactionRepository.findMonthlyIncomeStatisticsByYearAndAccountId(accountId, year);
+        return mapObjectToAnalyticsMonthIncomeDTO(list);
+    }
+
+    private List<AnalyticsMonthlyReportForYearDTO> mapObjectToAnalyticsMonthIncomeDTO(List<AnalyticsMonthlyIncomeForCategoryDTO> objects) {
+        Set<String> setOfCategoryNames = new HashSet<>();
+        List<AnalyticsMonthlyReportForYearDTO> result = new ArrayList<>();
+        objects.forEach(object -> {
+            setOfCategoryNames.add(object.getCategoryName());
+        });
+        setOfCategoryNames.forEach(categoryName -> {
+            Map<Integer, Double> monthlyAnalytics = new HashMap<>();
+            objects.forEach(object -> {
+                if (Objects.equals(categoryName, object.getCategoryName())) {
+                    monthlyAnalytics.put(object.getMonth(), object.getAmount());
+                }
+            });
+            for (Integer monthCounter = 1; monthCounter <= 12; monthCounter++) {
+                if (!monthlyAnalytics.containsKey(monthCounter)) {
+                    monthlyAnalytics.put(monthCounter, 0d);
+                }
+            }
+            result.add(new AnalyticsMonthlyReportForYearDTO(categoryName, monthlyAnalytics));
+        });
+        return result;
     }
 }
