@@ -44,8 +44,8 @@ public class TransactionUtils {
                 MAX_TRANSACTION_SECOND_RANDOM_AMOUNT, telegramId, totalTransactionsCount);
     }
 
-    private void generateRandomTransactions(float transactionPortion, int minRandomAmount, int maxRandomAmount,
-                                      long telegramId, int totalTransactionsCount) throws InstanceNotFoundException {
+    void generateRandomTransactions(float transactionPortion, int minRandomAmount, int maxRandomAmount,
+                                    long telegramId, int totalTransactionsCount) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramId);
         List<Keyword> accountKeyWords = keywordService.findAllByKeywordId_AccountId(overMoneyAccount);
         Random random = new Random();
