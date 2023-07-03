@@ -138,6 +138,7 @@ jobs:
             echo JWT_REFRESH_KEY = ${{ secrets.JWT_REFRESH_KEY }} >> overmoney-env.txt
             echo WIT_AI_TOKEN = ${{ secrets.WIT_AI_TOKEN }} >> overmoney-env.txt
             echo SPRING_APPLICATION_PROFILE = test >> overmoney-env.txt
+            echo WEB_URL = ${{secrets.WEB_URL}} >> overmoney-env.txt
             
             if ${{ needs.paths-filter.outputs.eureka}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop eureka
@@ -225,7 +226,7 @@ jobs:
               counter=`expr $counter + 1` 
             done; 
             exit 1
-            
+  
 
   healthcheck-recognizer:
     name: HealthCheckRecognizer

@@ -6,6 +6,9 @@
     voice:
       max_length: 10
 
+  web:
+   url: ${WEB_URL}
+
   server:
     port: 8082
 
