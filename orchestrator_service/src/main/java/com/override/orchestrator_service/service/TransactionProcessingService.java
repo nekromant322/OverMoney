@@ -219,16 +219,11 @@ public class TransactionProcessingService {
     }
 
     private String getCalculatedTransaction(String transactionMessage) throws InstanceNotFoundException {
-        if (transactionMessage.indexOf("-") == -1
-                || transactionMessage.indexOf("*") == -1
-                || transactionMessage.indexOf("/") == -1) {
-            String substringOfExpression = getSubstringOfExpression(transactionMessage);
-            String regexOfExpression = createRegexForExpression(substringOfExpression);
-            String elementsOfSum = processingOfExpression(substringOfExpression);
-            float sumOfTransaction = calculateSum(elementsOfSum);
-            return transactionMessage.replaceAll(regexOfExpression, String.format("%.2f", sumOfTransaction));
-        }
-        throw new InstanceNotFoundException("Invalid message");
+        String substringOfExpression = getSubstringOfExpression(transactionMessage);
+        String regexOfExpression = createRegexForExpression(substringOfExpression);
+        String elementsOfSum = processingOfExpression(substringOfExpression);
+        float sumOfTransaction = calculateSum(elementsOfSum);
+        return transactionMessage.replaceAll(regexOfExpression, String.format("%.2f", sumOfTransaction));
     }
 
     private String getSubstringOfExpression(String str) throws InstanceNotFoundException {
@@ -244,13 +239,17 @@ public class TransactionProcessingService {
                 matcher2.find();
                 expression = str.substring(matcher2.start()).replaceAll("[^0-9\\,\\.\\+\\s]", "");
             }
-            return expression.trim();
+            if (expression.indexOf("-") == -1
+                    && expression.indexOf("*") == -1
+                    && expression.indexOf("/") == -1) {
+                return expression.trim();
+            }
         }
         throw new InstanceNotFoundException("Invalid message");
     }
 
     public String processingOfExpression(String rowExpression) {
-        if (Locale.getDefault().toString().equals("ru_RU")){
+        if (Locale.getDefault().toString().equals("ru_RU")) {
             return rowExpression
                     .replaceAll("\\.", ",")
                     .replaceAll("[^0-9\\,]", " ");
