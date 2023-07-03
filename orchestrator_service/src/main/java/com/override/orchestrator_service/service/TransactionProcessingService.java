@@ -250,9 +250,14 @@ public class TransactionProcessingService {
     }
 
     public String processingOfExpression(String rowExpression) {
+        if (Locale.getDefault().toString().equals("ru_RU")){
+            return rowExpression
+                    .replaceAll("\\.", ",")
+                    .replaceAll("[^0-9\\,]", " ");
+        }
         return rowExpression
-                .replaceAll("\\.", ",")
-                .replaceAll("[^0-9\\,]", " ");
+                .replaceAll("\\,", ".")
+                .replaceAll("[^0-9\\.]", " ");
     }
 
     public String createRegexForExpression(String rowSubstring) {
