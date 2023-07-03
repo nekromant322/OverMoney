@@ -138,7 +138,7 @@ $(function editButtonClick() {
         }
         $.ajax({
             method: "PUT",
-            url: "transaction/edit",
+            url: "/transactions",
             async: false,
             contentType: "application/json",
             data: JSON.stringify(transaction),

@@ -112,8 +112,9 @@ public class TransactionService {
         Transaction transactionUpdate = getTransactionById(transactionDTO.getId());
         transactionUpdate.setAmount(transactionDTO.getAmount());
 
+        Keyword keyword = keywordRepository.findKeywordByKeywordIdNameAndAccountId(transactionUpdate.getAccount().getId(),
+                transactionUpdate.getMessage());
         if (!transactionUpdate.getMessage().equals(transactionDTO.getMessage())) {
-            Keyword keyword = keywordRepository.findKeywordByKeywordIdName(transactionUpdate.getMessage());
             if (keyword != null) {
                 keywordRepository.delete(keyword);
             }
@@ -121,12 +122,14 @@ public class TransactionService {
         transactionUpdate.setMessage(transactionDTO.getMessage());
 
         if (!transactionUpdate.getCategory().getName().equals(transactionDTO.getCategoryName())) {
-            Category category = categoryRepository.findByName(transactionDTO.getCategoryName());
+            Category category = categoryRepository.findCategoryByNameAndAccountId(transactionUpdate.getAccount().getId(),
+                    transactionDTO.getCategoryName());
             transactionUpdate.setCategory(category);
-            keywordRepository.deleteByKeywordIdName(transactionUpdate.getMessage());
+            if (keyword != null) {
+                keywordRepository.delete(keyword);
+            }
         }
 
-        transactionRepository.save(transactionUpdate);
-        return transactionUpdate;
+        return transactionRepository.save(transactionUpdate);
     }
 }

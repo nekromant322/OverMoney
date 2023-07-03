@@ -92,7 +92,7 @@ public class TransactionController {
         return transactionMapper.mapTransactionToDTO(transactionService.getTransactionById(id));
     }
 
-    @PutMapping("transaction/edit")
+    @PutMapping("/transactions")
     public void updateTransaction(@RequestBody TransactionDTO transactionDTO) {
         transactionService.editTransaction(transactionDTO);
     }

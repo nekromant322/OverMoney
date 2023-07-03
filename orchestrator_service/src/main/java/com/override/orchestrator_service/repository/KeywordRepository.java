@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -23,9 +24,8 @@ public interface KeywordRepository extends JpaRepository<Keyword, UUID> {
 
     List<Keyword> findAllByKeywordId_Name(String name);
 
-    Keyword findKeywordByKeywordIdName(String name);
-
-    void deleteByKeywordIdName(String name);
+    @Query("SELECT k FROM Keyword k WHERE k.keywordId.accountId = :id AND k.keywordId.name = :name")
+    Keyword findKeywordByKeywordIdNameAndAccountId(@Param("id") Long id, @Param("name") String name);
 
     void deleteByKeywordId(KeywordId keywordId);
 
