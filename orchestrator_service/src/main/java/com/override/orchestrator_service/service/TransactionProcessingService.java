@@ -234,7 +234,7 @@ public class TransactionProcessingService {
             if (matcher.end() != str.length() && matcher.start() > 0) {
                 expression = str.substring(0, matcher.start()).replaceAll("[^0-9\\,\\.\\+\\s]", "");
             } else {
-                Pattern pattern2 = Pattern.compile("\\d*\\s*\\+");
+                Pattern pattern2 = Pattern.compile("\\d*[.,]?\\d*\\s*\\+");
                 Matcher matcher2 = pattern2.matcher(str);
                 matcher2.find();
                 expression = str.substring(matcher2.start()).replaceAll("[^0-9\\,\\.\\+\\s]", "");
@@ -249,11 +249,6 @@ public class TransactionProcessingService {
     }
 
     public String processingOfExpression(String rowExpression) {
-        if (Locale.getDefault().toString().equals("ru_RU")) {
-            return rowExpression
-                    .replaceAll("\\.", ",")
-                    .replaceAll("[^0-9\\,]", " ");
-        }
         return rowExpression
                 .replaceAll("\\,", ".")
                 .replaceAll("[^0-9\\.]", " ");
@@ -265,6 +260,7 @@ public class TransactionProcessingService {
 
     public float calculateSum(String expression) {
         Scanner sc = new Scanner(expression);
+        sc.useLocale(Locale.ENGLISH);
         float sum = 0;
         while (sc.hasNext()) {
             if (sc.hasNextFloat()) {
