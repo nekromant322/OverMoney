@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: ${ORCHESTRATOR_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD:-postgres}
       POSTGRES_DB: orchestrator-db
-    restart: always
+    restart: unless-stopped
 
   telegram-bot-db:
     container_name: telegram-bot-db
@@ -22,11 +22,12 @@ services:
       POSTGRES_USER: ${TELEGRAM_BOT_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${TELEGRAM_BOT_DB_PASSWORD:-postgres}
       POSTGRES_DB: telegram-bot-db
-    restart: always
+    restart: unless-stopped
 
   eureka:
     container_name: eureka
     image: nekromant322/overmoney:eureka
+    restart: unless-stopped
     ports:
       - '8761:8761'
     environment:
@@ -36,6 +37,7 @@ services:
   orchestrator:
     container_name: orchestrator
     image: nekromant322/overmoney:orchestrator
+    restart: unless-stopped
     ports:
       - '8081:8081'
     environment:
@@ -55,6 +57,7 @@ services:
   recognizer:
     container_name: recognizer
     image: nekromant322/overmoney:recognizer
+    restart: unless-stopped
     ports:
       - '8080:8080'
     environment:
@@ -65,6 +68,7 @@ services:
   telegram-bot:
     container_name: telegram-bot
     image: nekromant322/overmoney:telegram-bot
+    restart: unless-stopped
     ports:
       - '8082:8082'
     environment:
