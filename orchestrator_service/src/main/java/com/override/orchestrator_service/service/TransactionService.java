@@ -5,8 +5,9 @@ import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
-import com.override.orchestrator_service.model.Transaction;
-import com.override.orchestrator_service.model.User;
+import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.repository.CategoryRepository;
+import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -29,6 +30,10 @@ public class TransactionService {
     private UserService userService;
     @Autowired
     private TransactionMapper transactionMapper;
+    @Autowired
+    private KeywordRepository keywordRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
@@ -129,5 +134,32 @@ public class TransactionService {
             result.add(new AnalyticsMonthlyReportForYearDTO(categoryName, monthlyAnalytics));
         });
         return result;
+    }
+
+    @Transactional
+    public Transaction editTransaction(TransactionDTO transactionDTO) {
+        Transaction transactionUpdate = getTransactionById(transactionDTO.getId());
+        transactionUpdate.setAmount(transactionDTO.getAmount());
+
+        KeywordId keywordId = new KeywordId();
+        keywordId.setAccountId(transactionUpdate.getAccount().getId());
+        keywordId.setName(transactionUpdate.getMessage());
+        Keyword keyword = keywordRepository.findByKeywordId(keywordId);
+        if (!transactionUpdate.getMessage().equals(transactionDTO.getMessage())) {
+            if (keyword != null) {
+                keywordRepository.delete(keyword);
+            }
+        }
+        transactionUpdate.setMessage(transactionDTO.getMessage());
+
+        if (!transactionUpdate.getCategory().getName().equals(transactionDTO.getCategoryName())) {
+            Category category = categoryRepository.findCategoryByNameAndAccountId(transactionUpdate.getAccount().getId(),
+                    transactionDTO.getCategoryName());
+            transactionUpdate.setCategory(category);
+            if (keyword != null) {
+                keywordRepository.delete(keyword);
+            }
+        }
+        return transactionRepository.save(transactionUpdate);
     }
 }

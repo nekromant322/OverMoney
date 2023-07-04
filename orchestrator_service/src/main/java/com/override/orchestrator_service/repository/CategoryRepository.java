@@ -30,4 +30,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Modifying
     @Query("UPDATE Category c SET c.account.id = :newAccountId WHERE c.account.id = :oldAccountId")
     void updateAccountId(@Param("oldAccountId") Long oldAccountId, @Param("newAccountId") Long newAccountId);
+
+    @Query("SELECT c FROM Category c WHERE c.account.id = :id AND c.name = :name")
+    Category findCategoryByNameAndAccountId(@Param("id") Long accountId, @Param("name") String name);
+
 }
