@@ -14,10 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -83,5 +85,15 @@ public class TransactionController {
     public ResponseEntity<String> editTransaction(@RequestBody TransactionDTO transactionDTO) {
         transactionService.saveTransaction(transactionService.enrichTransactionWithSuggestedCategory(transactionDTO));
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/history/{id}")
+    public TransactionDTO getTransactionById(@PathVariable("id") UUID id) {
+        return transactionMapper.mapTransactionToDTO(transactionService.getTransactionById(id));
+    }
+
+    @PutMapping("/transactions")
+    public void updateTransaction(@RequestBody TransactionDTO transactionDTO) {
+        transactionService.editTransaction(transactionDTO);
     }
 }
