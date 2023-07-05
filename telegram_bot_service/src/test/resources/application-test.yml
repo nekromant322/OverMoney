@@ -30,6 +30,6 @@ bot:
   token: 6205395260:AAFJraVO3m7ManWLUMDbrYGgjjSjmSipd0M
   name: DONTDELETEFORTESTBOT
 
-web:
-  url: test.ru
-
+#настройка веб адреса приложения
+orchestrator:
+  host: test.ru

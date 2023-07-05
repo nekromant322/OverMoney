@@ -6,8 +6,9 @@
     voice:
       max_length: 10
 
-  web:
-   url: ${WEB_URL}
+#настройка веб адреса приложения
+  orchestrator:
+    host: ${ORCHESTRATOR_HOST}
 
   server:
     port: 8082
