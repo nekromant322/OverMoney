@@ -11,7 +11,7 @@ services:
       POSTGRES_USER: ${ORCHESTRATOR_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD:-postgres}
       POSTGRES_DB: orchestrator-db
-    restart: unless-stopped
+    restart: always
 
   telegram-bot-db:
     container_name: telegram-bot-db
@@ -22,7 +22,7 @@ services:
       POSTGRES_USER: ${TELEGRAM_BOT_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${TELEGRAM_BOT_DB_PASSWORD:-postgres}
       POSTGRES_DB: telegram-bot-db
-    restart: unless-stopped
+    restart: always
 
   eureka:
     container_name: eureka
