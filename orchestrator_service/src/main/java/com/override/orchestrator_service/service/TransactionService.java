@@ -5,6 +5,7 @@ import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
+import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.TransactionRepository;
@@ -29,6 +30,19 @@ public class TransactionService {
     private UserService userService;
     @Autowired
     private TransactionMapper transactionMapper;
+
+    @Autowired
+    private OverMoneyAccountService overMoneyAccountService;
+
+    public List<TransactionDTO> findAlltransactionDTOForAcountByUserId(Long telegramId) throws InstanceNotFoundException {
+        OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramId);
+        List<Transaction> transactionList = transactionRepository.findAllByAccountId(overMoneyAccount.getId());
+        List<TransactionDTO> transactionDTOS = new ArrayList<>();
+
+        transactionList.forEach(transaction -> transactionDTOS.add(transactionMapper.mapTransactionToDTO(transaction)));
+
+        return transactionDTOS;
+    }
 
     public void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);

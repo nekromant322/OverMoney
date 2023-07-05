@@ -18,6 +18,8 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     @Query("SELECT t FROM Transaction t WHERE t.account.id = :id AND t.category.id is null")
     List<Transaction> findAllWithoutCategoriesByAccountId(@Param("id") Long accountId);
 
+    List<Transaction> findAllByAccountId(Long accountId);
+
     @Modifying
     @Query("UPDATE Transaction t SET t.category.id = :newCategory WHERE t.category.id= :oldCategory")
     void updateCategoryId(@Param("oldCategory") Long oldCategoryId, @Param("newCategory") Long newCategoryId);
