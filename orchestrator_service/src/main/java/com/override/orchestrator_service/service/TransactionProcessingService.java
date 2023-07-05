@@ -10,6 +10,8 @@ import com.override.dto.TransactionMessageDTO;
 import javax.management.InstanceNotFoundException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class TransactionProcessingService {
@@ -48,12 +50,16 @@ public class TransactionProcessingService {
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
-        AmountPositionType type = checkTransactionType(transactionMessageDTO.getMessage());
+        String transactionMessage = transactionMessageDTO.getMessage();
+        if (transactionMessage.indexOf("+") != -1) {
+            transactionMessage = getCalculatedTransaction(transactionMessage.trim());
+        }
+        AmountPositionType type = checkTransactionType(transactionMessage);
 
         return Transaction.builder()
                 .account(overMoneyAccount)
-                .amount(getAmount(transactionMessageDTO.getMessage(), type))
-                .message(getWords(transactionMessageDTO.getMessage(), type))
+                .amount(getAmount(transactionMessage, type))
+                .message(getWords(transactionMessage, type))
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount, type))
                 .date(transactionMessageDTO.getDate())
                 .telegramUserId(transactionMessageDTO.getUserId())
@@ -69,12 +75,17 @@ public class TransactionProcessingService {
         String firstWord = transactionMessage.substring(0, firstIndexOfSpace);
         String lastWord = transactionMessage.substring(lastIndexOfSpace + 1);
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(firstWord).append(RegularExpressions.SPACE.value)
+        stringBuilder
+                .append(firstWord)
+                .append(RegularExpressions.SPACE.value)
                 .append(firstWord.replace(RegularExpressions.RU_DECIMAL_DELIMITER.value,
-                        RegularExpressions.EN_DECIMAL_DELIMITER.value)).append(RegularExpressions.SPACE.value)
-                .append(lastWord).append(RegularExpressions.SPACE.value)
+                        RegularExpressions.EN_DECIMAL_DELIMITER.value))
+                .append(RegularExpressions.SPACE.value)
+                .append(lastWord)
+                .append(RegularExpressions.SPACE.value)
                 .append(lastWord.replace(RegularExpressions.RU_DECIMAL_DELIMITER.value,
-                        RegularExpressions.EN_DECIMAL_DELIMITER.value)).append(RegularExpressions.SPACE.value);
+                        RegularExpressions.EN_DECIMAL_DELIMITER.value))
+                .append(RegularExpressions.SPACE.value);
         Scanner scanner = new Scanner(stringBuilder.toString());
         scanner.useLocale(Locale.ENGLISH);
         if (scanner.hasNextFloat()) {
@@ -205,5 +216,59 @@ public class TransactionProcessingService {
             }
         }
         return matchingKeyword;
+    }
+
+    private String getCalculatedTransaction(String transactionMessage) throws InstanceNotFoundException {
+        String substringOfExpression = getSubstringOfExpression(transactionMessage);
+        String regexOfExpression = createRegexForExpression(substringOfExpression);
+        String elementsOfSum = processingOfExpression(substringOfExpression);
+        float sumOfTransaction = calculateSum(elementsOfSum);
+        return transactionMessage.replaceAll(regexOfExpression, String.format("%.2f", sumOfTransaction));
+    }
+
+    private String getSubstringOfExpression(String str) throws InstanceNotFoundException {
+        Pattern pattern = Pattern.compile("[A-Za-zА-Яа-я]+");
+        Matcher matcher = pattern.matcher(str);
+        String expression;
+        if (matcher.find()) {
+            if (matcher.end() != str.length() && matcher.start() > 0) {
+                expression = str.substring(0, matcher.start()).replaceAll("[^0-9\\,\\.\\+\\s]", "");
+            } else {
+                Pattern pattern2 = Pattern.compile("\\d*[.,]?\\d*\\s*\\+");
+                Matcher matcher2 = pattern2.matcher(str);
+                matcher2.find();
+                expression = str.substring(matcher2.start()).replaceAll("[^0-9\\,\\.\\+\\s]", "");
+            }
+            if (expression.indexOf("-") == -1
+                    && expression.indexOf("*") == -1
+                    && expression.indexOf("/") == -1) {
+                return expression.trim();
+            }
+        }
+        throw new InstanceNotFoundException("Invalid message");
+    }
+
+    public String processingOfExpression(String rowExpression) {
+        return rowExpression
+                .replaceAll("\\,", ".")
+                .replaceAll("[^0-9\\.]", " ");
+    }
+
+    public String createRegexForExpression(String rowSubstring) {
+        return rowSubstring.replaceAll("\\s", "\\\\s").replaceAll("\\+", "\\\\+");
+    }
+
+    public float calculateSum(String expression) {
+        Scanner sc = new Scanner(expression);
+        sc.useLocale(Locale.ENGLISH);
+        float sum = 0;
+        while (sc.hasNext()) {
+            if (sc.hasNextFloat()) {
+                sum += sc.nextFloat();
+            } else {
+                sc.next();
+            }
+        }
+        return sum;
     }
 }
