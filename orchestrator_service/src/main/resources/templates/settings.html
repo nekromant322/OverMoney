@@ -8,20 +8,21 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="/css/analytics.css" rel="stylesheet" type="text/css"/>
     <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<header id="header">
+<<header id="header">
     <nav class="links" style="--items: 4;">
-        <a href="/overview">Overview</a>
-        <a href="/history">History</a>
-        <a href="/analytics">Analytics</a>
-        <a href="/settings">Settings</a>
+        <a href="/overview">Обзор</a>
+        <a href="/history">История</a>
+        <a href="/analytics">Аналитика</a>
+        <a href="/settings"><i class="fa fa-cog"></i></a>
         <span class="line"></span>
     </nav>
 </header>
 <div class="content">
     <div class="info">
-        <button id="downloadButton">Скачать JSON</button>
+        <button id="downloadButton">Скачать бекап данных</button>
     </div>
 </div>
 <script>

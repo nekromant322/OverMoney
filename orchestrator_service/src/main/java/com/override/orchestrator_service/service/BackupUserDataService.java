@@ -3,8 +3,6 @@ package com.override.orchestrator_service.service;
 import com.override.dto.BackupUserDataDTO;
 import com.override.dto.CategoryDTO;
 import com.override.dto.TransactionDTO;
-import com.override.orchestrator_service.model.OverMoneyAccount;
-import com.override.orchestrator_service.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
