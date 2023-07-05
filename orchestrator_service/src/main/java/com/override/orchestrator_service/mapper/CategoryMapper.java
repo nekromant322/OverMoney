@@ -28,6 +28,7 @@ public class CategoryMapper {
         return categories
                 .stream()
                 .map(this::mapCategoryToJsonResponse)
+                .sorted()
                 .collect(Collectors.toList());
     }
 
