@@ -9,7 +9,7 @@ $("#downloadButton").click(function() {
 
             var a = document.createElement('a');
 
-            // Получите текущую дату и преобразуйте ее в строку в формате dd.mm.yyyy
+            // текущая дата в строку в формате dd.mm.yyyy
             var date = new Date();
             var dateString = [
                 ('0' + date.getDate()).slice(-2),
@@ -17,7 +17,7 @@ $("#downloadButton").click(function() {
                 date.getFullYear()
             ].join('.');
 
-            // Установите имя файла с датой и другим текстом
+            //  имя файла с датой и другим текстом
             a.download = dateString + '-overmoney.json';
             a.href = url;
             a.click();
