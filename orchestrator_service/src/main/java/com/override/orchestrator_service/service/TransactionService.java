@@ -35,6 +35,19 @@ public class TransactionService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Autowired
+    private OverMoneyAccountService overMoneyAccountService;
+
+    public List<TransactionDTO> findAlltransactionDTOForAcountByUserId(Long telegramId) throws InstanceNotFoundException {
+        OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramId);
+        List<Transaction> transactionList = transactionRepository.findAllByAccountId(overMoneyAccount.getId());
+        List<TransactionDTO> transactionDTOS = new ArrayList<>();
+
+        transactionList.forEach(transaction -> transactionDTOS.add(transactionMapper.mapTransactionToDTO(transaction)));
+
+        return transactionDTOS;
+    }
+
     public void saveTransaction(Transaction transaction) {
         transactionRepository.save(transaction);
     }
