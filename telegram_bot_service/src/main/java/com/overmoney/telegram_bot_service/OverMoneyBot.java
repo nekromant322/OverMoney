@@ -178,7 +178,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private void botAnswer(String receivedMessage, Long chatId, Long userId, LocalDateTime date) {
         switch (receivedMessage) {
             case "/start":
-                sendMessage(chatId, Command.START.getDescription() + orchestratorHost + "/overview");
+                sendMessage(chatId, Command.START.getDescription() + orchestratorHost);
                 orchestratorRequestService.registerSingleAccount(new AccountDataDTO(chatId, userId));
                 break;
             case "/money":
