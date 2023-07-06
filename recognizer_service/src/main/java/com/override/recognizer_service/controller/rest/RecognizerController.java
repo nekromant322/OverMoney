@@ -1,7 +1,6 @@
 package com.override.recognizer_service.controller.rest;
 
 import com.override.dto.CategoryDTO;
-import com.override.recognizer_service.feign.OrchestratorFeign;
 import com.override.recognizer_service.service.CategoryRecognizerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +14,7 @@ import java.util.UUID;
 public class RecognizerController {
 
     @Autowired
-    private OrchestratorFeign orchestratorFeign;
-
-    @Autowired
     private CategoryRecognizerService categoryRecognizerService;
-
-    @GetMapping("/orchestra")
-    public String getOrchestraWithFeign() {
-        return orchestratorFeign.getOrchestra();
-    }
 
     @GetMapping("/recognizer")
     public String getRecognizer() {
