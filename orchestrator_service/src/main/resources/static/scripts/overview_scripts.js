@@ -80,8 +80,9 @@ function getCategoriesData() {
         url: './categories/',
         contentType: "application/json; charset=utf8",
         success: function (data) {
+            let noDefaultCategory = localStorage.getItem("noDefaultCategory");
             console.log("Successfully get categories")
-            if (data.length === 0) {
+            if (data.length === 0 && noDefaultCategory == null) {
                 console.log("data is null")
                 drawModalDefaultCategories()
             }
@@ -129,6 +130,12 @@ function drawModalDefaultCategories() {
 function closeModal() {
     let modal = document.getElementById("modal-default-category");
     modal.style.display = "none"
+}
+
+function rejectionAndCloseModal() {
+    let modal = document.getElementById("modal-default-category");
+    modal.style.display = "none"
+    localStorage.setItem("noDefaultCategory", "true");
 }
 
 function addDefaultCategories() {
