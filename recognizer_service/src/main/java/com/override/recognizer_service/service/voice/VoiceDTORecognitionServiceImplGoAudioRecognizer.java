@@ -3,10 +3,9 @@ package com.override.recognizer_service.service.voice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.override.dto.AudioRecognizerGoRequestDTO;
 import com.override.dto.AudioRecognizerGoResponseDTO;
-import com.override.recognizer_service.config.AudioRecognizerGoServiceProperties;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -21,8 +20,9 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTORecognitionService {
 
-    @Autowired
-    private AudioRecognizerGoServiceProperties audioRecognizerGoServiceProperties;
+    @Value("${audio-recognizer-go-service.url}")
+    private String goServiceUrl;
+
 
     /**
      * Метод открывает соединение  HttpURLConnection и отправляюет запрос
@@ -62,11 +62,11 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
     @SneakyThrows
     private HttpURLConnection getConnection() {
         URLConnection connectionURL =
-                new URL(audioRecognizerGoServiceProperties.getUrl()).openConnection();
+                new URL(goServiceUrl).openConnection();
         HttpURLConnection connection = (HttpURLConnection) connectionURL;
-        connection.setRequestMethod(audioRecognizerGoServiceProperties.getMethod());
-        connection.setRequestProperty("Content-Type", audioRecognizerGoServiceProperties.getContentType());
-        connection.setRequestProperty("Accept", audioRecognizerGoServiceProperties.getAccept());
+        connection.setRequestMethod("POST");
+        connection.setRequestProperty("Content-Type", "application/json");
+        connection.setRequestProperty("Accept", "application/json");
         connection.setDoOutput(true);
         return connection;
     }
