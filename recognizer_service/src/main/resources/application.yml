@@ -34,3 +34,9 @@
       web:
         exposure:
           include: "*"
+
+  audio-recognizer-go-service:
+    url: ${AUDIO_RECOGNIZER_URL}
+    method: POST
+    contentType: application/json
+    accept: application/json
