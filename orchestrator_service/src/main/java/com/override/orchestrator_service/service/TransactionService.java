@@ -10,8 +10,8 @@ import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -174,5 +174,9 @@ public class TransactionService {
             }
         }
         return transactionRepository.save(transactionUpdate);
+    }
+
+    public void deleteTransactionById(UUID id) {
+        transactionRepository.deleteById(id);
     }
 }
