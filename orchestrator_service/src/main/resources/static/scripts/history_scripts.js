@@ -70,6 +70,7 @@ function addRow(data) {
     insertTd(data.comment, tr);
     insertTd(data.date, tr);
     insertTd(data.telegramUserName, tr);
+    insertTdButton(data, tr);
 }
 
 function insertTd(value, parent) {
@@ -79,6 +80,14 @@ function insertTd(value, parent) {
     parent.insertAdjacentElement("beforeend", element);
 }
 
+function insertTdButton(data, parent) {
+    let buttonElement = document.createElement("button");
+    buttonElement.innerHTML = "x"
+    buttonElement.className = "custom-button";
+    buttonElement.id = data.id;
+    parent.insertAdjacentElement("beforeend", buttonElement)
+}
+
 $(function rowTableClick() {
     let trId;
     $('#transactions-table tr').click(function () {
@@ -86,6 +95,28 @@ $(function rowTableClick() {
         getTransactionById(trId);
     })
 })
+
+$(function rowTableClickDelete() {
+    let id;
+    $('#transactions-table tr button').click(function (event) {
+        event.stopPropagation();
+        id = $(this).attr('id');
+        getTransactionByIdForDelete(id)
+        $('#deleteModal').modal('show');
+    })
+})
+
+function getTransactionByIdForDelete(id) {
+    $.ajax({
+        method: "GET",
+        url: "./history/" + id,
+        async: false,
+
+        success: function (response) {
+            fillModalWindowForDelete(response);
+        }
+    })
+}
 
 function getTransactionById(id) {
     $.ajax({
@@ -106,6 +137,12 @@ function fillModalWindow(response) {
     categoryNow = response.categoryName;
     writeAllCategoryInModal();
     $("#nameCategoryEdit").html(options);
+}
+
+function fillModalWindowForDelete(response) {
+    $("#idTransactionInFormDelete").val(response.id);
+    $("#amountDelete").text(response.amount);
+    $("#messageDelete").text(response.message);
 }
 
 function writeAllCategoryInModal() {
@@ -151,4 +188,20 @@ $(function editButtonClick() {
         })
     })
 })
+
+function deleteButtonClick() {
+    let id = $('#idTransactionInFormDelete').val();
+    $.ajax({
+        method: "DELETE",
+        url: "./delete/" + id,
+        async: false,
+        success: () => {
+            location.reload();
+        },
+        error: function (error) {
+            console.log(error);
+        }
+    })
+}
+
 
