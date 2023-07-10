@@ -323,19 +323,8 @@ function setCircleDimensions(circle, transactionAmount, maxSingleTransactionAmou
     }
 }
 
-function comparatorByFieldName(dataOne, dataTwo) {
-    if (dataOne.name.toLowerCase() < dataTwo.name.toLowerCase()) {
-        return -1;
-    }
-    if (dataOne.name.toLowerCase() > dataTwo.name.toLowerCase()) {
-        return 1;
-    }
-    return 0;
-}
-
 function drawCategories(data) {
-    const dataSorted = data.sort(comparatorByFieldName)
-    dataSorted.forEach(category => drawCategory(category, data.length))
+    data.forEach(category => drawCategory(category, data.length))
     let categories = document.querySelectorAll('.category')
     categories.forEach(function (category) {
         category.addEventListener('dragenter', handleDragEnter)
