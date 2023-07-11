@@ -5,11 +5,13 @@ FROM golang:1.20
 RUN mkdir -p /app
 WORKDIR /app
 
-ADD go.mod go.sum ./
+
+COPY /wit_ai_go_proxy /app
+
 RUN apt-get update && apt-get -y install libopus-dev libopusfile-dev
 RUN go mod download
 
-COPY *.go ./
+# COPY *.go ./
 
 RUN go build -o /wit_ai_go_proxy
 
