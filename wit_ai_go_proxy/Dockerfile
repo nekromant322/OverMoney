@@ -5,7 +5,7 @@ FROM golang:1.20
 RUN mkdir -p /app
 WORKDIR /app
 
-ADD go.mod go.sum ./
+ADD . ./
 RUN apt-get update && apt-get -y install libopus-dev libopusfile-dev
 RUN go mod download
 
