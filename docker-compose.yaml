@@ -83,3 +83,12 @@ services:
       ORCHESTRATOR_HOST: ${ORCHESTRATOR_HOST}
     depends_on:
       - telegram-bot-db
+
+  wit-ai-go-proxy:
+    container_name: wit-ai-go-proxy
+    image: nekromant322/overmoney:wit-ai-go-proxy
+    restart: unless-stopped
+    ports:
+      - '3333:3333'
+    environment:
+      WIT_AI_TOKEN: ${WIT_AI_TOKEN}
