@@ -1,14 +1,10 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.BackupUserDataDTO;
-import com.override.dto.BugReportDTO;
 import com.override.orchestrator_service.service.BackupUserDataService;
-import com.override.orchestrator_service.service.BugReportService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
