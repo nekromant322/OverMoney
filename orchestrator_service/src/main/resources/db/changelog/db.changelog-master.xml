@@ -10,5 +10,6 @@
     <include file="v1.0.0/003-db.changelog-deleteRolesInUsersTableAndDropRoleTable.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/004-db.changelog-dropNotNullConstraintUsernameColumnUsersTable.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/005-db.changelog-addUniqueConstraintForCategories.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/006-db.changelog-updateUserTelegramPhotoUrlType.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
