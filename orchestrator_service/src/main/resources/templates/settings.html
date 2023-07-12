@@ -7,6 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/setting.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -24,9 +25,33 @@
         <button id="downloadButton">Скачать бекап данных</button>
     </div>
 </div>
+
+<div class="content">
+    <div class="info">
+        <p style="color:red">Восстановить данные из файла</p>
+        <button id="readButton">Обзор</button>
+    </div>
+</div>
+
+<div class="modal-additional-confirmation" id="modal-additional-confirmation">
+    <div class="modal-additional-confirmation-content">
+        <span class="close" onclick="closeModalConfirmation()">&times;</span>
+        <form id="formToFile">
+            <p>Вы точно уверенны? Все данные будут перезаписаны</p>
+            <input type="file" id="input" onchange="readFile(this)">
+<!--            <input type="submit">-->
+            <input type="button" class="modal-additional-confirmation-close" onclick="closeModalConfirmation()"
+                   value="Отмена">
+        </form>
+    </div>
+</div>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 <script src="/scripts/setting_scripts.js"></script>
 </html>
+
+
+
