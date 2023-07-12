@@ -19,7 +19,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT c FROM Category c WHERE c.account.id = :id AND c.type = :type")
     List<Category> findAllByTypeAndAccId(@Param("id") Long accountId, @Param("type") Type type);
 
-    @Query("SELECT new com.override.dto.AnalyticsDataDTO(c.id, c.name, SUM(t.amount))\n" +
+    @Query("SELECT new com.override.dto.AnalyticsDataDTO(c.id, c.name, (SUM(t.amount)) / " +
+            "(EXTRACT(MONTH FROM MAX(t.date)) - EXTRACT(MONTH FROM MIN(t.date)) + 1 + " +
+            "(((EXTRACT(YEAR FROM MAX(t.date)) - EXTRACT(YEAR FROM MIN(t.date)))) * 11)))\n" +
             "FROM Category c \n" +
             "LEFT JOIN Transaction t ON t.category.id = c.id\n" +
             "WHERE c.account.id = :accId\n" +
