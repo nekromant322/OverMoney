@@ -1,5 +1,7 @@
 const placeForExpense = document.getElementById('expenseAnalytics');
 const placeForIncome = document.getElementById('incomeAnalytics');
+const placeForExpenseTable = document.getElementById('table_expense');
+const placeForIncomeTable = document.getElementById('table_income');
 const placeForMonthlyYearIncomeAnalytics = document.getElementById('monthlyYearIncomeAnalytics');
 const INCOME = "INCOME";
 const EXPENSE = "EXPENSE";
@@ -23,29 +25,31 @@ const colors =
         "rgb(0, 255, 127)", "rgb(135, 206, 235)"]
 
 window.onload = function () {
-    getAnalyticsData(EXPENSE, placeForExpense);
-    getAnalyticsData(INCOME, placeForIncome);
+    getAnalyticsData(EXPENSE, placeForExpense, placeForExpenseTable);
+    getAnalyticsData(INCOME, placeForIncome, placeForIncomeTable);
     setAvailableYearsForMonthlyAnalytics();
 }
 
-function getAnalyticsData(type, place) {
+function getAnalyticsData(type, place, placeTable) {
     let data = getCategoriesAndSumAmountByType(type)
     let categoriesName = [];
     let color = [];
-    let sumOfTransactions = [];
+    let mediumAmountOfTransactions = [];
     let dataSorted = data.sort(comparatorByFieldName)
 
     for (let i = 0; i < dataSorted.length & i < 50; i++) {
         color.push(colors[i])
         categoriesName.push(dataSorted[i].categoryName)
-        sumOfTransactions.push(dataSorted[i].sumOfTransactions)
+        mediumAmountOfTransactions.push(dataSorted[i].mediumAmountOfTransactions)
     }
-    drawAnalytics(categoriesName, sumOfTransactions, color, place)
+    drawAnalytics(categoriesName, mediumAmountOfTransactions, color, place, placeTable);
+
 }
 
-function drawAnalytics(categories, transactionSums, color, place) {
 
-    new Chart(place, {
+function drawAnalytics(categories, transactionSums, color, place, placeTable) {
+
+    let chartData = new Chart(place, {
         type: 'pie',
         data: {
             labels: categories,
@@ -63,8 +67,34 @@ function drawAnalytics(categories, transactionSums, color, place) {
                 }
             }
         }
-    });
+    }).data;
+    drawTable(chartData, placeTable);
 }
+
+function drawTable(chartData, placeTable) {
+
+    let tbody = document.createElement('tbody');
+    chartData.labels.forEach(function (label, index) {
+        let value = chartData.datasets[0].data[index];
+        let color = chartData.datasets[0].backgroundColor[index];
+        let category = chartData.labels[index];
+
+        let row = document.createElement('tr');
+        let valueElement = document.createElement('td');
+        valueElement.textContent = value;
+        let colorElement = document.createElement('td');
+        colorElement.style.backgroundColor = color;
+        colorElement.style.width = "10px";
+        let categoryElement = document.createElement('td');
+        categoryElement.textContent = category;
+        row.appendChild(colorElement);
+        row.appendChild(categoryElement);
+        row.appendChild(valueElement);
+        tbody.appendChild(row);
+    });
+    placeTable.appendChild(tbody);
+}
+
 function comparatorByFieldName(dataOne, dataTwo) {
     if (dataOne.categoryName.toLowerCase() < dataTwo.categoryName.toLowerCase()) {
         return -1;
@@ -100,11 +130,11 @@ function getCategoriesAndSumAmountByType(type) {
 const yearSelect = $('#yearSelect');
 const checkbox = $('.info__switch');
 
-checkbox.on('change', function() {
+checkbox.on('change', function () {
     loadData(new Date().getFullYear());
 });
 
-yearSelect.on('change', function() {
+yearSelect.on('change', function () {
     const selectedYear = yearSelect.val();
     loadData(selectedYear);
 });
@@ -113,8 +143,8 @@ $.ajax({
     url: '/analytics/available-years',
     type: 'GET',
     dataType: 'json',
-    success: function(years) {
-        years.forEach(function(year) {
+    success: function (years) {
+        years.forEach(function (year) {
             const option = $('<option>').val(year).text(year);
             if (year === new Date().getFullYear()) {
                 option.attr('selected', true); // Устанавливаем атрибут selected для текущего года
@@ -122,7 +152,7 @@ $.ajax({
             yearSelect.append(option);
         });
     },
-    error: function(xhr, status, error) {
+    error: function (xhr, status, error) {
         console.error(error);
     }
 });
@@ -132,8 +162,8 @@ function loadData(selectedYear) {
         url: '/analytics/totalIncomeOutcome/' + selectedYear,
         method: 'GET',
         dataType: 'json',
-        success: function(data) {
-            data.sort(function(a, b) {
+        success: function (data) {
+            data.sort(function (a, b) {
                 return new Date(Date.parse('01 ' + a.month + ' 2000')) - new Date(Date.parse('01 ' + b.month + ' 2000'));
             });
             const labels = data.map(item => item.month);
@@ -169,7 +199,7 @@ function loadData(selectedYear) {
             });
             window.myChart = myChart;
         },
-        error: function(error) {
+        error: function (error) {
             console.error(error);
         }
     });
@@ -179,11 +209,11 @@ function loadData(selectedYear) {
 const yearSelectForMonthlyAnalytics = $('#yearSelectForMonthlyAnalytics');
 const checkboxForMonthlyAnalytics = $('#info__body_4');
 
-checkboxForMonthlyAnalytics.on('change', function() {
+checkboxForMonthlyAnalytics.on('change', function () {
     drawMonthlyAnalyticsForYear(new Date().getFullYear());
 });
 
-yearSelectForMonthlyAnalytics.on('change', function() {
+yearSelectForMonthlyAnalytics.on('change', function () {
     const selectedYear = yearSelectForMonthlyAnalytics.val();
     drawMonthlyAnalyticsForYear(selectedYear);
 });
@@ -191,9 +221,10 @@ yearSelectForMonthlyAnalytics.on('change', function() {
 function drawMonthlyAnalyticsForYear(year) {
     if (window.placeForMonthlyYearIncomeAnalytics) {
         removeData(placeForMonthlyYearIncomeAnalytics);
-    };
+    }
+    ;
     let monthlyReportData = getMonthlyReportData(year);
-    let months = ["Янв","Фев.","Мар.","Апр","Май","Июнь","Июль","Авг.","Сен.","Окт.","Ноя.","Дек."];
+    let months = ["Янв", "Фев.", "Мар.", "Апр", "Май", "Июнь", "Июль", "Авг.", "Сен.", "Окт.", "Ноя.", "Дек."];
 
 
     var ctx = document.getElementById('monthlyYearIncomeAnalytics').getContext('2d');
@@ -214,7 +245,7 @@ function drawMonthlyAnalyticsForYear(year) {
     let counter = 0;
     monthlyReportData.forEach(dataItem => {
         let legend = dataItem.categoryName;
-        let object =  dataItem.monthlyAnalytics;
+        let object = dataItem.monthlyAnalytics;
         let array = Object.entries(object);
         let values = [];
         array.forEach(item => {
@@ -231,8 +262,8 @@ function setAvailableYearsForMonthlyAnalytics() {
         url: '/analytics/available-years',
         type: 'GET',
         dataType: 'json',
-        success: function(years) {
-            years.forEach(function(year) {
+        success: function (years) {
+            years.forEach(function (year) {
                 const option = $('<option>').val(year).text(year);
                 if (year === new Date().getFullYear()) {
                     option.attr('selected', true); // Устанавливаем атрибут selected для текущего года
@@ -240,7 +271,7 @@ function setAvailableYearsForMonthlyAnalytics() {
                 yearSelectForMonthlyAnalytics.append(option);
             });
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             console.error(error);
         }
     });
@@ -271,7 +302,7 @@ function getMonthName(monthNumber) {
     const date = new Date();
     date.setMonth(monthNumber - 1);
 
-    return date.toLocaleString('en-US', { month: 'short' });
+    return date.toLocaleString('en-US', {month: 'short'});
 }
 
 function addDataset(chart, dataset, labelName, color) {

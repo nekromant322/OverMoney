@@ -1,14 +1,12 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.AnalyticsDataDTO;
-import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
 import com.override.dto.AnalyticsMonthlyReportForYearDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
-import io.jsonwebtoken.lang.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,10 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -55,18 +50,18 @@ public class AnalyticServiceTest {
         AnalyticsDataDTO analyticsDataDTOTest1 = AnalyticsDataDTO.builder()
                 .categoryId(123l)
                 .categoryName("Тест 1")
-                .sumOfTransactions(1000.0)
+                .mediumAmountOfTransactions(1000.0)
                 .build();
         AnalyticsDataDTO analyticsDataDTOTest2 = AnalyticsDataDTO.builder()
                 .categoryId(124l)
                 .categoryName("Тест 2")
-                .sumOfTransactions(2000.0)
+                .mediumAmountOfTransactions(2000.0)
                 .build();
         List<AnalyticsDataDTO> analyticsDataListTest = List.of(analyticsDataDTOTest1, analyticsDataDTOTest2);
-        when(categoryRepository.findTotalSumOfAllCategoriesByAccIdAndType(acc.getId(), Type.EXPENSE))
+        when(categoryRepository.findMediumAmountOfAllCategoriesByAccIdAndType(acc.getId(), Type.EXPENSE))
                 .thenReturn(analyticsDataListTest);
         analyticService.getTotalCategorySumsForAnalytics(123L, Type.EXPENSE);
-        Assertions.assertEquals(categoryRepository.findTotalSumOfAllCategoriesByAccIdAndType(acc.getId(), Type.EXPENSE).size(),
+        Assertions.assertEquals(categoryRepository.findMediumAmountOfAllCategoriesByAccIdAndType(acc.getId(), Type.EXPENSE).size(),
                 analyticsDataListTest.size());
     }
 
