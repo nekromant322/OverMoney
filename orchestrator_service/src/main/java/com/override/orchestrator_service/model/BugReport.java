@@ -18,12 +18,12 @@ public class BugReport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "report")
+    @Column(name = "report", nullable = false)
     private String report;
 
-    @Column(name = "user_id")
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "date")
+    @Column(name = "date", nullable = false)
     private LocalDateTime localDateTime;
 }

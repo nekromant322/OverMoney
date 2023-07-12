@@ -25,18 +25,8 @@ public class SettingsController {
     @Autowired
     private TelegramUtils telegramUtils;
 
-    @Autowired
-    private BugReportService bugReportService;
-
     @GetMapping("/backup")
     public BackupUserDataDTO getUserBackupData(Principal principal) throws InstanceNotFoundException {
         return backupUserDataService.createBackupUserData(telegramUtils.getTelegramId(principal));
-    }
-
-    @PostMapping("/bugreport")
-    public ResponseEntity<HttpStatus> saveBugReport(@RequestBody BugReportDTO bugReportDTO, Principal principal){
-        Long userId = telegramUtils.getTelegramId(principal);
-        bugReportService.saveBugReport(bugReportDTO, userId);
-        return ResponseEntity.ok(HttpStatus.CREATED);
     }
 }

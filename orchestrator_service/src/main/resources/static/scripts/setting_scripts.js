@@ -72,7 +72,7 @@ sendButton.on("click", function() {
     };
 
     $.ajax({
-        url: "/settings/bugreport",
+        url: "/bugreport",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(data),
