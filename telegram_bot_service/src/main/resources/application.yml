@@ -54,7 +54,14 @@
     endpoints:
       web:
         exposure:
-          include: "*"
+          include: health,prometheus
+    metrics:
+      export:
+        prometheus:
+          enabled: true
+      distribution:
+        percentiles-histogram:
+          "[http.server.requests]": true
 
   max-mailing-messages:
     maxMessagesOfAnnouncePerSecond: 25
