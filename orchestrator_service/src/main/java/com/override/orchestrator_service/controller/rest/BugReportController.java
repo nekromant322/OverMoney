@@ -18,10 +18,10 @@ import java.security.Principal;
 public class BugReportController {
 
     @Autowired
-    TelegramUtils telegramUtils;
+    private TelegramUtils telegramUtils;
 
     @Autowired
-    BugReportService bugReportService;
+    private BugReportService bugReportService;
 
     @PostMapping("/bugreport")
     public ResponseEntity<HttpStatus> saveBugReport(@RequestBody BugReportDTO bugReportDTO, Principal principal){
