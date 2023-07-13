@@ -1,0 +1,16 @@
+scrape_configs:
+  - job_name: 'orchestrator_overmoney_monitoring'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8081']
+  - job_name: 'telegram_bot_overmoney_monitoring'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8082']
+  - job_name: 'recognizer_overmoney_monitoring'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['host.docker.internal:8080']
