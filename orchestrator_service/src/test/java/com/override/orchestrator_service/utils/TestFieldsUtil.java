@@ -11,6 +11,24 @@ import static org.apache.http.client.methods.RequestBuilder.put;
 
 public class TestFieldsUtil {
 
+    public static BugReport generateTestBugReport(){
+        return BugReport.builder()
+                .userId(123L)
+                .report("test")
+                .localDateTime(LocalDateTime.now())
+                .id(123L)
+                .build();
+    }
+
+    public static BugReportDTO generateTestBugReportDTO(){
+        return BugReportDTO.builder()
+                .userId(123L)
+                .report("test")
+                .localDateTime(LocalDateTime.now())
+                .id(123L)
+                .build();
+    }
+
     public static Keyword generateTestKeyword() {
         return Keyword.builder()
                 .keywordId(new KeywordId("пиво", 123L))
