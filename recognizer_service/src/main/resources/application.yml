@@ -43,4 +43,4 @@
           "[http.server.requests]": true
 
   audio-recognizer-go-service:
-    url: ${AUDIO_RECOGNIZER_URL}
+    url: http://wit-ai-go-proxy:3333/recognizer
