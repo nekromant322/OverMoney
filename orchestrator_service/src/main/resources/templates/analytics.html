@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<<header id="header">
+<
+<header id="header">
     <nav class="links" style="--items: 4;">
         <a href="/overview">Обзор</a>
         <a href="/history">История</a>
@@ -22,17 +23,25 @@
 </header>
 <div class="content">
     <div class="info">
-        <input id="info__body_1" class="info__switch" type="checkbox">
-        <label for="info__body_1" class="info__headline">Расходы по категориям</label>
-        <div class="info__body">
+        <input id="info__container_1" class="info__switch" type="checkbox">
+        <label for="info__container_1" class="info__headline">Расходы по категориям</label>
+        <div class="info__container">
             <canvas id="expenseAnalytics"></canvas>
+            <div>
+                <table id="table_expense">
+                </table>
+            </div>
         </div>
     </div>
     <div class="info">
-        <input id="info__body_2" class="info__switch" type="checkbox">
-        <label for="info__body_2" class="info__headline">Доходы по категориям</label>
-        <div class="info__body">
+        <input id="info__container_2" class="info__switch" type="checkbox">
+        <label for="info__container_2" class="info__headline">Доходы по категориям</label>
+        <div class="info__container">
             <canvas id="incomeAnalytics"></canvas>
+            <div>
+                <table id="table_income">
+                </table>
+            </div>
         </div>
     </div>
     <div class="info">

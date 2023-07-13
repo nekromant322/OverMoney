@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 public class AnalyticsDataDTO {
     private Long categoryId;
     private String categoryName;
-    private Double sumOfTransactions;
+    private Number mediumAmountOfTransactions;
 }

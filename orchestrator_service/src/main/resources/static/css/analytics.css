@@ -19,6 +19,28 @@
     overflow: visible;
 }
 
+.info__container {
+    max-width: 0;
+    max-height: 0;
+    display: flex;
+    overflow: hidden;
+}
+
+.info__switch:checked ~ .info__container {
+    max-width: 1100px;
+    max-height: 550px;
+        width: 1100px;
+        height: 550px;
+    overflow: visible;
+
+}
+#table_expense, #table_income {
+    margin-left: 100px;
+}
+#table_expense td, #table_income td{
+    padding: 10px 10px;
+}
+
 .info__headline::before {
     content: "";
     position: absolute;
