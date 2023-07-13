@@ -26,6 +26,16 @@ server {
                 proxy_pass http://localhost:8082/;  # HTTP
 
         }
+
+        location /orchestrator/ {
+            proxy_pass http://localhost:8081/;
+        }
+
+        location /recognizer/ {
+            proxy_pass http://localhost:8080/;
+        }
+
+
         location /twitch-bot/ {
                 proxy_pass https://localhost:9000/;
         }
@@ -82,15 +92,11 @@ server {
         }
 
 
-        location /orchestrator/actuator/prometheus/ {
-            proxy_pass http://localhost:8081/actuator/prometheus/;
+        location /orchestrator/ {
+            proxy_pass http://localhost:8081/;
         }
 
-        location /telegram/actuator/prometheus/ {
-            proxy_pass http://localhost:8082/actuator/prometheus/;
-        }
-
-        location /recognizer/actuator/prometheus/ {
-            proxy_pass http://localhost:8080/actuator/prometheus/;
+        location /recognizer/ {
+            proxy_pass http://localhost:8080/;
         }
 }
