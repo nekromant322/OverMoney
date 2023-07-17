@@ -5,9 +5,6 @@ $(document).ready(function() {
 
     let timerId = setInterval(sendPrivateMessage, 5000);
 
-    $("#wsss").click(function() {
-        sendPrivateMessage();
-    });
 });
 
 function connect() {
@@ -18,11 +15,10 @@ function connect() {
         console.log('Connected: ' + frame);
 
         stompClient.subscribe('/user/topic/private-messages', function (message) {
-            // console.log("Приватное сообщение: " + message);
             console.log("тело сообщения: " + message.body)
             if (message.body)
             getUndefinedTransactionsData(); //TODO Делаем запрос на неопределённые транзакции
-            // showMessage(JSON.parse(message.body).content);
+
         });
     });
 }

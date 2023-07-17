@@ -15,8 +15,6 @@ import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Controller
@@ -41,12 +39,6 @@ public class WebSocketController {
         List<Transaction> transactions = transactionService
                 .findTransactionsListByUserIdWithoutCategories(telegramUtils.getTelegramId(principal));
         transactions.sort(Comparator.comparing(Transaction::getDate));
-
-//        if (!transactions.isEmpty()) {
-//            transactions.stream()
-//                    .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
-//                    .forEach(transactionDTO ->  transactionDTOMap.putIfAbsent(principal, transactionDTO));
-//        }
 
         return transactions.stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))

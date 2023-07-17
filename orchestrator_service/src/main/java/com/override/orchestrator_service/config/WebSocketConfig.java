@@ -10,16 +10,6 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-//    @EnableWebSocket
-//    implements WebSocketConfigurer
-//    @Autowired
-//    private TransactionWebSocketHandler transactionWebSocketHandler;
-//
-//    @Override
-//    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-//        registry.addHandler(transactionWebSocketHandler, "/transactions-ws");
-//        registry.addHandler(transactionWebSocketHandler, "/transactions-ws").withSockJS();
-//    }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
