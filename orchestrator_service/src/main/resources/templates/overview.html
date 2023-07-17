@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <title>Finances overview</title>
     <script src="/scripts/overview_scripts.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+
+    <!--    <script type="text/javascript" src="/scripts/websocket/transaction_ws_scripts.js"></script>-->
+    <script type="text/javascript" src="/scripts/websocket/transaction_wsSTOMP_scripts.js"></script>
+
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <link href="/css/overview.css" rel="stylesheet" type="text/css"/>
     <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
@@ -19,6 +25,7 @@
         <a href="/history">История</a>
         <a href="/analytics">Аналитика</a>
         <a href="/settings"><i class="fa fa-cog"></i></a>
+        <button id="wsss">обн</button>
         <span class="line"></span>
     </nav>
 </header>
