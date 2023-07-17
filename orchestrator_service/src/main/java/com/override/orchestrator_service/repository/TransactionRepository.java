@@ -56,5 +56,6 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             "group by c.id, MONTH(t.date), c.name")
     List<AnalyticsMonthlyIncomeForCategoryDTO> findMonthlyIncomeStatisticsByYearAndAccountId(@Param("accountId") Long accountId,
                                                                                              @Param("year") Integer year);
+
     void deleteAllByAccountId(Long accountId);
 }

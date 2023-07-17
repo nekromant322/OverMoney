@@ -1,8 +1,8 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.TransactionDTO;
-import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionDefineDTO;
+import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
@@ -95,5 +95,10 @@ public class TransactionController {
     @PutMapping("/transactions")
     public void updateTransaction(@RequestBody TransactionDTO transactionDTO) {
         transactionService.editTransaction(transactionDTO);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteTransactionById(@PathVariable("id") UUID id) {
+        transactionService.deleteTransactionById(id);
     }
 }

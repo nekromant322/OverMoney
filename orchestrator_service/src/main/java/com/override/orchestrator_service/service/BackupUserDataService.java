@@ -56,7 +56,6 @@ public class BackupUserDataService {
         Long accountId = userService.getAccountByTelegramId(telegramId).getId();
         transactionDTOList.replaceAll(t -> t.getCategoryName() != null ? t : replaceAllNull(t));
 
-
         for (TransactionDTO transactionDTO : transactionDTOList) {
             Transaction transaction = new Transaction();
             transaction.setId(transactionDTO.getId());

@@ -5,12 +5,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AnalyticsDataDTO {
-    private Long categoryId;
-    private String categoryName;
-    private Number mediumAmountOfTransactions;
+public class BugReportDTO {
+    private Long id;
+    private String report;
+    private Long userId;
+    private LocalDateTime localDateTime;
 }

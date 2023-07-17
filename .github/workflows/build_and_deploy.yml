@@ -35,6 +35,7 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
+      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
       nginx: ${{ steps.filter.outputs.nginx }}
     steps:
       - uses: actions/checkout@v2
@@ -50,6 +51,8 @@ jobs:
               - 'orchestrator_service/**'
             telegram-bot:
               - 'telegram_bot_service/**'
+            wit-ai-go-proxy:
+              - 'wit_ai_go_proxy/**'
             nginx:
               - 'nginx/**'
 
@@ -98,6 +101,14 @@ jobs:
           file: /telegram_bot_service/Dockerfile
           push: true
           tags: nekromant322/overmoney:telegram-bot
+
+      - name: Wit ai go proxy Build and Push to Dockerhub
+        if: ${{ needs.paths-filter.outputs.wit-ai-go-proxy == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          file: /wit_ai_go_proxy/Dockerfile
+          push: true
+          tags: nekromant322/overmoney:wit-ai-go-proxy
 
       - name: Copy nginx.conf and /sites-enabled via SSH
         if: ${{ needs.paths-filter.outputs.nginx == 'true' }}
@@ -162,6 +173,12 @@ jobs:
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop telegram-bot
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm telegram-bot
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:telegram-bot
+            fi
+            
+            if ${{ needs.paths-filter.outputs.wit-ai-go-proxy}}; then
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop wit-ai-go-proxy
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm wit-ai-go-proxy
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:wit-ai-go-proxy
             fi
             
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose -f docker-compose.yaml --env-file=overmoney-env.txt up -d
@@ -277,6 +294,33 @@ jobs:
               echo "Telegram Bot started"; 
               exit 0; 
              else echo "Telegram Bot not started yet"; 
+             fi; 
+             sleep ${{env.HEALTHCHECK_DELAY_BETWEEN_PING_ATTEMPTS}}; 
+             counter=`expr $counter + 1`
+            done; 
+            exit 1
+
+  healthcheck-wit-ai-go-proxy:
+    name: HealthCheckWit-ai-go-proxy
+    if: ${{ needs.paths-filter.outputs.wit-ai-go-proxy }}
+    runs-on: ubuntu-latest
+    needs: [ deploy, paths-filter ]
+    steps:
+      - name: Connect with SSH and Deploy
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            URL="localhost:3333/actuator/health";
+            counter=0;
+            while [ $counter -lt ${{env.HEALTHCHECK_MAX_ATTEMPTS_PING_DEPLOYED_SERVICE}} ]; do 
+             RESPONSE=$(curl $URL); 
+             if [ "$RESPONSE" = "${{env.HEALTHCHECK_REQUIRED_RESPONSE_UP}}" ]; then 
+              echo "Telegram Bot started"; 
+              exit 0; 
+             else echo "Wit ai go proxy not started yet"; 
              fi; 
              sleep ${{env.HEALTHCHECK_DELAY_BETWEEN_PING_ATTEMPTS}}; 
              counter=`expr $counter + 1`

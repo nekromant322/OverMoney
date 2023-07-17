@@ -30,7 +30,11 @@ public class AnalyticService {
 
     public List<AnalyticsDataDTO> getTotalCategorySumsForAnalytics(Long userId, Type type) throws InstanceNotFoundException {
         Long accId = accountService.getAccountByUserId(userId).getId();
-        return categoryRepository.findTotalSumOfAllCategoriesByAccIdAndType(accId, type);
+        List<AnalyticsDataDTO> list = categoryRepository.findMediumAmountOfAllCategoriesByAccIdAndType(accId, type);
+        return list.stream()
+                .filter(dto -> dto.getMediumAmountOfTransactions() != null)
+                .peek(dto -> dto.setMediumAmountOfTransactions(Math.round(dto.getMediumAmountOfTransactions().doubleValue())))
+                .collect(Collectors.toList());
     }
 
     public List<Integer> findAvailableYears(Long telegramId) throws InstanceNotFoundException {
@@ -59,10 +63,10 @@ public class AnalyticService {
         query.setParameter("accountId", accountId);
         query.setParameter("year", year);
 
-        return  mapObjectListToDTO(query.getResultList());
+        return mapObjectListToDTO(query.getResultList());
     }
 
-    private List<AnalyticsDataMonthDTO> mapObjectListToDTO(List<Object[]> objectList){
+    private List<AnalyticsDataMonthDTO> mapObjectListToDTO(List<Object[]> objectList) {
         List<AnalyticsDataMonthDTO> analyticsDataMonthDTOS = new ArrayList<>();
 
         analyticsDataMonthDTOS = objectList.stream()

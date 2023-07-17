@@ -34,6 +34,7 @@ public class TransactionService {
     private KeywordRepository keywordRepository;
     @Autowired
     private CategoryRepository categoryRepository;
+
     @Autowired
     private OverMoneyAccountService overMoneyAccountService;
 
@@ -181,5 +182,9 @@ public class TransactionService {
     @Transactional
     public void deleteTransactionsByAccountId(Long accountId) {
         transactionRepository.deleteAllByAccountId(accountId);
+    }
+
+    public void deleteTransactionById(UUID id) {
+        transactionRepository.deleteById(id);
     }
 }

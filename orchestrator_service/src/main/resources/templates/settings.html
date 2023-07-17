@@ -7,7 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
-    <link href="/css/setting.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/settings.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
@@ -22,7 +22,31 @@
 </header>
 <div class="content">
     <div class="info">
-        <button id="downloadButton">Скачать бекап данных</button>
+        <button id="downloadButton" class="get-backup-button">Скачать бекап данных</button>
+    </div>
+</div>
+<div class="info">
+    <h5></h5>
+    <button id="bugReportButton" class="bug-report-button">Отправить багрепорт</button>
+</div>
+
+<div class="modal" id="bugReportModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Отправить сообщение</h3>
+                <button class="close" data-dismiss="modal">x</button>
+            </div>
+            <div class="modal-body">
+                <input name="message"  type="text"
+                       class="form-control form-control-sm"
+                       id="messageEdit">
+            </div>
+            <div class="modal-footer">
+                <h6></h6>
+                <button id="sendReport" type="submit" class="btn btn-primary">Отправить</button>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -39,7 +63,6 @@
         <form id="formToFile">
             <p>Вы точно уверенны? Все данные будут перезаписаны</p>
             <input type="file" id="input" onclick="saveFile()" onchange="readFile(this)">
-<!--            <input type="submit">-->
             <input type="button" class="modal-additional-confirmation-close" onclick="closeModalConfirmation()"
                    value="Отмена">
         </form>
@@ -61,6 +84,3 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
 <script src="/scripts/setting_scripts.js"></script>
 </html>
-
-
-

@@ -5,12 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class AnalyticsDataDTO {
-    private Long categoryId;
-    private String categoryName;
-    private Number mediumAmountOfTransactions;
+public class AudioRecognizerGoRequestDTO {
+    private UUID id;
+    private byte[] voiceMessage;
 }

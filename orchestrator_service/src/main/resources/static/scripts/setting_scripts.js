@@ -86,11 +86,69 @@ function readFile(input) {
                 console.log(data)
             })
             .then((closeModalConfirmation))
-          //  .then(location.reload())
             .then((openModalSuccessfulBackup))
 
     }
 }
+
+//Модальное окно и отпрака багрепорта
+var modal = document.getElementById('bugReportModal');
+var btn = document.getElementById("bugReportButton");
+var span = document.getElementsByClassName("close")[0];
+var sendButton = $("#sendReport");
+
+btn.onclick = function (){
+    modal.style.display = "block";
+    messageInput.val("");
+}
+
+span.onclick = function (){
+    modal.style.display = "none";
+}
+
+window.onclick = function (event){
+    if  (event.target === modal){
+        modal.style.display = "none"
+    }
+}
+
+$("#messageEdit").on("keypress", function(e) {
+    if (e.which === 13 && !e.shiftKey) {
+        e.preventDefault();
+    }
+});
+
+sendButton.on("click", function() {
+    var messageInput = $("#messageEdit");
+    var report = messageInput.val();
+    var currentDate = new Date();
+    var currentDateTime = currentDate.toISOString();
+
+    if (report.trim() === "") {
+        alert("Сообщение не может быть пустым");
+        return;
+    }
+
+    var data = {
+        report: report,
+        localDateTime: currentDateTime
+    };
+
+    $.ajax({
+        url: "/bugreport",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function(response) {
+            modal.style.display = "none";
+            console.log(response);
+        },
+        error: function(xhr, status, error) {
+            modal.style.display = "none";
+            console.log(error);
+        }
+    });
+});
 
 
 
