@@ -29,7 +29,7 @@
 <div class="content">
     <div class="info">
         <p style="color:red">Восстановить данные из файла</p>
-        <button id="readButton">Обзор</button>
+        <button id="readButton">Восстановить</button>
     </div>
 </div>
 
@@ -38,11 +38,20 @@
         <span class="close" onclick="closeModalConfirmation()">&times;</span>
         <form id="formToFile">
             <p>Вы точно уверенны? Все данные будут перезаписаны</p>
-            <input type="file" id="input" onchange="readFile(this)">
+            <input type="file" id="input" onclick="saveFile()" onchange="readFile(this)">
 <!--            <input type="submit">-->
             <input type="button" class="modal-additional-confirmation-close" onclick="closeModalConfirmation()"
                    value="Отмена">
         </form>
+    </div>
+</div>
+
+<div class="modal-successful-backup" id="modal-successful-backup">
+    <div class="modal-successful-backup-content">
+        <span class="close" onclick="closeModalSuccessfulBackup()">&times;</span>
+            <p>Данные восстановлены!</p>
+            <input type="button" class="modal-additional-confirmation-close" onclick="closeModalSuccessfulBackup()"
+                   value="Ок">
     </div>
 </div>
 

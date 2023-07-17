@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.repository;
 
+import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -32,4 +33,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
                                    @Param("lastName") String lastName,
                                    @Param("photoUrl") String photoUrl,
                                    @Param("authDate") String authDate);
+
+    @Query("SELECT u.account FROM User u WHERE u.id = :telegramId")
+    OverMoneyAccount findAccountByTelegramId(@Param("telegramId") Long telegramId);
 }

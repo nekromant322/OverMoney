@@ -10,8 +10,8 @@ import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +34,6 @@ public class TransactionService {
     private KeywordRepository keywordRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private OverMoneyAccountService overMoneyAccountService;
 
@@ -157,22 +156,30 @@ public class TransactionService {
         KeywordId keywordId = new KeywordId();
         keywordId.setAccountId(transactionUpdate.getAccount().getId());
         keywordId.setName(transactionUpdate.getMessage());
-        Keyword keyword = keywordRepository.findByKeywordId(keywordId);
+        Optional<Keyword> keyword = keywordRepository.findByKeywordId(keywordId);
         if (!transactionUpdate.getMessage().equals(transactionDTO.getMessage())) {
-            if (keyword != null) {
-                keywordRepository.delete(keyword);
-            }
+            keyword.ifPresent(k -> keywordRepository.delete(k));
         }
         transactionUpdate.setMessage(transactionDTO.getMessage());
 
-        if (!transactionUpdate.getCategory().getName().equals(transactionDTO.getCategoryName())) {
-            Category category = categoryRepository.findCategoryByNameAndAccountId(transactionUpdate.getAccount().getId(),
-                    transactionDTO.getCategoryName());
-            transactionUpdate.setCategory(category);
-            if (keyword != null) {
-                keywordRepository.delete(keyword);
+        if (transactionUpdate.getCategory() != null) {
+            if (!transactionUpdate.getCategory().getName().equals(transactionDTO.getCategoryName())) {
+                Optional<Category> category = categoryRepository.findCategoryByNameAndAccountId(transactionUpdate.getAccount().getId(),
+                        transactionDTO.getCategoryName());
+                category.ifPresent(transactionUpdate::setCategory);
+                keyword.ifPresent(k -> keywordRepository.delete(k));
             }
         }
         return transactionRepository.save(transactionUpdate);
+    }
+
+    @Transactional
+    public void overwriteTransactionsFromBackupFile(List<Transaction> transactionList) {
+        transactionRepository.saveAll(transactionList);
+    }
+
+    @Transactional
+    public void deleteTransactionsByAccountId(Long accountId) {
+        transactionRepository.deleteAllByAccountId(accountId);
     }
 }

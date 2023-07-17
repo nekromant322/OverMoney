@@ -1,14 +1,32 @@
-let modal = document.getElementById("modal-additional-confirmation");
+let modalConfirmation = document.getElementById("modal-additional-confirmation");
+let modalSuccessful = document.getElementById("modal-successful-backup");
 
-window.onclick = function closeModalWhenMissClick(event) {
-    if (event.target === modal) {
-        modal.style.display = "none";
+window.onclick = function closeModalConfirmationWhenMissClick(event) {
+    if (event.target === modalConfirmation) {
+        modalConfirmation.style.display = "none";
     }
 }
 
 function closeModalConfirmation() {
-    modal = document.getElementById("modal-additional-confirmation");
-    modal.style.display = "none"
+    modalConfirmation = document.getElementById("modal-additional-confirmation");
+    modalConfirmation.style.display = "none"
+}
+
+window.onclick = function closeModalSuccessfulWhenMissClick(event) {
+    if (event.target === modalSuccessful) {
+        modalSuccessful.style.display = "none";
+        location.reload();
+    }
+}
+
+function closeModalSuccessfulBackup() {
+    modalSuccessful = document.getElementById("modal-successful-backup");
+    modalSuccessful.style.display = "none";
+    location.reload();
+}
+
+function openModalSuccessfulBackup() {
+    modalSuccessful.style.display = "block";
 }
 
 $("#downloadButton").click(function () {
@@ -16,8 +34,7 @@ $("#downloadButton").click(function () {
 });
 
 $("#readButton").click(function () {
-    modal.style.display = "block";
-    saveFile();
+    modalConfirmation.style.display = "block";
 });
 
 function saveFile() {
@@ -59,7 +76,7 @@ function readFile(input) {
         console.log(reader.result)
         fetch('./settings/backup/read', {
             method: 'POST',
-            body: JSON.stringify(reader.result),
+            body: reader.result,
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
             },
@@ -68,65 +85,12 @@ function readFile(input) {
             .then((data) => {
                 console.log(data)
             })
+            .then((closeModalConfirmation))
+          //  .then(location.reload())
+            .then((openModalSuccessfulBackup))
+
     }
 }
 
-// function readFile(input) {
-//     let file = input.files[0];
-//
-//     console.log(file)
-//
-//     let reader = new FileReader();
-//
-//     reader.readAsText(file);
-//
-//     reader.onload = function () {
-//         console.log(reader.result);
-//         $.ajax({
-//             url: './settings/backup/read',
-//             data: JSON.stringify(reader.result),
-//             dataType: 'application/json',
-//             processData: false,
-//             contentType: "application/json; charset=utf8",
-//             type: 'POST',
-//             async: false,
-//             success: function (data) {
-//                 console.log('upload success!')
-//             },
-//             error: function (error) {
-//                 console.log(error)
-//             }
-//         });
-//     };
-// }
-
-
-// //$('#formToFile').submit(function () {
-// function readFile(input) {
-//     let fd = new FormData();
-//     //let selectedFile;
-//     if (window.FormData === undefined) {
-//         alert('В вашем браузере FormData не поддерживается')
-//     } else {
-//         fd.append('file', $('#input')[0].files[0]);
-//         // selectedFile = $('#input').get(0).files[0];
-//     }
-//     $.ajax({
-//         url: './settings/backup/read',
-//         data: fd,
-//         dataType: 'json',
-//         processData: false,
-//         contentType: "application/json; charset=utf8",
-//         type: 'POST',
-//         async: false,
-//         success: function (data) {
-//             console.log('upload success!')
-//         },
-//         error: function (error) {
-//             console.log(error)
-//         }
-//     });
-// //});
-// }
 
 

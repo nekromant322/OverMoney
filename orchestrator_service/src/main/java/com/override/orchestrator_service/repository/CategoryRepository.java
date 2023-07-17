@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
@@ -32,5 +33,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     void updateAccountId(@Param("oldAccountId") Long oldAccountId, @Param("newAccountId") Long newAccountId);
 
     @Query("SELECT c FROM Category c WHERE c.account.id = :id AND c.name = :name")
-    Category findCategoryByNameAndAccountId(@Param("id") Long accountId, @Param("name") String name);
+    Optional<Category> findCategoryByNameAndAccountId(@Param("id") Long accountId, @Param("name") String name);
 }

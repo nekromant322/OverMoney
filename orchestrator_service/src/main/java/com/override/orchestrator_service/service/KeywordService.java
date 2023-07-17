@@ -12,10 +12,8 @@ import java.util.UUID;
 public class KeywordService {
     @Autowired
     private KeywordRepository keywordRepository;
-
     @Autowired
     private TransactionService transactionService;
-
     @Autowired
     private CategoryService categoryService;
 
@@ -43,7 +41,7 @@ public class KeywordService {
         keywordRepository.removeCategoryId(keywordId);
     }
 
-    public List<Keyword> findAllByOverMoneyAccount(OverMoneyAccount overMoneyAccount){
+    public List<Keyword> findAllByOverMoneyAccount(OverMoneyAccount overMoneyAccount) {
         return keywordRepository.findAllByOverMoneyAccount(overMoneyAccount.getId());
     }
 }

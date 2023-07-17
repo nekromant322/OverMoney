@@ -38,9 +38,8 @@ public class SettingsController {
     }
 
     @PostMapping("/backup/read")
-    public ResponseEntity<HttpStatus> readBackupFile(@RequestParam BackupUserDataDTO backupUserDataDTO) {
-
-
+    public ResponseEntity<HttpStatus> readBackupFile(@RequestBody BackupUserDataDTO backupUserDataDTO, Principal principal) {
+        backupUserDataService.writingDataFromBackupFile(backupUserDataDTO, telegramUtils.getTelegramId(principal));
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 }

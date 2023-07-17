@@ -2,6 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.AccountDataDTO;
 import com.override.orchestrator_service.mapper.UserMapper;
+import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.TelegramAuthRequest;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.UserRepository;
@@ -92,5 +93,9 @@ public class UserService {
 
     public List<User> getUsersByIds(List<Long> userIds) {
         return userRepository.findAllUsersByIds(userIds);
+    }
+
+    public OverMoneyAccount getAccountByTelegramId(Long telegramId) {
+        return  userRepository.findAccountByTelegramId(telegramId);
     }
 }
