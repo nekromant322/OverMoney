@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CategoryService {
@@ -83,6 +84,10 @@ public class CategoryService {
         Category updatedCategory = categoryMapper.mapCategoryDTOToCategory(categoryDTO, account);
         updatedCategory.setId(categoryDTO.getId());
         categoryRepository.save(updatedCategory);
+    }
+
+    public void saveCategories(Set<Category> categories) {
+        categoryRepository.saveAll(categories);
     }
 
     @Transactional

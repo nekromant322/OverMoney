@@ -3,13 +3,15 @@ package com.override.orchestrator_service.mapper;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.KeywordIdDTO;
+import com.override.dto.TransactionExelDTO;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -48,6 +50,14 @@ public class CategoryMapper {
         return Category.builder()
                 .name(StringUtils.capitalize(categoryDTO.getName()))
                 .type(categoryDTO.getType())
+                .account(account)
+                .build();
+    }
+
+    public Category mapTransactionExelDTOToCategory(TransactionExelDTO transactionExelDTO, OverMoneyAccount account) {
+        return Category.builder()
+                .name(StringUtils.capitalize(transactionExelDTO.getCategory()))
+                .type(transactionExelDTO.getType())
                 .account(account)
                 .build();
     }

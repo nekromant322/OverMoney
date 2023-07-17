@@ -1,13 +1,18 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.TransactionExelDTO;
+import com.override.dto.TransactionMessageDTO;
 import com.override.orchestrator_service.feign.RecognizerFeign;
-import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.Keyword;
+import com.override.orchestrator_service.model.OverMoneyAccount;
+import com.override.orchestrator_service.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.override.dto.TransactionMessageDTO;
 
 import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityManager;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
@@ -27,6 +32,11 @@ public class TransactionProcessingService {
 
     @Autowired
     private ExecutorService executorService;
+
+    @Autowired
+    private KeywordService keywordService;
+    @Autowired
+    EntityManager entityManager;
 
     private enum AmountPositionType {
         AMOUNT_AT_BEGINNING,
@@ -63,6 +73,22 @@ public class TransactionProcessingService {
                 .category(getTransactionCategory(transactionMessageDTO, overMoneyAccount, type))
                 .date(transactionMessageDTO.getDate())
                 .telegramUserId(transactionMessageDTO.getUserId())
+                .build();
+    }
+
+    public Transaction processTransactionFromExel(TransactionExelDTO transactionExelDTO, Long accountId) {
+        OverMoneyAccount overMoneyAccount = overMoneyAccountService
+                .getOverMoneyAccountByChatId(accountId);
+
+        Category category = getTransactionCategoryFromExel(transactionExelDTO, overMoneyAccount);
+        return Transaction.builder()
+                .message(transactionExelDTO.getMessage())
+                .category(category)
+                .amount(transactionExelDTO.getAmount().floatValue())
+                .date(transactionExelDTO.getDate())
+                .suggestedCategoryId(category.getId())
+                .account(overMoneyAccount)
+                .telegramUserId(overMoneyAccount.getChatId())
                 .build();
     }
 
@@ -122,6 +148,30 @@ public class TransactionProcessingService {
             }
         });
     }
+
+    public Category getTransactionCategoryFromExel(TransactionExelDTO transactionExelDTO, OverMoneyAccount overMoneyAccount) {
+
+        Set<Category> oldCategories = overMoneyAccount.getCategories();
+
+        Keyword matchingKeyword = getMatchingKeyword(oldCategories, transactionExelDTO.getMessage());
+        if (matchingKeyword != null) {
+            System.out.println("Добавлены в существующие категории о словам: " + transactionExelDTO.getMessage());
+            return matchingKeyword.getCategory();
+        }
+        Category category = getMatchingCategory(oldCategories, transactionExelDTO.getCategory());
+        if (category == null) {
+            oldCategories.forEach(c -> System.out.println(c.getName()));
+            System.out.println("Категория для проверки: " + transactionExelDTO.getCategory());
+
+        }
+
+
+        System.out.println("Добавлены слова к категории: " + category.getName());
+        keywordService.addKeywordForCategory(transactionExelDTO.getMessage(), category);
+
+        return category;
+    }
+
 
     private Category getTransactionCategory(TransactionMessageDTO transactionMessageDTO,
                                             OverMoneyAccount overMoneyAccount,
