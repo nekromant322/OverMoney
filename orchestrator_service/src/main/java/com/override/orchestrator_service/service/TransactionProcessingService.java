@@ -1,11 +1,14 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.TransactionMessageDTO;
 import com.override.orchestrator_service.feign.RecognizerFeign;
-import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.Keyword;
+import com.override.orchestrator_service.model.OverMoneyAccount;
+import com.override.orchestrator_service.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.override.dto.TransactionMessageDTO;
 
 import javax.management.InstanceNotFoundException;
 import java.util.*;
@@ -143,7 +146,7 @@ public class TransactionProcessingService {
         return matchingKeyword.getCategory();
     }
 
-    private Category getMatchingCategory(Set<Category> categories, String words) {
+    public Category getMatchingCategory(Set<Category> categories, String words) {
         Category matchingCategory = null;
         for (Category category : categories) {
             if (words.equalsIgnoreCase(category.getName())) {

@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class CategoryService {
@@ -42,6 +43,10 @@ public class CategoryService {
     public List<CategoryDTO> findCategoriesListByUserId(Long id) throws InstanceNotFoundException {
         OverMoneyAccount account = accountService.getAccountByUserId(id);
         return categoryMapper.mapCategoriesListToJsonResponse(accountMapper.mapAccountToCategoryList(account));
+    }
+
+    public Set<Category> getCategoriesByUserId(Long id) {
+        return categoryRepository.findAllByAccount_Id(id);
     }
 
     public List<CategoryDTO> findCategoriesListByType(Long id, Type type) throws InstanceNotFoundException {
@@ -83,6 +88,10 @@ public class CategoryService {
         Category updatedCategory = categoryMapper.mapCategoryDTOToCategory(categoryDTO, account);
         updatedCategory.setId(categoryDTO.getId());
         categoryRepository.save(updatedCategory);
+    }
+
+    public void saveAllCategories(Set<Category> categories) {
+        categoryRepository.saveAll(categories);
     }
 
     @Transactional
