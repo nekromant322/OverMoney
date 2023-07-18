@@ -12,6 +12,10 @@ services:
       POSTGRES_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD:-postgres}
       POSTGRES_DB: orchestrator-db
     restart: always
+    logging:
+      driver: "json-file" 
+      options:
+        max-size: 50m
 
   telegram-bot-db:
     container_name: telegram-bot-db
@@ -23,6 +27,10 @@ services:
       POSTGRES_PASSWORD: ${TELEGRAM_BOT_DB_PASSWORD:-postgres}
       POSTGRES_DB: telegram-bot-db
     restart: always
+    logging:
+      driver: "json-file" 
+      options:
+        max-size: 50m
 
   eureka:
     container_name: eureka
@@ -33,6 +41,10 @@ services:
     environment:
       _JAVA_OPTIONS: -Xmx256m
       SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
+    logging:
+      driver: "json-file" 
+      options:
+        max-size: 50m
 
   orchestrator:
     container_name: orchestrator
@@ -55,6 +67,10 @@ services:
       AUTH_HEADER_VALUE: ${AUTH_HEADER_VALUE}
     depends_on:
       - orchestrator-db
+    logging:
+      driver: "json-file" 
+      options:
+        max-size: 50m
 
   recognizer:
     container_name: recognizer
@@ -68,6 +84,11 @@ services:
       WIT_AI_TOKEN: ${WIT_AI_TOKEN}
       AUTH_HEADER_NAME: ${AUTH_HEADER_NAME}
       AUTH_HEADER_VALUE: ${AUTH_HEADER_VALUE}
+
+    logging:
+      driver: "json-file" 
+      options:
+        max-size: 50m
 
   telegram-bot:
     container_name: telegram-bot
@@ -89,6 +110,10 @@ services:
       AUTH_HEADER_VALUE: ${AUTH_HEADER_VALUE}
     depends_on:
       - telegram-bot-db
+    logging:
+      driver: "json-file" 
+      options:
+        max-size: 50m
 
   wit-ai-go-proxy:
     container_name: wit-ai-go-proxy
@@ -98,3 +123,7 @@ services:
       - '3333:3333'
     environment:
       WIT_AI_TOKEN: ${WIT_AI_TOKEN}
+    logging:
+      driver: "json-file" 
+      options:
+        max-size: 50m
