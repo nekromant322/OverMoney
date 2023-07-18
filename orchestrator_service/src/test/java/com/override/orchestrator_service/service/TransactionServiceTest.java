@@ -22,9 +22,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-
 import javax.management.InstanceNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -51,6 +53,17 @@ public class TransactionServiceTest {
         transaction.setId(UUID.randomUUID());
         transactionService.saveTransaction(transaction);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
+    }
+
+    @Test
+    void saveAllTransactionsTest() {
+        List<Transaction> transactions = new ArrayList<>();
+        Transaction transaction1 = new Transaction();
+        Transaction transaction2 = new Transaction();
+        transactions.add(transaction1);
+        transactions.add(transaction2);
+        transactionService.saveAllTransactions(transactions);
+        verify(transactionRepository, times(1)).saveAll(transactions);
     }
 
     @Test

@@ -52,6 +52,10 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
+    public void saveAllTransactions(List<Transaction> transactions) {
+        transactionRepository.saveAll(transactions);
+    }
+
     public List<Transaction> findTransactionsListByUserIdWithoutCategories(Long id) throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
         return transactionRepository.findAllWithoutCategoriesByAccountId(accID);

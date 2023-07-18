@@ -21,9 +21,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -88,6 +89,17 @@ public class CategoryServiceTest {
     }
 
     @Test
+    void saveAllCategoriesTest() {
+        Set<Category> categories = new HashSet<>();
+        Category category1 = new Category();
+        Category category2 = new Category();
+        categories.add(category1);
+        categories.add(category2);
+        categoryService.saveAllCategories(categories);
+        verify(categoryRepository, times(1)).saveAll(categories);
+    }
+
+    @Test
     public void findCategoriesListByTypeWhenTypeExpense() throws InstanceNotFoundException {
         final Category categoryExpense1 = TestFieldsUtil.generateTestCategory();
         final Category categoryExpense2 = TestFieldsUtil.generateTestCategory();
@@ -133,10 +145,10 @@ public class CategoryServiceTest {
         categoryToMerge.setId(12346L);
         categoryToMerge.setName("Тест2");
         MergeCategoryDTO categoryIDsTest =
-                 MergeCategoryDTO.builder()
-                .categoryToMergeId(categoryToMerge.getId())
-                .categoryToChangeId(categoryToChange.getId())
-                .build();
+                MergeCategoryDTO.builder()
+                        .categoryToMergeId(categoryToMerge.getId())
+                        .categoryToChangeId(categoryToChange.getId())
+                        .build();
 
         categoryService.mergeCategory(categoryIDsTest);
 
@@ -148,7 +160,7 @@ public class CategoryServiceTest {
     @Test
     public void updateCategoryTest() throws InstanceNotFoundException {
         final CategoryDTO category = TestFieldsUtil.generateTestCategoryDTO();
-        when(categoryMapper.mapCategoryDTOToCategory(any(),any())).thenReturn(TestFieldsUtil.generateTestCategory());
+        when(categoryMapper.mapCategoryDTOToCategory(any(), any())).thenReturn(TestFieldsUtil.generateTestCategory());
         categoryService.updateCategoryForAcc(any(), category);
         verify(categoryRepository, times(1)).save(any());
     }
