@@ -9,24 +9,30 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+import java.util.List;
 
 @Component
 public class InternalKeyAuthenticationFilter extends OncePerRequestFilter {
 
-    @Value("ZALUPA")
+    @Value("${filters.authorization-header.header-value}")
     private String secretKey;
+
+    @Value("${filters.authorization-header.header-name}")
+    private String headerName;
+
+    @Value("${filters.allowed-URIs}")
+    private List<String> allowedURIList;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request)  {
-        return request.getCookies() != null;
+        return request.getCookies() != null || allowedURIList.contains(request.getRequestURI());
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String internalKey = request.getHeader("X-INTERNAL-KEY");
+        String internalKey = request.getHeader(headerName);
 
         if ((internalKey != null) && internalKey.equals(secretKey)) {
             filterChain.doFilter(request, response);
