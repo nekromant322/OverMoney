@@ -19,7 +19,6 @@ public class InternalKeyAuthenticationFilter extends OncePerRequestFilter {
 
     private final String HEADER_NAME = "X-INTERNAL-KEY";
 
-
     @Value("${filters.allowed-URIs}")
     private List<String> allowedURIList;
 
