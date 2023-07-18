@@ -36,6 +36,13 @@ public class KeywordService {
         saveKeyword(keyword);
     }
 
+    public void addKeywordForCategory(String message, Category category) {
+        Keyword keyword = new Keyword();
+        keyword.setKeywordId(new KeywordId(message, category.getAccount().getId()));
+        keyword.setCategory(category);
+        saveKeyword(keyword);
+    }
+
     public void removeCategoryFromKeywordByTransactionId(UUID transactionId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         KeywordId keywordId = new KeywordId(transaction.getMessage(),
@@ -43,7 +50,7 @@ public class KeywordService {
         keywordRepository.removeCategoryId(keywordId);
     }
 
-    public List<Keyword> findAllByOverMoneyAccount(OverMoneyAccount overMoneyAccount){
+    public List<Keyword> findAllByOverMoneyAccount(OverMoneyAccount overMoneyAccount) {
         return keywordRepository.findAllByOverMoneyAccount(overMoneyAccount.getId());
     }
 }
