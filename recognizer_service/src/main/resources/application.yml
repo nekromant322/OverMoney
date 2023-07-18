@@ -46,5 +46,4 @@
     url: http://wit-ai-go-proxy:3333/recognizer
 
   authorization-header:
-    header-name: ${AUTH_HEADER_NAME:X-INTERNAL-KEY}
-    header-value: ${AUTH_HEADER_VALUE:X-INTERNAL-KEY}
+    header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}

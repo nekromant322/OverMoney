@@ -17,8 +17,8 @@ public class InternalKeyAuthenticationFilter extends OncePerRequestFilter {
     @Value("${filters.authorization-header.header-value}")
     private String secretKey;
 
-    @Value("${filters.authorization-header.header-name}")
-    private String headerName;
+    private final String HEADER_NAME = "X-INTERNAL-KEY";
+
 
     @Value("${filters.allowed-URIs}")
     private List<String> allowedURIList;
@@ -32,7 +32,7 @@ public class InternalKeyAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
 
-        String internalKey = request.getHeader(headerName);
+        String internalKey = request.getHeader(HEADER_NAME);
 
         if ((internalKey != null) && internalKey.equals(secretKey)) {
             filterChain.doFilter(request, response);

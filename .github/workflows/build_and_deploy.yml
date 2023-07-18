@@ -150,8 +150,7 @@ jobs:
             echo WIT_AI_TOKEN = ${{ secrets.WIT_AI_TOKEN }} >> overmoney-env.txt
             echo SPRING_APPLICATION_PROFILE = test >> overmoney-env.txt
             echo ORCHESTRATOR_HOST = ${{secrets.ORCHESTRATOR_HOST}} >> overmoney-env.txt
-            echo AUTH_HEADER_NAME = ${{secrets.AUTH_HEADER_NAME}} >> overmoney-env.txt
-            echo AUTH_HEADER_VALUE = ${{secrets.AUTH_HEADER_VALUE}} >> overmoney-env.txt
+            echo INTERNAL_KEY_HEADER = ${{secrets.INTERNAL_KEY_HEADER}} >> overmoney-env.txt
             
             
             if ${{ needs.paths-filter.outputs.eureka}}; then
