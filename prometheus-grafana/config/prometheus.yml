@@ -1,0 +1,22 @@
+scrape_configs:
+  - job_name: 'orchestrator_overmoney_monitoring'
+    scrape_interval: 5m
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['overridetech.ru:8081']
+        labels:
+          group: 'orchestrator'
+  - job_name: 'telegram_bot_overmoney_monitoring'
+    scrape_interval: 5m
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['overridetech.ru:8082']
+        labels:
+          group: 'telegram bot'
+  - job_name: 'recognizer_overmoney_monitoring'
+    scrape_interval: 5m
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['overridetech.ru:8080']
+        labels:
+          group: 'recognizer'
