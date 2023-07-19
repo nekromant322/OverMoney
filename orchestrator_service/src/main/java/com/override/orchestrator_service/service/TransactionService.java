@@ -150,7 +150,7 @@ public class TransactionService {
     }
 
     @Transactional
-    public Transaction editTransaction(TransactionDTO transactionDTO) {
+    public void editTransaction(TransactionDTO transactionDTO) {
         Transaction transactionUpdate = getTransactionById(transactionDTO.getId());
         transactionUpdate.setAmount(transactionDTO.getAmount());
 
@@ -163,15 +163,26 @@ public class TransactionService {
         }
         transactionUpdate.setMessage(transactionDTO.getMessage());
 
+        Category category = categoryRepository.findCategoryByNameAndAccountId(transactionUpdate.getAccount().getId(),
+                transactionDTO.getCategoryName());
         if (transactionUpdate.getCategory() != null) {
             if (!transactionUpdate.getCategory().getName().equals(transactionDTO.getCategoryName())) {
-                Optional<Category> category = categoryRepository.findCategoryByNameAndAccountId(transactionUpdate.getAccount().getId(),
-                        transactionDTO.getCategoryName());
-                category.ifPresent(transactionUpdate::setCategory);
+                transactionUpdate.setCategory(category);
                 keyword.ifPresent(k -> keywordRepository.delete(k));
             }
+        } else if (!transactionDTO.getCategoryName().equals("Нераспознанное")) {
+            if (transactionDTO.getMessage() != null) {
+                KeywordId newKeywordId = new KeywordId();
+                newKeywordId.setAccountId(transactionUpdate.getAccount().getId());
+                newKeywordId.setName(transactionDTO.getMessage());
+                Keyword newKeyword = new Keyword();
+                newKeyword.setKeywordId(newKeywordId);
+                newKeyword.setCategory(category);
+                keywordRepository.save(newKeyword);
+            }
+            transactionUpdate.setCategory(category);
         }
-        return transactionRepository.save(transactionUpdate);
+        transactionRepository.save(transactionUpdate);
     }
 
     public void saveTransactionsList(List<Transaction> transactionList) {
