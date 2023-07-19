@@ -38,6 +38,8 @@
     allowed-URIs:
       /actuator
       /landing
+      /actuator/health
+      /actuator/prometheus
 
 
   jwt:
