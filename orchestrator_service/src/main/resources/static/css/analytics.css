@@ -27,12 +27,14 @@
 }
 
 .info__switch:checked ~ .info__container {
-    max-width: 1100px;
-    max-height: 550px;
-        width: 1100px;
-        height: 550px;
+    max-width: 100%;
+    max-height: 100%;
     overflow: visible;
 
+}
+#expenseAnalytics, #incomeAnalytics {
+    max-width: 550px;
+    max-height: 550px;
 }
 #table_expense, #table_income {
     margin-left: 100px;
