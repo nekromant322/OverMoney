@@ -87,7 +87,6 @@ function readFile(input) {
             })
             .then((closeModalConfirmation))
             .then((openModalSuccessfulBackup))
-
     }
 }
 

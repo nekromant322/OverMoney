@@ -2,16 +2,13 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.BackupUserDataDTO;
 import com.override.dto.CategoryDTO;
-import com.override.dto.KeywordIdDTO;
 import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.mapper.CategoryMapper;
 import com.override.orchestrator_service.model.Category;
-import com.override.orchestrator_service.model.Keyword;
-import com.override.orchestrator_service.model.KeywordId;
+import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.util.ArrayList;
@@ -27,9 +24,9 @@ public class BackupUserDataService {
     @Autowired
     private CategoryMapper categoryMapper;
     @Autowired
-    private UserService userService;
-    @Autowired
     private KeywordService keywordService;
+    @Autowired
+    private OverMoneyAccountService overMoneyAccountService;
 
     public BackupUserDataDTO createBackupUserData(Long telegramId) throws InstanceNotFoundException {
         List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByUserId(telegramId);
@@ -40,86 +37,55 @@ public class BackupUserDataService {
                 .transactionDTOList(transactionDTOList).build();
     }
 
-    @Transactional
     public void writingDataFromBackupFile(BackupUserDataDTO backupUserDataDTO, Long telegramId) {
         List<Transaction> transactionList = createTransactionsFromBackupFile(backupUserDataDTO, telegramId);
-        if (transactionList.size() == backupUserDataDTO.getTransactionDTOList().size()) {
-            transactionService.deleteTransactionsByAccountId(userService.getAccountByTelegramId(telegramId).getId());
-            transactionService.overwriteTransactionsFromBackupFile(transactionList);
-        }
+        transactionService.saveTransactionsList(transactionList);
     }
 
     private List<Transaction> createTransactionsFromBackupFile(BackupUserDataDTO backupUserDataDTO, Long telegramId) {
         List<TransactionDTO> transactionDTOList = backupUserDataDTO.getTransactionDTOList();
         List<CategoryDTO> categoryDTOList = backupUserDataDTO.getCategoryDTOList();
         List<Transaction> transactionList = new ArrayList<>();
-        Long accountId = userService.getAccountByTelegramId(telegramId).getId();
-        transactionDTOList.replaceAll(t -> t.getCategoryName() != null ? t : replaceAllNull(t));
+        OverMoneyAccount overMoneyAccount = overMoneyAccountService.getNewAccount(telegramId);
+        Long accountId = overMoneyAccount.getId();
+        transactionDTOList.stream()
+                .filter(transactionDTO -> transactionDTO.getCategoryName() == null)
+                .forEach(transactionDTO -> transactionDTO.setCategoryName("Нераспознанное"));
+        List<Category> categoryList = new ArrayList<>();
+        categoryDTOList.forEach(categoryDTO -> categoryList.add(categoryMapper.mapCategoryDTOToCategory(categoryDTO,
+                overMoneyAccount)));
 
-        for (TransactionDTO transactionDTO : transactionDTOList) {
-            Transaction transaction = new Transaction();
-            transaction.setId(transactionDTO.getId());
-            transaction.setAmount(transactionDTO.getAmount());
-            transaction.setMessage(transactionDTO.getMessage());
-            Optional<Category> category = categoryService.getCategoryByNameAndAccountId(accountId, transactionDTO.getCategoryName());
-            Optional<CategoryDTO> categoryDTO = findCategoryDTOByNameFromBackupFile(categoryDTOList, transactionDTO.getCategoryName());
+        if (categoryDTOList.size() == categoryList.size()) {
+            categoryService.deletingAndOverwritingCategories(categoryList, accountId);
 
-            if (category.isPresent()) {
-                setKeywords(categoryDTO, category.get(), accountId);
-                transaction.setCategory(category.get());
-            } else {
-                if (categoryDTO.isPresent()) {
-                    Category categoryNew = categoryMapper.mapCategoryDTOToCategory(categoryDTO.get(),
-                            userService.getAccountByTelegramId(telegramId));
-                    categoryService.saveCategory(categoryNew);
-                    setKeywords(categoryDTO, categoryNew, accountId);
-                    transaction.setCategory(categoryNew);
-                }
+            for (TransactionDTO transactionDTO : transactionDTOList) {
+                Transaction transaction = new Transaction();
+                transaction.setAmount(transactionDTO.getAmount());
+                transaction.setMessage(transactionDTO.getMessage());
+                Optional<CategoryDTO> categoryDTO = findCategoryDTOByNameFromBackupFile(categoryDTOList, transactionDTO.getCategoryName());
+                Optional<Category> category = findCategoryByNameFromList(categoryList, transactionDTO.getCategoryName());
+                categoryDTO.ifPresent(dto -> category.ifPresent(c -> keywordService.setKeywordsFromCategoryDTO(dto, c, accountId)));
+                category.ifPresent(transaction::setCategory);
+                transaction.setAccount(overMoneyAccount);
+                transaction.setDate(transactionDTO.getDate());
+                transaction.setTelegramUserId(telegramId);
+
+                transactionList.add(transaction);
             }
-            transaction.setAccount(userService.getAccountByTelegramId(telegramId));
-            transaction.setDate(transactionDTO.getDate());
-            transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
-            transaction.setTelegramUserId(telegramId);
-
-            transactionList.add(transaction);
         }
         return transactionList;
+    }
+
+    private Optional<Category> findCategoryByNameFromList(List<Category> categoryList, String categoryName) {
+        return categoryList.stream()
+                .filter(category -> categoryName.equals(category.getName()))
+                .findFirst();
     }
 
     private Optional<CategoryDTO> findCategoryDTOByNameFromBackupFile(List<CategoryDTO> categoryDTOList, String categoryDTOName) {
         return categoryDTOList.stream()
                 .filter(categoryDTO -> categoryDTOName.equals(categoryDTO.getName()))
                 .findFirst();
-    }
-
-    private void setKeywords(Optional<CategoryDTO> categoryDTO, Category category, Long accountId) {
-        if (categoryDTO.isPresent()) {
-            List<KeywordIdDTO> keywordIdDTOList = categoryDTO.get().getKeywords();
-
-            for (KeywordIdDTO keywordIdDTO : keywordIdDTOList) {
-                KeywordId keywordId = new KeywordId();
-                keywordId.setAccountId(accountId);
-                keywordId.setName(keywordIdDTO.getName());
-                Keyword keyword = new Keyword();
-                keyword.setKeywordId(keywordId);
-                keyword.setCategory(category);
-                keywordService.saveKeyword(keyword);
-            }
-        }
-    }
-
-    private TransactionDTO replaceAllNull(TransactionDTO transactionDTO) {
-        TransactionDTO updateTransactionDTO = new TransactionDTO();
-        updateTransactionDTO.setId(transactionDTO.getId());
-        updateTransactionDTO.setCategoryName("Нераспознанное");
-        updateTransactionDTO.setMessage(transactionDTO.getMessage());
-        updateTransactionDTO.setAmount(transactionDTO.getAmount());
-        updateTransactionDTO.setDate(transactionDTO.getDate());
-        updateTransactionDTO.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
-        updateTransactionDTO.setTelegramUserId(transactionDTO.getTelegramUserId());
-        updateTransactionDTO.setTelegramUserName(transactionDTO.getTelegramUserName());
-
-        return updateTransactionDTO;
     }
 }
 

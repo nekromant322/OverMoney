@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -57,5 +58,6 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<AnalyticsMonthlyIncomeForCategoryDTO> findMonthlyIncomeStatisticsByYearAndAccountId(@Param("accountId") Long accountId,
                                                                                              @Param("year") Integer year);
 
+    @Transactional
     void deleteAllByAccountId(Long accountId);
 }

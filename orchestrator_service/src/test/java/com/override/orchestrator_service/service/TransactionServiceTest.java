@@ -155,4 +155,38 @@ public class TransactionServiceTest {
                         TestFieldsUtil.generateTestListOfAnalyticsMonthlyReportForYearDTOMixed())
         );
     }
+
+    @Test
+    public void saveTransactionsListTest() {
+        List<Transaction> transactionList = new ArrayList<>();
+        Transaction transaction1 = TestFieldsUtil.generateTestTransaction();
+        Transaction transaction2 = TestFieldsUtil.generateTestTransaction();
+        transactionList.add(transaction1);
+        transactionList.add(transaction2);
+
+        transactionService.saveTransactionsList(transactionList);
+
+        verify(transactionRepository, times(1)).saveAll(any());
+    }
+
+    @Test
+    public void deleteTransactionsByAccountIdTest() {
+        Transaction transaction = new Transaction();
+        OverMoneyAccount account = new OverMoneyAccount();
+        account.setId(1L);
+        transaction.setAccount(account);
+
+        transactionRepository.deleteAllByAccountId(account.getId());
+
+        verify(transactionRepository, times(1)).deleteAllByAccountId(account.getId());
+    }
+
+    @Test
+    public void deleteTransactionByIdTest() {
+        UUID id = UUID.randomUUID();
+
+        transactionService.deleteTransactionById(id);
+
+        verify(transactionRepository, times(1)).deleteById(id);
+    }
 }

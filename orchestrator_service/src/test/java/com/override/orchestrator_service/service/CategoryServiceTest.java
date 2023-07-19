@@ -133,10 +133,10 @@ public class CategoryServiceTest {
         categoryToMerge.setId(12346L);
         categoryToMerge.setName("Тест2");
         MergeCategoryDTO categoryIDsTest =
-                 MergeCategoryDTO.builder()
-                .categoryToMergeId(categoryToMerge.getId())
-                .categoryToChangeId(categoryToChange.getId())
-                .build();
+                MergeCategoryDTO.builder()
+                        .categoryToMergeId(categoryToMerge.getId())
+                        .categoryToChangeId(categoryToChange.getId())
+                        .build();
 
         categoryService.mergeCategory(categoryIDsTest);
 
@@ -148,7 +148,7 @@ public class CategoryServiceTest {
     @Test
     public void updateCategoryTest() throws InstanceNotFoundException {
         final CategoryDTO category = TestFieldsUtil.generateTestCategoryDTO();
-        when(categoryMapper.mapCategoryDTOToCategory(any(),any())).thenReturn(TestFieldsUtil.generateTestCategory());
+        when(categoryMapper.mapCategoryDTOToCategory(any(), any())).thenReturn(TestFieldsUtil.generateTestCategory());
         categoryService.updateCategoryForAcc(any(), category);
         verify(categoryRepository, times(1)).save(any());
     }
@@ -175,5 +175,23 @@ public class CategoryServiceTest {
         when(defaultCategoryProperties.getCategories()).thenReturn(categories);
         categoryService.setDefaultCategoryForAccount(accountTest.getId());
         verify(categoryRepository, times(3)).save(any());
+    }
+
+    @Test
+    public void deletingAndOverwritingCategoriesTest() {
+        Long accountId = 1L;
+        List<Category> categoryList = new ArrayList<>();
+        Category category = TestFieldsUtil.generateTestCategory();
+        categoryList.add(category);
+
+        keywordRepository.deleteAllByKeywordId_AccountId(accountId);
+        transactionRepository.deleteAllByAccountId(accountId);
+        categoryRepository.deleteAllByAccountId(accountId);
+        categoryRepository.saveAll(categoryList);
+
+        verify(keywordRepository, times(1)).deleteAllByKeywordId_AccountId(accountId);
+        verify(transactionRepository, times(1)).deleteAllByAccountId(accountId);
+        verify(categoryRepository, times(1)).deleteAllByAccountId(accountId);
+        verify(categoryRepository, times(1)).saveAll(categoryList);
     }
 }

@@ -174,14 +174,8 @@ public class TransactionService {
         return transactionRepository.save(transactionUpdate);
     }
 
-    @Transactional
-    public void overwriteTransactionsFromBackupFile(List<Transaction> transactionList) {
+    public void saveTransactionsList(List<Transaction> transactionList) {
         transactionRepository.saveAll(transactionList);
-    }
-
-    @Transactional
-    public void deleteTransactionsByAccountId(Long accountId) {
-        transactionRepository.deleteAllByAccountId(accountId);
     }
 
     public void deleteTransactionById(UUID id) {
