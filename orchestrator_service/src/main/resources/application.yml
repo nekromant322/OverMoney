@@ -36,10 +36,10 @@
     authorization-header:
       header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
     allowed-URIs:
-      /actuator
-      /landing
-      /actuator/health
-      /actuator/prometheus
+     /actuator,
+     /landing,
+     /actuator/health,
+     /actuator/prometheus
 
 
   jwt:
