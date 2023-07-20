@@ -143,7 +143,7 @@ public class TransactionProcessingService {
         return matchingKeyword.getCategory();
     }
 
-    private Category getMatchingCategory(Set<Category> categories, String words) {
+    public Category getMatchingCategory(Set<Category> categories, String words) {
         Category matchingCategory = null;
         for (Category category : categories) {
             if (words.equalsIgnoreCase(category.getName())) {

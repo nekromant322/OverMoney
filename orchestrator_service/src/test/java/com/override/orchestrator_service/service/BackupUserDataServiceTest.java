@@ -3,9 +3,12 @@ package com.override.orchestrator_service.service;
 import com.override.dto.BackupUserDataDTO;
 import com.override.dto.CategoryDTO;
 import com.override.dto.TransactionDTO;
+import com.override.orchestrator_service.mapper.CategoryMapper;
+import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
-import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,20 +27,34 @@ public class BackupUserDataServiceTest {
     @InjectMocks
     private BackupUserDataService backupUserDataService;
     @Mock
-    private TransactionRepository transactionRepository;
-    @Mock
     private CategoryService categoryService;
     @Mock
     private TransactionService transactionService;
+    @Mock
+    private OverMoneyAccountService overMoneyAccountService;
+    @Mock
+    private CategoryMapper categoryMapper;
+    @Mock
+    private TransactionProcessingService transactionProcessingService;
 
     @Test
     public void createBackupUserDataTest() throws InstanceNotFoundException {
-        Long telegramId = 1L;
-        List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByUserId(telegramId);
-        List<TransactionDTO> transactionDTOList = transactionService.findAlltransactionDTOForAcountByUserId(telegramId);
+        BackupUserDataDTO backupUserDataDTO = TestFieldsUtil.generateTestBackupUserDataDTO();
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
+        categoryDTOList.add(categoryDTO);
+        List<TransactionDTO> transactionDTOList = new ArrayList<>();
+        TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
+        transactionDTOList.add(transactionDTO);
 
-        verify(categoryService, times(1)).findCategoriesListByUserId(telegramId);
-        verify(transactionService, times(1)).findAlltransactionDTOForAcountByUserId(telegramId);
+        when(categoryService.findCategoriesListByUserId(any())).thenReturn(categoryDTOList);
+        when(transactionService.findAlltransactionDTOForAcountByUserId(any())).thenReturn(transactionDTOList);
+        backupUserDataService.createBackupUserData(any());
+
+        Assertions.assertEquals(backupUserDataDTO.getTransactionDTOList().size(), transactionDTOList.size());
+        Assertions.assertEquals(backupUserDataDTO.getCategoryDTOList().size(), categoryDTOList.size());
+        Assertions.assertEquals(backupUserDataDTO.getTransactionDTOList().get(0).getMessage(), transactionDTOList.get(0).getMessage());
+        Assertions.assertEquals(backupUserDataDTO.getCategoryDTOList().get(0).getId(), categoryDTOList.get(0).getId());
     }
 
     @Test
@@ -46,7 +63,36 @@ public class BackupUserDataServiceTest {
         Transaction transaction = TestFieldsUtil.generateTestTransaction();
         transactionList.add(transaction);
 
-        transactionRepository.saveAll(transactionList);
-        verify(transactionRepository, times(1)).saveAll(any());
+        transactionService.saveAllTransactions(transactionList);
+
+        verify(transactionService, times(1)).saveAllTransactions(transactionList);
     }
+
+    @Test
+    public void createTransactionsFromBackupFileTest() {
+        BackupUserDataDTO backupUserDataDTO = TestFieldsUtil.generateTestBackupUserDataDTO();
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
+        categoryDTOList.add(categoryDTO);
+        List<TransactionDTO> transactionDTOList = new ArrayList<>();
+        TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
+        transactionDTOList.add(transactionDTO);
+        backupUserDataDTO.setTransactionDTOList(transactionDTOList);
+        backupUserDataDTO.setCategoryDTOList(categoryDTOList);
+        OverMoneyAccount overMoneyAccount = TestFieldsUtil.generateTestAccount();
+        Category category = TestFieldsUtil.generateTestCategory();
+
+        when(overMoneyAccountService.getNewAccount(any())).thenReturn(overMoneyAccount);
+        when(categoryMapper.mapCategoryDTOToCategory(any(), any())).thenReturn(category);
+        when(transactionProcessingService.getMatchingCategory(any(), any())).thenReturn(category);
+        List<Transaction> transactionList = backupUserDataService.createTransactionsFromBackupFile(backupUserDataDTO, any());
+
+        verify(categoryService, times(1)).deletingAndOverwritingCategoriesByAccountId(any(), any());
+        Assertions.assertEquals(transactionList.size(), transactionDTOList.size());
+        Assertions.assertEquals(transactionList.get(0).getMessage(), transactionDTOList.get(0).getMessage());
+        Assertions.assertEquals(transactionList.get(0).getAmount(), transactionDTOList.get(0).getAmount());
+    }
+
+
 }
+

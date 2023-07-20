@@ -21,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class CategoryService {
@@ -99,10 +101,16 @@ public class CategoryService {
         keywordRepository.deleteByKeywordId(keywordId);
     }
 
-    public void deletingAndOverwritingCategories(List<Category> categoryList, Long accountId) {
+    public void deletingAndOverwritingCategoriesByAccountId(Set<Category> categorySet, Long accountId) {
         keywordRepository.deleteAllByKeywordId_AccountId(accountId);
         transactionRepository.deleteAllByAccountId(accountId);
         categoryRepository.deleteAllByAccountId(accountId);
-        categoryRepository.saveAll(categoryList);
+        categoryRepository.saveAll(categorySet);
+    }
+
+    public Optional<CategoryDTO> findCategoryDTOByNameFromList(List<CategoryDTO> categoryDTOList, String categoryDTOName) {
+        return categoryDTOList.stream()
+                .filter(categoryDTO -> categoryDTOName.equals(categoryDTO.getName()))
+                .findFirst();
     }
 }

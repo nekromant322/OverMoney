@@ -194,4 +194,28 @@ public class CategoryServiceTest {
         verify(categoryRepository, times(1)).deleteAllByAccountId(accountId);
         verify(categoryRepository, times(1)).saveAll(categoryList);
     }
+
+    @Test
+    public void findCategoryDTOByNameFromListTestIsPresent() {
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        categoryDTOList.add(TestFieldsUtil.generateTestCategoryDTO());
+        String categoryDTOName = "продукты";
+        Long id = 12345L;
+        Type type = Type.EXPENSE;
+
+        categoryService.findCategoryDTOByNameFromList(categoryDTOList, categoryDTOName);
+
+        Assertions.assertEquals(categoryDTOList.get(0).getName(), categoryDTOName);
+        Assertions.assertEquals(categoryDTOList.get(0).getId(), id);
+        Assertions.assertEquals(categoryDTOList.get(0).getType(), type);
+    }
+
+    @Test
+    public void findCategoryDTOByNameFromListTestIsEmpty() {
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        categoryDTOList.add(TestFieldsUtil.generateTestCategoryDTO());
+        String categoryDTOName = "грибы";
+
+        Assertions.assertTrue(categoryService.findCategoryDTOByNameFromList(categoryDTOList, categoryDTOName).isEmpty());
+    }
 }

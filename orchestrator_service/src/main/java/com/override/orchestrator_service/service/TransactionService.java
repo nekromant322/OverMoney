@@ -185,7 +185,7 @@ public class TransactionService {
         transactionRepository.save(transactionUpdate);
     }
 
-    public void saveTransactionsList(List<Transaction> transactionList) {
+    public void saveAllTransactions(List<Transaction> transactionList) {
         transactionRepository.saveAll(transactionList);
     }
 

@@ -84,9 +84,15 @@ function readFile(input) {
             .then((response) => response.json())
             .then((data) => {
                 console.log(data)
+                if (data === "ACCEPTED") {
+                    closeModalConfirmation();
+                    openModalSuccessfulBackup();
+                } else {
+                    alert("что то пошло не так")
+                    closeModalConfirmation();
+                    location.reload();
+                }
             })
-            .then((closeModalConfirmation))
-            .then((openModalSuccessfulBackup))
     }
 }
 
@@ -96,28 +102,28 @@ var btn = document.getElementById("bugReportButton");
 var span = document.getElementsByClassName("close")[0];
 var sendButton = $("#sendReport");
 
-btn.onclick = function (){
+btn.onclick = function () {
     modal.style.display = "block";
     messageInput.val("");
 }
 
-span.onclick = function (){
+span.onclick = function () {
     modal.style.display = "none";
 }
 
-window.onclick = function (event){
-    if  (event.target === modal){
+window.onclick = function (event) {
+    if (event.target === modal) {
         modal.style.display = "none"
     }
 }
 
-$("#messageEdit").on("keypress", function(e) {
+$("#messageEdit").on("keypress", function (e) {
     if (e.which === 13 && !e.shiftKey) {
         e.preventDefault();
     }
 });
 
-sendButton.on("click", function() {
+sendButton.on("click", function () {
     var messageInput = $("#messageEdit");
     var report = messageInput.val();
     var currentDate = new Date();
@@ -138,11 +144,11 @@ sendButton.on("click", function() {
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(data),
-        success: function(response) {
+        success: function (response) {
             modal.style.display = "none";
             console.log(response);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             modal.style.display = "none";
             console.log(error);
         }
