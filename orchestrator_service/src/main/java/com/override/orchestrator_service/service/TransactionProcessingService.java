@@ -71,6 +71,16 @@ public class TransactionProcessingService {
                 .build();
     }
 
+    /**
+     * Проверяет тип транзакции: веб-транзакция или транзакция в Telegram.
+     *
+     * @param transactionMessageDTO Объект, содержащий информацию о транзакции. Если транзакция
+     *                              отправлена из веб-приложения, информация о chatId и userId может
+     *                              отсутствовать. Этот метод заполняет эти поля.
+     * @param principal             Объект, представляющий текущего пользователя. Присутствует только в
+     *                              веб-транзакциях.
+     * @return Объект транзакции с заполненными необходимыми полями.
+     */
     public Transaction validateAndProcessTransaction(TransactionMessageDTO transactionMessageDTO, Principal principal) throws InstanceNotFoundException {
 
         if (principal != null) {
