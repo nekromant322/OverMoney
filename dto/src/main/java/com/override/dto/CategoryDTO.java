@@ -12,8 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class
-CategoryDTO implements Comparable<CategoryDTO> {
+public class CategoryDTO implements Comparable<CategoryDTO> {
     private Long id;
     private String name;
     private Type type;
