@@ -85,3 +85,15 @@ services:
       INTERNAL_KEY_HEADER: X-INTERNAL-KEY
     depends_on:
       - telegram-bot-db
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m

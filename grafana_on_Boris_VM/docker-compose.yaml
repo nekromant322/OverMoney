@@ -1,20 +1,10 @@
 version: '3.7'
 
 services:
-  prometheus:
-    image: prom/prometheus
-    ports:
-      - 9090:9090
-    volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
-    logging:
-      driver: "json-file"
-      options:
-        max-size: 50m
   grafana:
     image: grafana/grafana
     ports:
-      - 3000:3000
+      - '3000:3000'
     volumes:
       - /etc/grafana/grafana.key:/cert/grafana.key
       - /etc/grafana/grafana.crt:/cert/grafana.crt

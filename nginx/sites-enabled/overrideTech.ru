@@ -82,15 +82,7 @@ server {
         }
 
 
-        location /orchestrator/actuator/prometheus/ {
-            proxy_pass http://localhost:8081/actuator/prometheus/;
-        }
-
-        location /telegram/actuator/prometheus/ {
-            proxy_pass http://localhost:8082/actuator/prometheus/;
-        }
-
-        location /recognizer/actuator/prometheus/ {
-            proxy_pass http://localhost:8080/actuator/prometheus/;
+        location /prometheus/ {
+            proxy_pass http://localhost:9090/;
         }
 }
