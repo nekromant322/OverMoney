@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.CategoryDTO;
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.model.*;
@@ -12,6 +13,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.security.Key;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -104,5 +107,16 @@ public class KeywordServiceTest {
         keywordService.removeCategoryFromKeywordByTransactionId(transaction.getId());
         verify(keywordRepository, times(1))
                 .removeCategoryId(keyword.getKeywordId());
+    }
+
+    @Test
+    public void setKeywordsFromCategoryDTOTest() {
+        List<Keyword> keywordList = new ArrayList<>();
+        Keyword keyword = TestFieldsUtil.generateTestKeyword();
+        keywordList.add(keyword);
+
+        keywordRepository.saveAll(keywordList);
+
+        verify(keywordRepository, times(1)).saveAll(keywordList);
     }
 }

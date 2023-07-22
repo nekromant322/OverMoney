@@ -22,9 +22,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
-
 import javax.management.InstanceNotFoundException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -154,5 +156,39 @@ public class TransactionServiceTest {
                 Arguments.of(TestFieldsUtil.generateTestAnalyticsMonthlyIncomeForCategoryWithMixedFields(),
                         TestFieldsUtil.generateTestListOfAnalyticsMonthlyReportForYearDTOMixed())
         );
+    }
+
+    @Test
+    public void saveAllTransactionsTest() {
+        List<Transaction> transactionList = new ArrayList<>();
+        Transaction transaction1 = TestFieldsUtil.generateTestTransaction();
+        Transaction transaction2 = TestFieldsUtil.generateTestTransaction();
+        transactionList.add(transaction1);
+        transactionList.add(transaction2);
+
+        transactionService.saveAllTransactions(transactionList);
+
+        verify(transactionRepository, times(1)).saveAll(any());
+    }
+
+    @Test
+    public void deleteTransactionsByAccountIdTest() {
+        Transaction transaction = new Transaction();
+        OverMoneyAccount account = new OverMoneyAccount();
+        account.setId(1L);
+        transaction.setAccount(account);
+
+        transactionRepository.deleteAllByAccountId(account.getId());
+
+        verify(transactionRepository, times(1)).deleteAllByAccountId(account.getId());
+    }
+
+    @Test
+    public void deleteTransactionByIdTest() {
+        UUID id = UUID.randomUUID();
+
+        transactionService.deleteTransactionById(id);
+
+        verify(transactionRepository, times(1)).deleteById(id);
     }
 }

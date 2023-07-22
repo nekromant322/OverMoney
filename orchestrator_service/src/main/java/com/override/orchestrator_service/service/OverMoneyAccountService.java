@@ -7,6 +7,7 @@ import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
+import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,8 @@ public class OverMoneyAccountService {
     private TransactionRepository transactionRepository;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private KeywordRepository keywordRepository;
 
     public List<OverMoneyAccount> getAllAccounts() {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
@@ -95,8 +98,15 @@ public class OverMoneyAccountService {
 
     public void removeChatMemberFromAccount(ChatMemberDTO chatMemberDTO) throws InstanceNotFoundException {
         User user = userService.getUserById(chatMemberDTO.getUserId());
-        user.setAccount(null);
-        userService.saveUser(user);
+        OverMoneyAccount overMoneyAccount = overMoneyAccountRepository.findByChatId(chatMemberDTO.getUserId());
+
+        if (overMoneyAccount != null) {
+            user.setAccount(overMoneyAccount);
+            userService.saveUser(user);
+        } else {
+            user.setAccount(null);
+            userService.saveUser(user);
+        }
     }
 
     public void registerSingleOverMoneyAccount(AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
@@ -144,5 +154,11 @@ public class OverMoneyAccountService {
 
     public void deleteOverMoneyAccountById(Long id) {
         overMoneyAccountRepository.deleteById(id);
+    }
+
+    public void deletingAllTransactionsCategoriesKeywordsByAccountId(Long accountId) {
+        keywordRepository.deleteAllByKeywordId_AccountId(accountId);
+        transactionRepository.deleteAllByAccountId(accountId);
+        categoryRepository.deleteAllByAccountId(accountId);
     }
 }

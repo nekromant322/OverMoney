@@ -7,11 +7,9 @@ import com.override.orchestrator_service.model.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.apache.http.client.methods.RequestBuilder.put;
-
 public class TestFieldsUtil {
 
-    public static BugReport generateTestBugReport(){
+    public static BugReport generateTestBugReport() {
         return BugReport.builder()
                 .userId(123L)
                 .report("test")
@@ -20,7 +18,7 @@ public class TestFieldsUtil {
                 .build();
     }
 
-    public static BugReportDTO generateTestBugReportDTO(){
+    public static BugReportDTO generateTestBugReportDTO() {
         return BugReportDTO.builder()
                 .userId(123L)
                 .report("test")
@@ -216,7 +214,19 @@ public class TestFieldsUtil {
         return result;
     }
 
+    public static BackupUserDataDTO generateTestBackupUserDataDTO() {
+        List<TransactionDTO> transactionList = new ArrayList<>();
+        TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
+        transactionList.add(transactionDTO);
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
+        categoryDTOList.add(categoryDTO);
+        return BackupUserDataDTO.builder()
+                .transactionDTOList(transactionList)
+                .categoryDTOList(categoryDTOList)
+                .build();
 
+    }
 
 
 }

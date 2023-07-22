@@ -41,8 +41,8 @@ public class TransactionController {
     private DefineService defineService;
 
     @PostMapping("/transaction")
-    public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage) throws InstanceNotFoundException {
-        Transaction transaction = transactionProcessingService.processTransaction(transactionMessage);
+    public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage, Principal principal) throws InstanceNotFoundException {
+        Transaction transaction = transactionProcessingService.validateAndProcessTransaction(transactionMessage, principal);
         transactionService.saveTransaction(transaction);
         transactionProcessingService.suggestCategoryToProcessedTransaction(transactionMessage, transaction.getId());
         return transactionMapper.mapTransactionToTelegramResponse(transaction);

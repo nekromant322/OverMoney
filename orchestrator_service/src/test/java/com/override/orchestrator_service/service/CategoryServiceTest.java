@@ -133,10 +133,10 @@ public class CategoryServiceTest {
         categoryToMerge.setId(12346L);
         categoryToMerge.setName("Тест2");
         MergeCategoryDTO categoryIDsTest =
-                 MergeCategoryDTO.builder()
-                .categoryToMergeId(categoryToMerge.getId())
-                .categoryToChangeId(categoryToChange.getId())
-                .build();
+                MergeCategoryDTO.builder()
+                        .categoryToMergeId(categoryToMerge.getId())
+                        .categoryToChangeId(categoryToChange.getId())
+                        .build();
 
         categoryService.mergeCategory(categoryIDsTest);
 
@@ -148,7 +148,7 @@ public class CategoryServiceTest {
     @Test
     public void updateCategoryTest() throws InstanceNotFoundException {
         final CategoryDTO category = TestFieldsUtil.generateTestCategoryDTO();
-        when(categoryMapper.mapCategoryDTOToCategory(any(),any())).thenReturn(TestFieldsUtil.generateTestCategory());
+        when(categoryMapper.mapCategoryDTOToCategory(any(), any())).thenReturn(TestFieldsUtil.generateTestCategory());
         categoryService.updateCategoryForAcc(any(), category);
         verify(categoryRepository, times(1)).save(any());
     }
@@ -175,5 +175,40 @@ public class CategoryServiceTest {
         when(defaultCategoryProperties.getCategories()).thenReturn(categories);
         categoryService.setDefaultCategoryForAccount(accountTest.getId());
         verify(categoryRepository, times(3)).save(any());
+    }
+
+    @Test
+    public void saveAllCategoryTest() {
+        List<Category> categoryList = new ArrayList<>();
+        Category category = TestFieldsUtil.generateTestCategory();
+        categoryList.add(category);
+
+        categoryRepository.saveAll(categoryList);
+
+        verify(categoryRepository, times(1)).saveAll(categoryList);
+    }
+
+    @Test
+    public void findCategoryDTOByNameFromListTestIsPresent() {
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        categoryDTOList.add(TestFieldsUtil.generateTestCategoryDTO());
+        String categoryDTOName = "продукты";
+        Long id = 12345L;
+        Type type = Type.EXPENSE;
+
+        categoryService.findCategoryDTOByNameFromList(categoryDTOList, categoryDTOName);
+
+        Assertions.assertEquals(categoryDTOList.get(0).getName(), categoryDTOName);
+        Assertions.assertEquals(categoryDTOList.get(0).getId(), id);
+        Assertions.assertEquals(categoryDTOList.get(0).getType(), type);
+    }
+
+    @Test
+    public void findCategoryDTOByNameFromListTestIsEmpty() {
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        categoryDTOList.add(TestFieldsUtil.generateTestCategoryDTO());
+        String categoryDTOName = "грибы";
+
+        Assertions.assertTrue(categoryService.findCategoryDTOByNameFromList(categoryDTOList, categoryDTOName).isEmpty());
     }
 }
