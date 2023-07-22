@@ -1,16 +1,15 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
-import com.override.dto.TransactionMessageDTO;
 import com.override.orchestrator_service.feign.RecognizerFeign;
-import com.override.orchestrator_service.model.Category;
-import com.override.orchestrator_service.model.Keyword;
-import com.override.orchestrator_service.model.OverMoneyAccount;
-import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.override.dto.TransactionMessageDTO;
 
 import javax.management.InstanceNotFoundException;
+import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
@@ -30,6 +29,9 @@ public class TransactionProcessingService {
 
     @Autowired
     private ExecutorService executorService;
+
+    @Autowired
+    private TelegramUtils telegramUtils;
 
     private enum AmountPositionType {
         AMOUNT_AT_BEGINNING,
@@ -67,6 +69,28 @@ public class TransactionProcessingService {
                 .date(transactionMessageDTO.getDate())
                 .telegramUserId(transactionMessageDTO.getUserId())
                 .build();
+    }
+
+    /**
+     * Проверяет тип транзакции: веб-транзакция или транзакция в Telegram.
+     *
+     * @param transactionMessageDTO Объект, содержащий информацию о транзакции. Если транзакция
+     *                              отправлена из веб-приложения, информация о chatId и userId может
+     *                              отсутствовать. Этот метод заполняет эти поля.
+     * @param principal             Объект, представляющий текущего пользователя. Присутствует только в
+     *                              веб-транзакциях.
+     * @return Объект транзакции с заполненными необходимыми полями.
+     */
+    public Transaction validateAndProcessTransaction(TransactionMessageDTO transactionMessageDTO, Principal principal) throws InstanceNotFoundException {
+
+        if (principal != null) {
+            OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramUtils.getTelegramId(principal));
+
+            transactionMessageDTO.setChatId(overMoneyAccount.getChatId());
+            transactionMessageDTO.setUserId(telegramUtils.getTelegramId(principal));
+        }
+
+        return processTransaction(transactionMessageDTO);
     }
 
     private AmountPositionType checkTransactionType(String transactionMessage) throws InstanceNotFoundException {

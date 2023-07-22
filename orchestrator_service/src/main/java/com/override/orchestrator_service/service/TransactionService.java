@@ -154,30 +154,39 @@ public class TransactionService {
     }
 
     @Transactional
-    public Transaction editTransaction(TransactionDTO transactionDTO) {
+    public void editTransaction(TransactionDTO transactionDTO) {
         Transaction transactionUpdate = getTransactionById(transactionDTO.getId());
         transactionUpdate.setAmount(transactionDTO.getAmount());
 
         KeywordId keywordId = new KeywordId();
         keywordId.setAccountId(transactionUpdate.getAccount().getId());
         keywordId.setName(transactionUpdate.getMessage());
-        Keyword keyword = keywordRepository.findByKeywordId(keywordId);
+        Optional<Keyword> keyword = keywordRepository.findByKeywordId(keywordId);
         if (!transactionUpdate.getMessage().equals(transactionDTO.getMessage())) {
-            if (keyword != null) {
-                keywordRepository.delete(keyword);
-            }
+            keyword.ifPresent(k -> keywordRepository.delete(k));
         }
         transactionUpdate.setMessage(transactionDTO.getMessage());
 
-        if (!transactionUpdate.getCategory().getName().equals(transactionDTO.getCategoryName())) {
-            Category category = categoryRepository.findCategoryByNameAndAccountId(transactionUpdate.getAccount().getId(),
-                    transactionDTO.getCategoryName());
-            transactionUpdate.setCategory(category);
-            if (keyword != null) {
-                keywordRepository.delete(keyword);
+        Category category = categoryRepository.findCategoryByNameAndAccountId(transactionUpdate.getAccount().getId(),
+                transactionDTO.getCategoryName());
+        if (transactionUpdate.getCategory() != null) {
+            if (!transactionUpdate.getCategory().getName().equals(transactionDTO.getCategoryName())) {
+                transactionUpdate.setCategory(category);
+                keyword.ifPresent(k -> keywordRepository.delete(k));
             }
+        } else if (!transactionDTO.getCategoryName().equals("Нераспознанное")) {
+            if (transactionDTO.getMessage() != null) {
+                KeywordId newKeywordId = new KeywordId();
+                newKeywordId.setAccountId(transactionUpdate.getAccount().getId());
+                newKeywordId.setName(transactionDTO.getMessage());
+                Keyword newKeyword = new Keyword();
+                newKeyword.setKeywordId(newKeywordId);
+                newKeyword.setCategory(category);
+                keywordRepository.save(newKeyword);
+            }
+            transactionUpdate.setCategory(category);
         }
-        return transactionRepository.save(transactionUpdate);
+        transactionRepository.save(transactionUpdate);
     }
 
     public void deleteTransactionById(UUID id) {

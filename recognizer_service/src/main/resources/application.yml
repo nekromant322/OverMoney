@@ -44,3 +44,6 @@
 
   audio-recognizer-go-service:
     url: http://wit-ai-go-proxy:3333/recognizer
+
+  authorization-header:
+    header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}

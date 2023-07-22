@@ -95,8 +95,15 @@ public class OverMoneyAccountService {
 
     public void removeChatMemberFromAccount(ChatMemberDTO chatMemberDTO) throws InstanceNotFoundException {
         User user = userService.getUserById(chatMemberDTO.getUserId());
-        user.setAccount(null);
-        userService.saveUser(user);
+        OverMoneyAccount overMoneyAccount = overMoneyAccountRepository.findByChatId(chatMemberDTO.getUserId());
+
+        if (overMoneyAccount != null) {
+            user.setAccount(overMoneyAccount);
+            userService.saveUser(user);
+        } else {
+            user.setAccount(null);
+            userService.saveUser(user);
+        }
     }
 
     public void registerSingleOverMoneyAccount(AccountDataDTO accountDataDTO) throws InstanceNotFoundException {

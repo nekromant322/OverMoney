@@ -4,6 +4,7 @@ const EXPENSE = "EXPENSE";
 window.onload = function () {
     getUndefinedTransactionsData();
     getCategoriesData();
+    drawEmptyCircleForModal();
     let toast = toastr["success"]("Загрузка нераспознанных транзакций");
     toastr.options = {
         "closeButton": false,
@@ -258,6 +259,51 @@ function drawToast(e, categoryName, transactionDefined, transactionComment) {
     };
 }
 
+function drawCustomToast(message) {
+    toastr["success"](message)
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": true,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "7000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+}
+
+function drawErrorToast(message) {
+    toastr.error(message);
+
+    toastr.options = {
+        "closeButton": false,
+        "debug": true,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-bottom-left",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "7000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut",
+        "iconClass": null
+    };
+}
+
 function undefineTransaction(transactionDefined) {
     let url = './transaction/undefine'
     $.ajax({
@@ -277,7 +323,6 @@ function undefineTransaction(transactionDefined) {
         }
     });
 }
-
 
 function handleDragEnter(e) {
     this.classList.add('over');
@@ -333,7 +378,6 @@ function drawCategories(data) {
         category.addEventListener('drop', handleDrop);
     })
 }
-
 
 function drawCategory(category, length) {
     let categorySpace = document.querySelector('.categories-space');
@@ -635,7 +679,6 @@ function verificationToDeleteKeyword(keywordValue, keywordAccId) {
     })
 }
 
-
 function closeModalVerification() {
     $('.modal-verification-merge').fadeOut();
 }
@@ -673,3 +716,79 @@ function drawCategoryNotUniqueException(error) {
     }
 
 }
+
+let modal = document.getElementById('modal-add-transaction');
+let sendTransactionButton = jQuery("#sendTransaction");
+let span = document.getElementById('close');
+function openModal() {
+    modal.style.display = "block";
+    $("#messageEdit").val("");
+}
+function closeModal() {
+    modal.style.display = "none";
+}
+
+span.onclick = function () {
+    closeModal();
+}
+
+sendTransactionButton.on("click", function () {
+    var messageInput = $("#messageEdit");
+    var message = messageInput.val();
+    var currentDate = new Date();
+    var currentDateTime = currentDate.toISOString();
+
+    if (message.trim() === "") {
+        alert("Сообщение не может быть пустым");
+        return;
+    }
+
+    var data = {
+        message: message,
+        date: currentDateTime
+    };
+
+    $.ajax({
+        url: "/transaction",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(data),
+        success: function (response) {
+            closeModal();
+            console.log(response);
+            drawCustomToast('Транзакция успешно добавлена')
+        },
+        error: function (xhr, status, error) {
+            closeModal();
+            modal.style.display = "none";
+            console.log(error);
+            drawErrorToast(status)
+
+        }
+    });
+});
+
+window.onclick = function (event) {
+    if (event.target == modal) {
+        closeModal();
+    }
+}
+
+function drawEmptyCircleForModal() {
+    let undefinedSpace = document.querySelector('.undefined-space');
+    let newCircle = document.createElement('div')
+    newCircle.className = "add-transaction-circle"
+    newCircle.draggable = false
+    newCircle.innerText =' ' + '+' + '\n'
+    newCircle.onclick = function () {
+        openModal();
+    }
+    setCircleDimensions(newCircle, 100, 400);
+    undefinedSpace.insertAdjacentElement('beforeend', newCircle);
+}
+
+
+
+
+
+

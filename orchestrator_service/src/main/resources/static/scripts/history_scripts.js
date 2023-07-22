@@ -134,7 +134,7 @@ function fillModalWindow(response) {
     $("#idTransactionInForm").val(response.id);
     $("#amountEdit").val(response.amount);
     $("#messageEdit").val(response.message);
-    categoryNow = response.categoryName;
+    response.categoryName == null ? categoryNow = "Нераспознанное" : categoryNow = response.categoryName;
     writeAllCategoryInModal();
     $("#nameCategoryEdit").html(options);
 }
