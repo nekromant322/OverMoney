@@ -10,32 +10,6 @@ server {
         return 301 https://$host$request_uri;
 
         error_log  /var/log/nginx/error_log  crit;
-
-        location / {
-                proxy_pass http://localhost:8081/;  # HTTP orchestrator
-        }
-
-        location /kibana/ {
-            proxy_pass http://localhost:5601/;
-        }
-        location /eureka/ {
-            proxy_pass http://localhost:8761/;  # HTTP
-
-        }
-        location /telegram/ {
-                proxy_pass http://localhost:8082/;  # HTTP
-
-        }
-        location /twitch-bot/ {
-                proxy_pass https://localhost:9000/;
-        }
-
-        location ~ \.css {
-                    add_header  Content-Type    text/css;
-        }
-        location ~ \.js {
-                    add_header  Content-Type    application/x-javascript;
-        }
 }
 
 server {
@@ -52,7 +26,7 @@ server {
         resolver 8.8.8.8;
 
         location / {
-                proxy_pass http://localhost:8081/;  # HTTP orchestrator
+                proxy_pass http://localhost:8081/;  # orchestrator
         }
         location /eureka/ {
                 proxy_pass http://localhost:8761/;  # HTTP
@@ -69,18 +43,9 @@ server {
                 proxy_set_header Connection             "upgrade";
                 proxy_read_timeout                      600;
         }
-
-        location /telegram/ {
-                proxy_pass http://localhost:8082/;  # HTTP
-
-        }
-        location /kibana/ {
-            proxy_pass http://localhost:5601/;
-        }
         location /review-bot/ {
             proxy_pass http://localhost:9100/;
         }
-
 
         location /prometheus/ {
             proxy_pass http://localhost:9090/;
