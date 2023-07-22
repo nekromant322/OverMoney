@@ -26,7 +26,7 @@ server {
         resolver 8.8.8.8;
 
         location / {
-                proxy_pass http://localhost:8081/;  # HTTP orchestrator
+                proxy_pass http://localhost:8081/;  # orchestrator
         }
         location /eureka/ {
                 proxy_pass http://localhost:8761/;  # HTTP
@@ -43,28 +43,7 @@ server {
                 proxy_set_header Connection             "upgrade";
                 proxy_read_timeout                      600;
         }
-
-        location /telegram/ {
-                proxy_pass http://localhost:8082/;  # HTTP
-
-        }
-        location /kibana/ {
-            proxy_pass http://localhost:5601/;
-        }
         location /review-bot/ {
             proxy_pass http://localhost:9100/;
-        }
-
-
-        location /orchestrator/actuator/prometheus/ {
-            proxy_pass http://localhost:8081/actuator/prometheus/;
-        }
-
-        location /telegram/actuator/prometheus/ {
-            proxy_pass http://localhost:8082/actuator/prometheus/;
-        }
-
-        location /recognizer/actuator/prometheus/ {
-            proxy_pass http://localhost:8080/actuator/prometheus/;
         }
 }
