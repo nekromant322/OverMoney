@@ -227,5 +227,19 @@ public class TestFieldsUtil {
         return result;
     }
 
+    public static BackupUserDataDTO generateTestBackupUserDataDTO() {
+        List<TransactionDTO> transactionList = new ArrayList<>();
+        TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
+        transactionList.add(transactionDTO);
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
+        categoryDTOList.add(categoryDTO);
+        return BackupUserDataDTO.builder()
+                .transactionDTOList(transactionList)
+                .categoryDTOList(categoryDTOList)
+                .build();
+
+    }
+
 
 }

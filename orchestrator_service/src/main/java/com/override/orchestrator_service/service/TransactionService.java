@@ -189,6 +189,10 @@ public class TransactionService {
         transactionRepository.save(transactionUpdate);
     }
 
+    public void saveAllTransactions(List<Transaction> transactionList) {
+        transactionRepository.saveAll(transactionList);
+    }
+
     public void deleteTransactionById(UUID id) {
         transactionRepository.deleteById(id);
     }
