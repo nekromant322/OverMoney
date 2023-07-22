@@ -7,11 +7,9 @@ import com.override.orchestrator_service.model.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static org.apache.http.client.methods.RequestBuilder.put;
-
 public class TestFieldsUtil {
 
-    public static BugReport generateTestBugReport(){
+    public static BugReport generateTestBugReport() {
         return BugReport.builder()
                 .userId(123L)
                 .report("test")
@@ -20,7 +18,7 @@ public class TestFieldsUtil {
                 .build();
     }
 
-    public static BugReportDTO generateTestBugReportDTO(){
+    public static BugReportDTO generateTestBugReportDTO() {
         return BugReportDTO.builder()
                 .userId(123L)
                 .report("test")
@@ -55,12 +53,14 @@ public class TestFieldsUtil {
         Set<Keyword> keywordSet = new HashSet<>();
         keywordSet.add(generateTestKeyword());
 
-        return Category.builder()
+        Category category = Category.builder()
                 .id(12345L)
                 .name("продукты")
                 .type(Type.EXPENSE)
                 .keywords(keywordSet)
                 .build();
+        category.setAccount(generateTestAccountNoCategory());
+        return category;
     }
 
     public static Transaction generateTestTransaction() {
@@ -105,6 +105,17 @@ public class TestFieldsUtil {
                 .id(1L)
                 .chatId(404723191L)
                 .categories(categorySet)
+                .users(userSet)
+                .build();
+    }
+
+    public static OverMoneyAccount generateTestAccountNoCategory() {
+        Set<User> userSet = new HashSet<>();
+        userSet.add(generateTestUser());
+
+        return OverMoneyAccount.builder()
+                .id(1L)
+                .chatId(404723191L)
                 .users(userSet)
                 .build();
     }
@@ -215,8 +226,6 @@ public class TestFieldsUtil {
         result.addAll(generateTestAnalyticsMonthlyIncomeForCategoryWithoutNullFields());
         return result;
     }
-
-
 
 
 }

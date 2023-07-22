@@ -91,12 +91,28 @@ public class CategoryServiceTest {
     @Test
     void saveAllCategoriesTest() {
         Set<Category> categories = new HashSet<>();
-        Category category1 = new Category();
-        Category category2 = new Category();
+        Category category1 = TestFieldsUtil.generateTestCategory();
+        Category category2 = TestFieldsUtil.generateTestCategory();
+        category2.setName("ЖКХ");
         categories.add(category1);
         categories.add(category2);
         categoryService.saveAllCategories(categories);
         verify(categoryRepository, times(1)).saveAll(categories);
+    }
+
+    @Test
+    public void testGetCategoriesByUserId() {
+        OverMoneyAccount overMoneyAccount = TestFieldsUtil.generateTestAccountNoCategory();
+        Category category1 = TestFieldsUtil.generateTestCategory();
+        category1.setAccount(overMoneyAccount);
+        Category category2 = TestFieldsUtil.generateTestCategory();
+        category2.setName("Category 2");
+        category2.setAccount(overMoneyAccount);
+        Set<Category> categories = Set.of(category1, category2);
+
+        when(categoryRepository.findAllByAccount_Id(overMoneyAccount.getId())).thenReturn(categories);
+        Set<Category> result = categoryService.getCategoriesByUserId(overMoneyAccount.getId());
+        assertEquals(categories.size(), result.size());
     }
 
     @Test

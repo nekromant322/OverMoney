@@ -82,10 +82,10 @@ public class TransactionXLSXServiceTest {
         List<TransactionDTO> transactionDTOS = new ArrayList<>();
         OverMoneyAccount overMoneyAccount = TestFieldsUtil.generateTestAccount();
 
-        Category category1 = new Category();
+        Category category1 = TestFieldsUtil.generateTestCategory();
         category1.setName("Category 1");
 
-        Category category2 = new Category();
+        Category category2 = TestFieldsUtil.generateTestCategory();
         category2.setName("Category 2");
 
         Set<Category> newCategories = new HashSet<>();
