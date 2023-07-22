@@ -1,0 +1,28 @@
+#Этот докер компоус сейчас раскатывается на виртуалке Бориса вручную, в деплой на прод это НЕ попадает.
+#Админ и пароль оставлены по умолчанию - после перезапуска сервиса обязательно заходить на веб-интерфейс over-money.ru/grafana и менять.
+
+version: '3.7'
+
+services:
+  grafana:
+    image: grafana/grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - /etc/grafana/grafana.key:/cert/grafana.key
+      - /etc/grafana/grafana.crt:/cert/grafana.crt
+    environment:
+      - GF_SERVER_HTTP_ADDR=
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_SERVER_PROTOCOL=http
+      - GF_SERVER_DOMAIN=over-money.ru
+      - GF_SERVER_ENFORCE_DOMAIN=False
+      - GF_SERVER_ROOT_URL=https://over-money.ru/grafana/
+      - GF_SERVER_CERT_KEY=/cert/grafana.key
+      - GF_SERVER_CERT_FILE=/cert/grafana.crt
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m

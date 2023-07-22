@@ -46,4 +46,8 @@ server {
         location /review-bot/ {
             proxy_pass http://localhost:9100/;
         }
+
+        location /prometheus/ {
+            proxy_pass http://localhost:9090/;
+        }
 }

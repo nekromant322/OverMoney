@@ -123,3 +123,17 @@ services:
       driver: "json-file"
       options:
         max-size: 50m
+
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
+    restart: unless-stopped
+    command:
+      - '--storage.tsdb.retention.time=10d'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
