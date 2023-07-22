@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,4 +36,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("SELECT c FROM Category c WHERE c.account.id = :id AND c.name = :name")
     Category findCategoryByNameAndAccountId(@Param("id") Long accountId, @Param("name") String name);
+
+    @Transactional
+    void deleteAllByAccountId(Long accountId);
 }

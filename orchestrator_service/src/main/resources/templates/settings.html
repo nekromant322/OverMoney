@@ -6,12 +6,12 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
     <link href="/css/settings.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<
-<header id="header">
+<<header id="header">
     <nav class="links" style="--items: 4;">
         <a href="/overview">Обзор</a>
         <a href="/history">История</a>
@@ -49,6 +49,35 @@
         </div>
     </div>
 </div>
+
+<div class="content">
+    <div class="info">
+        <p style="color:red">Восстановить данные из файла</p>
+        <button id="readButton">Восстановить</button>
+    </div>
+</div>
+
+<div class="modal-additional-confirmation" id="modal-additional-confirmation">
+    <div class="modal-additional-confirmation-content">
+        <span class="close" onclick="closeModalConfirmation()">&times;</span>
+        <form id="formToFile">
+            <p>Вы точно уверенны? Все данные будут перезаписаны</p>
+            <input type="file" id="input" onclick="saveFile()" onchange="readFile(this)">
+            <input type="button" class="modal-additional-confirmation-close" onclick="closeModalConfirmation()"
+                   value="Отмена">
+        </form>
+    </div>
+</div>
+
+<div class="modal-successful-backup" id="modal-successful-backup">
+    <div class="modal-successful-backup-content">
+        <span class="close" onclick="closeModalSuccessfulBackup()">&times;</span>
+            <p>Данные восстановлены!</p>
+            <input type="button" class="modal-additional-confirmation-close" onclick="closeModalSuccessfulBackup()"
+                   value="Ок">
+    </div>
+</div>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

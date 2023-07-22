@@ -1,21 +1,59 @@
+let modalConfirmation = document.getElementById("modal-additional-confirmation");
+let modalSuccessful = document.getElementById("modal-successful-backup");
 
-//Скачаивание файла бекапа
-$("#downloadButton").click(function() {
+window.onclick = function closeModalConfirmationWhenMissClick(event) {
+    if (event.target === modalConfirmation) {
+        modalConfirmation.style.display = "none";
+    }
+}
+
+function closeModalConfirmation() {
+    modalConfirmation = document.getElementById("modal-additional-confirmation");
+    modalConfirmation.style.display = "none"
+}
+
+window.onclick = function closeModalSuccessfulWhenMissClick(event) {
+    if (event.target === modalSuccessful) {
+        modalSuccessful.style.display = "none";
+        location.reload();
+    }
+}
+
+function closeModalSuccessfulBackup() {
+    modalSuccessful = document.getElementById("modal-successful-backup");
+    modalSuccessful.style.display = "none";
+    location.reload();
+}
+
+function openModalSuccessfulBackup() {
+    modalSuccessful.style.display = "block";
+}
+
+$("#downloadButton").click(function () {
+    saveFile();
+});
+
+$("#readButton").click(function () {
+    modalConfirmation.style.display = "block";
+});
+
+function saveFile() {
     $.ajax({
         url: './settings/backup',
         method: 'GET',
-        success: function(data) {
-            var json = JSON.stringify(data);
-            var blob = new Blob([json], {type: "application/json"});
-            var url  = URL.createObjectURL(blob);
+        async: false,
+        success: function (data) {
+            let json = JSON.stringify(data);
+            let blob = new Blob([json], {type: "application/json"});
+            let url = URL.createObjectURL(blob);
 
-            var a = document.createElement('a');
+            let a = document.createElement('a');
 
             // текущая дата в строку в формате dd.mm.yyyy
-            var date = new Date();
-            var dateString = [
+            let date = new Date();
+            let dateString = [
                 ('0' + date.getDate()).slice(-2),
-                ('0' + (date.getMonth()+1)).slice(-2),
+                ('0' + (date.getMonth() + 1)).slice(-2),
                 date.getFullYear()
             ].join('.');
 
@@ -25,8 +63,38 @@ $("#downloadButton").click(function() {
             a.click();
         }
     });
-});
+}
 
+function readFile(input) {
+    let file = input.files[0];
+    console.log(file);
+
+    let reader = new FileReader();
+    reader.readAsText(file);
+
+    reader.onload = function () {
+        console.log(reader.result)
+        fetch('./settings/backup/read', {
+            method: 'POST',
+            body: reader.result,
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8',
+            },
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data)
+                if (data === "ACCEPTED") {
+                    closeModalConfirmation();
+                    openModalSuccessfulBackup();
+                } else {
+                    alert("что то пошло не так")
+                    closeModalConfirmation();
+                    location.reload();
+                }
+            })
+    }
+}
 
 //Модальное окно и отпрака багрепорта
 var modal = document.getElementById('bugReportModal');
@@ -34,28 +102,28 @@ var btn = document.getElementById("bugReportButton");
 var span = document.getElementsByClassName("close")[0];
 var sendButton = $("#sendReport");
 
-btn.onclick = function (){
+btn.onclick = function () {
     modal.style.display = "block";
     messageInput.val("");
 }
 
-span.onclick = function (){
+span.onclick = function () {
     modal.style.display = "none";
 }
 
-window.onclick = function (event){
-    if  (event.target == modal){
+window.onclick = function (event) {
+    if (event.target === modal) {
         modal.style.display = "none"
     }
 }
 
-$("#messageEdit").on("keypress", function(e) {
+$("#messageEdit").on("keypress", function (e) {
     if (e.which === 13 && !e.shiftKey) {
         e.preventDefault();
     }
 });
 
-sendButton.on("click", function() {
+sendButton.on("click", function () {
     var messageInput = $("#messageEdit");
     var report = messageInput.val();
     var currentDate = new Date();
@@ -76,13 +144,16 @@ sendButton.on("click", function() {
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(data),
-        success: function(response) {
+        success: function (response) {
             modal.style.display = "none";
             console.log(response);
         },
-        error: function(xhr, status, error) {
+        error: function (xhr, status, error) {
             modal.style.display = "none";
             console.log(error);
         }
     });
 });
+
+
+
