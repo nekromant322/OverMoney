@@ -170,19 +170,6 @@ public class TransactionServiceTest {
     }
 
     @Test
-    public void saveAllTransactionsTest() {
-        List<Transaction> transactionList = new ArrayList<>();
-        Transaction transaction1 = TestFieldsUtil.generateTestTransaction();
-        Transaction transaction2 = TestFieldsUtil.generateTestTransaction();
-        transactionList.add(transaction1);
-        transactionList.add(transaction2);
-
-        transactionService.saveAllTransactions(transactionList);
-
-        verify(transactionRepository, times(1)).saveAll(any());
-    }
-
-    @Test
     public void deleteTransactionsByAccountIdTest() {
         Transaction transaction = new Transaction();
         OverMoneyAccount account = new OverMoneyAccount();

@@ -88,7 +88,7 @@ public class BackupUserDataServiceTest {
         List<Transaction> transactionList = backupUserDataService.createTransactionsFromBackupFile(backupUserDataDTO, any());
 
         verify(overMoneyAccountService, times(1)).deletingAllTransactionsCategoriesKeywordsByAccountId(any());
-        verify(categoryService, times(1)).saveAllCategory(any());
+        verify(categoryService, times(1)).saveAllCategories(any());
         Assertions.assertEquals(transactionList.size(), transactionDTOList.size());
         Assertions.assertEquals(transactionList.get(0).getMessage(), transactionDTOList.get(0).getMessage());
         Assertions.assertEquals(transactionList.get(0).getAmount(), transactionDTOList.get(0).getAmount());

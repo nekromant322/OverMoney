@@ -56,7 +56,7 @@ public class BackupUserDataService {
                 overMoneyAccount)));
 
         overMoneyAccountService.deletingAllTransactionsCategoriesKeywordsByAccountId(accountId);
-        categoryService.saveAllCategory(categorySet);
+        categoryService.saveAllCategories(categorySet);
 
         for (TransactionDTO transactionDTO : transactionDTOList) {
             Transaction transaction = new Transaction();
