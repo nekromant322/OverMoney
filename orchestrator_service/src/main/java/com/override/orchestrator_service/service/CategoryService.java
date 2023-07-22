@@ -101,10 +101,7 @@ public class CategoryService {
         keywordRepository.deleteByKeywordId(keywordId);
     }
 
-    public void deletingAndOverwritingCategoriesByAccountId(Set<Category> categorySet, Long accountId) {
-        keywordRepository.deleteAllByKeywordId_AccountId(accountId);
-        transactionRepository.deleteAllByAccountId(accountId);
-        categoryRepository.deleteAllByAccountId(accountId);
+    public void saveAllCategory(Set<Category> categorySet) {
         categoryRepository.saveAll(categorySet);
     }
 

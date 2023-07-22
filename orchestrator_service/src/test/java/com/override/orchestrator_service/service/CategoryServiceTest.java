@@ -178,20 +178,13 @@ public class CategoryServiceTest {
     }
 
     @Test
-    public void deletingAndOverwritingCategoriesTest() {
-        Long accountId = 1L;
+    public void saveAllCategoryTest() {
         List<Category> categoryList = new ArrayList<>();
         Category category = TestFieldsUtil.generateTestCategory();
         categoryList.add(category);
 
-        keywordRepository.deleteAllByKeywordId_AccountId(accountId);
-        transactionRepository.deleteAllByAccountId(accountId);
-        categoryRepository.deleteAllByAccountId(accountId);
         categoryRepository.saveAll(categoryList);
 
-        verify(keywordRepository, times(1)).deleteAllByKeywordId_AccountId(accountId);
-        verify(transactionRepository, times(1)).deleteAllByAccountId(accountId);
-        verify(categoryRepository, times(1)).deleteAllByAccountId(accountId);
         verify(categoryRepository, times(1)).saveAll(categoryList);
     }
 

@@ -55,7 +55,8 @@ public class BackupUserDataService {
         categoryDTOList.forEach(categoryDTO -> categorySet.add(categoryMapper.mapCategoryDTOToCategory(categoryDTO,
                 overMoneyAccount)));
 
-        categoryService.deletingAndOverwritingCategoriesByAccountId(categorySet, accountId);
+        overMoneyAccountService.deletingAllTransactionsCategoriesKeywordsByAccountId(accountId);
+        categoryService.saveAllCategory(categorySet);
 
         for (TransactionDTO transactionDTO : transactionDTOList) {
             Transaction transaction = new Transaction();
