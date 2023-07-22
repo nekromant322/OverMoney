@@ -132,7 +132,8 @@ services:
       - ./prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml
     restart: unless-stopped
     command:
-      - '--storage.tsdb.retention.time=10d'
+      - --storage.tsdb.retention.time=10d
+      - --config.file=/etc/prometheus/prometheus.yml
     logging:
       driver: "json-file"
       options:
