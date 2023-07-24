@@ -85,6 +85,21 @@ services:
       INTERNAL_KEY_HEADER: X-INTERNAL-KEY
     depends_on:
       - telegram-bot-db
+  invest:
+    container_name: invest
+    build:
+      context: .
+      dockerfile: invest_service/Dockerfile
+    restart: unless-stopped
+    ports:
+      - '8087:8087'
+    environment:
+      _JAVA_OPTIONS: -Xmx256m
+      INTERNAL_KEY_HEADER: X-INTERNAL-KEY
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
 
   prometheus:
     image: prom/prometheus

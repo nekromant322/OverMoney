@@ -16,5 +16,4 @@ public class TinkoffActiveDTO {
     private BigDecimal currentPrice;
     private BigDecimal averagePositionPrice;
     private BigDecimal expectedYield;
-
 }

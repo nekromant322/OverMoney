@@ -32,6 +32,3 @@
 
   authorization-header:
     header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
-  tinkoff:
-    api:
-      token: ${TINKOFF_API_TOKEN:123}

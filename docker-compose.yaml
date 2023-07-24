@@ -110,6 +110,19 @@ services:
       driver: "json-file"
       options:
         max-size: 50m
+  invest:
+    container_name: invest
+    image: nekromant322/overmoney:invest
+    restart: unless-stopped
+    ports:
+      - '8087:8087'
+    environment:
+      _JAVA_OPTIONS: -Xmx256m
+      INTERNAL_KEY_HEADER: ${INTERNAL_KEY_HEADER}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
 
   wit-ai-go-proxy:
     container_name: wit-ai-go-proxy
