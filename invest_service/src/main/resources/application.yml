@@ -1,0 +1,37 @@
+  server:
+    port: 8087
+
+  spring:
+    application:
+      name: invest-service
+
+    profiles:
+      active: ${SPRING_APPLICATION_PROFILE:dev}
+
+  eureka:
+    client:
+      serviceUrl:
+        defaultZone: http://eureka:8761/eureka
+
+  logging:
+    level:
+      org.zalando.logbook: TRACE
+
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,prometheus
+    metrics:
+      export:
+        prometheus:
+          enabled: true
+      distribution:
+        percentiles-histogram:
+          "[http.server.requests]": true
+
+  authorization-header:
+    header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+  tinkoff:
+    api:
+      token: ${TINKOFF_API_TOKEN:123}
