@@ -153,11 +153,7 @@ public class TransactionService {
     public void editTransaction(TransactionDTO transactionDTO) {
         Transaction transactionUpdate = getTransactionById(transactionDTO.getId());
         transactionUpdate.setAmount(transactionDTO.getAmount());
-
-        KeywordId keywordId = new KeywordId();
-        keywordId.setAccountId(transactionUpdate.getAccount().getId());
-        keywordId.setName(transactionUpdate.getMessage());
-        Optional<Keyword> keyword = keywordRepository.findByKeywordId(keywordId);
+        Optional<Keyword> keyword = getKeywordByTransaction(transactionUpdate);
         if (!transactionUpdate.getMessage().equals(transactionDTO.getMessage())) {
             keyword.ifPresent(k -> keywordRepository.delete(k));
         }
@@ -189,7 +185,19 @@ public class TransactionService {
         transactionRepository.saveAll(transactionList);
     }
 
+    @Transactional
     public void deleteTransactionById(UUID id) {
-        transactionRepository.deleteById(id);
+        Optional<Transaction> transactionToDelete = transactionRepository.findById(id);
+        if (transactionToDelete.isPresent()) {
+            getKeywordByTransaction(transactionToDelete.get()).ifPresent(k -> keywordRepository.delete(k));
+            transactionRepository.deleteById(id);
+        }
+    }
+
+    public Optional<Keyword> getKeywordByTransaction(Transaction transaction) {
+        KeywordId keywordId = new KeywordId();
+        keywordId.setAccountId(transaction.getAccount().getId());
+        keywordId.setName(transaction.getMessage());
+        return keywordRepository.findByKeywordId(keywordId);
     }
 }
