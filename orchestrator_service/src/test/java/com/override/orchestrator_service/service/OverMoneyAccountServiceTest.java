@@ -10,14 +10,18 @@ import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
+import com.override.orchestrator_service.util.TelegramUtils;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -43,6 +47,9 @@ public class OverMoneyAccountServiceTest {
     private TransactionRepository transactionRepository;
     @Mock
     private UserMapper userMapper;
+
+    @Mock
+    private TelegramUtils telegramUtils;
 
     @Test
     public void mergeToGroupAccountWithCategoriesAndWithoutTransactionsTest() {
@@ -84,6 +91,27 @@ public class OverMoneyAccountServiceTest {
         accountService.registerSingleOverMoneyAccount(accountDataDTO);
 
         verify(accountRepository, times(1)).save(any(OverMoneyAccount.class));
+    }
+
+    @Test
+    public void RegisterSingleOverMoneyAccountWeb() throws InstanceNotFoundException {
+        MockitoAnnotations.openMocks(this);
+
+        Principal principal = Mockito.mock(Principal.class);
+        when(telegramUtils.getTelegramId(principal)).thenReturn(123L);
+
+        User user = new User();
+        when(userService.getUserById(123L)).thenReturn(user);
+
+        OverMoneyAccount savedAccount = new OverMoneyAccount();
+        when(accountRepository.save(any(OverMoneyAccount.class))).thenReturn(savedAccount);
+
+        accountService.registerSingleOverMoneyAccount(principal);
+
+        verify(telegramUtils).getTelegramId(principal);
+        verify(userService, times(2)).getUserById(123L);
+        verify(accountRepository).save(any(OverMoneyAccount.class));
+        verify(userService).saveUser(user);
     }
 
     @Test
