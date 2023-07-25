@@ -10,11 +10,13 @@ import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.OverMoneyAccountRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
+import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -36,6 +38,9 @@ public class OverMoneyAccountService {
     private UserMapper userMapper;
     @Autowired
     private KeywordRepository keywordRepository;
+
+    @Autowired
+    private TelegramUtils telegramUtils;
 
     public List<OverMoneyAccount> getAllAccounts() {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
@@ -125,6 +130,18 @@ public class OverMoneyAccountService {
                 .build();
         user.setAccount(overMoneyAccount);
         saveOverMoneyAccount(overMoneyAccount);
+    }
+
+    public void registerSingleOverMoneyAccount(Principal principal) throws InstanceNotFoundException {
+        Long telegramId = telegramUtils.getTelegramId(principal);
+        User user = userService.getUserById(telegramId);
+        OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()
+                .chatId(telegramId)
+                .users(getUser(telegramId))
+                .build();
+        saveOverMoneyAccount(overMoneyAccount);
+        user.setAccount(overMoneyAccount);
+        userService.saveUser(user);
     }
 
     public void registerGroupOverMoneyAccount(AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
