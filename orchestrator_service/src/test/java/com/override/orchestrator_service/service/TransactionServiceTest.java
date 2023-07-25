@@ -8,6 +8,7 @@ import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.model.User;
+import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Assertions;
@@ -46,6 +47,8 @@ public class TransactionServiceTest {
     private TransactionMapper transactionMapper;
     @Mock
     private OverMoneyAccountService accountService;
+    @Mock
+    private KeywordRepository keywordRepository;
 
     @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
@@ -183,10 +186,11 @@ public class TransactionServiceTest {
 
     @Test
     public void deleteTransactionByIdTest() {
-        UUID id = UUID.randomUUID();
-
+        Transaction transaction = TestFieldsUtil.generateTestTransaction();
+        UUID id = transaction.getId();
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(transaction));
         transactionService.deleteTransactionById(id);
-
+        verify(transactionRepository, times(1)).findById(id);
         verify(transactionRepository, times(1)).deleteById(id);
     }
 }
