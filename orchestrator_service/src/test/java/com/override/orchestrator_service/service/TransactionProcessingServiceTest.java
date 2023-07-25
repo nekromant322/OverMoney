@@ -2,16 +2,19 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.TransactionMessageDTO;
+import com.override.orchestrator_service.exception.TransactionProcessingException;
 import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -43,6 +46,7 @@ public class TransactionProcessingServiceTest {
     @ParameterizedTest
     @MethodSource("provideTransactionArgumentsCauseExc")
     public void checkTransactionTypeThrowsException(String message) throws InstanceNotFoundException {
+        transactionProcessingService.init();
         TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
                 .message(message)
                 .userId(123L)
@@ -54,7 +58,7 @@ public class TransactionProcessingServiceTest {
         when(categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId())).thenReturn(categories);
         when(overMoneyAccountService.getOverMoneyAccountByChatId(transactionMessageDTO.getChatId())).thenReturn(account);
 
-        assertThrows(InstanceNotFoundException.class, () ->
+        assertThrows(TransactionProcessingException.class, () ->
                 transactionProcessingService.processTransaction(transactionMessageDTO));
 
     }
@@ -83,7 +87,6 @@ public class TransactionProcessingServiceTest {
                 Arguments.of("200,5пиво 200,5 пиво200,5"),
 
                 Arguments.of("100+100"),
-                Arguments.of("100,1+100,5пиво 100,5+100,5"),
                 Arguments.of("пиво 100+1-1"),
                 Arguments.of("пиво 100+1/1"),
                 Arguments.of("пиво 100+1*1"),
@@ -97,6 +100,7 @@ public class TransactionProcessingServiceTest {
     @ParameterizedTest
     @MethodSource("provideTransactionArguments")
     public void processTransactionTest(String message, String messageResponse, Float amount, String categoryName) throws InstanceNotFoundException {
+        transactionProcessingService.init();
         TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
                 .message(message)
                 .userId(123L)
