@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.config;
 
 import com.override.orchestrator_service.config.filter.AdminPageFilter;
-import com.override.orchestrator_service.config.filter.InternalKeyAuthenticationFilter;
 import com.override.orchestrator_service.config.jwt.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
