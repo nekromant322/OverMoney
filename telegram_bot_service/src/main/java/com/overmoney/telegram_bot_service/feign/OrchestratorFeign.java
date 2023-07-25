@@ -1,6 +1,5 @@
 package com.overmoney.telegram_bot_service.feign;
 
-import com.overmoney.telegram_bot_service.config.FeignConfiguration;
 import com.override.dto.AccountDataDTO;
 import com.override.dto.ChatMemberDTO;
 import com.override.dto.TransactionMessageDTO;
