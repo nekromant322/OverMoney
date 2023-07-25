@@ -2,6 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.TransactionMessageDTO;
+import com.override.orchestrator_service.exception.TransactionProcessingException;
 import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
@@ -54,7 +55,7 @@ public class TransactionProcessingServiceTest {
         when(categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId())).thenReturn(categories);
         when(overMoneyAccountService.getOverMoneyAccountByChatId(transactionMessageDTO.getChatId())).thenReturn(account);
 
-        assertThrows(InstanceNotFoundException.class, () ->
+        assertThrows(TransactionProcessingException.class, () ->
                 transactionProcessingService.processTransaction(transactionMessageDTO));
 
     }
