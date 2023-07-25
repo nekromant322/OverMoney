@@ -56,6 +56,17 @@ public class TransactionServiceTest {
     }
 
     @Test
+    void saveAllTransactionsTest() {
+        List<Transaction> transactions = new ArrayList<>();
+        Transaction transaction1 = new Transaction();
+        Transaction transaction2 = new Transaction();
+        transactions.add(transaction1);
+        transactions.add(transaction2);
+        transactionService.saveAllTransactions(transactions);
+        verify(transactionRepository, times(1)).saveAll(transactions);
+    }
+
+    @Test
     public void setCategoryForAllUndefinedTransactionsWithSameKeywordsTest() {
         final Category category = TestFieldsUtil.generateTestCategory();
         final Transaction transaction = TestFieldsUtil.generateTestTransaction();
@@ -156,19 +167,6 @@ public class TransactionServiceTest {
                 Arguments.of(TestFieldsUtil.generateTestAnalyticsMonthlyIncomeForCategoryWithMixedFields(),
                         TestFieldsUtil.generateTestListOfAnalyticsMonthlyReportForYearDTOMixed())
         );
-    }
-
-    @Test
-    public void saveAllTransactionsTest() {
-        List<Transaction> transactionList = new ArrayList<>();
-        Transaction transaction1 = TestFieldsUtil.generateTestTransaction();
-        Transaction transaction2 = TestFieldsUtil.generateTestTransaction();
-        transactionList.add(transaction1);
-        transactionList.add(transaction2);
-
-        transactionService.saveAllTransactions(transactionList);
-
-        verify(transactionRepository, times(1)).saveAll(any());
     }
 
     @Test

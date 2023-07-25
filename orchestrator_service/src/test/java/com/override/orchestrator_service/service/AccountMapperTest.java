@@ -4,7 +4,6 @@ import com.override.orchestrator_service.mapper.AccountMapper;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
-import org.antlr.stringtemplate.language.Cat;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,6 +28,7 @@ public class AccountMapperTest {
         List<Category> testListCategory = List.of(category1, category2);
         System.out.println(Arrays.toString(testListCategory.toArray()));
         category2.setId(123L);
+        category2.setName("транспорт");
         Set<Category> categorySet = new HashSet<>();
         categorySet.add(category1);
         categorySet.add(category2);

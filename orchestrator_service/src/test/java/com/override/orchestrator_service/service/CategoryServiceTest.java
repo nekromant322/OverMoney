@@ -21,9 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -85,6 +83,33 @@ public class CategoryServiceTest {
         categoryService.saveCategoryForAcc(TestFieldsUtil.generateTestAccount().getId(), categoryDTO);
 
         verify(categoryRepository, times(1)).save(any(Category.class));
+    }
+
+    @Test
+    void saveAllCategoriesTest() {
+        Set<Category> categories = new HashSet<>();
+        Category category1 = TestFieldsUtil.generateTestCategory();
+        Category category2 = TestFieldsUtil.generateTestCategory();
+        category2.setName("ЖКХ");
+        categories.add(category1);
+        categories.add(category2);
+        categoryService.saveAllCategories(categories);
+        verify(categoryRepository, times(1)).saveAll(categories);
+    }
+
+    @Test
+    public void testGetCategoriesByUserId() {
+        OverMoneyAccount overMoneyAccount = TestFieldsUtil.generateTestAccountNoCategory();
+        Category category1 = TestFieldsUtil.generateTestCategory();
+        category1.setAccount(overMoneyAccount);
+        Category category2 = TestFieldsUtil.generateTestCategory();
+        category2.setName("Category 2");
+        category2.setAccount(overMoneyAccount);
+        Set<Category> categories = Set.of(category1, category2);
+
+        when(categoryRepository.findAllByAccount_Id(overMoneyAccount.getId())).thenReturn(categories);
+        Set<Category> result = categoryService.getCategoriesByUserId(overMoneyAccount.getId());
+        assertEquals(categories.size(), result.size());
     }
 
     @Test

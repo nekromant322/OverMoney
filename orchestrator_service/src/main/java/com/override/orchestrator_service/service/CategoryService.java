@@ -46,6 +46,10 @@ public class CategoryService {
         return categoryMapper.mapCategoriesListToJsonResponse(accountMapper.mapAccountToCategoryList(account));
     }
 
+    public Set<Category> getCategoriesByUserId(Long id) {
+        return categoryRepository.findAllByAccount_Id(id);
+    }
+
     public List<CategoryDTO> findCategoriesListByType(Long id, Type type) throws InstanceNotFoundException {
         Long accId = accountService.getAccountByUserId(id).getId();
         return categoryMapper.mapCategoriesListToJsonResponse(categoryRepository.findAllByTypeAndAccId(accId, type));
@@ -87,6 +91,10 @@ public class CategoryService {
         categoryRepository.save(updatedCategory);
     }
 
+    public void saveAllCategories(Set<Category> categories) {
+        categoryRepository.saveAll(categories);
+    }
+
     @Transactional
     public void mergeCategory(MergeCategoryDTO categoryIDs) {
         Long categoryToMergeId = categoryIDs.getCategoryToMergeId();
@@ -99,10 +107,6 @@ public class CategoryService {
     @Transactional
     public void deleteKeyword(KeywordId keywordId) {
         keywordRepository.deleteByKeywordId(keywordId);
-    }
-
-    public void saveAllCategory(Set<Category> categorySet) {
-        categoryRepository.saveAll(categorySet);
     }
 
     public Optional<CategoryDTO> findCategoryDTOByNameFromList(List<CategoryDTO> categoryDTOList, String categoryDTOName) {

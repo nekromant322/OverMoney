@@ -53,12 +53,14 @@ public class TestFieldsUtil {
         Set<Keyword> keywordSet = new HashSet<>();
         keywordSet.add(generateTestKeyword());
 
-        return Category.builder()
+        Category category = Category.builder()
                 .id(12345L)
                 .name("продукты")
                 .type(Type.EXPENSE)
                 .keywords(keywordSet)
                 .build();
+        category.setAccount(generateTestAccountNoCategory());
+        return category;
     }
 
     public static Transaction generateTestTransaction() {
@@ -103,6 +105,17 @@ public class TestFieldsUtil {
                 .id(1L)
                 .chatId(404723191L)
                 .categories(categorySet)
+                .users(userSet)
+                .build();
+    }
+
+    public static OverMoneyAccount generateTestAccountNoCategory() {
+        Set<User> userSet = new HashSet<>();
+        userSet.add(generateTestUser());
+
+        return OverMoneyAccount.builder()
+                .id(1L)
+                .chatId(404723191L)
                 .users(userSet)
                 .build();
     }

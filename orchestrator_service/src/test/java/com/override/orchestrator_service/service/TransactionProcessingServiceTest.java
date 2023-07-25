@@ -2,9 +2,9 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.TransactionMessageDTO;
-import com.override.dto.constants.Type;
 import com.override.orchestrator_service.feign.RecognizerFeign;
-import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.model.OverMoneyAccount;
+import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,15 +17,13 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.management.InstanceNotFoundException;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Stream;
 
-import static com.override.orchestrator_service.utils.TestFieldsUtil.generateTestUser;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -50,7 +48,7 @@ public class TransactionProcessingServiceTest {
                 .userId(123L)
                 .chatId(404723191L)
                 .build();
-        OverMoneyAccount account = generateTestAccount();
+        OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
         List<CategoryDTO> categories = List.of(TestFieldsUtil.generateTestCategoryDTO());
         when(recognizerFeign.recognizeCategory(any(), any(), any())).thenReturn(TestFieldsUtil.generateTestCategoryDTO());
         when(categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId())).thenReturn(categories);
@@ -96,7 +94,6 @@ public class TransactionProcessingServiceTest {
     }
 
 
-
     @ParameterizedTest
     @MethodSource("provideTransactionArguments")
     public void processTransactionTest(String message, String messageResponse, Float amount, String categoryName) throws InstanceNotFoundException {
@@ -105,7 +102,7 @@ public class TransactionProcessingServiceTest {
                 .userId(123L)
                 .chatId(404723191L)
                 .build();
-        OverMoneyAccount account = generateTestAccount();
+        OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
         List<CategoryDTO> categories = List.of(TestFieldsUtil.generateTestCategoryDTO());
         when(recognizerFeign.recognizeCategory(any(), any(), any())).thenReturn(TestFieldsUtil.generateTestCategoryDTO());
         when(categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId())).thenReturn(categories);
@@ -189,43 +186,5 @@ public class TransactionProcessingServiceTest {
                 Arguments.of("пиво теплое! 1.5 200+   200,12  +   200.13  +200", "пиво теплое! 1.5", 800.25f, "продукты"),
                 Arguments.of("пиво теплое! 1,5 200+   200,12  +   200.13  +200", "пиво теплое! 1,5", 800.25f, "продукты")
         );
-    }
-
-    private OverMoneyAccount generateTestAccount() {
-        Set<Category> categorySet = new HashSet<>();
-        categorySet.add(generateTestCategory());
-
-        Set<User> userSet = new HashSet<>();
-        userSet.add(generateTestUser());
-
-        return OverMoneyAccount.builder()
-                .id(1L)
-                .chatId(404723191L)
-                .categories(categorySet)
-                .users(userSet)
-                .build();
-    }
-
-    private Category generateTestCategory() {
-        Set<Keyword> keywordSet = new HashSet<>();
-        keywordSet.add(generateTestKeyword());
-
-        return Category.builder()
-                .id(12345L)
-                .name("продукты")
-                .type(Type.EXPENSE)
-                .keywords(keywordSet)
-                .build();
-    }
-
-    private Keyword generateTestKeyword() {
-        return Keyword.builder()
-                .keywordId(new KeywordId("пиво", 123L))
-                .category(Category.builder()
-                        .id(12345L)
-                        .name("продукты")
-                        .type(Type.EXPENSE)
-                        .build())
-                .build();
     }
 }

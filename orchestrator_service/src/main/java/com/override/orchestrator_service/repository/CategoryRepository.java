@@ -11,9 +11,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+
+    Set<Category> findAllByAccount_Id(Long id);
+
     @Query("SELECT c FROM Category c WHERE c.account.id = :id")
     List<Category> findAllByUserId(@Param("id") String accountId);
 
