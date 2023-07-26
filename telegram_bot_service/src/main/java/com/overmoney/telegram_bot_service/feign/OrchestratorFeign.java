@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 
 //TODO разобраться с хедером
-@FeignClient(name = "orchestrator-service"/*, configuration = FeignConfiguration.class*/)
+@FeignClient(name = "orchestrator-service")
 public interface OrchestratorFeign {
 
     @PostMapping("/transaction")

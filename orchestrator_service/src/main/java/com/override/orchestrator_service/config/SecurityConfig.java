@@ -18,10 +18,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private AdminPageFilter adminPageFilter;
 
-    /*TODO разобраться с хедером
-    @Autowired
-    private InternalKeyAuthenticationFilter internalKeyAuthenticationFilter;
-*/
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable();
@@ -38,8 +34,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().loginPage("/login")
                 .and().addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                //TODO разобраться с хедером
-                //.addFilterBefore(internalKeyAuthenticationFilter, JwtFilter.class)
                 .addFilterAfter(adminPageFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }

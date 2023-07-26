@@ -6,8 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-//TODO разобраться с хедером
-@FeignClient(name = "orchestrator-service"/*, configuration = FeignConfiguration.class*/)
+@FeignClient(name = "orchestrator-service")
 public interface OrchestratorFeign {
 
     @PutMapping("/transaction")
