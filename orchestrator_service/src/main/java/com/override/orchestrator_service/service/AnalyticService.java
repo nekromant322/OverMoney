@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.AnalyticsAnnualAndMonthlyReportDTO;
 import com.override.dto.AnalyticsDataDTO;
 import com.override.dto.AnalyticsDataMonthDTO;
 import com.override.dto.AnalyticsMonthlyReportForYearDTO;
@@ -74,5 +75,10 @@ public class AnalyticService {
                 .collect(Collectors.toList());
 
         return analyticsDataMonthDTOS;
+    }
+
+    public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long telegramId, Integer year) throws InstanceNotFoundException {
+        Long accountId = accountService.getAccountByUserId(telegramId).getId();
+        return transactionService.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
     }
 }

@@ -28,6 +28,7 @@ window.onload = function () {
     getAnalyticsData(EXPENSE, placeForExpense, placeForExpenseTable);
     getAnalyticsData(INCOME, placeForIncome, placeForIncomeTable);
     setAvailableYearsForMonthlyAnalytics();
+    getAnnualAndMonthlyReportData(new Date().getFullYear());
 }
 
 function getTelegramBotName() {
@@ -252,7 +253,7 @@ function drawMonthlyAnalyticsForYear(year) {
     if (window.placeForMonthlyYearIncomeAnalytics) {
         removeData(placeForMonthlyYearIncomeAnalytics);
     }
-    ;
+
     let monthlyReportData = getMonthlyReportData(year);
     let months = ["Янв", "Фев.", "Мар.", "Апр", "Май", "Июнь", "Июль", "Авг.", "Сен.", "Окт.", "Ноя.", "Дек."];
 
@@ -299,6 +300,7 @@ function setAvailableYearsForMonthlyAnalytics() {
                     option.attr('selected', true); // Устанавливаем атрибут selected для текущего года
                 }
                 yearSelectForMonthlyAnalytics.append(option);
+                yearSelectAnnualAndMonthlyTotalStatistics.append(option); // Для основной таблицы
             });
         },
         error: function (xhr, status, error) {
@@ -349,3 +351,168 @@ function removeData(chart) {
     chart.update();
 }
 
+// ---- РАБОТА С ОСНОВНОЙ ТАБЛИЦЕЙ ----
+//          ---- НАЧАЛО ----
+
+const yearSelectAnnualAndMonthlyTotalStatistics = $('#yearSelectAnnualAndMonthlyTotalStatistics');
+
+yearSelectAnnualAndMonthlyTotalStatistics.on('change', function () {
+    const selectedYear = yearSelectAnnualAndMonthlyTotalStatistics.val();
+    console.log(selectedYear);
+    getAnnualAndMonthlyReportData(selectedYear);
+});
+
+function getAnnualAndMonthlyReportData(year) {
+    let url = "./analytics/total/" + year;
+    $.ajax({
+        method: 'GET',
+        url: url,
+        contentType: "application/json; charset=utf8",
+        async: false,
+        success: function (data) {
+            if (data.length === 0) {
+                alert("У вас пока нет никаких транзакций.")
+                console.log("data is null")
+            } else {
+                parseDataAndCreateTableOfExpense(data);
+            }
+        },
+        error: function () {
+            console.log("ERROR! Something wrong happened")
+        }
+    });
+}
+
+function parseDataAndCreateTableOfExpense(data) {
+    let monthlyExpenseToCategoryName = [];
+    let monthlyOpacityToCategoryName = [];
+
+    for (i = 0; i < data.length; i++) {
+        let monthlyExpense = parseMapOfMonthlyAnalysesAndGetExpense(data[i]);
+        let monthlyOpacities = parseMapOfShareOfMonthlyExpensesAndGetOpacity(data[i]);
+        monthlyExpenseToCategoryName.push({
+            "categoryName": data[i].categoryName,
+            "january": monthlyExpense[0],
+            "february": monthlyExpense[1],
+            "march": monthlyExpense[2],
+            "april": monthlyExpense[3],
+            "may": monthlyExpense[4],
+            "june": monthlyExpense[5],
+            "july": monthlyExpense[6],
+            "august": monthlyExpense[7],
+            "september": monthlyExpense[8],
+            "october": monthlyExpense[9],
+            "november": monthlyExpense[10],
+            "december": monthlyExpense[11]
+        });
+        monthlyOpacityToCategoryName.push({
+            "categoryName": data[i].categoryName,
+            "january": monthlyOpacities[0],
+            "february": monthlyOpacities[1],
+            "march": monthlyOpacities[2],
+            "april": monthlyOpacities[3],
+            "may": monthlyOpacities[4],
+            "june": monthlyOpacities[5],
+            "july": monthlyOpacities[6],
+            "august": monthlyOpacities[7],
+            "september": monthlyOpacities[8],
+            "october": monthlyOpacities[9],
+            "november": monthlyOpacities[10],
+            "december": monthlyOpacities[11]
+        });
+    }
+
+    drawTableOfExpense(monthlyExpenseToCategoryName, monthlyOpacityToCategoryName, totalList(data));
+}
+
+function parseMapOfMonthlyAnalysesAndGetExpense(data) {
+    var map = data["monthlyAnalytics"];
+    var expenses = [];
+    for (let key in map) {
+        expenses.push(map[key]); // add the map values to the array
+    }
+    return expenses;
+}
+
+function parseMapOfShareOfMonthlyExpensesAndGetOpacity(data) {
+    var map = data["shareOfMonthlyExpenses"];
+    var opacities = [];
+    for (let key in map) {
+        opacities.push(map[key]); // add the map values to the array
+    }
+    return opacities;
+}
+
+function totalList(data) {
+    let total = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (i = 0; i < data.length; i++) {
+        let monthlyExpense = parseMapOfMonthlyAnalysesAndGetExpense(data[i]);
+        for (j = 0; j < monthlyExpense.length; j++) {
+            total[j] += monthlyExpense[j];
+        }
+    }
+    return total;
+}
+
+function drawTableOfExpense(dataExpense, dataOpacity, totalExpense) {
+    addRowFootInTableOfExpense(totalExpense);
+    for (let i = 0; i < dataExpense.length; i++) {
+        addRowInTableOfExpense(dataExpense[i], dataOpacity[i]);
+    }
+}
+
+function addRowFootInTableOfExpense(totalExpense) {
+    let table = document.getElementById("total-analytics-table").getElementsByTagName("tbody")[0];
+    let tr = table.insertRow(table.rows.length);
+
+    insertTdToFootInTableOfExpense('ИТОГО:', tr);
+    totalExpense.forEach(monthlyTotalItem => {
+        insertTdToFootInTableOfExpense(monthlyTotalItem, tr);
+    });
+}
+
+function addRowInTableOfExpense(dataExpense, dataOpacity) {
+    let table = document.getElementById("total-analytics-table").getElementsByTagName("tfoot")[0];
+    let tr = table.insertRow(table.rows.length);
+
+    insertTdInTableOfExpense(0, dataExpense.categoryName, tr);
+    insertTdInTableOfExpense(dataOpacity.january, dataExpense.january, tr);
+    insertTdInTableOfExpense(dataOpacity.february, dataExpense.february, tr);
+    insertTdInTableOfExpense(dataOpacity.march, dataExpense.march, tr);
+    insertTdInTableOfExpense(dataOpacity.april, dataExpense.april, tr);
+    insertTdInTableOfExpense(dataOpacity.may, dataExpense.may, tr);
+    insertTdInTableOfExpense(dataOpacity.june, dataExpense.june, tr);
+    insertTdInTableOfExpense(dataOpacity.july, dataExpense.july, tr);
+    insertTdInTableOfExpense(dataOpacity.august, dataExpense.august, tr);
+    insertTdInTableOfExpense(dataOpacity.september, dataExpense.september, tr);
+    insertTdInTableOfExpense(dataOpacity.october, dataExpense.october, tr);
+    insertTdInTableOfExpense(dataOpacity.november, dataExpense.november, tr);
+    insertTdInTableOfExpense(dataOpacity.december, dataExpense.december, tr);
+}
+
+function insertTdInTableOfExpense(opacity, value, parent) {
+    let element = document.createElement("td");
+    element.scope = "row";
+    element.innerText = value;
+    if (value === 0) {
+        element.style.backgroundColor = 'rgba(190, 190, 190,' + 0.2 + ')';
+        element.style.opacity = String(0.4);
+    } else {
+        element.style.backgroundColor = 'rgba(255, 165, 0,' + opacity + ')';
+    }
+    parent.insertAdjacentElement("beforeend", element);
+}
+
+function insertTdToFootInTableOfExpense(value, parent) {
+    let element = document.createElement("td");
+    element.scope = "row";
+    element.innerText = value;
+    if (value === 0) {
+        element.style.backgroundColor = 'rgba(128, 128, 128,' + 0.7 + ')';
+        element.style.opacity = String(0.8);
+    } else {
+        element.style.backgroundColor = 'rgb(128, 128, 128)';
+    }
+    parent.insertAdjacentElement("beforeend", element);
+}
+//          ---- КОНЕЦ ----

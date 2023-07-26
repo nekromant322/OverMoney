@@ -1,8 +1,6 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
-import com.override.dto.AnalyticsMonthlyReportForYearDTO;
-import com.override.dto.TransactionDTO;
+import com.override.dto.*;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
@@ -24,6 +22,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import javax.management.InstanceNotFoundException;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -192,5 +193,27 @@ public class TransactionServiceTest {
         transactionService.deleteTransactionById(id);
         verify(transactionRepository, times(1)).findById(id);
         verify(transactionRepository, times(1)).deleteById(id);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideAnnualAndMonthlyTotalStatisticsForYear")
+    public void findAnnualAndMonthlyTotalStatisticsByAccountIdReturnsCorrectList(List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> inputList,
+                                                                                 List<AnalyticsAnnualAndMonthlyReportDTO> outputList) {
+        when(transactionRepository.findAnnualAndMonthlyTotalStatisticsByAccountId(any(), any()))
+                .thenReturn(inputList);
+
+        List<AnalyticsAnnualAndMonthlyReportDTO> resultList = transactionService
+                .findAnnualAndMonthlyTotalStatisticsByAccountId(1L, 1999);
+
+        Assertions.assertEquals(resultList, outputList);
+    }
+
+    private static Stream<Arguments> provideAnnualAndMonthlyTotalStatisticsForYear() {
+        return Stream.of(
+                Arguments.of(TestFieldsUtil.generateTestAnalyticsAnnualAndMonthlyExpenseForCategoryWithNullFields(),
+                        TestFieldsUtil.generateTestListOfAnalyticsAnnualAndMonthlyReportDTOWithNull()),
+                Arguments.of(TestFieldsUtil.generateTestAnalyticsAnnualAndMonthlyExpenseForCategoryWithoutNullFields(),
+                        TestFieldsUtil.generateTestListOfAAnalyticsAnnualAndMonthlyReportDTOWithoutNull())
+        );
     }
 }
