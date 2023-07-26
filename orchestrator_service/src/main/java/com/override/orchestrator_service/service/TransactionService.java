@@ -1,8 +1,6 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
-import com.override.dto.AnalyticsMonthlyReportForYearDTO;
-import com.override.dto.TransactionDTO;
+import com.override.dto.*;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.*;
@@ -153,11 +151,7 @@ public class TransactionService {
     public void editTransaction(TransactionDTO transactionDTO) {
         Transaction transactionUpdate = getTransactionById(transactionDTO.getId());
         transactionUpdate.setAmount(transactionDTO.getAmount());
-
-        KeywordId keywordId = new KeywordId();
-        keywordId.setAccountId(transactionUpdate.getAccount().getId());
-        keywordId.setName(transactionUpdate.getMessage());
-        Optional<Keyword> keyword = keywordRepository.findByKeywordId(keywordId);
+        Optional<Keyword> keyword = getKeywordByTransaction(transactionUpdate);
         if (!transactionUpdate.getMessage().equals(transactionDTO.getMessage())) {
             keyword.ifPresent(k -> keywordRepository.delete(k));
         }
@@ -189,7 +183,88 @@ public class TransactionService {
         transactionRepository.saveAll(transactionList);
     }
 
+    @Transactional
     public void deleteTransactionById(UUID id) {
-        transactionRepository.deleteById(id);
+        Optional<Transaction> transactionToDelete = transactionRepository.findById(id);
+        if (transactionToDelete.isPresent()) {
+            getKeywordByTransaction(transactionToDelete.get()).ifPresent(k -> keywordRepository.delete(k));
+            transactionRepository.deleteById(id);
+        }
+    }
+
+    public Optional<Keyword> getKeywordByTransaction(Transaction transaction) {
+        KeywordId keywordId = new KeywordId();
+        keywordId.setAccountId(transaction.getAccount().getId());
+        keywordId.setName(transaction.getMessage());
+        return keywordRepository.findByKeywordId(keywordId);
+    }
+
+    public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long accountId, Integer year) {
+        List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> list = transactionRepository.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
+        return mapObjectToAnalyticsAnnualAndMonthlyReportDTO(list);
+    }
+
+    private List<AnalyticsAnnualAndMonthlyReportDTO> mapObjectToAnalyticsAnnualAndMonthlyReportDTO(List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects) {
+        Set<String> setOfCategoryNames = new HashSet<>();
+        List<AnalyticsAnnualAndMonthlyReportDTO> result = new ArrayList<>();
+
+        objects.forEach(object -> setOfCategoryNames.add(object.getCategoryName()));
+
+        setOfCategoryNames.forEach(categoryName -> {
+            Map<Integer, Double> monthlyAnalytics = new HashMap<>();
+            Map<Integer, Double> shareOfMonthlyExpenses = new HashMap<>();
+            objects.forEach(object -> {
+                if (Objects.equals(categoryName, object.getCategoryName())) {
+                    monthlyAnalytics.put(object.getMonth(), object.getAmount());
+                    shareOfMonthlyExpenses.put(object.getMonth(), object.getAmount());
+                }
+            });
+            for (Integer monthCounter = 1; monthCounter <= 12; monthCounter++) {
+                if (!monthlyAnalytics.containsKey(monthCounter)) {
+                    monthlyAnalytics.put(monthCounter, 0d);
+                    shareOfMonthlyExpenses.put(monthCounter, 0d);
+                }
+            }
+            result.add(new AnalyticsAnnualAndMonthlyReportDTO(categoryName, monthlyAnalytics, shareOfMonthlyExpenses));
+        });
+        return replaceShareOfMonthlyExpenses(objects, result);
+    }
+
+    private List<AnalyticsAnnualAndMonthlyReportDTO> replaceShareOfMonthlyExpenses(List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects,
+                                                                                   List<AnalyticsAnnualAndMonthlyReportDTO> result) {
+        List<Integer> months = getListOfMonthNumbers(objects);
+        Map<Integer, Double> total = getTotalExpenseByYearAndMonths(objects, result);
+
+        months.forEach(month -> result.forEach(dto -> {
+            Double amount = dto.getMonthlyAnalytics().get(month);
+            if (amount != 0) {
+                Double totalAmount = total.get(month);
+                dto.getShareOfMonthlyExpenses().replace(month, 1 - ((totalAmount - amount) / totalAmount));
+            }
+        }));
+        return result;
+    }
+
+    private Map<Integer, Double> getTotalExpenseByYearAndMonths(List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects,
+                                                                List<AnalyticsAnnualAndMonthlyReportDTO> result) {
+        Map<Integer, Double> totalMonthlyAnalytics = new HashMap<>();
+        List<Integer> monthNumberList = getListOfMonthNumbers(objects);
+
+        monthNumberList.forEach(month -> {
+            List<Double> miniTotalMonthlyAnalytics = new ArrayList<>();
+            result.forEach(dto -> miniTotalMonthlyAnalytics.add(dto.getMonthlyAnalytics().get(month)));
+            totalMonthlyAnalytics.put(month, miniTotalMonthlyAnalytics.stream().reduce(0d, Double::sum));
+        });
+        return totalMonthlyAnalytics;
+    }
+
+    private List<Integer> getListOfMonthNumbers(List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects) {
+        Set<Integer> months = objects.stream()
+                .map(AnalyticsAnnualAndMonthlyExpenseForCategoryDTO::getMonth)
+                .collect(Collectors.toSet());
+        for (int monthCounter = 1; monthCounter <= 12; monthCounter++) {
+            months.add(monthCounter);
+        }
+        return months.stream().sorted().collect(Collectors.toList());
     }
 }
