@@ -94,8 +94,9 @@ function saveFile() {
     });
 }
 
-function readFile(input) {
-    let file = input.files[0];
+function readFile() {
+    let file = document.getElementById("file").files[0];
+    //let file = input.files[0];
     console.log(file);
 
     let reader = new FileReader();
@@ -184,5 +185,4 @@ sendButton.on("click", function () {
     });
 });
 
-
-
+$('#loader').addClass("hide-loader");
