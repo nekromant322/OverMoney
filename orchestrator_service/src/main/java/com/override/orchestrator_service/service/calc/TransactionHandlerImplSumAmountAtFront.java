@@ -12,7 +12,7 @@ public class TransactionHandlerImplSumAmountAtFront implements TransactionHandle
     private final char RU_DECIMAL_DELIMITER = ',';
     private final char EN_DECIMAL_DELIMITER = '.';
     private final String regexpForAmountAtFront =
-            "^(\\d*(,|.)?\\d+)((\\s*)(\\+((\\s*)\\d*(,|.)?\\d+)(\\s*)))";
+            "^(\\d*(\\,|\\.)?\\d+)((\\s*)(\\+((\\s*)\\d*(\\,|\\.)?\\d+)(\\s*)))+\\s+";
 
     @Override
     public float calculateAmount(String transaction) {
@@ -36,5 +36,10 @@ public class TransactionHandlerImplSumAmountAtFront implements TransactionHandle
         Pattern pattern = Pattern.compile(regexpForAmountAtFront);
         Matcher matcher = pattern.matcher(transaction);
         return matcher.replaceAll(NOTHING).trim();
+    }
+
+    @Override
+    public String getRegExp() {
+        return "^(\\d*(\\,|\\.)?\\d+)((\\s*)(\\+((\\s*)\\d*(\\,|\\.)?\\d+)(\\s*)))+\\s+([a-zA-Zа-яА-я0-9\\p{P}\\s]+)";
     }
 }

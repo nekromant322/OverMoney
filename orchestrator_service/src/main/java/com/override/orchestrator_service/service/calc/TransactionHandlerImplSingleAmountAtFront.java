@@ -1,7 +1,5 @@
 package com.override.orchestrator_service.service.calc;
 
-import com.override.orchestrator_service.service.TransactionProcessingService;
-
 public class TransactionHandlerImplSingleAmountAtFront implements TransactionHandler {
     private final String SPACE = " ";
     private final char RU_DECIMAL_DELIMITER = ',';
@@ -16,5 +14,10 @@ public class TransactionHandlerImplSingleAmountAtFront implements TransactionHan
     @Override
     public String getTransactionComment(String transaction) {
         return transaction.substring(transaction.indexOf(SPACE) + 1);
+    }
+
+    @Override
+    public String getRegExp() {
+        return "^(\\d*(\\,|\\.)?\\d+)(\\s+)([a-zA-Zа-яА-я0-9\\p{P}\\s]+)";
     }
 }

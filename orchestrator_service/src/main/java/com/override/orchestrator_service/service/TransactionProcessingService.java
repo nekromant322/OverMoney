@@ -1,15 +1,19 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
-import com.override.orchestrator_service.exception.TransactionProcessingException;
 import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.service.calc.*;
 import com.override.orchestrator_service.util.TelegramUtils;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
 
+import javax.annotation.PostConstruct;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.*;
@@ -35,30 +39,54 @@ public class TransactionProcessingService {
     @Autowired
     private TelegramUtils telegramUtils;
 
-    private enum RegularExpressions {
-        SINGLE_AMOUNT_AT_FRONT("^(\\d*(\\,|\\.)?\\d+)(\\s+)([a-zA-Zа-яА-я]+)([a-zA-Zа-яА-я0-9\\s\\.\\,]*)"),
-        SUM_AMOUNT_AT_FRONT("^(\\d*(\\,|\\.)?\\d+)((\\s*)(\\+((\\s*)\\d*(\\,|\\.)?\\d+)(\\s+)))+([a-zA-Zа-яА-я]+)([a-zA-Zа-яА-я0-9\\s\\.\\,]*)"),
-        SINGLE_AMOUNT_AT_END("^([a-zA-Zа-яА-я]+)([a-zA-Zа-яА-я0-9\\s\\.\\,]*)(\\s+)(\\d*(\\,|\\.)?\\d+)$"),
-        SUM_AMOUNT_AT_END("^([a-zA-Zа-яА-я]+)([a-zA-Zа-яА-я0-9\\s\\.\\,]*)(\\s+)(\\d*(\\,|\\.)?\\d+)((\\s*)\\+(\\s*)\\d*(\\,|\\.)?\\d+(\\s*))*$");
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    private static class TransactionDetails {
+        private float amount;
+        private String message;
+    }
 
-        private final String value;
+    private final List<TransactionHandler> transactionHandlers = new LinkedList<>();
 
-        RegularExpressions(String value) {
-            this.value = value;
-        }
+    @PostConstruct
+    public void init() {
+        transactionHandlers.add(new TransactionHandlerImplSumAmountAtFront());
+        transactionHandlers.add(new TransactionHandlerImplSingleAmountAtFront());
+        transactionHandlers.add(new TransactionHandlerImplSumAmountAtEnd());
+        transactionHandlers.add(new TransactionHandlerImplSingleAmountAtEnd());
+        transactionHandlers.add(new TransactionHandlerImplInvalidTransaction());
     }
 
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
         String transactionMessage = transactionMessageDTO.getMessage();
-        TransactionHandler transactionHandler = getTransactionHandler(transactionMessage.trim());
+
+        /*List<TransactionHandler> transactionHandlers = new LinkedList<>();
+        transactionHandlers.add(new TransactionHandlerImplSumAmountAtFront());
+        transactionHandlers.add(new TransactionHandlerImplSingleAmountAtFront());
+        transactionHandlers.add(new TransactionHandlerImplSumAmountAtEnd());
+        transactionHandlers.add(new TransactionHandlerImplSingleAmountAtEnd());
+        transactionHandlers.add(new TransactionHandlerImplInvalidTransaction());*/
+
+        TransactionDetails transactionDetails = new TransactionDetails();
+        for (TransactionHandler t : transactionHandlers) {
+            Pattern pattern = Pattern.compile(t.getRegExp());
+            Matcher matcher = pattern.matcher(transactionMessage);
+            if (matcher.find()) {
+                transactionDetails.setAmount(t.calculateAmount(transactionMessage));
+                transactionDetails.setMessage(t.getTransactionComment(transactionMessage));
+                break;
+            }
+        }
+
         return Transaction.builder()
                 .account(overMoneyAccount)
-                .amount(transactionHandler.calculateAmount(transactionMessage))
-                .message(transactionHandler.getTransactionComment(transactionMessage))
-                .category(getTransactionCategory(transactionHandler.getTransactionComment(transactionMessage),
-                        overMoneyAccount))
+                .amount(transactionDetails.getAmount())
+                .message(transactionDetails.getMessage())
+                .category(getTransactionCategory(transactionDetails.getMessage(), overMoneyAccount))
                 .date(transactionMessageDTO.getDate())
                 .telegramUserId(transactionMessageDTO.getUserId())
                 .build();
@@ -139,29 +167,5 @@ public class TransactionProcessingService {
             }
         }
         return matchingKeyword;
-    }
-
-    private TransactionHandler getTransactionHandler(String transaction) {
-        Pattern pattern = Pattern.compile(RegularExpressions.SINGLE_AMOUNT_AT_FRONT.value);
-        Matcher matcher = pattern.matcher(transaction);
-        if (matcher.find()) {
-            return new TransactionHandlerImplSingleAmountAtFront();
-        }
-        pattern = Pattern.compile(RegularExpressions.SUM_AMOUNT_AT_FRONT.value);
-        matcher = pattern.matcher(transaction);
-        if (matcher.find()) {
-            return new TransactionHandlerImplSumAmountAtFront();
-        }
-        pattern = Pattern.compile(RegularExpressions.SINGLE_AMOUNT_AT_END.value);
-        matcher = pattern.matcher(transaction);
-        if (matcher.find()) {
-            return new TransactionHandlerImplSingleAmountAtEnd();
-        }
-        pattern = Pattern.compile(RegularExpressions.SUM_AMOUNT_AT_END.value);
-        matcher = pattern.matcher(transaction);
-        if (matcher.find()) {
-            return new TransactionHandlerImplSumAmountAtEnd();
-        }
-        throw new TransactionProcessingException("Неподдерживаемый формат транзакции");
     }
 }

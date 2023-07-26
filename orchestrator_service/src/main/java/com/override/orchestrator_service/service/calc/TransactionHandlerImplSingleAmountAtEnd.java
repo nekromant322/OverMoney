@@ -15,4 +15,9 @@ public class TransactionHandlerImplSingleAmountAtEnd implements TransactionHandl
     public String getTransactionComment(String transaction) {
         return transaction.substring(0, transaction.lastIndexOf(SPACE)).trim();
     }
+
+    @Override
+    public String getRegExp() {
+        return "^([a-zA-Zа-яА-я0-9\\p{P}\\s]+)(\\s+)(\\d*(\\,|\\.)?\\d+)$";
+    }
 }
