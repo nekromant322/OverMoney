@@ -32,6 +32,16 @@
       etozhealexis,
       NikitaAkimovv
 
+  filters:
+    authorization-header:
+      header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+    allowed-URIs:
+     /actuator,
+     /landing,
+     /actuator/health,
+     /actuator/prometheus
+
+
   jwt:
     secret:
       access: ${JWT_ACCESS_KEY:qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==}
@@ -79,6 +89,8 @@
 
   logging:
     level:
+      com.override.orchestrator_service.config.filter.InternalKeyAuthenticationFilter: TRACE
+      org.springframework.security: TRACE
       org.zalando.logbook: TRACE
 
   management:
