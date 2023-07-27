@@ -20,7 +20,6 @@ scrape_configs:
       - targets: ['recognizer:8080']
         labels:
           group: 'recognizer'
-
   - job_name: 'db_monitoring'
     scrape_interval: 15s
     static_configs:
