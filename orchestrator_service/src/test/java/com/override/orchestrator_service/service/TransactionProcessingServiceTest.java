@@ -7,12 +7,14 @@ import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
+import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
@@ -44,6 +46,7 @@ public class TransactionProcessingServiceTest {
     @ParameterizedTest
     @MethodSource("provideTransactionArgumentsCauseExc")
     public void checkTransactionTypeThrowsException(String message) throws InstanceNotFoundException {
+        transactionProcessingService.init();
         TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
                 .message(message)
                 .userId(123L)
@@ -97,6 +100,7 @@ public class TransactionProcessingServiceTest {
     @ParameterizedTest
     @MethodSource("provideTransactionArguments")
     public void processTransactionTest(String message, String messageResponse, Float amount, String categoryName) throws InstanceNotFoundException {
+        transactionProcessingService.init();
         TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
                 .message(message)
                 .userId(123L)

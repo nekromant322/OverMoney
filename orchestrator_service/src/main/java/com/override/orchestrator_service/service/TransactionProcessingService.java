@@ -1,14 +1,11 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.TransactionAmountAndCommentDTO;
 import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.service.calc.*;
 import com.override.orchestrator_service.util.TelegramUtils;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
@@ -39,17 +36,16 @@ public class TransactionProcessingService {
     @Autowired
     private TelegramUtils telegramUtils;
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    @Setter
-    private static class TransactionDetails {
-        private float amount;
-        private String message;
-    }
-
     private final List<TransactionHandler> transactionHandlers = new LinkedList<>();
 
+    /**
+     * Метод создает связанный список стратегий обработки транзакции; очередность стратегии соответствует ее приоритету.
+     * Последней в списке должна следовать стратегия, выбрасывающая исключения.
+     *
+     * @see TransactionProcessingService#processTransaction(TransactionMessageDTO)
+     * @see com.override.orchestrator_service.service.calc.TransactionHandler
+     * @see com.override.orchestrator_service.service.calc.TransactionHandlerImplInvalidTransaction
+     */
     @PostConstruct
     public void init() {
         transactionHandlers.add(new TransactionHandlerImplSumAmountAtFront());
@@ -59,25 +55,32 @@ public class TransactionProcessingService {
         transactionHandlers.add(new TransactionHandlerImplInvalidTransaction());
     }
 
-    public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) throws InstanceNotFoundException {
+    /**
+     * Метод обрабатывает транзакцию, пришедшую в виде соответствующего объекта ДТО
+     * Обработка реализована с использованием паттерна стратегия
+     * Если транзакцию не удастся обработать в соответствии с заложенными стратегиями,
+     * последняя применяемая стратегия должна выбросить runtime exception
+     *
+     * @param transactionMessageDTO Объект, содержащий информацию о транзакции. Если транзакция
+     *                              отправлена из веб-приложения, информация о chatId и userId может
+     *                              отсутствовать. Этот метод заполняет эти поля.
+     * @throws com.override.orchestrator_service.exception.TransactionProcessingException
+     * @see TransactionProcessingService#init()
+     * @see com.override.orchestrator_service.service.calc.TransactionHandler
+     * @see com.override.orchestrator_service.service.calc.TransactionHandlerImplInvalidTransaction
+     */
+    public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
         String transactionMessage = transactionMessageDTO.getMessage();
+        TransactionAmountAndCommentDTO transactionDetails = new TransactionAmountAndCommentDTO();
 
-        /*List<TransactionHandler> transactionHandlers = new LinkedList<>();
-        transactionHandlers.add(new TransactionHandlerImplSumAmountAtFront());
-        transactionHandlers.add(new TransactionHandlerImplSingleAmountAtFront());
-        transactionHandlers.add(new TransactionHandlerImplSumAmountAtEnd());
-        transactionHandlers.add(new TransactionHandlerImplSingleAmountAtEnd());
-        transactionHandlers.add(new TransactionHandlerImplInvalidTransaction());*/
-
-        TransactionDetails transactionDetails = new TransactionDetails();
         for (TransactionHandler t : transactionHandlers) {
             Pattern pattern = Pattern.compile(t.getRegExp());
             Matcher matcher = pattern.matcher(transactionMessage);
             if (matcher.find()) {
                 transactionDetails.setAmount(t.calculateAmount(transactionMessage));
-                transactionDetails.setMessage(t.getTransactionComment(transactionMessage));
+                transactionDetails.setComment(t.getTransactionComment(transactionMessage));
                 break;
             }
         }
@@ -85,8 +88,8 @@ public class TransactionProcessingService {
         return Transaction.builder()
                 .account(overMoneyAccount)
                 .amount(transactionDetails.getAmount())
-                .message(transactionDetails.getMessage())
-                .category(getTransactionCategory(transactionDetails.getMessage(), overMoneyAccount))
+                .message(transactionDetails.getComment())
+                .category(getTransactionCategory(transactionDetails.getComment(), overMoneyAccount))
                 .date(transactionMessageDTO.getDate())
                 .telegramUserId(transactionMessageDTO.getUserId())
                 .build();
@@ -125,7 +128,7 @@ public class TransactionProcessingService {
     }
 
     private Category getTransactionCategory(String transactionMessage,
-                                            OverMoneyAccount overMoneyAccount) throws InstanceNotFoundException {
+                                            OverMoneyAccount overMoneyAccount) {
         if (Objects.isNull(overMoneyAccount.getCategories()) ||
                 Objects.isNull(getMatchingCategory(overMoneyAccount.getCategories(),
                         transactionMessage)) &&

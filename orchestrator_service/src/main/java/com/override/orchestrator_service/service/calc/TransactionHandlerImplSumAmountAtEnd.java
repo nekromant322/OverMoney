@@ -11,18 +11,14 @@ public class TransactionHandlerImplSumAmountAtEnd implements TransactionHandler 
     private final String PLUS = "\\+";
     private final char RU_DECIMAL_DELIMITER = ',';
     private final char EN_DECIMAL_DELIMITER = '.';
-    private final String regexpForAmountAtEnd =
-            "(\\s+)((\\s*)(\\d*(\\,|\\.)?\\d+)(\\s*)\\+(\\s*))*((\\s*)\\d*(\\,|\\.)?\\d+)$";
+    private final String regexpForAmountAtEnd = "(\\s+)((\\s*)(\\d*(\\,|\\.)?\\d+)(\\s*)\\+(\\s*))*((\\s*)\\d*(\\,|\\.)?\\d+)$";
 
     @Override
     public float calculateAmount(String transaction) {
         Pattern pattern = Pattern.compile(regexpForAmountAtEnd);
         Matcher matcher = pattern.matcher(transaction);
         matcher.find();
-        String amountAsString = matcher.group()
-                .trim()
-                .replace(RU_DECIMAL_DELIMITER, EN_DECIMAL_DELIMITER)
-                .replace(SPACE, NOTHING);
+        String amountAsString = matcher.group().trim().replace(RU_DECIMAL_DELIMITER, EN_DECIMAL_DELIMITER).replace(SPACE, NOTHING);
         Stream<String> amountAsStream = Arrays.stream(amountAsString.split(PLUS));
         final float[] sum = {0};
         amountAsStream.forEach(t -> {
