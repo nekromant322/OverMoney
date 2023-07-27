@@ -67,11 +67,13 @@ $("#readButton").click(function () {
 });
 
 function saveFile() {
+    //лоудер старт
     $.ajax({
         url: './settings/backup',
         method: 'GET',
         async: false,
         success: function (data) {
+            //лоудер стоп
             let json = JSON.stringify(data);
             let blob = new Blob([json], {type: "application/json"});
             let url = URL.createObjectURL(blob);
@@ -94,8 +96,9 @@ function saveFile() {
     });
 }
 
-function readFile(input) {
-    let file = input.files[0];
+function readFile() {
+    //лоудер старт
+    let file = document.getElementById("file").files[0];
     console.log(file);
 
     let reader = new FileReader();
@@ -103,6 +106,7 @@ function readFile(input) {
 
     reader.onload = function () {
         console.log(reader.result)
+        //лоудер стоп(вроде тут -_-)
         fetch('./settings/backup/read', {
             method: 'POST',
             body: reader.result,
@@ -183,6 +187,3 @@ sendButton.on("click", function () {
         }
     });
 });
-
-
-
