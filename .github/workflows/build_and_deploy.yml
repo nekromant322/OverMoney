@@ -37,6 +37,8 @@ jobs:
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
       wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
+      postgres-exporter_orchestrator-db: ${{ steps.filter.outputs.postgres-exporter_orchestrator-db }}
+      postgres-exporter_telegram-bot-db: ${{ steps.filter.outputs.postgres-exporter_telegram-bot-db }}
       prometheus: ${{ steps.filter.outputs.prometheus }}
       nginx: ${{ steps.filter.outputs.nginx }}
     steps:
@@ -55,6 +57,10 @@ jobs:
               - 'telegram_bot_service/**'
             wit-ai-go-proxy:
               - 'wit_ai_go_proxy/**'
+            postgres-exporter_orchestrator-db:
+              - 'postgres-exporter_orchestrator-db/**'
+            postgres-exporter_telegram-bot-db:
+              - 'postgres-exporter_telegram-bot-db/**'
             prometheus:
               - 'prometheus/**'
             nginx:
@@ -113,6 +119,30 @@ jobs:
           file: /wit_ai_go_proxy/Dockerfile
           push: true
           tags: nekromant322/overmoney:wit-ai-go-proxy
+
+      - name: Copy postgres-exporter_orchestrator-db config via SSH
+        if: ${{ needs.paths-filter.outputs.postgres-exporter_orchestrator-db == 'true' }}
+        uses: appleboy/scp-action@master
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          source: "postgres-exporter_orchestrator-db/*"
+          target: "/home/${{ secrets.SSH_USER }}"
+          overwrite: true
+
+      - name: Copy postgres-exporter_telegram-bot-db config via SSH
+        if: ${{ needs.paths-filter.outputs.postgres-exporter_telegram-bot-db == 'true' }}
+        uses: appleboy/scp-action@master
+        with:
+          host: overridetech.ru
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: 22
+          source: "postgres-exporter_telegram-bot-db/*"
+          target: "/home/${{ secrets.SSH_USER }}"
+          overwrite: true
 
       - name: Copy prometheus config via SSH
         if: ${{ needs.paths-filter.outputs.prometheus == 'true' }}
@@ -198,12 +228,7 @@ jobs:
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:wit-ai-go-proxy
             fi
             
-            if ${{ needs.paths-filter.outputs.prometheus}}; then
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop prometheus
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm prometheus
-            fi
-            
-            if ${{ needs.paths-filter.outputs.postgres-exporter_orchestrator-db}}; then
+             if ${{ needs.paths-filter.outputs.postgres-exporter_orchestrator-db}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop postgres-exporter_orchestrator-db
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm postgres-exporter_orchestrator-db
             fi
@@ -212,7 +237,12 @@ jobs:
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop postgres-exporter_telegram-bot-db
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm postgres-exporter_telegram-bot-db
             fi
-                      
+            
+            if ${{ needs.paths-filter.outputs.prometheus}}; then
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop prometheus
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm prometheus
+            fi
+                                
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose -f docker-compose.yaml --env-file=overmoney-env.txt up -d
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker ps -a  
             rm overmoney-env.txt
