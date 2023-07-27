@@ -89,6 +89,8 @@
 
   logging:
     level:
+      com.override.orchestrator_service.config.filter.InternalKeyAuthenticationFilter: TRACE
+      org.springframework.security: TRACE
       org.zalando.logbook: TRACE
 
   management:
