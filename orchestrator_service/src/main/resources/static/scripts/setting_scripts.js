@@ -187,5 +187,3 @@ sendButton.on("click", function () {
         }
     });
 });
-
-$('#loader').addClass("hide-loader");
