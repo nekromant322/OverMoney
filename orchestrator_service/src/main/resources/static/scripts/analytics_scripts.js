@@ -264,6 +264,7 @@ function setAvailableYearsForMonthlyAnalytics() {
         type: 'GET',
         dataType: 'json',
         success: function (years) {
+            years.sort(compareYear); // Сортируем по убыванию
             years.forEach(function (year) {
                 const option = $('<option>').val(year).text(year);
                 if (year === new Date().getFullYear()) {
@@ -328,7 +329,6 @@ const yearSelectAnnualAndMonthlyTotalStatistics = $('#yearSelectAnnualAndMonthly
 
 yearSelectAnnualAndMonthlyTotalStatistics.on('change', function () {
     const selectedYear = yearSelectAnnualAndMonthlyTotalStatistics.val();
-    console.log(selectedYear);
     getAnnualAndMonthlyReportData(selectedYear);
 });
 
@@ -425,6 +425,11 @@ function totalList(data) {
 }
 
 function drawTableOfExpense(dataExpense, dataOpacity, totalExpense) {
+    let tfoot = document.getElementById("total-analytics-table").getElementsByTagName("tfoot")[0];
+    clearTableOfExpense(tfoot); // очищаем таблицу, если там есть записи
+    let tbody = document.getElementById("total-analytics-table").getElementsByTagName("tbody")[0];
+    clearTableOfExpense(tbody); // очищаем таблицу, если там есть записи
+
     addRowFootInTableOfExpense(totalExpense);
     for (let i = 0; i < dataExpense.length; i++) {
         addRowInTableOfExpense(dataExpense[i], dataOpacity[i]);
@@ -484,5 +489,17 @@ function insertTdToFootInTableOfExpense(value, parent) {
         element.style.backgroundColor = 'rgb(128, 128, 128)';
     }
     parent.insertAdjacentElement("beforeend", element);
+}
+
+function clearTableOfExpense(table) {
+    if (table.rows.length > 0) {
+        let len = table.rows.length;
+        for (let i = 0; i < len; i++) {
+            table.deleteRow(0);
+        }
+    }
+}
+function compareYear(year1, year2) {
+    return year2 - year1;
 }
 //          ---- КОНЕЦ ----
