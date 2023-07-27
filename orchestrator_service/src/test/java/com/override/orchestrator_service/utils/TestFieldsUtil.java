@@ -337,4 +337,20 @@ public class TestFieldsUtil {
                     put(12, 1d);
                 }});
     }
+
+    public static TransactionMessageDTO generateTransactionMessageDTOFromTelegram() {
+        return TransactionMessageDTO.builder()
+                .message("пиво 200")
+                .chatId(generateTestAccount().getChatId())
+                .userId(generateTestUser().getId())
+                .build();
+    }
+
+    public static TransactionMessageDTO generateTransactionMessageDTOFromWeb() {
+        return TransactionMessageDTO.builder()
+                .message("пиво 200")
+                .chatId(generateTestAccount().getChatId())
+                .userId(generateTestUser().getId())
+                .build();
+    }
 }
