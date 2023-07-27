@@ -203,6 +203,16 @@ jobs:
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm prometheus
             fi
             
+            if ${{ needs.paths-filter.outputs.postgres-exporter_orchestrator-db}}; then
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop postgres-exporter_orchestrator-db
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm postgres-exporter_orchestrator-db
+            fi
+            
+            if ${{ needs.paths-filter.outputs.postgres-exporter_telegram-bot-db}}; then
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop postgres-exporter_telegram-bot-db
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm postgres-exporter_telegram-bot-db
+            fi
+                      
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose -f docker-compose.yaml --env-file=overmoney-env.txt up -d
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker ps -a  
             rm overmoney-env.txt

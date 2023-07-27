@@ -32,6 +32,28 @@ services:
       options:
         max-size: 50m
 
+  postgres-exporter_orchestrator-db:
+    image: prometheuscommunity/postgres-exporter
+    ports:
+      - '9187:9187'
+    environment:
+      DATA_SOURCE_URI: ${ORCHESTRATOR_DB_HOST}:${ORCHESTRATOR_DB_PORT}/orchestrator-db?sslmode=disable
+      DATA_SOURCE_USER: ${ORCHESTRATOR_DB_USER}
+      DATA_SOURCE_PASS: ${ORCHESTRATOR_DB_PASSWORD}
+    depends_on:
+      - orchestrator-db
+
+  postgres-exporter_telegram-bot-db:
+    image: prometheuscommunity/postgres-exporter
+    ports:
+      - '9188:9187'
+    environment:
+      DATA_SOURCE_URI: ${TELEGRAM_BOT_DB_HOST}:${TELEGRAM_BOT_DB_PORT}/telegram-bot-db?sslmode=disable
+      DATA_SOURCE_USER: ${TELEGRAM_BOT_DB_USER}
+      DATA_SOURCE_PASS: ${TELEGRAM_BOT_DB_PASSWORD}
+    depends_on:
+      - telegram-bot-db
+
   eureka:
     container_name: eureka
     image: nekromant322/overmoney:eureka
