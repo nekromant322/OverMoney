@@ -2,24 +2,26 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.TransactionMessageDTO;
+import com.override.orchestrator_service.config.jwt.JwtAuthentication;
 import com.override.orchestrator_service.exception.TransactionProcessingException;
 import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.util.TelegramUtils;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
-import org.aspectj.lang.annotation.Before;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
 import javax.management.InstanceNotFoundException;
+import java.security.Principal;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -43,9 +45,12 @@ public class TransactionProcessingServiceTest {
     @Mock
     private CategoryService categoryService;
 
+    @Mock
+    private TelegramUtils telegramUtils;
+
     @ParameterizedTest
     @MethodSource("provideTransactionArgumentsCauseExc")
-    public void checkTransactionTypeThrowsException(String message) throws InstanceNotFoundException {
+    public void checkProcessTransactionThrowsExceptionTest(String message) throws InstanceNotFoundException {
         transactionProcessingService.init();
         TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
                 .message(message)
@@ -99,7 +104,7 @@ public class TransactionProcessingServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideTransactionArguments")
-    public void processTransactionTest(String message, String messageResponse, Float amount, String categoryName) throws InstanceNotFoundException {
+    public void checkProcessTransactionReturnsCorrectValuesTest(String message, String messageResponse, Float amount, String categoryName) throws InstanceNotFoundException {
         transactionProcessingService.init();
         TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
                 .message(message)
@@ -190,5 +195,35 @@ public class TransactionProcessingServiceTest {
                 Arguments.of("пиво теплое! 1.5 200+   200,12  +   200.13  +200", "пиво теплое! 1.5", 800.25f, "продукты"),
                 Arguments.of("пиво теплое! 1,5 200+   200,12  +   200.13  +200", "пиво теплое! 1,5", 800.25f, "продукты")
         );
+    }
+
+    @Test
+    public void checkValidateAndProcessTransactionWorksEqualsWithAndWithoutPrincipalTest() throws InstanceNotFoundException {
+        transactionProcessingService.init();
+        when(telegramUtils.getTelegramId(any())).thenReturn(TestFieldsUtil.generateTestAccount().getId());
+        when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(TestFieldsUtil.generateTestAccount());
+
+        List<CategoryDTO> categories = List.of(TestFieldsUtil.generateTestCategoryDTO());
+        when(recognizerFeign.recognizeCategory(any(), any(), any())).thenReturn(TestFieldsUtil.generateTestCategoryDTO());
+        when(categoryService.findCategoriesListByUserId(any())).thenReturn(categories);
+        when(overMoneyAccountService.getOverMoneyAccountByChatId(any())).thenReturn(TestFieldsUtil.generateTestAccount());
+        Principal principal = new JwtAuthentication();
+
+        Transaction resultTransactionWithPrincipal =
+                transactionProcessingService
+                        .validateAndProcessTransaction(TestFieldsUtil.generateTransactionMessageDTOFromWeb(),
+                                principal);
+        Transaction resultTransactionWithoutPrincipal =
+                transactionProcessingService
+                        .validateAndProcessTransaction(TestFieldsUtil.generateTransactionMessageDTOFromTelegram(),
+                                null);
+
+
+        assertEquals(resultTransactionWithPrincipal.getMessage(), resultTransactionWithoutPrincipal.getMessage());
+        assertEquals(resultTransactionWithPrincipal.getAmount(), resultTransactionWithoutPrincipal.getAmount());
+        assertEquals(resultTransactionWithPrincipal.getAccount().getId(),
+                resultTransactionWithoutPrincipal.getAccount().getId());
+        assertEquals(resultTransactionWithPrincipal.getCategory().getName(),
+                resultTransactionWithoutPrincipal.getCategory().getName());
     }
 }
