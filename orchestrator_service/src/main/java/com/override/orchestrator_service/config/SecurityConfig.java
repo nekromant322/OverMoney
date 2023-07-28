@@ -33,12 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/login/**").permitAll()
                 .antMatchers("/actuator/health", "/actuator/prometheus").permitAll()
-                .antMatchers("/transaction", "/account/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login")
-                .and().addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(internalKeyAuthenticationFilter, JwtFilter.class)
+                .and().addFilterAfter(internalKeyAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterAfter(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterAfter(adminPageFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
