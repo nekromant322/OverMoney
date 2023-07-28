@@ -21,6 +21,7 @@
         <module>recognizer_service</module>
         <module>orchestrator_service</module>
         <module>telegram_bot_service</module>
+        <module>invest_service</module>
     </modules>
 
     <properties>

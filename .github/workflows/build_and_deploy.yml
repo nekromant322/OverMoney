@@ -36,6 +36,7 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
+      invest: ${{ steps.filter.outputs.invest }}
       wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
       prometheus: ${{ steps.filter.outputs.prometheus }}
       nginx: ${{ steps.filter.outputs.nginx }}
@@ -53,6 +54,8 @@ jobs:
               - 'orchestrator_service/**'
             telegram-bot:
               - 'telegram_bot_service/**'
+            invest:
+              - 'invest_service/**'
             wit-ai-go-proxy:
               - 'wit_ai_go_proxy/**'
             prometheus:
@@ -105,6 +108,14 @@ jobs:
           file: /telegram_bot_service/Dockerfile
           push: true
           tags: nekromant322/overmoney:telegram-bot
+
+      - name: Invest Build and Push to Dockerhub
+        if: ${{ needs.paths-filter.outputs.invest == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          file: /invest_service/Dockerfile
+          push: true
+          tags: nekromant322/overmoney:invest
 
       - name: Wit ai go proxy Build and Push to Dockerhub
         if: ${{ needs.paths-filter.outputs.wit-ai-go-proxy == 'true' }}
@@ -190,6 +201,12 @@ jobs:
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop telegram-bot
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm telegram-bot
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:telegram-bot
+            fi
+            
+            if ${{ needs.paths-filter.outputs.invest}}; then
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop invest
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm invest
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:invest
             fi
             
             if ${{ needs.paths-filter.outputs.wit-ai-go-proxy}}; then
