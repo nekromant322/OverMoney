@@ -65,3 +65,6 @@
 
   max-mailing-messages:
     maxMessagesOfAnnouncePerSecond: 25
+
+  authorization-header:
+    header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
