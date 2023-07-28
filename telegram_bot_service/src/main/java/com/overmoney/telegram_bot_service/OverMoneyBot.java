@@ -4,6 +4,7 @@ import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
+import com.overmoney.telegram_bot_service.service.FileService;
 import com.overmoney.telegram_bot_service.service.MergeRequestService;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
 import com.override.dto.AccountDataDTO;
@@ -18,14 +19,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
 import java.time.*;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +52,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private ChatMemberMapper chatMemberMapper;
     @Autowired
     private InlineKeyboardMarkupUtil inlineKeyboardMarkupUtil;
+    @Autowired
+    private FileService fileService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
             "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
     private final Integer MILLISECONDS_CONVERSION = 1000;
@@ -92,6 +94,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                     .atOffset(MOSCOW_OFFSET).toLocalDateTime();
             if (receivedMessage.getLeftChatMember() != null) {
                 User user = receivedMessage.getLeftChatMember();
+                sendBuckUpFile(user.getId().toString(), fileService.createBackupFileToRemoteInChatUser(chatId, user.getId()));
                 orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, user));
             }
             if (!receivedMessage.getNewChatMembers().isEmpty()) {
@@ -213,5 +216,18 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         message.setMessageId(messageId);
         message.setReplyMarkup(null);
         execute(message);
+    }
+
+    public void sendBuckUpFile(String userChatId, String fileName) {
+        File file = new File(fileName);
+        SendDocument sendDocument = new SendDocument();
+        sendDocument.setChatId(userChatId);
+        sendDocument.setDocument(new InputFile(file));
+        try {
+            execute(sendDocument);
+            file.delete();
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
     }
 }

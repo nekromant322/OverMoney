@@ -29,6 +29,11 @@ public class SettingsController {
         return backupUserDataService.createBackupUserData(telegramUtils.getTelegramId(principal));
     }
 
+    @GetMapping("/backup/id")
+    public BackupUserDataDTO getBackupDataFromRemoveUser(@RequestParam Long userId) throws InstanceNotFoundException {
+        return backupUserDataService.createBackupUserData(userId);
+    }
+
     @PostMapping("/backup/read")
     public ResponseEntity<HttpStatus> readBackupFile(@RequestBody BackupUserDataDTO backupUserDataDTO, Principal principal) {
         backupUserDataService.writingDataFromBackupFile(backupUserDataDTO, telegramUtils.getTelegramId(principal));
@@ -36,7 +41,7 @@ public class SettingsController {
     }
 
     @GetMapping("/environment/telegramBotName")
-    public String getTelegramBotName(){
+    public String getTelegramBotName() {
         return telegramUtils.getTelegramBotName();
     }
 }

@@ -1,10 +1,7 @@
 package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
-import com.override.dto.AccountDataDTO;
-import com.override.dto.ChatMemberDTO;
-import com.override.dto.TransactionMessageDTO;
-import com.override.dto.TransactionResponseDTO;
+import com.override.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -56,5 +53,9 @@ public class OrchestratorRequestService {
 
     public void removeChatMemberFromAccount(ChatMemberDTO leftChatMember) {
         orchestratorFeign.removeChatMemberFromAccount(leftChatMember);
+    }
+
+    public BackupUserDataDTO getBackup(Long userId) {
+        return orchestratorFeign.getBackup(userId);
     }
 }
