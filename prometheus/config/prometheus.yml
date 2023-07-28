@@ -20,3 +20,8 @@ scrape_configs:
       - targets: ['recognizer:8080']
         labels:
           group: 'recognizer'
+  - job_name: 'db_monitoring'
+    scrape_interval: 15s
+    static_configs:
+      - targets: ['postgres-exporter_orchestrator-db:9187']
+      - targets: ['postgres-exporter_telegram-bot-db:9187']

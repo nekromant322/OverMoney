@@ -126,7 +126,7 @@
     background-color: darkgreen;
 }
 
-.bug-report-button {
+.btn-danger {
     background-color: red;
     color: white;
     padding: 10px 20px;
@@ -136,7 +136,7 @@
     cursor: pointer;
 }
 
-.bug-report-button:hover {
+.btn-danger:hover {
     background-color: darkred;
 }
 
