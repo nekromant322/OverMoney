@@ -38,5 +38,4 @@ public class InternalKeyAuthenticationFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-
 }
