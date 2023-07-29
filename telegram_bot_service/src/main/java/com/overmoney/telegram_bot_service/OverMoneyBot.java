@@ -94,8 +94,11 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                     .atOffset(MOSCOW_OFFSET).toLocalDateTime();
             if (receivedMessage.getLeftChatMember() != null) {
                 User user = receivedMessage.getLeftChatMember();
-                sendBuckUpFile(user.getId().toString(), fileService.createBackupFileToRemoteInChatUser(chatId, user.getId()));
-                orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, user));
+                if (!receivedMessage.getLeftChatMember().getIsBot()) {
+                    String backupFileName = fileService.createBackupFileToRemoteInChatUser(chatId, user.getId());
+                    sendBuckUpFile(user.getId().toString(), backupFileName);
+                    orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, user));
+                }
             }
             if (!receivedMessage.getNewChatMembers().isEmpty()) {
                 List<User> newUsers = receivedMessage.getNewChatMembers();

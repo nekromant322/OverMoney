@@ -3,10 +3,7 @@ package com.overmoney.telegram_bot_service.feign;
 import com.overmoney.telegram_bot_service.config.FeignConfiguration;
 import com.override.dto.*;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +34,6 @@ public interface OrchestratorFeign {
     @PostMapping("/account/remove/user")
     void removeChatMemberFromAccount(@RequestBody ChatMemberDTO chatMember);
 
-    @GetMapping("/settings/backup/id")
-    BackupUserDataDTO getBackup(@RequestParam Long userId);
+    @GetMapping("/settings/backup/{id}")
+    BackupUserDataDTO getBackup(@PathVariable Long id);
 }

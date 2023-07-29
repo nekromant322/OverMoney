@@ -29,9 +29,9 @@ public class SettingsController {
         return backupUserDataService.createBackupUserData(telegramUtils.getTelegramId(principal));
     }
 
-    @GetMapping("/backup/id")
-    public BackupUserDataDTO getBackupDataFromRemoveUser(@RequestParam Long userId) throws InstanceNotFoundException {
-        return backupUserDataService.createBackupUserData(userId);
+    @GetMapping("/backup/{id}")
+    public BackupUserDataDTO getBackupDataFromRemoveUser(@PathVariable Long id) throws InstanceNotFoundException {
+        return backupUserDataService.createBackupUserData(id);
     }
 
     @PostMapping("/backup/read")

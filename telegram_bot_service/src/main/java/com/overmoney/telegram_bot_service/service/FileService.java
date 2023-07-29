@@ -21,12 +21,12 @@ public class FileService {
         ObjectMapper mapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build();
-        String nameFile = userId.toString() + "-" + LocalDate.now() + "-overmoney.json";
+        String fileName = userId.toString() + "-" + LocalDate.now() + "-overmoney.json";
         try {
-            mapper.writeValue(new File(nameFile), backupUserDataDTO);
+            mapper.writeValue(new File(fileName), backupUserDataDTO);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return nameFile;
+        return fileName;
     }
 }
