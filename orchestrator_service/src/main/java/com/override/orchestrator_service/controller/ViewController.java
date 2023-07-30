@@ -35,4 +35,9 @@ public class ViewController {
     public String getPanel() {
         return "admin_panel";
     }
+
+    @GetMapping("/micromanagement")
+    public String getMicromanagement() {
+        return "micromanagement";
+    }
 }
