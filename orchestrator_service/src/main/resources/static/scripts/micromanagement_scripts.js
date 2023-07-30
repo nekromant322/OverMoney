@@ -27,6 +27,9 @@ function setAvailableYearsForAnnualAndMonthlyTotalStatistics() {
     });
 }
 
+function compareYear(year1, year2) {
+    return year2 - year1;
+}
 
 const yearSelectAnnualAndMonthlyTotalStatistics = $('#yearSelectAnnualAndMonthlyTotalStatistics');
 
@@ -100,8 +103,8 @@ function parseDataAndCreateTableOfExpense(data) {
 }
 
 function parseMapOfMonthlyAnalysesAndGetExpense(data) {
-    var map = data["monthlyAnalytics"];
-    var expenses = [];
+    let map = data["monthlyAnalytics"];
+    let expenses = [];
     for (let key in map) {
         expenses.push(map[key]); // add the map values to the array
     }
@@ -109,8 +112,8 @@ function parseMapOfMonthlyAnalysesAndGetExpense(data) {
 }
 
 function parseMapOfShareOfMonthlyExpensesAndGetOpacity(data) {
-    var map = data["shareOfMonthlyExpenses"];
-    var opacities = [];
+    let map = data["shareOfMonthlyExpenses"];
+    let opacities = [];
     for (let key in map) {
         opacities.push(map[key]); // add the map values to the array
     }
@@ -134,46 +137,46 @@ function drawTableOfExpense(dataExpense, dataOpacity, totalExpense, numberOfRows
     let tbody = document.getElementById("total-analytics-table").getElementsByTagName("tbody")[0];
     clearTableOfExpense(tbody); // очищаем таблицу, если там есть записи
 
-    addRowFootInTableOfExpense(totalExpense, numberOfRows);
+    addRowBodyInTableOfExpense(totalExpense, numberOfRows);
     for (let i = 0; i < dataExpense.length; i++) {
-        addRowInTableOfExpense(dataExpense[i], dataOpacity[i], numberOfRows);
+        addRowFootInTableOfExpense(dataExpense[i], dataOpacity[i], numberOfRows);
     }
 }
 
-function addRowFootInTableOfExpense(totalExpense, numberOfRows) {
+function addRowBodyInTableOfExpense(totalExpense, numberOfRows) {
     let table = document.getElementById("total-analytics-table").getElementsByTagName("tbody")[0];
     let tr = table.insertRow(table.rows.length);
 
-    insertTdToFootInTableOfExpense('ИТОГО:', tr, numberOfRows);
+    insertTdToBodyInTableOfExpense('ИТОГО:', tr, numberOfRows);
     totalExpense.forEach(monthlyTotalItem => {
-        insertTdToFootInTableOfExpense(monthlyTotalItem, tr, numberOfRows);
+        insertTdToBodyInTableOfExpense(monthlyTotalItem, tr, numberOfRows);
     });
 }
 
-function addRowInTableOfExpense(dataExpense, dataOpacity, numberOfRows) {
+function addRowFootInTableOfExpense(dataExpense, dataOpacity, numberOfRows) {
     let table = document.getElementById("total-analytics-table").getElementsByTagName("tfoot")[0];
     let tr = table.insertRow(table.rows.length);
 
-    insertTdInTableOfExpense(0, dataExpense.categoryName, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.january, dataExpense.january, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.february, dataExpense.february, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.march, dataExpense.march, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.april, dataExpense.april, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.may, dataExpense.may, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.june, dataExpense.june, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.july, dataExpense.july, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.august, dataExpense.august, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.september, dataExpense.september, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.october, dataExpense.october, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.november, dataExpense.november, tr, numberOfRows);
-    insertTdInTableOfExpense(dataOpacity.december, dataExpense.december, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(0, dataExpense.categoryName, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.january, dataExpense.january, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.february, dataExpense.february, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.march, dataExpense.march, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.april, dataExpense.april, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.may, dataExpense.may, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.june, dataExpense.june, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.july, dataExpense.july, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.august, dataExpense.august, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.september, dataExpense.september, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.october, dataExpense.october, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.november, dataExpense.november, tr, numberOfRows);
+    insertTdToFootInTableOfExpense(dataOpacity.december, dataExpense.december, tr, numberOfRows);
 }
 
-function insertTdInTableOfExpense(opacity, value, parent, numberOfRows) {
+function insertTdToFootInTableOfExpense(opacity, value, parent, numberOfRows) {
     let element = document.createElement("td");
     element.scope = "row";
     element.innerText = value;
-    element.style.height = 50 / numberOfRows + '%';
+    element.style.height = 50 / numberOfRows + '%'; //Не работает в силу того, что position != fixed
     if (value === 0) {
         element.style.backgroundColor = 'rgba(190, 190, 190,' + 0.2 + ')';
         element.style.opacity = String(0.4);
@@ -183,11 +186,11 @@ function insertTdInTableOfExpense(opacity, value, parent, numberOfRows) {
     parent.insertAdjacentElement("beforeend", element);
 }
 
-function insertTdToFootInTableOfExpense(value, parent, numberOfRows) {
+function insertTdToBodyInTableOfExpense(value, parent, numberOfRows) {
     let element = document.createElement("td");
     element.scope = "row";
     element.innerText = value;
-    element.style.height = 80 / numberOfRows + '%';
+    element.style.height = 80 / numberOfRows + '%'; //Не работает в силу того, что position != fixed
     if (value === 0) {
         element.style.backgroundColor = 'rgba(128, 128, 128,' + 0.7 + ')';
         element.style.opacity = String(0.8);
@@ -205,7 +208,5 @@ function clearTableOfExpense(table) {
         }
     }
 }
-function compareYear(year1, year2) {
-    return year2 - year1;
-}
+
 //          ---- КОНЕЦ ----
