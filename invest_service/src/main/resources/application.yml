@@ -1,21 +1,9 @@
   server:
-    port: 8080
-
-  wit-ai:
-    url: https://api.wit.ai/speech
-    token: ${WIT_AI_TOKEN}
-    version: 20230215
-    charset: UTF-8
-    method: POST
-    authProperty: Authorization
-    contentTypeProperty: Content-Type
-    contentTypeValue: audio/wav
-    paramSeparator: "?"
-    versionParam: v=%s
+    port: 8087
 
   spring:
     application:
-      name: recognizer-service
+      name: invest-service
 
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
@@ -41,9 +29,6 @@
       distribution:
         percentiles-histogram:
           "[http.server.requests]": true
-
-  audio-recognizer-go-service:
-    url: http://wit-ai-go-proxy:3333/recognizer
 
   authorization-header:
     header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}

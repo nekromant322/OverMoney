@@ -32,6 +32,9 @@ server {
                 proxy_pass http://localhost:8761/;  # HTTP
 
         }
+        location /invest/ {
+                proxy_pass http://localhost:8087/;  # HTTP
+        }
         location /twitch-bot/ {
                 proxy_pass http://localhost:9000/;
         }

@@ -32,6 +32,10 @@
       etozhealexis,
       NikitaAkimovv
 
+  filters:
+    authorization-header:
+      header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+
   jwt:
     secret:
       access: ${JWT_ACCESS_KEY:qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==}

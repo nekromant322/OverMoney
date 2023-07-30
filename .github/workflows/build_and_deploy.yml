@@ -36,9 +36,8 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
+      invest: ${{ steps.filter.outputs.invest }}
       wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
-      postgres-exporter_orchestrator-db: ${{ steps.filter.outputs.postgres-exporter_orchestrator-db }}
-      postgres-exporter_telegram-bot-db: ${{ steps.filter.outputs.postgres-exporter_telegram-bot-db }}
       prometheus: ${{ steps.filter.outputs.prometheus }}
       nginx: ${{ steps.filter.outputs.nginx }}
     steps:
@@ -55,12 +54,10 @@ jobs:
               - 'orchestrator_service/**'
             telegram-bot:
               - 'telegram_bot_service/**'
+            invest:
+              - 'invest_service/**'
             wit-ai-go-proxy:
               - 'wit_ai_go_proxy/**'
-            postgres-exporter_orchestrator-db:
-              - 'postgres-exporter_orchestrator-db/**'
-            postgres-exporter_telegram-bot-db:
-              - 'postgres-exporter_telegram-bot-db/**'
             prometheus:
               - 'prometheus/**'
             nginx:
@@ -112,6 +109,14 @@ jobs:
           push: true
           tags: nekromant322/overmoney:telegram-bot
 
+      - name: Invest Build and Push to Dockerhub
+        if: ${{ needs.paths-filter.outputs.invest == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          file: /invest_service/Dockerfile
+          push: true
+          tags: nekromant322/overmoney:invest
+
       - name: Wit ai go proxy Build and Push to Dockerhub
         if: ${{ needs.paths-filter.outputs.wit-ai-go-proxy == 'true' }}
         uses: docker/build-push-action@v2
@@ -119,30 +124,6 @@ jobs:
           file: /wit_ai_go_proxy/Dockerfile
           push: true
           tags: nekromant322/overmoney:wit-ai-go-proxy
-
-      - name: Copy postgres-exporter_orchestrator-db config via SSH
-        if: ${{ needs.paths-filter.outputs.postgres-exporter_orchestrator-db == 'true' }}
-        uses: appleboy/scp-action@master
-        with:
-          host: overridetech.ru
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          source: "postgres-exporter_orchestrator-db/*"
-          target: "/home/${{ secrets.SSH_USER }}"
-          overwrite: true
-
-      - name: Copy postgres-exporter_telegram-bot-db config via SSH
-        if: ${{ needs.paths-filter.outputs.postgres-exporter_telegram-bot-db == 'true' }}
-        uses: appleboy/scp-action@master
-        with:
-          host: overridetech.ru
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          source: "postgres-exporter_telegram-bot-db/*"
-          target: "/home/${{ secrets.SSH_USER }}"
-          overwrite: true
 
       - name: Copy prometheus config via SSH
         if: ${{ needs.paths-filter.outputs.prometheus == 'true' }}
@@ -222,20 +203,16 @@ jobs:
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:telegram-bot
             fi
             
+            if ${{ needs.paths-filter.outputs.invest}}; then
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop invest
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm invest
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:invest
+            fi
+            
             if ${{ needs.paths-filter.outputs.wit-ai-go-proxy}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop wit-ai-go-proxy
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm wit-ai-go-proxy
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:wit-ai-go-proxy
-            fi
-            
-             if ${{ needs.paths-filter.outputs.postgres-exporter_orchestrator-db}}; then
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop postgres-exporter_orchestrator-db
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm postgres-exporter_orchestrator-db
-            fi
-            
-            if ${{ needs.paths-filter.outputs.postgres-exporter_telegram-bot-db}}; then
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop postgres-exporter_telegram-bot-db
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm postgres-exporter_telegram-bot-db
             fi
             
             if ${{ needs.paths-filter.outputs.prometheus}}; then

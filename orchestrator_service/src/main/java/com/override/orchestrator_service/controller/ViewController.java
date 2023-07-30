@@ -3,6 +3,8 @@ package com.override.orchestrator_service.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.security.Principal;
+
 @Controller
 public class ViewController {
 
@@ -34,6 +36,12 @@ public class ViewController {
     @GetMapping("/admin/panel")
     public String getPanel() {
         return "admin_panel";
+    }
+
+    @GetMapping("/admin/moex")
+    public String getMOEXPage(Principal principal) {
+
+        return "moex";
     }
 
     @GetMapping("/micromanagement")

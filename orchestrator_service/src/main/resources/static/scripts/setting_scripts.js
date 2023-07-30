@@ -67,7 +67,6 @@ $("#readButton").click(function () {
 });
 
 function saveFile() {
-    //лоудер старт
     $.ajax({
         url: './settings/backup',
         method: 'GET',
@@ -98,6 +97,7 @@ function saveFile() {
 
 function readFile() {
     //лоудер старт
+    $(".loader").css("display", "block");
     let file = document.getElementById("file").files[0];
     console.log(file);
 

@@ -410,16 +410,51 @@ function setCircleDimensions(circle, transactionAmount, maxSingleTransactionAmou
 }
 
 function drawCategories(data) {
-    data.forEach(category => drawCategory(category, data.length))
-    let categories = document.querySelectorAll('.category')
+    data.sort((a, b) => {
+        if (a.type === EXPENSE && b.type === INCOME) {
+            return -1;
+        } else if (a.type === INCOME && b.type === EXPENSE) {
+            return 1;
+        } else {
+            return 0;
+        }
+    });
+
+    let emptyCategory = {
+        id: 'empty',
+        name: '',
+        type: INCOME
+    };
+
+    let lastIncomeIndex = data.findIndex(category => category.type === INCOME);
+    data.splice(lastIncomeIndex, 0, emptyCategory);
+    data.forEach(category => {
+        if (category.name === '') {
+            drawEmptyCategory(category);
+        } else {
+            drawCategory(category, data.length);
+        }
+    });
+    let categories = document.querySelectorAll('.category');
     categories.forEach(function (category) {
-        category.addEventListener('dragenter', handleDragEnter)
-        category.addEventListener('dragleave', handleDragLeave)
+        category.addEventListener('dragenter', handleDragEnter);
+        category.addEventListener('dragleave', handleDragLeave);
         category.addEventListener('dragover', handleDragOver);
         category.addEventListener('drop', handleDrop);
-    })
+    });
 }
 
+function drawEmptyCategory(category) {
+    let categorySpace = document.querySelector('.categories-space');
+    let newCategory = document.createElement('div');
+    newCategory.className = "category";
+    newCategory.style.height = '2px';
+    newCategory.dataset.id = category.id;
+    newCategory.dataset.name = category.name;
+    newCategory.style.backgroundColor = "rgba(51,64,86,0.5)";
+    newCategory.style.pointerEvents = 'none'; // Запрет наведения курсора
+    categorySpace.insertAdjacentElement('beforeend', newCategory);
+}
 function drawCategory(category, length) {
     let categorySpace = document.querySelector('.categories-space');
     let newCategory = document.createElement('div');
