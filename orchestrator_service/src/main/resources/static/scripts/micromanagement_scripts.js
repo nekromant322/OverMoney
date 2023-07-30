@@ -2,20 +2,17 @@ window.onload = function () {
     setAvailableYearsForAnnualAndMonthlyTotalStatistics();
 }
 
-// ---- РАБОТА С ОСНОВНОЙ ТАБЛИЦЕЙ ----
-//          ---- НАЧАЛО ----
-
 function setAvailableYearsForAnnualAndMonthlyTotalStatistics() {
     $.ajax({
         url: '/analytics/available-years',
         type: 'GET',
         dataType: 'json',
         success: function (years) {
-            years.sort(compareYear); // Сортируем по убыванию
+            years.sort(compareYear);
             years.forEach(function (year) {
                 const option = $('<option>').val(year).text(year);
                 if (year === new Date().getFullYear()) {
-                    option.attr('selected', true); // Устанавливаем атрибут selected для текущего года
+                    option.attr('selected', true);
                 }
                 yearSelectAnnualAndMonthlyTotalStatistics.append(option);
                 getAnnualAndMonthlyReportData(years[0]);
@@ -65,8 +62,9 @@ function parseDataAndCreateTableOfExpense(data) {
     let numberOfRows = data.length;
 
     for (i = 0; i < data.length; i++) {
-        let monthlyExpense = parseMapOfMonthlyAnalysesAndGetExpense(data[i]);
-        let monthlyOpacities = parseMapOfShareOfMonthlyExpensesAndGetOpacity(data[i]);
+
+        let monthlyExpense = parseMapOfMonthlyAnalysesAndShareAndGetExpense(data[i]["monthlyAnalytics"]);
+        let monthlyOpacities = parseMapOfMonthlyAnalysesAndShareAndGetExpense(data[i]["shareOfMonthlyExpenses"]);
         monthlyExpenseToCategoryName.push({
             "categoryName": data[i].categoryName,
             "january": monthlyExpense[0],
@@ -102,28 +100,18 @@ function parseDataAndCreateTableOfExpense(data) {
     drawTableOfExpense(monthlyExpenseToCategoryName, monthlyOpacityToCategoryName, totalList(data), numberOfRows);
 }
 
-function parseMapOfMonthlyAnalysesAndGetExpense(data) {
-    let map = data["monthlyAnalytics"];
+function parseMapOfMonthlyAnalysesAndShareAndGetExpense(data) {
     let expenses = [];
-    for (let key in map) {
-        expenses.push(map[key]); // add the map values to the array
+    for (let key in data) {
+        expenses.push(data[key]);
     }
     return expenses;
-}
-
-function parseMapOfShareOfMonthlyExpensesAndGetOpacity(data) {
-    let map = data["shareOfMonthlyExpenses"];
-    let opacities = [];
-    for (let key in map) {
-        opacities.push(map[key]); // add the map values to the array
-    }
-    return opacities;
 }
 
 function totalList(data) {
     let total = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     for (i = 0; i < data.length; i++) {
-        let monthlyExpense = parseMapOfMonthlyAnalysesAndGetExpense(data[i]);
+        let monthlyExpense = parseMapOfMonthlyAnalysesAndShareAndGetExpense(data[i]["monthlyAnalytics"]);
         for (j = 0; j < monthlyExpense.length; j++) {
             total[j] += monthlyExpense[j];
         }
@@ -133,9 +121,9 @@ function totalList(data) {
 
 function drawTableOfExpense(dataExpense, dataOpacity, totalExpense, numberOfRows) {
     let tfoot = document.getElementById("total-analytics-table").getElementsByTagName("tfoot")[0];
-    clearTableOfExpense(tfoot); // очищаем таблицу, если там есть записи
+    clearTableOfExpense(tfoot);
     let tbody = document.getElementById("total-analytics-table").getElementsByTagName("tbody")[0];
-    clearTableOfExpense(tbody); // очищаем таблицу, если там есть записи
+    clearTableOfExpense(tbody);
 
     addRowBodyInTableOfExpense(totalExpense, numberOfRows);
     for (let i = 0; i < dataExpense.length; i++) {
@@ -208,5 +196,3 @@ function clearTableOfExpense(table) {
         }
     }
 }
-
-//          ---- КОНЕЦ ----
