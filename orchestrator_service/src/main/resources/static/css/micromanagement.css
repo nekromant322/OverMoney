@@ -1,0 +1,44 @@
+html, body {
+    height: 100%;
+}
+
+table {
+    display: table;
+    border-collapse: collapse;
+    width: 100%;
+    height: calc(100% - 90px);
+}
+
+table thead {
+    display: table-header-group;
+    background-color: #2d2d2d;
+    color: snow;
+    position: sticky;
+    top: 86px;
+}
+
+table tbody {
+    display: table-row-group;
+    position: sticky;
+    top: 160px;
+}
+
+table tfoot {
+    display: table-footer-group;
+}
+
+table tr {
+    display: table-row;
+    transition: all .5s;
+}
+
+table td {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+    padding: 5px;
+}
+
+table tr:hover {
+    background-color: rgba(23, 21, 21, 0.25);
+}

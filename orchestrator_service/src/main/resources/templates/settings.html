@@ -16,13 +16,14 @@
 
 <
 <header id="header">
-    <nav class="links" style="--items: 5;">
+    <nav class="links" style="--items: 6;">
         <a id="telegram-bot-link" target="_blank">
             <i class="fa fa-telegram"></i>
         </a>
         <a href="/overview">Обзор</a>
         <a href="/history">История</a>
         <a href="/analytics">Аналитика</a>
+        <a href="/micromanagement">Микроменеджмент</a>
         <a href="/settings"><i class="fa fa-cog"></i></a>
         <span class="line"></span>
     </nav>
@@ -73,6 +74,13 @@
             <input type="button" onclick="readFile()" value="Загрузить">
             <input type="button" class="modal-additional-confirmation-close" onclick="closeModalConfirmation()"
                    value="Отмена">
+            <p></p>
+            <div class="loader" >
+                <div class="lds-circle"><div></div></div>
+                <div class="lds-circle"><div></div></div>
+                <div class="lds-circle"><div></div></div>
+            </div>
+
         </form>
     </div>
 </div>

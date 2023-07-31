@@ -18,31 +18,31 @@ $(window).scroll(function () {
 })
 
 function getTelegramBotName() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         $.ajax({
             url: '/settings/environment/telegramBotName',
             method: 'GET',
             dataType: 'text',
-            success: function(response) {
+            success: function (response) {
                 var environmentVariable = response;
                 resolve(environmentVariable);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 reject(error);
             }
         });
     });
 }
 
-getTelegramBotName().then(function(telegramBotName) {
+getTelegramBotName().then(function (telegramBotName) {
     let telegramLink = 'https://t.me/' + telegramBotName;
     let linkElement = document.getElementById("telegram-bot-link");
     linkElement.setAttribute("href", telegramLink);
-    linkElement.addEventListener("click", function(event) {
+    linkElement.addEventListener("click", function (event) {
         event.preventDefault();
         window.open(telegramLink, "_blank");
     });
-}).catch(function(error) {
+}).catch(function (error) {
     console.error(error);
 });
 
@@ -89,8 +89,6 @@ function addRow(data) {
     let table = document.getElementById("transactions-table").getElementsByTagName("tbody")[0];
     let tr = table.insertRow(table.rows.length);
     tr.id = data.id;
-    tr.dataset.toggle = "modal";
-    tr.dataset.target = "#editModal";
 
     data.categoryName == null ? data.categoryName = "Нераспозанное" : data.categoryName;
 
@@ -117,22 +115,19 @@ function insertTdButton(data, parent) {
     parent.insertAdjacentElement("beforeend", buttonElement)
 }
 
-$(function rowTableClick() {
+$(document).on("click", "#transactions-table tr", function () {
     let trId;
-    $('#transactions-table tr').click(function () {
-        trId = $(this).attr('id');
-        getTransactionById(trId);
-    })
+    trId = $(this).attr('id');
+    getTransactionById(trId);
+    $('#editModal').modal('show');
 })
 
-$(function rowTableClickDelete() {
+$(document).on("click", "#transactions-table .custom-button", function (event) {
     let id;
-    $('#transactions-table tr button').click(function (event) {
-        event.stopPropagation();
-        id = $(this).attr('id');
-        getTransactionByIdForDelete(id)
-        $('#deleteModal').modal('show');
-    })
+    event.stopPropagation();
+    id = $(this).attr('id');
+    getTransactionByIdForDelete(id)
+    $('#deleteModal').modal('show');
 })
 
 function getTransactionByIdForDelete(id) {
