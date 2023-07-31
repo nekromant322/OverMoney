@@ -97,7 +97,7 @@ public class TransactionController {
         transactionService.editTransaction(transactionDTO);
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/transaction/delete/{id}")
     public void deleteTransactionById(@PathVariable("id") UUID id) {
         transactionService.deleteTransactionById(id);
     }

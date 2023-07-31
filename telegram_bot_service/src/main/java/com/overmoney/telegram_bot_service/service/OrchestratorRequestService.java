@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class OrchestratorRequestService {
@@ -17,7 +18,7 @@ public class OrchestratorRequestService {
     private OrchestratorFeign orchestratorFeign;
 
     public TransactionResponseDTO sendTransaction(TransactionMessageDTO transaction) {
-       return orchestratorFeign.sendTransaction(transaction);
+        return orchestratorFeign.sendTransaction(transaction);
     }
 
     public void registerSingleAccount(AccountDataDTO accountData) {
@@ -56,5 +57,9 @@ public class OrchestratorRequestService {
 
     public void removeChatMemberFromAccount(ChatMemberDTO leftChatMember) {
         orchestratorFeign.removeChatMemberFromAccount(leftChatMember);
+    }
+
+    public void deleteTransaction(UUID id) {
+        orchestratorFeign.deleteTransactionById(id);
     }
 }

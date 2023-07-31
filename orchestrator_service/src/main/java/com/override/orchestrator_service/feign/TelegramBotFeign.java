@@ -4,13 +4,12 @@ package com.override.orchestrator_service.feign;
 import com.override.dto.AnnounceDTO;
 import com.override.dto.MailDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
-@FeignClient(name="telegram-bot-service")
+@FeignClient(name = "telegram-bot-service")
 public interface TelegramBotFeign {
 
     @PostMapping("/announce")
@@ -21,4 +20,8 @@ public interface TelegramBotFeign {
 
     @GetMapping("/mail/status")
     List<MailDTO> getStatusOfMails();
+
+    @DeleteMapping("/message/delete/{id}")
+    void deleteMessageTelegramById(@PathVariable("id") UUID id);
+
 }
