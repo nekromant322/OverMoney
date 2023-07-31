@@ -25,7 +25,8 @@ public class MessageTelegramService {
         messageTelegramRepository.deleteByIdTransaction(id);
     }
 
-    public void deleteTransactionById(Integer idMessage) {
-        orchestratorRequestService.deleteTransaction(messageTelegramRepository.findById(idMessage).get().getIdTransaction());
+    public void deleteTransactionById(Integer messageId) {
+        MessageTelegram messageTelegram = messageTelegramRepository.findById(messageId).get();
+        orchestratorRequestService.deleteTransactionById(messageTelegram.getIdTransaction());
     }
 }

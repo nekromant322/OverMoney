@@ -14,7 +14,6 @@ import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.StatusMailing;
-import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +75,9 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             "Для корректной регистрации аккаунта убедитесь, что на момент добавления в чат бота" +
                     " в чате с ботом только вы. После переноса данных можете добавлять других пользователей";
     private final String INVALID_TRANSACTION_TO_DELETE = "Некорректная транзакция для удаления";
+    private final String SUCCESSFUL_DELETION_TRANSACTION = "Эта запись успешно удалена!";
+    private final String COMMAND_TO_DELETE_TRANSACTION = "удалить";
+
     private final String BLANK_MESSAGE = "";
     private final Boolean BOT = true;
 
@@ -94,7 +96,6 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             Message receivedMessage = update.getMessage();
-            System.out.println(receivedMessage);
             Long chatId = receivedMessage.getChatId();
             Long userId = receivedMessage.getFrom().getId();
             String receivedMessageText = getReceivedMessage(receivedMessage);
@@ -120,7 +121,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 }
             }
 
-            if (replyToMessage != null && StringUtils.capitalize(receivedMessageText).equals(Command.DELETE.getAlias())) {
+            if (replyToMessage != null && receivedMessageText.toLowerCase().equals(COMMAND_TO_DELETE_TRANSACTION)) {
                 deleteTransaction(replyToMessage, chatId);
                 return;
             }
@@ -236,7 +237,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private void deleteTransaction(Message replyToMessage, Long chatId) {
         try {
             messageTelegramService.deleteTransactionById(replyToMessage.getMessageId());
-            sendMessage(chatId, Command.DELETE.getDescription());
+            sendMessage(chatId, SUCCESSFUL_DELETION_TRANSACTION);
         } catch (Exception e) {
             sendMessage(chatId, INVALID_TRANSACTION_TO_DELETE);
         }

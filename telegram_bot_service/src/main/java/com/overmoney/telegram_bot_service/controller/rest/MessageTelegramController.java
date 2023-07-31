@@ -13,10 +13,10 @@ import java.util.UUID;
 @RequestMapping("/message")
 public class MessageTelegramController {
     @Autowired
-    MessageTelegramService messageTelegramService;
+    private MessageTelegramService messageTelegramService;
 
-    @DeleteMapping("/delete/{id}")
-    void deleteMessageTelegramById(@PathVariable("id") UUID id) {
+    @DeleteMapping("/{id}")
+    public void deleteMessageTelegramByIdTransaction(@PathVariable("id") UUID id) {
         messageTelegramService.deleteMessageTelegramByIdTransaction(id);
     }
 }

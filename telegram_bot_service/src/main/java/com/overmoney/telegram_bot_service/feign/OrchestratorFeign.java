@@ -38,6 +38,6 @@ public interface OrchestratorFeign {
     @PostMapping("/account/remove/user")
     void removeChatMemberFromAccount(@RequestBody ChatMemberDTO chatMember);
 
-    @DeleteMapping("/transaction/delete/{id}")
+    @DeleteMapping("/transaction/{id}")
     void deleteTransactionById(@PathVariable("id") UUID id);
 }

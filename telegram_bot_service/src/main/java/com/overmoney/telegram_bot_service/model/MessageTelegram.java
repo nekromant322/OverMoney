@@ -18,6 +18,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MessageTelegram {
+    /**
+     * Поле id сущности MessageTelegram соответствует id сообщения в телеграмме
+     */
 
     @Id
     private Integer id;

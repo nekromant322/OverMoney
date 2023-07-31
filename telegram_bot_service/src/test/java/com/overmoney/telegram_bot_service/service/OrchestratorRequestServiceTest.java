@@ -10,6 +10,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.UUID;
+
 import static com.overmoney.telegram_bot_service.utils.TestFieldsUtil.generateTransactionDTO;
 import static org.mockito.Mockito.*;
 
@@ -106,5 +108,10 @@ public class OrchestratorRequestServiceTest {
 
         verify(orchestratorFeign, times(1)).removeChatMemberFromAccount(leftChatMember);
     }
-
+    @Test
+    public void deleteTransactionByIdTest() {
+        UUID id = UUID.randomUUID();
+        orchestratorRequestService.deleteTransactionById(id);
+        verify(orchestratorFeign, times(1)).deleteTransactionById(id);
+    }
 }

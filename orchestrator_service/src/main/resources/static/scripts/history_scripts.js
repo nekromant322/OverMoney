@@ -217,7 +217,7 @@ function deleteButtonClick() {
     let id = $('#idTransactionInFormDelete').val();
     $.ajax({
         method: "DELETE",
-        url: "./transaction/delete/" + id,
+        url: "./transaction/" + id,
         async: false,
         success: () => {
             location.reload();

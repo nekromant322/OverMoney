@@ -59,7 +59,7 @@ public class OrchestratorRequestService {
         orchestratorFeign.removeChatMemberFromAccount(leftChatMember);
     }
 
-    public void deleteTransaction(UUID id) {
+    public void deleteTransactionById(UUID id) {
         orchestratorFeign.deleteTransactionById(id);
     }
 }

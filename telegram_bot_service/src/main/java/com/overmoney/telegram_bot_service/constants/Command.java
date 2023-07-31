@@ -6,8 +6,7 @@ import lombok.Getter;
 public enum Command {
 
     START("/start", "OverMoney - бот для учета финансов!\n"),
-    MONEY("/money", "Приложение OverMoney"),
-    DELETE("удалить", "Эта запись успешно удалена!");
+    MONEY("/money", "Приложение OverMoney");
 
     private final String alias;
     private final String description;
