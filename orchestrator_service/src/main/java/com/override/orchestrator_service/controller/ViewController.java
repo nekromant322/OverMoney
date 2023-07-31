@@ -43,4 +43,9 @@ public class ViewController {
 
         return "moex";
     }
+
+    @GetMapping("/micromanagement")
+    public String getMicromanagement() {
+        return "micromanagement";
+    }
 }
