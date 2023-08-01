@@ -4,9 +4,9 @@ import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
-import com.overmoney.telegram_bot_service.model.MessageTelegram;
+import com.overmoney.telegram_bot_service.model.TelegramMessage;
 import com.overmoney.telegram_bot_service.service.MergeRequestService;
-import com.overmoney.telegram_bot_service.service.MessageTelegramService;
+import com.overmoney.telegram_bot_service.service.TelegramMessageService;
 import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
 import com.overmoney.telegram_bot_service.service.VoiceMessageProcessingService;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
@@ -58,7 +58,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private InlineKeyboardMarkupUtil inlineKeyboardMarkupUtil;
 
     @Autowired
-    private MessageTelegramService messageTelegramService;
+    private TelegramMessageService telegramMessageService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
             "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
     private final Integer MILLISECONDS_CONVERSION = 1000;
@@ -206,7 +206,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 try {
                     TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
                             .sendTransaction(new TransactionMessageDTO(receivedMessageText, userId, chatId, date));
-                    messageTelegramService.saveMessageTelegram(new MessageTelegram(receivedMessage.getMessageId(), transactionResponseDTO.getId()));
+                    telegramMessageService.saveTelegramMessage(new TelegramMessage(receivedMessage.getMessageId(), transactionResponseDTO.getId()));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
                     log.error(e.getMessage());
@@ -238,7 +238,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     private void deleteTransaction(Message replyToMessage, Long chatId) {
         try {
-            messageTelegramService.deleteTransactionById(replyToMessage.getMessageId());
+            telegramMessageService.deleteTransactionById(replyToMessage.getMessageId());
             sendMessage(chatId, SUCCESSFUL_DELETION_TRANSACTION);
         } catch (Exception e) {
             log.error(e.getMessage());

@@ -12,14 +12,14 @@ import javax.persistence.Table;
 import java.util.UUID;
 
 @Entity
-@Table(name = "message_telegram")
+@Table(name = "telegram_message")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessageTelegram {
+public class TelegramMessage {
     /**
-     * Поле id сущности MessageTelegram соответствует id сообщения в телеграмме
+     * Поле id сущности TelegramMessage соответствует id сообщения в телеграмме
      */
 
     @Id

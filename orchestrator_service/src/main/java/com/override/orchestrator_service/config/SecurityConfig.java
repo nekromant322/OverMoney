@@ -33,7 +33,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/login/**").permitAll()
                 .antMatchers("/actuator/health", "/actuator/prometheus").permitAll()
-                .antMatchers("/transaction/**", "/account/**", "/message/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin().loginPage("/login")

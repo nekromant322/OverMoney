@@ -1,6 +1,6 @@
 package com.overmoney.telegram_bot_service.controller.rest;
 
-import com.overmoney.telegram_bot_service.service.MessageTelegramService;
+import com.overmoney.telegram_bot_service.service.TelegramMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/message")
-public class MessageTelegramController {
+@RequestMapping("/telegram-message")
+public class TelegramMessageController {
     @Autowired
-    private MessageTelegramService messageTelegramService;
+    private TelegramMessageService telegramMessageService;
 
     @DeleteMapping("/{id}")
-    public void deleteMessageTelegramByIdTransaction(@PathVariable("id") UUID id) {
-        messageTelegramService.deleteMessageTelegramByIdTransaction(id);
+    public void deleteTelegramMessageByIdTransaction(@PathVariable("id") UUID id) {
+        telegramMessageService.deleteTelegramMessageByIdTransaction(id);
     }
 }

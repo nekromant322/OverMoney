@@ -21,6 +21,6 @@ public interface TelegramBotFeign {
     @GetMapping("/mail/status")
     List<MailDTO> getStatusOfMails();
 
-    @DeleteMapping("/message/{id}")
-    void deleteMessageTelegramById(@PathVariable("id") UUID id);
+    @DeleteMapping("/telegram-message/{id}")
+    void deleteTelegramMessageById(@PathVariable("id") UUID id);
 }

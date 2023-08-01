@@ -191,7 +191,7 @@ public class TransactionService {
         if (transactionToDelete.isPresent()) {
             getKeywordByTransaction(transactionToDelete.get()).ifPresent(k -> keywordRepository.delete(k));
             transactionRepository.deleteById(id);
-            telegramBotFeign.deleteMessageTelegramById(id);
+            telegramBotFeign.deleteTelegramMessageById(id);
         }
     }
 

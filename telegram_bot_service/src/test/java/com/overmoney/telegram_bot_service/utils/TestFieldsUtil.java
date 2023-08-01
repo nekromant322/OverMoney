@@ -1,6 +1,6 @@
 package com.overmoney.telegram_bot_service.utils;
 
-import com.overmoney.telegram_bot_service.model.MessageTelegram;
+import com.overmoney.telegram_bot_service.model.TelegramMessage;
 import com.override.dto.TransactionMessageDTO;
 import org.telegram.telegrambots.meta.api.objects.File;
 
@@ -15,8 +15,8 @@ public class TestFieldsUtil {
                 .build();
     }
 
-    public static MessageTelegram generateMessageTelegram() {
-        return new MessageTelegram(1, UUID.randomUUID());
+    public static TelegramMessage generateTelegramMessage() {
+        return new TelegramMessage(1, UUID.randomUUID());
     }
 
     public static File generateTelegramFile() {
