@@ -104,6 +104,7 @@ function readFile() {
 
     reader.onload = function () {
         console.log(reader.result)
+
         fetch('./settings/backup/read', {
             method: 'POST',
             body: reader.result,
@@ -130,6 +131,12 @@ function readFile() {
                     closeModalConfirmation();
                     location.reload();
                 }
+            })
+            .catch(exception => {
+                console.log(exception)
+            })
+            .finally(() => {
+                $(".loader").css("display", "none");
             })
     }
 }

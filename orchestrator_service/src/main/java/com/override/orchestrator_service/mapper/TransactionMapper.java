@@ -17,6 +17,7 @@ public class TransactionMapper {
 
     public TransactionResponseDTO mapTransactionToTelegramResponse(Transaction transaction) throws InstanceNotFoundException {
         return TransactionResponseDTO.builder()
+                .id(transaction.getId())
                 .type(getTransactionType(transaction))
                 .category(getTransactionCategory(transaction))
                 .amount(transaction.getAmount().toString())
