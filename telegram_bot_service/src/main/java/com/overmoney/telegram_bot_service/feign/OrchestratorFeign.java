@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @FeignClient(name = "orchestrator-service", configuration = FeignConfiguration.class)
 public interface OrchestratorFeign {
@@ -36,4 +37,7 @@ public interface OrchestratorFeign {
 
     @GetMapping("/settings/backup/{id}")
     BackupUserDataDTO getBackup(@PathVariable Long id);
+
+    @DeleteMapping("/transaction/{id}")
+    void deleteTransactionById(@PathVariable("id") UUID id);
 }

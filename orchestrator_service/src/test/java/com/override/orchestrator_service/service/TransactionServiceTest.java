@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
+import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
@@ -50,6 +51,8 @@ public class TransactionServiceTest {
     private OverMoneyAccountService accountService;
     @Mock
     private KeywordRepository keywordRepository;
+    @Mock
+    private TelegramBotFeign telegramBotFeign;
 
     @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
