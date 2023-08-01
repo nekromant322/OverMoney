@@ -111,9 +111,10 @@ function readFile() {
                 'Content-type': 'application/json; charset=UTF-8',
             },
         })
-            .then((response) => {
+            .then(response => {
                 if (response.status === 413) {
-                    alert(response.text());
+                    response.json()
+                        .then(data => alert(data.message));
                 } else {
                     return response
                 }
