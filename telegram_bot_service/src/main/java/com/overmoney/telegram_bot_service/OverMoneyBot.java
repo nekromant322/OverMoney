@@ -93,11 +93,11 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
                     .atOffset(MOSCOW_OFFSET).toLocalDateTime();
             if (receivedMessage.getLeftChatMember() != null) {
-                User user = receivedMessage.getLeftChatMember();
-                if (!receivedMessage.getLeftChatMember().getIsBot()) {
-                    String backupFileName = fileService.createBackupFileToRemoteInChatUser(chatId, user.getId());
-                    sendBuckUpFile(user.getId().toString(), backupFileName);
-                    orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, user));
+                User remoteUser = receivedMessage.getLeftChatMember();
+                if (!remoteUser.getIsBot()) {
+                    String backupFileName = fileService.createBackupFileToRemoteInChatUser(chatId, remoteUser.getId());
+                    sendBuckUpFile(remoteUser.getId().toString(), backupFileName);
+                    orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, remoteUser));
                 }
             }
             if (!receivedMessage.getNewChatMembers().isEmpty()) {
@@ -117,6 +117,15 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
             if (!receivedMessageText.equals(BLANK_MESSAGE)) {
                 botAnswer(receivedMessageText, chatId, userId, date);
+            }
+        }
+        if (update.hasMyChatMember()) {
+            String status = update.getMyChatMember().getNewChatMember().getStatus();
+            if (status.equals("left") && !update.hasMessage()) {
+                Long chatId = update.getMyChatMember().getChat().getId();
+                Long userId = update.getMyChatMember().getFrom().getId();
+                String backUpFileName = fileService.createBackupFileToRemoteInChatUser(chatId, userId);
+                sendBuckUpFile(userId.toString(), backUpFileName);
             }
         }
         if (update.hasCallbackQuery()) {
