@@ -97,11 +97,6 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Message receivedMessage = update.getMessage();
             Long chatId = receivedMessage.getChatId();
-            Long userId = receivedMessage.getFrom().getId();
-            String receivedMessageText = getReceivedMessage(receivedMessage);
-            Message replyToMessage = receivedMessage.getReplyToMessage();
-            LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
-                    .atOffset(MOSCOW_OFFSET).toLocalDateTime();
             if (receivedMessage.getLeftChatMember() != null) {
                 User user = receivedMessage.getLeftChatMember();
                 orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, user));
@@ -120,15 +115,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                                     .collect(Collectors.toList()));
                 }
             }
-
-            if (replyToMessage != null && receivedMessageText.toLowerCase().equals(COMMAND_TO_DELETE_TRANSACTION)) {
-                deleteTransaction(replyToMessage, chatId);
-                return;
-            }
-
-            if (!receivedMessageText.equals(BLANK_MESSAGE)) {
-                botAnswer(receivedMessageText, chatId, userId, date, receivedMessage.getMessageId());
-            }
+            botAnswer(receivedMessage);
         }
         if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
@@ -192,8 +179,17 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         return receivedMessageText;
     }
 
-    private void botAnswer(String receivedMessage, Long chatId, Long userId, LocalDateTime date, Integer idMessage) {
-        switch (receivedMessage) {
+    private void botAnswer(Message receivedMessage) {
+        Long chatId = receivedMessage.getChatId();
+        Long userId = receivedMessage.getFrom().getId();
+        String receivedMessageText = getReceivedMessage(receivedMessage);
+        Message replyToMessage = receivedMessage.getReplyToMessage();
+        LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
+                .atOffset(MOSCOW_OFFSET).toLocalDateTime();
+        if (receivedMessageText.equals(BLANK_MESSAGE)) {
+            return;
+        }
+        switch (receivedMessageText.toLowerCase()) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription() + orchestratorHost);
                 orchestratorRequestService.registerSingleAccount(new AccountDataDTO(chatId, userId));
@@ -201,13 +197,19 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             case "/money":
                 sendMessage(chatId, Command.MONEY.getDescription());
                 break;
+            case COMMAND_TO_DELETE_TRANSACTION:
+                if (replyToMessage != null) {
+                    deleteTransaction(replyToMessage, chatId);
+                    break;
+                }
             default:
                 try {
                     TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
-                            .sendTransaction(new TransactionMessageDTO(receivedMessage, userId, chatId, date));
-                    messageTelegramService.saveMessageTelegram(new MessageTelegram(idMessage, transactionResponseDTO.getId()));
+                            .sendTransaction(new TransactionMessageDTO(receivedMessageText, userId, chatId, date));
+                    messageTelegramService.saveMessageTelegram(new MessageTelegram(receivedMessage.getMessageId(), transactionResponseDTO.getId()));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
+                    log.error(e.getMessage());
                     sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
                 }
                 break;
@@ -239,6 +241,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             messageTelegramService.deleteTransactionById(replyToMessage.getMessageId());
             sendMessage(chatId, SUCCESSFUL_DELETION_TRANSACTION);
         } catch (Exception e) {
+            log.error(e.getMessage());
             sendMessage(chatId, INVALID_TRANSACTION_TO_DELETE);
         }
     }
