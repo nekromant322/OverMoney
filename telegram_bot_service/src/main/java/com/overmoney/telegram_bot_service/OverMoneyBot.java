@@ -5,10 +5,7 @@ import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
 import com.overmoney.telegram_bot_service.model.TelegramMessage;
-import com.overmoney.telegram_bot_service.service.MergeRequestService;
-import com.overmoney.telegram_bot_service.service.TelegramMessageService;
-import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
-import com.overmoney.telegram_bot_service.service.VoiceMessageProcessingService;
+import com.overmoney.telegram_bot_service.service.*;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
 import com.override.dto.AccountDataDTO;
 import com.override.dto.TransactionMessageDTO;
@@ -20,14 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -56,6 +52,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private ChatMemberMapper chatMemberMapper;
     @Autowired
     private InlineKeyboardMarkupUtil inlineKeyboardMarkupUtil;
+    @Autowired
+    private FileService fileService;
 
     @Autowired
     private TelegramMessageService telegramMessageService;
@@ -98,8 +96,12 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             Message receivedMessage = update.getMessage();
             Long chatId = receivedMessage.getChatId();
             if (receivedMessage.getLeftChatMember() != null) {
-                User user = receivedMessage.getLeftChatMember();
-                orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, user));
+                User remoteUser = receivedMessage.getLeftChatMember();
+                if (!remoteUser.getIsBot()) {
+                    String backupFileName = fileService.createBackupFileToRemoteInChatUser(chatId, remoteUser.getId());
+                    sendBuckUpFile(remoteUser.getId().toString(), backupFileName);
+                    orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, remoteUser));
+                }
             }
             if (!receivedMessage.getNewChatMembers().isEmpty()) {
                 List<User> newUsers = receivedMessage.getNewChatMembers();
@@ -116,6 +118,15 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 }
             }
             botAnswer(receivedMessage);
+        }
+        if (update.hasMyChatMember()) {
+            String status = update.getMyChatMember().getNewChatMember().getStatus();
+            if (status.equals("left") && !update.hasMessage()) {
+                Long chatId = update.getMyChatMember().getChat().getId();
+                Long userId = update.getMyChatMember().getFrom().getId();
+                String backUpFileName = fileService.createBackupFileToRemoteInChatUser(chatId, userId);
+                sendBuckUpFile(userId.toString(), backUpFileName);
+            }
         }
         if (update.hasCallbackQuery()) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
@@ -234,6 +245,19 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         message.setMessageId(messageId);
         message.setReplyMarkup(null);
         execute(message);
+    }
+
+    public void sendBuckUpFile(String userChatId, String fileName) {
+        File file = new File(fileName);
+        SendDocument sendDocument = new SendDocument();
+        sendDocument.setChatId(userChatId);
+        sendDocument.setDocument(new InputFile(file));
+        try {
+            execute(sendDocument);
+            file.delete();
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
     }
 
     private void deleteTransaction(Message replyToMessage, Long chatId) {
