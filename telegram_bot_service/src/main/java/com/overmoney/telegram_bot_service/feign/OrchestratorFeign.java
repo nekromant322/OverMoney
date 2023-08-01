@@ -6,11 +6,10 @@ import com.override.dto.ChatMemberDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @FeignClient(name = "orchestrator-service", configuration = FeignConfiguration.class)
 public interface OrchestratorFeign {
@@ -38,4 +37,7 @@ public interface OrchestratorFeign {
 
     @PostMapping("/account/remove/user")
     void removeChatMemberFromAccount(@RequestBody ChatMemberDTO chatMember);
+
+    @DeleteMapping("/transaction/{id}")
+    void deleteTransactionById(@PathVariable("id") UUID id);
 }
