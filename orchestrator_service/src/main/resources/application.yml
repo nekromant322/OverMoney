@@ -43,15 +43,12 @@
     token:
       lifetime-in-hours: 24
 
-## переменная используется в классе CommonExceptionHandler при ошибке MaxUploadSizeExceededException
-## для формирования error message, кт в дальнейшем будет отображена на фронт пользователю
-  request:
-      max-size: '10MB'
-
   spring:
     servlet:
       multipart:
         max-file-size: 10MB
+        ## переменная используется в классе CommonExceptionHandler при ошибке MaxUploadSizeExceededException
+        ## для формирования error message, кт в дальнейшем будет отображена на фронт пользователю
         max-request-size: 10MB
 
     datasource:

@@ -17,7 +17,7 @@ import java.time.Instant;
 public class CommonExceptionHandler {
     private final String INTERNAL_SERVER_ERROR_CODE = "ORCHESTRA_UNEXPECTED";
     private final int INTERNAL_SERVER_STATUS_CODE = 500;
-    @Value("${request.max-size}")
+    @Value("${spring.servlet.multipart.max-request-size}")
     private String maxSizeRequest;
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
