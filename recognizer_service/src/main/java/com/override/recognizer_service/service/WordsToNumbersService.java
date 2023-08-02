@@ -3,12 +3,22 @@ package com.override.recognizer_service.service;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class WordsToNumbersService {
     private final HashMap<String, Long> vocabulary = new HashMap<>();
+    private final List<String> currencies = new ArrayList<>();
     private final String SPACE = " ";
+
+    @PostConstruct
+    private void fillCurrencies() {
+        currencies.add("рубль");
+        currencies.add("рублей");
+        currencies.add("рубля");
+    }
 
     @PostConstruct
     private void fillVocabulary() {
@@ -67,7 +77,7 @@ public class WordsToNumbersService {
     public String wordsToNumbers(String words) {
         int number = 0;
         int prevNumber = 0;
-        String[] splitWords = words.split("\\s+");
+        String[] splitWords = words.replaceAll("[^a-zA-Zа-яА-Я\\s]", "").split("\\s+");
         StringBuilder message = new StringBuilder();
         for (String word : splitWords) {
             if (vocabulary.containsKey(word.toLowerCase())) {
@@ -78,7 +88,7 @@ public class WordsToNumbersService {
                 } else {
                     prevNumber += value;
                 }
-            } else {
+            } else if (!currencies.contains(word.toLowerCase())) {
                 message.append(word).append(SPACE);
             }
         }
