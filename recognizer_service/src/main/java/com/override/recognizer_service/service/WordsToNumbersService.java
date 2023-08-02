@@ -14,14 +14,14 @@ public class WordsToNumbersService {
     private final String SPACE = " ";
 
     @PostConstruct
-    private void fillCurrencies() {
+    public void fillCurrencies() {
         currencies.add("рубль");
         currencies.add("рублей");
         currencies.add("рубля");
     }
 
     @PostConstruct
-    private void fillVocabulary() {
+    public void fillVocabulary() {
         vocabulary.put("ноль", 0L);
         vocabulary.put("один", 1L);
         vocabulary.put("одна", 1L);
@@ -83,6 +83,9 @@ public class WordsToNumbersService {
             if (vocabulary.containsKey(word.toLowerCase())) {
                 long value = vocabulary.get(word.toLowerCase());
                 if (value >= 1000) {
+                    if (prevNumber == 0) {
+                        prevNumber = 1;
+                    }
                     number += prevNumber * value;
                     prevNumber = 0;
                 } else {
