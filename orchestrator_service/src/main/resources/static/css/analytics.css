@@ -32,14 +32,19 @@
     overflow: visible;
 
 }
+
 #expenseAnalytics, #incomeAnalytics {
     max-width: 550px;
     max-height: 550px;
+    min-width: 550px;
+    min-height: 550px;
 }
+
 #table_expense, #table_income {
     margin-left: 100px;
 }
-#table_expense td, #table_income td{
+
+#table_expense td, #table_income td {
     padding: 10px 10px;
 }
 

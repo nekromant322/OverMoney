@@ -2,6 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
+import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.CategoryRepository;
@@ -32,9 +33,10 @@ public class TransactionService {
     private KeywordRepository keywordRepository;
     @Autowired
     private CategoryRepository categoryRepository;
-
     @Autowired
     private OverMoneyAccountService overMoneyAccountService;
+    @Autowired
+    private TelegramBotFeign telegramBotFeign;
 
     public List<TransactionDTO> findAlltransactionDTOForAcountByUserId(Long telegramId) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramId);
@@ -189,6 +191,7 @@ public class TransactionService {
         if (transactionToDelete.isPresent()) {
             getKeywordByTransaction(transactionToDelete.get()).ifPresent(k -> keywordRepository.delete(k));
             transactionRepository.deleteById(id);
+            telegramBotFeign.deleteTelegramMessageById(id);
         }
     }
 
