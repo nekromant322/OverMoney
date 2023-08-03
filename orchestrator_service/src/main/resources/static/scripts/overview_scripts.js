@@ -5,6 +5,7 @@ window.onload = function () {
     getUndefinedTransactionsData();
     getCategoriesData();
     drawEmptyCircleForModal();
+    idleLongPolling();
     let toast = toastr["success"]("Загрузка нераспознанных транзакций");
     toastr.options = {
         "closeButton": false,
@@ -67,6 +68,97 @@ function getMaxSingleTransactionAmount() {
     return maxSingleTransactionAmount;
 }
 
+// ---- НАЧАЛО РАБОТЫ С LONG POLLING ----
+
+function makeCounter() {
+    let currentCount = 1;
+
+    return {
+        get: function () {
+            return currentCount;
+        },
+        getNext: function () {
+            return currentCount++;
+        },
+        set: function (value) {
+            currentCount = value;
+        },
+        reset: function () {
+            currentCount = 1;
+        }
+    };
+}
+
+var counter = makeCounter();        //Счётчик активности на странице
+var counterOfLoop = makeCounter();  //Счётчик для циклов
+
+function idleLongPolling() {
+    let timer;
+    window.onmousemove = resetTimer;
+    window.onmousedown = resetTimer;
+    window.ontouchstart = resetTimer;
+    window.ontouchmove = resetTimer;
+    window.onclick = resetTimer;
+    window.onkeydown = resetTimer;
+    window.addEventListener('scroll', resetTimer, true);
+
+    let longPollingData = getLongPollingData();
+
+    let longPolling_activitiesMin = longPollingData[0]['activities'];
+    let longPolling_activitiesMiddle = longPollingData[1]['activities'];
+    let longPolling_activitiesMax = longPollingData[2]['activities'];
+
+    let longPolling_timeDelayMin = longPollingData[0]['timeDelay'];
+    let longPolling_timeDelayMiddle = longPollingData[1]['timeDelay'];
+    let longPolling_timeDelayMax = longPollingData[2]['timeDelay'];
+
+    function resetTimer() {
+        counter.getNext(); //Считаем 'число активности' на странице
+
+        if (counter.get() > longPolling_activitiesMin && counter.get() < longPolling_activitiesMiddle && counterOfLoop.get() === 1) {
+            clearTimeout(timer);
+            timer = setTimeout(getUndefinedTransactionsData, longPolling_timeDelayMin);
+            counterOfLoop.getNext();
+        } else if (counter.get() > longPolling_activitiesMiddle && counter.get() < longPolling_activitiesMax && counterOfLoop.get() === 2) {
+            clearTimeout(timer);
+            timer = setTimeout(getUndefinedTransactionsData, longPolling_timeDelayMiddle);
+            counterOfLoop.getNext();
+        } else if (counter.get() > longPolling_activitiesMax && counterOfLoop.get() === 3) {
+            clearTimeout(timer);
+            timer = setTimeout(getUndefinedTransactionsData, longPolling_timeDelayMax);
+            counterOfLoop.getNext();
+        }
+    }
+}
+
+function getLongPollingData() {
+    let listOfLongPolling = [];
+    $.ajax({
+        method: 'GET',
+        url: './transaction/longPolling',
+        contentType: "application/json; charset=utf8",
+        async: false,
+        success: function (data) {
+            for (let i = 0; i < data.length; i++) {
+                listOfLongPolling.push({
+                    "activities": data[i].activities,
+                    "timeDelay": data[i].timeDelay
+                })
+            }
+        },
+        error: function () {
+            console.log("Ошибка получения данных для long polling");
+        }
+    })
+    return listOfLongPolling;
+}
+
+function checkAvailability(arr, val) {
+    return arr.some(arrVal => val === arrVal);
+}
+
+// ---- КОНЕЦ РАБОТЫ С LONG POLLING ----
+
 function getUndefinedTransactionsData() {
     $.ajax({
         method: 'GET',
@@ -87,15 +179,33 @@ function getUndefinedTransactionsData() {
                     "suggestedCategoryId": data[i].suggestedCategoryId
                 })
             }
-            Object.freeze(undefinedTransactionsData)
-            setMaxSingleTransactionAmount(maxAmount)
-            drawUndefinedCircles(undefinedTransactionsData)
 
-            let circles = document.querySelectorAll('.undefined-circle')
-            circles.forEach(function (circle) {
-                circle.addEventListener('dragstart', handleDragStart);
-                circle.addEventListener('dragend', handleDragEnd);
-            })
+            let allUndefinedCircles = Array.from(document.querySelectorAll(".undefined-circle"));
+            if (undefinedTransactionsData.length > allUndefinedCircles.length) {
+                let undefinedTransactionsData_new = [];
+
+                if (allUndefinedCircles.length !== 0) {
+                    for (let index = 0; index < undefinedTransactionsData.length; index++) {
+                        if (!checkAvailability(allUndefinedCircles.map(unTr => unTr.id), undefinedTransactionsData[index].id)) {
+                            undefinedTransactionsData_new.push(undefinedTransactionsData[index]);
+                        }
+                    }
+                } else {
+                    undefinedTransactionsData_new = undefinedTransactionsData;
+                }
+
+                Object.freeze(undefinedTransactionsData_new)
+                setMaxSingleTransactionAmount(maxAmount)
+                drawUndefinedCircles(undefinedTransactionsData_new)
+
+                let circles = document.querySelectorAll('.undefined-circle')
+                circles.forEach(function (circle) {
+                    circle.addEventListener('dragstart', handleDragStart);
+                    circle.addEventListener('dragend', handleDragEnd);
+                });
+            }
+            counter.reset();
+            counterOfLoop.reset();
         },
         error: function () {
             registerAccount()
@@ -455,6 +565,7 @@ function drawEmptyCategory(category) {
     newCategory.style.pointerEvents = 'none'; // Запрет наведения курсора
     categorySpace.insertAdjacentElement('beforeend', newCategory);
 }
+
 function drawCategory(category, length) {
     let categorySpace = document.querySelector('.categories-space');
     let newCategory = document.createElement('div');
