@@ -4,6 +4,7 @@ import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionDefineDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
+import com.override.orchestrator_service.config.LongPollingProperties;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.service.DefineService;
@@ -100,5 +101,10 @@ public class TransactionController {
     @DeleteMapping("/delete/{id}")
     public void deleteTransactionById(@PathVariable("id") UUID id) {
         transactionService.deleteTransactionById(id);
+    }
+
+    @GetMapping("/transaction/longPolling")
+    public List<LongPollingProperties.LongPolling> getLongPollingData() {
+        return transactionService.getLongPollingList();
     }
 }
