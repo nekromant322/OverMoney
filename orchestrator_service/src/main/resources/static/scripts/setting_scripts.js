@@ -4,7 +4,7 @@ let modalSuccessful = document.getElementById("modal-successful-backup");
 function getTelegramBotName() {
     return new Promise(function (resolve, reject) {
         $.ajax({
-            url: '/settings/environment/telegramBotName',
+            url: '/properties/telegramBotName',
             method: 'GET',
             dataType: 'text',
             success: function (response) {
