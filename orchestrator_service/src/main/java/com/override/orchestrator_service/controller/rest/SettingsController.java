@@ -39,9 +39,4 @@ public class SettingsController {
         backupUserDataService.writingDataFromBackupFile(backupUserDataDTO, telegramUtils.getTelegramId(principal));
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
-
-    @GetMapping("/environment/telegramBotName")
-    public String getTelegramBotName() {
-        return telegramUtils.getTelegramBotName();
-    }
 }

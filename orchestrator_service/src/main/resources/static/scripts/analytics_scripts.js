@@ -33,7 +33,7 @@ window.onload = function () {
 function getTelegramBotName() {
     return new Promise(function(resolve, reject) {
         $.ajax({
-            url: '/settings/environment/telegramBotName',
+            url: '/properties/telegramBotName',
             method: 'GET',
             dataType: 'text',
             success: function(response) {

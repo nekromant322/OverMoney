@@ -104,3 +104,7 @@
       distribution:
         percentiles-histogram:
           "[http.server.requests]": true
+
+  long-polling:
+    overview:
+      period-of-inactivity: 10_000
