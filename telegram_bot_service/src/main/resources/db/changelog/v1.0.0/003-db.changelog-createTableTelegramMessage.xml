@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <changeSet author="EduardCoool" id="04.08.23-createTableTelegramMessage">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="telegram_message"/>
+            </not>
+        </preConditions>
+        <createTable tableName="telegram_message">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="id_transaction" type="UUID"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
