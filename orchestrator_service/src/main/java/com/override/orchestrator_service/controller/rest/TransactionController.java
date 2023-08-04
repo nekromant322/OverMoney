@@ -4,7 +4,7 @@ import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionDefineDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
-import com.override.orchestrator_service.config.LongPollingProperties;
+import com.override.orchestrator_service.config.LongPollingOverviewProperties;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.service.DefineService;
@@ -40,6 +40,9 @@ public class TransactionController {
 
     @Autowired
     private DefineService defineService;
+
+    @Autowired
+    private LongPollingOverviewProperties longPollingOverviewProperties;
 
     @PostMapping("/transaction")
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage, Principal principal) throws InstanceNotFoundException {
@@ -104,7 +107,7 @@ public class TransactionController {
     }
 
     @GetMapping("/transaction/longPolling")
-    public List<LongPollingProperties.LongPolling> getLongPollingData() {
-        return transactionService.getLongPollingList();
+    public Integer getLongPollingData() {
+        return longPollingOverviewProperties.getPeriodOfInactivity();
     }
 }

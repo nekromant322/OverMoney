@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
-import com.override.orchestrator_service.config.LongPollingProperties;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.mapper.TransactionMapper;
@@ -38,9 +37,6 @@ public class TransactionService {
     private OverMoneyAccountService overMoneyAccountService;
     @Autowired
     private TelegramBotFeign telegramBotFeign;
-
-    @Autowired
-    private LongPollingProperties longPollingProperties;
 
     public List<TransactionDTO> findAlltransactionDTOForAcountByUserId(Long telegramId) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramId);
@@ -273,9 +269,5 @@ public class TransactionService {
             months.add(monthCounter);
         }
         return months.stream().sorted().collect(Collectors.toList());
-    }
-
-    public List<LongPollingProperties.LongPolling> getLongPollingList() {
-        return longPollingProperties.getOverview();
     }
 }

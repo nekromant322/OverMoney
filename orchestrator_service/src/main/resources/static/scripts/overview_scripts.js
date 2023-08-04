@@ -5,7 +5,7 @@ window.onload = function () {
     getUndefinedTransactionsData();
     getCategoriesData();
     drawEmptyCircleForModal();
-    idleLongPolling();
+    setInterval(checkUserIsActive, timeout / 2);
     let toast = toastr["success"]("Загрузка нераспознанных транзакций");
     toastr.options = {
         "closeButton": false,
@@ -67,90 +67,88 @@ function setMaxSingleTransactionAmount(value) {
 function getMaxSingleTransactionAmount() {
     return maxSingleTransactionAmount;
 }
-
 // ---- НАЧАЛО РАБОТЫ С LONG POLLING ----
 
-function makeCounter() {
-    let currentCount = 1;
+let fibonacciCounter = fibonacci();
+let getNewUndefinedTransactions = false;
+let timer;
+let timeout = getPeriodOfInactivity();
+let lastActiveTimestamp = 0;
+let userIsActive = false;
+
+window.addEventListener('mousemove', active, true);
+window.addEventListener('keypress', active, true);
+window.addEventListener('click', active, true);
+window.addEventListener('ontouchstart', active, true);
+window.addEventListener('ontouchmove', active, true);
+window.addEventListener('scroll', active, true);
+
+
+function fibonacci() {
+    let fibonacciInner = [1, 1];
 
     return {
-        get: function () {
-            return currentCount;
+        getNext: function() {
+            let lastNumber = fibonacciInner[1];
+            fibonacciInner[1] = fibonacciInner[0] + fibonacciInner[1];
+            fibonacciInner[0] = lastNumber;
+            return fibonacciInner[1];
         },
-        getNext: function () {
-            return currentCount++;
+        get: function() {
+            return fibonacciInner[1];
         },
-        set: function (value) {
-            currentCount = value;
+        set: function (array) {
+            if (array.length === 2) {
+                fibonacciInner = array;
+            } else {
+                console.log('некорректноей длины передали массив ы fibonacci.set(array)');
+            }
         },
-        reset: function () {
-            currentCount = 1;
+        reset: function() {
+            fibonacciInner = [1, 1];
         }
     };
 }
 
-var counter = makeCounter();        //Счётчик активности на странице
-var counterOfLoop = makeCounter();  //Счётчик для циклов
-
-function idleLongPolling() {
-    let timer;
-    window.onmousemove = resetTimer;
-    window.onmousedown = resetTimer;
-    window.ontouchstart = resetTimer;
-    window.ontouchmove = resetTimer;
-    window.onclick = resetTimer;
-    window.onkeydown = resetTimer;
-    window.addEventListener('scroll', resetTimer, true);
-
-    let longPollingData = getLongPollingData();
-
-    let longPolling_activitiesMin = longPollingData[0]['activities'];
-    let longPolling_activitiesMiddle = longPollingData[1]['activities'];
-    let longPolling_activitiesMax = longPollingData[2]['activities'];
-
-    let longPolling_timeDelayMin = longPollingData[0]['timeDelay'];
-    let longPolling_timeDelayMiddle = longPollingData[1]['timeDelay'];
-    let longPolling_timeDelayMax = longPollingData[2]['timeDelay'];
-
-    function resetTimer() {
-        counter.getNext(); //Считаем 'число активности' на странице
-
-        if (counter.get() > longPolling_activitiesMin && counter.get() < longPolling_activitiesMiddle && counterOfLoop.get() === 1) {
-            clearTimeout(timer);
-            timer = setTimeout(getUndefinedTransactionsData, longPolling_timeDelayMin);
-            counterOfLoop.getNext();
-        } else if (counter.get() > longPolling_activitiesMiddle && counter.get() < longPolling_activitiesMax && counterOfLoop.get() === 2) {
-            clearTimeout(timer);
-            timer = setTimeout(getUndefinedTransactionsData, longPolling_timeDelayMiddle);
-            counterOfLoop.getNext();
-        } else if (counter.get() > longPolling_activitiesMax && counterOfLoop.get() === 3) {
-            clearTimeout(timer);
-            timer = setTimeout(getUndefinedTransactionsData, longPolling_timeDelayMax);
-            counterOfLoop.getNext();
-        }
+function checkUserIsActive() {
+    if (userIsActive && new Date().getTime() - lastActiveTimestamp > timeout){
+        userIsActive = false;
+        fibonacciCounter.reset();
     }
 }
 
-function getLongPollingData() {
-    let listOfLongPolling = [];
+function active() {
+    lastActiveTimestamp = new Date().getTime();
+    if (!userIsActive) {
+        userIsActive = true;
+    }
+    idleLongPolling();
+}
+
+function idleLongPolling() {
+    if (!getNewUndefinedTransactions) {
+        clearTimeout(timer);
+        let timeDelay = fibonacciCounter.getNext() * 1000;
+        timer = setTimeout(getUndefinedTransactionsData, timeDelay);
+        getNewUndefinedTransactions = true;
+    }
+}
+
+function getPeriodOfInactivity() {
+    let periodOfInactivity;
     $.ajax({
         method: 'GET',
         url: './transaction/longPolling',
         contentType: "application/json; charset=utf8",
         async: false,
         success: function (data) {
-            for (let i = 0; i < data.length; i++) {
-                listOfLongPolling.push({
-                    "activities": data[i].activities,
-                    "timeDelay": data[i].timeDelay
-                })
-            }
+            periodOfInactivity = data;
         },
         error: function () {
             console.log("Ошибка получения данных для long polling");
         }
     })
-    return listOfLongPolling;
+    return periodOfInactivity;
 }
 
 function checkAvailability(arr, val) {
@@ -204,8 +202,7 @@ function getUndefinedTransactionsData() {
                     circle.addEventListener('dragend', handleDragEnd);
                 });
             }
-            counter.reset();
-            counterOfLoop.reset();
+            getNewUndefinedTransactions = false;
         },
         error: function () {
             registerAccount()
