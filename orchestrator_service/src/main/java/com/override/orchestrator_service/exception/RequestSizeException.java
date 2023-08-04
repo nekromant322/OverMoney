@@ -19,6 +19,6 @@ public class RequestSizeException extends BaseException {
 
     @Override
     public String getErrorCode() {
-        return HttpStatus.PAYLOAD_TOO_LARGE.getReasonPhrase();
+        return "ORCHESTRA_MAX_FILE_SIZE_ERROR";
     }
 }
