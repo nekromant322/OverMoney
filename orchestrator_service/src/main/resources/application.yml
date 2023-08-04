@@ -107,12 +107,4 @@
 
   long-polling:
     overview:
-      -
-        activities: 300
-        timeDelay: 20_000
-      -
-        activities: 1000
-        timeDelay: 15_000
-      -
-        activities: 1700
-        timeDelay: 10_000
+      period-of-inactivity: 10_000
