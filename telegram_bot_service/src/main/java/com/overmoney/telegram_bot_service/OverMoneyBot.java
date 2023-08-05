@@ -1,16 +1,15 @@
 package com.overmoney.telegram_bot_service;
 
-import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
 import com.overmoney.telegram_bot_service.constants.Command;
+import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
-import com.overmoney.telegram_bot_service.service.MergeRequestService;
+import com.overmoney.telegram_bot_service.model.TelegramMessage;
+import com.overmoney.telegram_bot_service.service.*;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
 import com.override.dto.AccountDataDTO;
-import com.overmoney.telegram_bot_service.service.VoiceMessageProcessingService;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
-import com.overmoney.telegram_bot_service.service.OrchestratorRequestService;
 import com.override.dto.constants.StatusMailing;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -18,15 +17,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.User;
+import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import java.time.*;
+import java.io.File;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +52,11 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private ChatMemberMapper chatMemberMapper;
     @Autowired
     private InlineKeyboardMarkupUtil inlineKeyboardMarkupUtil;
+    @Autowired
+    private FileService fileService;
+
+    @Autowired
+    private TelegramMessageService telegramMessageService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
             "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
     private final Integer MILLISECONDS_CONVERSION = 1000;
@@ -67,6 +72,10 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private final String REGISTRATION_INFO_TEXT =
             "Для корректной регистрации аккаунта убедитесь, что на момент добавления в чат бота" +
                     " в чате с ботом только вы. После переноса данных можете добавлять других пользователей";
+    private final String INVALID_TRANSACTION_TO_DELETE = "Некорректная транзакция для удаления";
+    private final String SUCCESSFUL_DELETION_TRANSACTION = "Эта запись успешно удалена!";
+    private final String COMMAND_TO_DELETE_TRANSACTION = "удалить";
+
     private final String BLANK_MESSAGE = "";
     private final Boolean BOT = true;
 
@@ -86,13 +95,13 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             Message receivedMessage = update.getMessage();
             Long chatId = receivedMessage.getChatId();
-            Long userId = receivedMessage.getFrom().getId();
-            String receivedMessageText = getReceivedMessage(receivedMessage);
-            LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
-                    .atOffset(MOSCOW_OFFSET).toLocalDateTime();
             if (receivedMessage.getLeftChatMember() != null) {
-                User user = receivedMessage.getLeftChatMember();
-                orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, user));
+                User remoteUser = receivedMessage.getLeftChatMember();
+                if (!remoteUser.getIsBot()) {
+                    String backupFileName = fileService.createBackupFileToRemoteInChatUser(chatId, remoteUser.getId());
+                    sendBuckUpFile(remoteUser.getId().toString(), backupFileName);
+                    orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, remoteUser));
+                }
             }
             if (!receivedMessage.getNewChatMembers().isEmpty()) {
                 List<User> newUsers = receivedMessage.getNewChatMembers();
@@ -108,9 +117,15 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                                     .collect(Collectors.toList()));
                 }
             }
-
-            if (!receivedMessageText.equals(BLANK_MESSAGE)) {
-                botAnswer(receivedMessageText, chatId, userId, date);
+            botAnswer(receivedMessage);
+        }
+        if (update.hasMyChatMember()) {
+            String status = update.getMyChatMember().getNewChatMember().getStatus();
+            if (status.equals("left") && !update.hasMessage()) {
+                Long chatId = update.getMyChatMember().getChat().getId();
+                Long userId = update.getMyChatMember().getFrom().getId();
+                String backUpFileName = fileService.createBackupFileToRemoteInChatUser(chatId, userId);
+                sendBuckUpFile(userId.toString(), backUpFileName);
             }
         }
         if (update.hasCallbackQuery()) {
@@ -175,8 +190,17 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         return receivedMessageText;
     }
 
-    private void botAnswer(String receivedMessage, Long chatId, Long userId, LocalDateTime date) {
-        switch (receivedMessage) {
+    private void botAnswer(Message receivedMessage) {
+        Long chatId = receivedMessage.getChatId();
+        Long userId = receivedMessage.getFrom().getId();
+        String receivedMessageText = getReceivedMessage(receivedMessage);
+        Message replyToMessage = receivedMessage.getReplyToMessage();
+        LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
+                .atOffset(MOSCOW_OFFSET).toLocalDateTime();
+        if (receivedMessageText.equals(BLANK_MESSAGE)) {
+            return;
+        }
+        switch (receivedMessageText.toLowerCase()) {
             case "/start":
                 sendMessage(chatId, Command.START.getDescription() + orchestratorHost);
                 orchestratorRequestService.registerSingleAccount(new AccountDataDTO(chatId, userId));
@@ -184,11 +208,19 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             case "/money":
                 sendMessage(chatId, Command.MONEY.getDescription());
                 break;
+            case COMMAND_TO_DELETE_TRANSACTION:
+                if (replyToMessage != null) {
+                    deleteTransaction(replyToMessage, chatId);
+                    break;
+                }
             default:
                 try {
-                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService.sendTransaction(new TransactionMessageDTO(receivedMessage, userId, chatId, date));
+                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
+                            .sendTransaction(new TransactionMessageDTO(receivedMessageText, userId, chatId, date));
+                    telegramMessageService.saveTelegramMessage(new TelegramMessage(receivedMessage.getMessageId(), transactionResponseDTO.getId()));
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
+                    log.error(e.getMessage());
                     sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
                 }
                 break;
@@ -213,5 +245,28 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         message.setMessageId(messageId);
         message.setReplyMarkup(null);
         execute(message);
+    }
+
+    public void sendBuckUpFile(String userChatId, String fileName) {
+        File file = new File(fileName);
+        SendDocument sendDocument = new SendDocument();
+        sendDocument.setChatId(userChatId);
+        sendDocument.setDocument(new InputFile(file));
+        try {
+            execute(sendDocument);
+            file.delete();
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private void deleteTransaction(Message replyToMessage, Long chatId) {
+        try {
+            telegramMessageService.deleteTransactionById(replyToMessage.getMessageId());
+            sendMessage(chatId, SUCCESSFUL_DELETION_TRANSACTION);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            sendMessage(chatId, INVALID_TRANSACTION_TO_DELETE);
+        }
     }
 }

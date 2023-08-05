@@ -29,14 +29,14 @@ public class SettingsController {
         return backupUserDataService.createBackupUserData(telegramUtils.getTelegramId(principal));
     }
 
+    @GetMapping("/backup/{id}")
+    public BackupUserDataDTO getBackupDataFromRemoveUser(@PathVariable Long id) throws InstanceNotFoundException {
+        return backupUserDataService.createBackupUserData(id);
+    }
+
     @PostMapping("/backup/read")
     public ResponseEntity<HttpStatus> readBackupFile(@RequestBody BackupUserDataDTO backupUserDataDTO, Principal principal) {
         backupUserDataService.writingDataFromBackupFile(backupUserDataDTO, telegramUtils.getTelegramId(principal));
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
-    }
-
-    @GetMapping("/environment/telegramBotName")
-    public String getTelegramBotName(){
-        return telegramUtils.getTelegramBotName();
     }
 }

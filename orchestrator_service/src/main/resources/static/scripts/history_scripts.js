@@ -20,7 +20,7 @@ $(window).scroll(function () {
 function getTelegramBotName() {
     return new Promise(function (resolve, reject) {
         $.ajax({
-            url: '/settings/environment/telegramBotName',
+            url: '/properties/telegramBotName',
             method: 'GET',
             dataType: 'text',
             success: function (response) {
@@ -217,7 +217,7 @@ function deleteButtonClick() {
     let id = $('#idTransactionInFormDelete').val();
     $.ajax({
         method: "DELETE",
-        url: "./delete/" + id,
+        url: "./transaction/" + id,
         async: false,
         success: () => {
             location.reload();
