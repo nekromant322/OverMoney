@@ -1,5 +1,7 @@
 package com.override.orchestrator_service.annotations;
 
+import com.override.orchestrator_service.config.filter.RequestHeaderInterceptor;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.annotation.ElementType;
@@ -15,7 +17,7 @@ import java.lang.annotation.Target;
  * преднозначенных только! для взаимодействия между внутренними сервисами.
  * Устанавливается на методы в контроллерах.
  * При установки аннотации на метод, будет проверяться хедер запроса на наличие и соответствие Internal Key.
- * @see com.override.orchestrator_service.service.interceptor.RequestHeaderInterceptor#preHandle(HttpServletRequest, HttpServletResponse, Object)
+ * @see RequestHeaderInterceptor#preHandle(HttpServletRequest, HttpServletResponse, Object)
  */
 
 @Target(ElementType.METHOD)

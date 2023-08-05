@@ -1,4 +1,4 @@
-package com.override.orchestrator_service.service.interceptor;
+package com.override.orchestrator_service.config.filter;
 
 import com.override.orchestrator_service.annotations.OnlyServiceUse;
 import com.override.orchestrator_service.exception.InternalKeyNotFoundException;
