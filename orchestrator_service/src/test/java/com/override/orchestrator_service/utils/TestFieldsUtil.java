@@ -249,7 +249,8 @@ public class TestFieldsUtil {
                 new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 9),
                 new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithNullFields", 10),
                 new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithNullFields", 11),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(50000d, "categoryWithNullFields", 12));
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(50000d, "categoryWithNullFields", 12),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 12));
     }
 
     public static List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> generateTestAnalyticsAnnualAndMonthlyExpenseForCategoryWithoutNullFields() {
@@ -288,7 +289,7 @@ public class TestFieldsUtil {
                     put(9, 30000d);
                     put(10, 10000d);
                     put(11, 20000d);
-                    put(12, 50000d);
+                    put(12, 80000d);
                 }},
                 new HashMap<>() {{
                     put(1, 1d);

@@ -215,8 +215,17 @@ public class TransactionService {
             Map<Integer, Double> shareOfMonthlyExpenses = new HashMap<>();
             objects.forEach(object -> {
                 if (Objects.equals(categoryName, object.getCategoryName())) {
-                    monthlyAnalytics.put(object.getMonth(), object.getAmount());
-                    shareOfMonthlyExpenses.put(object.getMonth(), object.getAmount());
+                    if (monthlyAnalytics.containsKey(object.getMonth()) &&
+                            shareOfMonthlyExpenses.containsKey(object.getMonth())) {
+
+                        monthlyAnalytics.replace(object.getMonth(),
+                                monthlyAnalytics.get(object.getMonth()) + object.getAmount());
+                        shareOfMonthlyExpenses.replace(object.getMonth(),
+                                shareOfMonthlyExpenses.get(object.getMonth()) + object.getAmount());
+                    } else {
+                        monthlyAnalytics.put(object.getMonth(), object.getAmount());
+                        shareOfMonthlyExpenses.put(object.getMonth(), object.getAmount());
+                    }
                 }
             });
             for (Integer monthCounter = 1; monthCounter <= 12; monthCounter++) {
