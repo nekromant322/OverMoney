@@ -10,6 +10,7 @@
                 <tableExists tableName="telegram_message"/>
             </not>
         </preConditions>
+
         <createTable tableName="telegram_message">
             <column name="id" type="BIGSERIAL">
                 <constraints nullable="false" primaryKey="true"/>
@@ -18,6 +19,27 @@
             <column name="chat_id" type="BIGINT"/>
             <column name="id_transaction" type="UUID"/>
         </createTable>
+    </changeSet>
+
+    <changeSet author="EduardCoool" id="07.08.23-renameIdToMessageIdAndAddColumnIdAndChatId">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="telegram_message"/>
+            <not>
+                <columnExists tableName="telegram_message" columnName="chat_id"/>
+            </not>
+        </preConditions>
+
+        <renameColumn tableName="telegram_message" oldColumnName="id" newColumnName="message_id"
+                      columnDataType="INTEGER"/>
+        <dropPrimaryKey tableName="telegram_message" dropIndex="false"/>
+        <addColumn tableName="telegram_message">
+            <column name="id" type="BIGSERIAL" autoIncrement="true" valueComputed="message_id">
+                <constraints nullable="false"/>
+            </column>
+            <column name="chat_id" type="BIGINT"/>
+        </addColumn>
+        <addPrimaryKey tableName="telegram_message" columnNames="id"
+                       constraintName="id"/>
     </changeSet>
 
 </databaseChangeLog>
