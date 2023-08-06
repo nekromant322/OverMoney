@@ -11,9 +11,11 @@
             </not>
         </preConditions>
         <createTable tableName="telegram_message">
-            <column name="id" type="INTEGER">
+            <column name="id" type="BIGSERIAL">
                 <constraints nullable="false" primaryKey="true"/>
             </column>
+            <column name="message_id" type="INTEGER"/>
+            <column name="chat_id" type="BIGINT"/>
             <column name="id_transaction" type="UUID"/>
         </createTable>
     </changeSet>

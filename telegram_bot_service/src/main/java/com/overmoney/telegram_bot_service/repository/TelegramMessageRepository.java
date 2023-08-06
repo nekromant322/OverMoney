@@ -9,4 +9,6 @@ import java.util.UUID;
 @Repository
 public interface TelegramMessageRepository extends JpaRepository<TelegramMessage, Integer> {
     void deleteByIdTransaction(UUID id);
+
+    TelegramMessage findByMessageIdAndChatId(Integer messageId, Long chatId);
 }

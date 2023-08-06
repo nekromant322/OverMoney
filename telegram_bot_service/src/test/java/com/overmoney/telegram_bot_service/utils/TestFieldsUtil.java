@@ -16,7 +16,7 @@ public class TestFieldsUtil {
     }
 
     public static TelegramMessage generateTelegramMessage() {
-        return new TelegramMessage(1, UUID.randomUUID());
+        return new TelegramMessage(1L, 1, 1L, UUID.randomUUID());
     }
 
     public static File generateTelegramFile() {
