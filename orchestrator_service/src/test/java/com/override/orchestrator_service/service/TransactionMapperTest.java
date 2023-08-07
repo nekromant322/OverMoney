@@ -56,4 +56,26 @@ public class TransactionMapperTest {
         Assertions.assertEquals(transactionResponseDTO.getCategory(), transaction.getCategory().getName());
         Assertions.assertEquals(transactionResponseDTO.getAmount(), transaction.getAmount().toString());
     }
+
+    @Test
+    public void mapTransactionToTelegramResponseRoundAmountTest() throws InstanceNotFoundException {
+        Transaction transaction = TestFieldsUtil.generateTestTransaction();
+        transaction.setAmount(200.45678F);
+        String resultRoundAmount = "200.46";
+
+        TransactionResponseDTO transactionResponseDTO = transactionMapper.mapTransactionToTelegramResponse(transaction);
+
+        Assertions.assertEquals(transactionResponseDTO.getAmount(), resultRoundAmount);
+    }
+
+    @Test
+    public void mapTransactionToDTORoundAmountTest() {
+        Transaction transaction = TestFieldsUtil.generateTestTransaction();
+        transaction.setAmount(200.45678F);
+        Float resultRoundAmount = 200.46F;
+
+        TransactionDTO transactionDTO = transactionMapper.mapTransactionToDTO(transaction);
+
+        Assertions.assertEquals(transactionDTO.getAmount(), resultRoundAmount);
+    }
 }
