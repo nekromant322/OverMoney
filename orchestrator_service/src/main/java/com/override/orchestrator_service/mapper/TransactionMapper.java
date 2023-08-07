@@ -7,6 +7,8 @@ import com.override.orchestrator_service.model.Transaction;
 import org.springframework.stereotype.Component;
 
 import javax.management.InstanceNotFoundException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
 @Component
@@ -20,7 +22,7 @@ public class TransactionMapper {
                 .id(transaction.getId())
                 .type(getTransactionType(transaction))
                 .category(getTransactionCategory(transaction))
-                .amount(transaction.getAmount().toString())
+                .amount(roundAmount(transaction.getAmount()).toString())
                 .chatId(transaction.getAccount().getChatId())
                 .comment(transaction.getMessage())
                 .build();
@@ -29,7 +31,7 @@ public class TransactionMapper {
     public TransactionDTO mapTransactionToDTO(Transaction transaction) {
         TransactionDTO.TransactionDTOBuilder builder = TransactionDTO.builder()
                 .id(transaction.getId())
-                .amount(transaction.getAmount())
+                .amount(roundAmount(transaction.getAmount()))
                 .message(transaction.getMessage())
                 .date(transaction.getDate())
                 .suggestedCategoryId(transaction.getSuggestedCategoryId())
@@ -56,5 +58,9 @@ public class TransactionMapper {
             return CATEGORY_UNDEFINED;
         }
         return transaction.getCategory().getName();
+    }
+
+    private Float roundAmount(Float amount) {
+        return new BigDecimal(amount).setScale(2, RoundingMode.HALF_UP).floatValue();
     }
 }
