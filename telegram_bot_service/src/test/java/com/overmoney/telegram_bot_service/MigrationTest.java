@@ -16,6 +16,8 @@ import org.springframework.test.context.TestPropertySource;
 public class MigrationTest {
     private static int pgPort = 8123;
     private static EmbeddedPostgres pg = null;
+    private static final String createTableTelegramMessage =
+            "CREATE TABLE telegram_message (id SERIAL PRIMARY KEY, id_transaction UUID)";
 
     @BeforeAll
     public static void initPostgresDatabase() {
@@ -23,6 +25,7 @@ public class MigrationTest {
             pg = EmbeddedPostgres.builder()
                     .setPort(pgPort)
                     .start();
+            pg.getPostgresDatabase().getConnection().createStatement().executeQuery(createTableTelegramMessage);
         } catch (Exception ex) {
             log.error(ex.getMessage());
         }

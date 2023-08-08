@@ -25,8 +25,8 @@ public class TelegramMessageService {
         telegramMessageRepository.deleteByIdTransaction(id);
     }
 
-    public void deleteTransactionById(Integer messageId) {
-        TelegramMessage telegramMessage = telegramMessageRepository.findById(messageId).get();
+    public void deleteTransactionById(Integer messageId, Long chatId) {
+        TelegramMessage telegramMessage = telegramMessageRepository.findByMessageIdAndChatId(messageId, chatId);
         orchestratorRequestService.deleteTransactionById(telegramMessage.getIdTransaction());
     }
 }
