@@ -104,3 +104,9 @@
       distribution:
         percentiles-histogram:
           "[http.server.requests]": true
+
+  mask-log-spring-boot-starter:
+    secretFields:
+      - x-internal-key
+      - id
+      - token
