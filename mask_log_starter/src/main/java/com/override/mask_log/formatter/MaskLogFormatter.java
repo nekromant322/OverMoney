@@ -18,6 +18,10 @@ import java.util.Optional;
 @Component
 public class MaskLogFormatter implements StructuredHttpLogFormatter {
 
+    private final String MASK_PATTERN = "*****";
+    private final int FIRST_HEADER_INDEX = 0;
+    private final int SECOND_HEADER_INDEX = 1;
+
     @Autowired
     private MaskLogProperties maskLogProperties;
 
@@ -46,7 +50,7 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
         } else {
             for (String secret : maskLogProperties.getSecretFields()) {
                 String secretValuePattern = "\\\"" + secret + "\\\"\\s*:\\s*\\\"([^\\\"]*)\\\"";
-                String replacementPattern = "\"" + secret + "\"" + ":\"***\"";
+                String replacementPattern = "\"" + secret + "\"" + ":" + MASK_PATTERN;
                 body = body.replaceAll(secretValuePattern, replacementPattern);
             }
             return Optional.of(new MaskLogFormatter.JsonBody(body));
@@ -59,9 +63,10 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
      * Подготавливает тело HTTP-сообщения для логирования путем маскировки секретных полей
      * в заголовках и URI.
      *
-     * @param precorrelation объект Precorrelation, содержащий информацию о предшествующей связи
-     * @param request объект HttpRequest, представляющий HTTP-сообщение
-     * @return объект Optional, содержащий маскированное тело сообщения, или пустой Optional, если тело пустое
+     * @param precorrelation объект Precorrelation, содержащий информацию о предшествующем запросе
+     * @param request объект HttpRequest, представляющий исходящее HTTP-сообщение
+     * @return отформатированное для логирования представление исходящего сообщения, с маскировкой секретных полей
+     * @throws IOException если произошла ошибка ввода-вывода
      */
     @Override
     public String format(@NotNull Precorrelation precorrelation, @NotNull HttpRequest request) throws IOException {
@@ -76,7 +81,7 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
 
     private HttpRequest maskQuery(HttpRequest request) {
         String query = request.getQuery();
-        String maskedQuery = query.replaceAll("=([^&]*)", "=****");
+        String maskedQuery = query.replaceAll("=([^&]*)", MASK_PATTERN);
         HttpRequest updatedRequest = new HttpRequest() {
             @Override
             public String getRemote() {
@@ -141,13 +146,25 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
         return updatedRequest;
     }
 
+    /**
+     * Рекурсивный метод maskHeader маскирует любые секретные заголоки HTTP-сообщения и возвращает
+     * новый объект HttpRequest с обновленными заголовками.
+     * В каждой итерации проверяется первый хедер из списка, обновленный HTTP запрос содержит сублист хедеров
+     * исключая первый эелемнет.
+     *
+     * Сдлеано так сложно т.к. спсиок хедеров не изменяемый обьект, и в запрос можно подсунуть только новый список.
+     *
+     * @param request        объект HttpRequest, представляющий HTTP-сообщение
+     * @param secretHeaders  список строк, содержащий названия секретных заголовков
+     * @return               объект HttpRequest с обновленными заголовками
+     */
     private HttpRequest maskHeader(HttpRequest request, List<String> secretHeaders) {
         if (secretHeaders.isEmpty()) {
             return request;
         } else {
-            String secretHeader = secretHeaders.get(0);
+            String secretHeader = secretHeaders.get(FIRST_HEADER_INDEX);
             HttpHeaders httpHeaders = request.getHeaders();
-            HttpHeaders maskedHeaders = httpHeaders.update(secretHeader, "*****");
+            HttpHeaders maskedHeaders = httpHeaders.update(secretHeader, MASK_PATTERN);
             HttpRequest updatedRequest = new HttpRequest() {
                 @Override
                 public String getRemote() {
@@ -209,7 +226,7 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
                     return request.getBody();
                 }
             };
-            List<String> remainingHeaders = secretHeaders.subList(1, secretHeaders.size());
+            List<String> remainingHeaders = secretHeaders.subList(SECOND_HEADER_INDEX, secretHeaders.size());
             return maskHeader(updatedRequest, remainingHeaders);
         }
     }

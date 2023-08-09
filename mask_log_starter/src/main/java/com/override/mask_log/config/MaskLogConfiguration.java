@@ -18,7 +18,7 @@ import static org.zalando.logbook.Conditions.requestTo;
 @ComponentScan(basePackages = "com.override.mask_log")
 public class MaskLogConfiguration {
     @Autowired
-    MaskLogFormatter maskLogFormatter;
+    private MaskLogFormatter maskLogFormatter;
 
     @Bean
     public Logbook logbook() {
