@@ -217,7 +217,10 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 try {
                     TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
                             .sendTransaction(new TransactionMessageDTO(receivedMessageText, userId, chatId, date));
-                    telegramMessageService.saveTelegramMessage(new TelegramMessage(receivedMessage.getMessageId(), transactionResponseDTO.getId()));
+                    telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
+                            .messageId(receivedMessage.getMessageId())
+                            .chatId(chatId)
+                            .idTransaction(transactionResponseDTO.getId()).build());
                     sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
                 } catch (Exception e) {
                     log.error(e.getMessage());
@@ -262,7 +265,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     private void deleteTransaction(Message replyToMessage, Long chatId) {
         try {
-            telegramMessageService.deleteTransactionById(replyToMessage.getMessageId());
+            telegramMessageService.deleteTransactionById(replyToMessage.getMessageId(), chatId);
             sendMessage(chatId, SUCCESSFUL_DELETION_TRANSACTION);
         } catch (Exception e) {
             log.error(e.getMessage());

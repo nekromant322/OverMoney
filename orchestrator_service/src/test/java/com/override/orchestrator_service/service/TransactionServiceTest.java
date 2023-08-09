@@ -3,10 +3,8 @@ package com.override.orchestrator_service.service;
 import com.override.dto.*;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.mapper.TransactionMapper;
-import com.override.orchestrator_service.model.Category;
-import com.override.orchestrator_service.model.OverMoneyAccount;
-import com.override.orchestrator_service.model.Transaction;
-import com.override.orchestrator_service.model.User;
+import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
@@ -23,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 
 import javax.management.InstanceNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,6 +52,8 @@ public class TransactionServiceTest {
     private KeywordRepository keywordRepository;
     @Mock
     private TelegramBotFeign telegramBotFeign;
+    @Mock
+    private CategoryRepository categoryRepository;
 
     @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
@@ -218,5 +219,72 @@ public class TransactionServiceTest {
                 Arguments.of(TestFieldsUtil.generateTestAnalyticsAnnualAndMonthlyExpenseForCategoryWithoutNullFields(),
                         TestFieldsUtil.generateTestListOfAAnalyticsAnnualAndMonthlyReportDTOWithoutNull())
         );
+    }
+
+    @Test
+    public void editTransactionTestWhenChangesKeyword() {
+        TransactionDTO transactionDTO = TransactionDTO.builder()
+                .message("тест")
+                .amount(250F)
+                .date(LocalDateTime.now())
+                .categoryName("продукты")
+                .build();
+
+        Transaction transaction = TestFieldsUtil.generateTestTransaction();
+        Optional<Keyword> keyword = Optional.ofNullable(TestFieldsUtil.generateTestKeyword());
+        Category category = TestFieldsUtil.generateTestCategory();
+
+
+        when(transactionRepository.findById(any())).thenReturn(Optional.ofNullable(transaction));
+        when(keywordRepository.findByKeywordId(any())).thenReturn(keyword);
+        when(categoryRepository.findCategoryByNameAndAccountId(any(), any())).thenReturn(category);
+
+        transactionService.editTransaction(transactionDTO);
+
+        verify(keywordRepository, times(1)).delete(keyword.get());
+    }
+
+    @Test
+    public void editTransactionTestWhenChangesCategory() {
+        TransactionDTO transactionDTO = TransactionDTO.builder()
+                .message("продукты")
+                .amount(250F)
+                .date(LocalDateTime.now())
+                .categoryName("Тест")
+                .build();
+
+        Transaction transaction = TestFieldsUtil.generateTestTransaction();
+        Optional<Keyword> keyword = Optional.ofNullable(TestFieldsUtil.generateTestKeyword());
+        Category category = TestFieldsUtil.generateTestCategory();
+
+        when(transactionRepository.findById(any())).thenReturn(Optional.ofNullable(transaction));
+        when(keywordRepository.findByKeywordId(any())).thenReturn(keyword);
+        when(categoryRepository.findCategoryByNameAndAccountId(any(), any())).thenReturn(category);
+
+        transactionService.editTransaction(transactionDTO);
+
+        verify(keywordRepository, times(1)).delete(keyword.get());
+    }
+
+    @Test
+    public void editTransactionTestWhenChangesCategoryAndKeyword() {
+        TransactionDTO transactionDTO = TransactionDTO.builder()
+                .message("тест")
+                .amount(250F)
+                .date(LocalDateTime.now())
+                .categoryName("Тест")
+                .build();
+
+        Transaction transaction = TestFieldsUtil.generateTestTransaction();
+        Optional<Keyword> keyword = Optional.ofNullable(TestFieldsUtil.generateTestKeyword());
+        Category category = TestFieldsUtil.generateTestCategory();
+
+        when(transactionRepository.findById(any())).thenReturn(Optional.ofNullable(transaction));
+        when(keywordRepository.findByKeywordId(any())).thenReturn(keyword);
+        when(categoryRepository.findCategoryByNameAndAccountId(any(), any())).thenReturn(category);
+
+        transactionService.editTransaction(transactionDTO);
+
+        verify(keywordRepository, times(2)).delete(keyword.get());
     }
 }

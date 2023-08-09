@@ -63,7 +63,7 @@ public class TransactionXLSXService {
             for (Row row : sheet) {
                 Number amount = row.getCell(1).getNumericCellValue();
                 TransactionDTO transactionDTO = TransactionDTO.builder()
-                        .categoryName(row.getCell(0).getStringCellValue())
+                        .categoryName(StringUtils.capitalize(row.getCell(0).getStringCellValue()))
                         .message(row.getCell(2).getStringCellValue())
                         .amount(amount.floatValue())
                         .date(row.getCell(4).getLocalDateTimeCellValue())
@@ -108,8 +108,16 @@ public class TransactionXLSXService {
 
     public void saveAllCategoriesFromXLSX(List<TransactionDTO> transactionDTOS, OverMoneyAccount overMoneyAccount) {
         Set<Category> categories = new HashSet<>();
-        transactionDTOS.forEach(tr -> categories.add(createCategory(tr, overMoneyAccount)));
-        categories.removeAll(overMoneyAccount.getCategories());
+        Set<Category> existingCategories = overMoneyAccount.getCategories();
+        List<String> existingCategoriesName = new ArrayList<>();
+        if (!existingCategories.isEmpty()) {
+            existingCategories.forEach(category -> existingCategoriesName.add(category.getName()));
+        }
+        for (TransactionDTO transactionDTO : transactionDTOS) {
+            if (!existingCategoriesName.contains(transactionDTO.getCategoryName())) {
+                categories.add(createCategory(transactionDTO, overMoneyAccount));
+            }
+        }
         categoryService.saveAllCategories(categories);
     }
 }
