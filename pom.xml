@@ -22,7 +22,6 @@
         <module>orchestrator_service</module>
         <module>telegram_bot_service</module>
         <module>invest_service</module>
-        <module>mask_log_starter</module>
     </modules>
 
     <properties>
@@ -50,11 +49,6 @@
                 <version>2021.0.6</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.overmoney</groupId>
-                <artifactId>mask_log_starter</artifactId>
-                <version>0.0.1-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
