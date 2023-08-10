@@ -108,9 +108,3 @@
   long-polling:
     overview:
       period-of-inactivity: 10_000
-
-  mask-log-spring-boot-starter:
-    secretFields:
-      - x-internal-key
-      - id
-      - token
