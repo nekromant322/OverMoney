@@ -181,43 +181,43 @@ jobs:
                         
             if ${{ needs.paths-filter.outputs.eureka}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop eureka
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm eureka
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm -v eureka
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:eureka
             fi
             
             if ${{ needs.paths-filter.outputs.recognizer}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop recognizer
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm recognizer
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm -v recognizer
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:recognizer
             fi
             
             if ${{ needs.paths-filter.outputs.orchestrator}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop orchestrator
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm orchestrator
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm -v orchestrator
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:orchestrator
             fi
             
             if ${{ needs.paths-filter.outputs.telegram-bot}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop telegram-bot
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm telegram-bot
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm -v telegram-bot
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:telegram-bot
             fi
             
             if ${{ needs.paths-filter.outputs.invest}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop invest
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm invest
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm -v invest
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:invest
             fi
             
             if ${{ needs.paths-filter.outputs.wit-ai-go-proxy}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop wit-ai-go-proxy
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm wit-ai-go-proxy
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm -v wit-ai-go-proxy
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rmi nekromant322/overmoney:wit-ai-go-proxy
             fi
             
             if ${{ needs.paths-filter.outputs.prometheus}}; then
               echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop prometheus
-              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm prometheus
+              echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker rm -v prometheus
             fi
                                 
             echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker-compose -f docker-compose.yaml --env-file=overmoney-env.txt up -d
