@@ -2,6 +2,7 @@ package com.override.orchestrator_service.controller.rest;
 
 
 import com.override.dto.BackupUserDataDTO;
+import com.override.orchestrator_service.annotations.OnlyServiceUse;
 import com.override.orchestrator_service.service.BackupUserDataService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class SettingsController {
         return backupUserDataService.createBackupUserData(telegramUtils.getTelegramId(principal));
     }
 
+    @OnlyServiceUse
     @GetMapping("/backup/{id}")
     public BackupUserDataDTO getBackupDataFromRemoveUser(@PathVariable Long id) throws InstanceNotFoundException {
         return backupUserDataService.createBackupUserData(id);
@@ -38,10 +40,5 @@ public class SettingsController {
     public ResponseEntity<HttpStatus> readBackupFile(@RequestBody BackupUserDataDTO backupUserDataDTO, Principal principal) {
         backupUserDataService.writingDataFromBackupFile(backupUserDataDTO, telegramUtils.getTelegramId(principal));
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
-    }
-
-    @GetMapping("/environment/telegramBotName")
-    public String getTelegramBotName() {
-        return telegramUtils.getTelegramBotName();
     }
 }

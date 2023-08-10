@@ -2,31 +2,31 @@ let modalConfirmation = document.getElementById("modal-additional-confirmation")
 let modalSuccessful = document.getElementById("modal-successful-backup");
 
 function getTelegramBotName() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         $.ajax({
-            url: '/settings/environment/telegramBotName',
+            url: '/properties/telegramBotName',
             method: 'GET',
             dataType: 'text',
-            success: function(response) {
+            success: function (response) {
                 var environmentVariable = response;
                 resolve(environmentVariable);
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 reject(error);
             }
         });
     });
 }
 
-getTelegramBotName().then(function(telegramBotName) {
+getTelegramBotName().then(function (telegramBotName) {
     let telegramLink = 'https://t.me/' + telegramBotName;
     let linkElement = document.getElementById("telegram-bot-link");
     linkElement.setAttribute("href", telegramLink);
-    linkElement.addEventListener("click", function(event) {
+    linkElement.addEventListener("click", function (event) {
         event.preventDefault();
         window.open(telegramLink, "_blank");
     });
-}).catch(function(error) {
+}).catch(function (error) {
     console.error(error);
 });
 
@@ -72,7 +72,6 @@ function saveFile() {
         method: 'GET',
         async: false,
         success: function (data) {
-            //лоудер стоп
             let json = JSON.stringify(data);
             let blob = new Blob([json], {type: "application/json"});
             let url = URL.createObjectURL(blob);
@@ -96,7 +95,6 @@ function saveFile() {
 }
 
 function readFile() {
-    //лоудер старт
     $(".loader").css("display", "block");
     let file = document.getElementById("file").files[0];
     console.log(file);
@@ -114,7 +112,15 @@ function readFile() {
                 'Content-type': 'application/json; charset=UTF-8',
             },
         })
-            .then((response) => response.json())
+            .then(response => {
+                if (response.status === 413) {
+                    response.json()
+                        .then(data => alert(data.message));
+                } else {
+                    return response
+                }
+            })
+            .then(response => response.json())
             .then((data) => {
                 console.log(data)
                 if (data === "ACCEPTED") {

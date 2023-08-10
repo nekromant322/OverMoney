@@ -9,8 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Optional;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -41,9 +39,9 @@ public class TelegramMessageServiceTest {
     @Test
     public void deleteTransactionByIdTest() {
         TelegramMessage telegramMessage = TestFieldsUtil.generateTelegramMessage();
-        when(telegramMessageRepository.findById(any())).thenReturn(Optional.of(telegramMessage));
+        when(telegramMessageRepository.findByMessageIdAndChatId(any(), any())).thenReturn(telegramMessage);
 
-        telegramMessageService.deleteTransactionById(telegramMessage.getId());
+        telegramMessageService.deleteTransactionById(telegramMessage.getMessageId(), telegramMessage.getChatId());
         verify(orchestratorRequestService, times(1)).deleteTransactionById(telegramMessage.getIdTransaction());
     }
 

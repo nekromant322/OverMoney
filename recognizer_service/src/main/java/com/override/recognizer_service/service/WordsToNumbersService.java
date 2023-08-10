@@ -3,15 +3,25 @@ package com.override.recognizer_service.service;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Service
 public class WordsToNumbersService {
     private final HashMap<String, Long> vocabulary = new HashMap<>();
+    private final List<String> currencies = new ArrayList<>();
     private final String SPACE = " ";
 
     @PostConstruct
-    private void fillVocabulary() {
+    public void fillCurrencies() {
+        currencies.add("рубль");
+        currencies.add("рублей");
+        currencies.add("рубля");
+    }
+
+    @PostConstruct
+    public void fillVocabulary() {
         vocabulary.put("ноль", 0L);
         vocabulary.put("один", 1L);
         vocabulary.put("одна", 1L);
@@ -67,18 +77,21 @@ public class WordsToNumbersService {
     public String wordsToNumbers(String words) {
         int number = 0;
         int prevNumber = 0;
-        String[] splitWords = words.split("\\s+");
+        String[] splitWords = words.replaceAll("[^a-zA-Zа-яА-Я\\s]", "").split("\\s+");
         StringBuilder message = new StringBuilder();
         for (String word : splitWords) {
             if (vocabulary.containsKey(word.toLowerCase())) {
                 long value = vocabulary.get(word.toLowerCase());
                 if (value >= 1000) {
+                    if (prevNumber == 0) {
+                        prevNumber = 1;
+                    }
                     number += prevNumber * value;
                     prevNumber = 0;
                 } else {
                     prevNumber += value;
                 }
-            } else {
+            } else if (!currencies.contains(word.toLowerCase())) {
                 message.append(word).append(SPACE);
             }
         }

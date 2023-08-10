@@ -8,6 +8,7 @@ import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
+import com.override.orchestrator_service.util.NumericalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,7 +55,10 @@ public class TransactionService {
 
     public List<Transaction> findTransactionsListByUserIdWithoutCategories(Long id) throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
-        return transactionRepository.findAllWithoutCategoriesByAccountId(accID);
+        return transactionRepository.findAllWithoutCategoriesByAccountId(accID)
+                .stream()
+                .peek(tr -> tr.setAmount(NumericalUtils.roundAmount(tr.getAmount())))
+                .collect(Collectors.toList());
     }
 
     public Transaction getTransactionById(UUID transactionId) {
@@ -218,8 +222,17 @@ public class TransactionService {
             Map<Integer, Double> shareOfMonthlyExpenses = new HashMap<>();
             objects.forEach(object -> {
                 if (Objects.equals(categoryName, object.getCategoryName())) {
-                    monthlyAnalytics.put(object.getMonth(), object.getAmount());
-                    shareOfMonthlyExpenses.put(object.getMonth(), object.getAmount());
+                    if (monthlyAnalytics.containsKey(object.getMonth()) &&
+                            shareOfMonthlyExpenses.containsKey(object.getMonth())) {
+
+                        monthlyAnalytics.replace(object.getMonth(),
+                                NumericalUtils.roundAmount(monthlyAnalytics.get(object.getMonth()) + object.getAmount()));
+                        shareOfMonthlyExpenses.replace(object.getMonth(),
+                                NumericalUtils.roundAmount(shareOfMonthlyExpenses.get(object.getMonth()) + object.getAmount()));
+                    } else {
+                        monthlyAnalytics.put(object.getMonth(), NumericalUtils.roundAmount(object.getAmount()));
+                        shareOfMonthlyExpenses.put(object.getMonth(), NumericalUtils.roundAmount(object.getAmount()));
+                    }
                 }
             });
             for (Integer monthCounter = 1; monthCounter <= 12; monthCounter++) {

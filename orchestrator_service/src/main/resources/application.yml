@@ -44,6 +44,13 @@
       lifetime-in-hours: 24
 
   spring:
+    servlet:
+      multipart:
+        max-file-size: 10MB
+        ## переменная используется в классе CommonExceptionHandler при ошибке MaxUploadSizeExceededException
+        ## для формирования error message, кт в дальнейшем будет отображена на фронт пользователю
+        max-request-size: 10MB
+
     datasource:
       url: jdbc:postgresql://${ORCHESTRATOR_DB_HOST:localhost}:${ORCHESTRATOR_DB_PORT:5433}/orchestrator-db
       username: ${ORCHESTRATOR_DB_USER:postgres}
@@ -97,3 +104,7 @@
       distribution:
         percentiles-histogram:
           "[http.server.requests]": true
+
+  long-polling:
+    overview:
+      period-of-inactivity: 10_000
