@@ -13,6 +13,7 @@ import com.override.dto.TransactionMessageDTO;
 import javax.annotation.PostConstruct;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
@@ -112,6 +113,7 @@ public class TransactionProcessingService {
 
             transactionMessageDTO.setChatId(overMoneyAccount.getChatId());
             transactionMessageDTO.setUserId(telegramUtils.getTelegramId(principal));
+            transactionMessageDTO.setDate(LocalDateTime.now());
         }
 
         return processTransaction(transactionMessageDTO);
