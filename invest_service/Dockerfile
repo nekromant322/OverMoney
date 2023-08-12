@@ -6,6 +6,12 @@ COPY /dto/pom.xml /dto
 COPY /dto/src /dto/src
 RUN mvn -B -f pom.xml clean install -DskipTests -Dcheckstyle.skip
 
+RUN mkdir -p /mask_log_starter
+WORKDIR /mask_log_starter
+COPY /mask_log_starter/pom.xml /mask_log_starter
+COPY /mask_log_starter/src /mask_log_starter/src
+RUN mvn -B -f pom.xml clean install -DskipTests -Dcheckstyle.skip
+
 RUN mkdir -p /invest
 WORKDIR /invest
 COPY /invest_service/pom.xml /invest

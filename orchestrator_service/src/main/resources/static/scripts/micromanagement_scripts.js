@@ -110,10 +110,11 @@ function parseMapOfMonthlyAnalysesAndShareAndGetExpense(data) {
 
 function totalList(data) {
     let total = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    let numberBeforeDelimiter = 2;
     for (i = 0; i < data.length; i++) {
         let monthlyExpense = parseMapOfMonthlyAnalysesAndShareAndGetExpense(data[i]["monthlyAnalytics"]);
         for (j = 0; j < monthlyExpense.length; j++) {
-            total[j] += monthlyExpense[j];
+            total[j] = +(total[j] + monthlyExpense[j]).toFixed(numberBeforeDelimiter);
         }
     }
     return total;

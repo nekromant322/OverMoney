@@ -13,6 +13,9 @@ import com.override.dto.TransactionMessageDTO;
 import javax.annotation.PostConstruct;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
@@ -20,6 +23,8 @@ import java.util.regex.Pattern;
 
 @Service
 public class TransactionProcessingService {
+
+    private final ZoneOffset MOSCOW_OFFSET = ZoneOffset.ofHours(3);
 
     @Autowired
     private OverMoneyAccountService overMoneyAccountService;
@@ -107,11 +112,14 @@ public class TransactionProcessingService {
      */
     public Transaction validateAndProcessTransaction(TransactionMessageDTO transactionMessageDTO, Principal principal) throws InstanceNotFoundException {
 
+        LocalDateTime moscowTime = LocalDateTime.now(ZoneId.ofOffset("UTC", MOSCOW_OFFSET));
+
         if (principal != null) {
             OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramUtils.getTelegramId(principal));
 
             transactionMessageDTO.setChatId(overMoneyAccount.getChatId());
             transactionMessageDTO.setUserId(telegramUtils.getTelegramId(principal));
+            transactionMessageDTO.setDate(moscowTime);
         }
 
         return processTransaction(transactionMessageDTO);
