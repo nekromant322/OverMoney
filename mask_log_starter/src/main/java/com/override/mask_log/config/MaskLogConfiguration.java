@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.zalando.logbook.DefaultHttpLogWriter;
 import org.zalando.logbook.DefaultSink;
 import org.zalando.logbook.Logbook;
+import org.zalando.logbook.ResponseFilters;
 
 import static org.zalando.logbook.Conditions.*;
 
@@ -23,7 +24,10 @@ public class MaskLogConfiguration {
     public Logbook logbook() {
         return Logbook.builder()
                 .condition(exclude(
-                        requestTo("/actuator/**")))
+                        requestTo("/actuator/**"),
+                        requestTo("/scripts/**"),
+                        requestTo("/css/**")))
+                .responseFilter(ResponseFilters.replaceBody(message -> contentType("text/html;charset=UTF-8").test(message) ? "some HTML code" : null))
                 .sink(new DefaultSink(maskLogFormatter, new DefaultHttpLogWriter()))
                 .build();
     }
