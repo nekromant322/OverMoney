@@ -63,4 +63,8 @@ public class OrchestratorRequestService {
     public void deleteTransactionById(UUID id) {
         orchestratorFeign.deleteTransactionById(id);
     }
+
+    public TransactionResponseDTO submitTransactionForUpdate(TransactionMessageDTO transaction, UUID id) {
+        return orchestratorFeign.submitTransactionForUpdate(transaction, id);
+    }
 }

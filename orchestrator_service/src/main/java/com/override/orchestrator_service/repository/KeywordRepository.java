@@ -34,4 +34,8 @@ public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
 
     @Transactional
     void deleteAllByKeywordId_AccountId(Long accountId);
+
+    @Modifying
+    @Query("DELETE FROM Keyword k WHERE k.keywordId.name =:name AND k.keywordId.accountId = :id")
+    void deleteByNameAndAccountIdWithJpqlQuery(@Param("name") String name, @Param("id") Long id);
 }

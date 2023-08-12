@@ -38,6 +38,8 @@ public class TransactionService {
     private OverMoneyAccountService overMoneyAccountService;
     @Autowired
     private TelegramBotFeign telegramBotFeign;
+    @Autowired
+    private TransactionProcessingService transactionProcessingService;
 
     public List<TransactionDTO> findAlltransactionDTOForAcountByUserId(Long telegramId) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramId);
@@ -282,5 +284,24 @@ public class TransactionService {
             months.add(monthCounter);
         }
         return months.stream().sorted().collect(Collectors.toList());
+    }
+
+    @Transactional
+    public TransactionResponseDTO updateTransactionFromTelegramChat(TransactionMessageDTO transactionMessage,
+                                                                    UUID id) throws InstanceNotFoundException {
+        Optional<Transaction> transactionToDelete = transactionRepository.findById(id);
+        Transaction transactionUpdate = transactionProcessingService.processTransaction(transactionMessage);
+        saveTransaction(transactionUpdate);
+        transactionProcessingService.suggestCategoryToProcessedTransaction(transactionMessage, transactionUpdate.getId());
+
+        transactionToDelete.flatMap(this::getKeywordByTransaction).ifPresent(k -> {
+            if (!k.getKeywordId().getName().equalsIgnoreCase(transactionUpdate.getMessage())) {
+                keywordRepository.deleteByNameAndAccountIdWithJpqlQuery(transactionToDelete.get().getMessage(),
+                        transactionToDelete.get().getAccount().getId());
+            }
+        });
+
+        transactionRepository.deleteById(id);
+        return transactionMapper.mapTransactionToTelegramResponse(transactionUpdate);
     }
 }
