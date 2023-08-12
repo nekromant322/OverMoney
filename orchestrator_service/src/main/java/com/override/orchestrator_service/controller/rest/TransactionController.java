@@ -101,4 +101,10 @@ public class TransactionController {
     public void deleteTransactionById(@PathVariable("id") UUID id) {
         transactionService.deleteTransactionById(id);
     }
+
+    @PutMapping("/transaction/update/{id}")
+    public TransactionResponseDTO updateTransaction(@RequestBody TransactionMessageDTO transactionMessage,
+                                                    @PathVariable("id") UUID id) throws InstanceNotFoundException {
+        return transactionService.updateTransactionFromTelegramChat(transactionMessage, id);
+    }
 }
