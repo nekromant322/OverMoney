@@ -12,5 +12,5 @@ import java.util.List;
 @Getter
 @Setter
 public class MaskLogProperties {
-            private List<String> secretFields;
+            private List<String> maskedFields;
 }

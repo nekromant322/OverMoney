@@ -47,3 +47,8 @@
 
   authorization-header:
     header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+
+  mask-log-spring-boot-starter:
+    maskedFields:
+      - x-internal-key
+      - voiceMessageBytes

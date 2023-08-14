@@ -6,7 +6,6 @@ import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
 import com.override.invest_service.model.TinkoffShareInfo;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.tinkoff.piapi.contract.v1.Instrument;
 import ru.tinkoff.piapi.contract.v1.InstrumentStatus;
@@ -16,7 +15,6 @@ import ru.tinkoff.piapi.core.InvestApi;
 import ru.tinkoff.piapi.core.models.Portfolio;
 import ru.tinkoff.piapi.core.models.Position;
 
-import javax.annotation.PostConstruct;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Comparator;
@@ -158,8 +156,8 @@ public class TinkoffService {
         return api.getUserService().getAccountsSync().stream()
                 .filter(account -> account.getStatus() != ACCOUNT_STATUS_CLOSED && account.getStatus() != UNRECOGNIZED)
                 .map(account -> TinkoffAccountDTO.builder()
-                        .id(account.getId())
-                        .name(account.getName())
+                        .investAccountId(account.getId())
+                        .investAccountName(account.getName())
                 .build())
                 .collect(Collectors.toList());
     }
