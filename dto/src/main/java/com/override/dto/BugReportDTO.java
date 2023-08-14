@@ -16,4 +16,5 @@ public class BugReportDTO {
     private String report;
     private Long userId;
     private LocalDateTime localDateTime;
+    private String username;
 }

@@ -40,8 +40,17 @@ public class ViewController {
 
     @GetMapping("/admin/moex")
     public String getMOEXPage(Principal principal) {
-
         return "moex";
+    }
+
+    @GetMapping("/admin/announces")
+    public String getAnnounces() {
+        return "admin_announces";
+    }
+
+    @GetMapping("/admin/bugReports")
+    public String getBugReports() {
+        return "admin_bugreports";
     }
 
     @GetMapping("/micromanagement")
