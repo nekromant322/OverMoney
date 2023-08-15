@@ -23,6 +23,7 @@ public class WordsToNumbersServiceTest {
     public void setUp() {
         wordsToNumbersService.fillCurrencies();
         wordsToNumbersService.fillVocabulary();
+        wordsToNumbersService.fillSlangVocabulary();
     }
 
     @ParameterizedTest

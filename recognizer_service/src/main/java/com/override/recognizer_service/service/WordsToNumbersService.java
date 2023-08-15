@@ -74,6 +74,18 @@ public class WordsToNumbersService {
         vocabulary.put("миллиардов", 1000000000L);
     }
 
+    @PostConstruct
+    public void fillSlangVocabulary() {
+        vocabulary.put("чирик", 10L);
+        vocabulary.put("полтос", 50L);
+        vocabulary.put("сотыга", 100L);
+        vocabulary.put("соточка", 100L);
+        vocabulary.put("пятиха", 500L);
+        vocabulary.put("пятихатка", 500L);
+        vocabulary.put("косарь", 1000L);
+        vocabulary.put("кaсарь", 1000L);
+    }
+
     public String wordsToNumbers(String words) {
         int number = 0;
         int prevNumber = 0;
