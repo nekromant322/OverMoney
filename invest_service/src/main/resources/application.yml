@@ -34,7 +34,7 @@
     header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
 
   mask-log-spring-boot-starter:
-    secretFields:
+    maskedFields:
       - x-internal-key
-      - id
+      - investAccountId
       - token

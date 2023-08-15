@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @Builder
 public class TinkoffAccountDTO {
-    private String name;
-    private String id;
+    private String investAccountName;
+    private String investAccountId;
 }

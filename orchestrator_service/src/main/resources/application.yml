@@ -28,6 +28,7 @@
     allowed_users:
       Marandyuk_Anatolii,
       HomerTheBald,
+      boris_troyan,
       kyomexd,
       etozhealexis,
       NikitaAkimovv
@@ -110,7 +111,8 @@
       period-of-inactivity: 10_000
 
   mask-log-spring-boot-starter:
-    secretFields:
+    maskedFields:
       - x-internal-key
-      - id
+      - investAccountId
       - token
+      - cookie

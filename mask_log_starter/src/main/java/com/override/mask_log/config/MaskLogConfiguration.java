@@ -1,15 +1,12 @@
 package com.override.mask_log.config;
 
-import com.override.mask_log.formatter.MaskLogFormatter;
+import com.override.mask_log.impl.formatter.MaskLogFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.zalando.logbook.DefaultHttpLogWriter;
-import org.zalando.logbook.DefaultSink;
-import org.zalando.logbook.Logbook;
-import org.zalando.logbook.ResponseFilters;
+import org.zalando.logbook.*;
 
 import static org.zalando.logbook.Conditions.*;
 
