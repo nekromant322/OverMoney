@@ -38,3 +38,5 @@
       - x-internal-key
       - investAccountId
       - token
+      - tinkoffAccountId
+      - favoriteAccountId

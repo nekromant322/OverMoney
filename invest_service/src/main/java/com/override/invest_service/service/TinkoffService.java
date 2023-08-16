@@ -36,9 +36,9 @@ public class TinkoffService {
     private final String MOEX_CLASS_CODE = "TQBR";
 
     @SneakyThrows
-    public List<TinkoffActiveDTO> getActives(String token, String accountId) {
+    public List<TinkoffActiveDTO> getActives(String token, String tinkoffAccountId) {
         InvestApi api = InvestApi.createReadonly(token);
-        Portfolio portfolio = api.getOperationsService().getPortfolioSync(accountId);
+        Portfolio portfolio = api.getOperationsService().getPortfolioSync(tinkoffAccountId);
         List<Position> positions = portfolio.getPositions();
 
         return positions.stream()
@@ -59,12 +59,12 @@ public class TinkoffService {
     }
 
 
-    public List<TinkoffActiveMOEXDTO> getActivesWithMOEXWeight(String token, String accountId) {
+    public List<TinkoffActiveMOEXDTO> getActivesWithMOEXWeight(String token, String tinkoffAccountId) {
         InvestApi api = InvestApi.createReadonly(token);
         final Double minimalSum = calculateMinimalPorfolioSum(token);
 
         Map<String, Double> tickerToWeight = moexService.getTickerToWeight();
-        Map<String, TinkoffActiveDTO> actives = getActives(token, accountId).stream()
+        Map<String, TinkoffActiveDTO> actives = getActives(token, tinkoffAccountId).stream()
                 .collect(Collectors.toMap(TinkoffActiveDTO::getTicker, Function.identity(), (prev, next) -> next, HashMap::new));
 
         return tickerToWeight

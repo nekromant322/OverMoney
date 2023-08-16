@@ -117,3 +117,5 @@
       - investAccountId
       - token
       - cookie
+      - tinkoffAccountId
+      - favoriteAccountId

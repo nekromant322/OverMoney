@@ -29,7 +29,7 @@ public class InvestTinkoffInfoService {
     public TinkoffInfoDTO findTinkoffInfo(Long overMoneyAccountId) {
         Optional<TinkoffInfo> tinkoffInfo = investTinkoffInfoRepository.findTinkoffInfoById(overMoneyAccountId);
         return tinkoffInfo.map(info -> TinkoffInfoDTO.builder()
-                .id(info.getId())
+                .tinkoffAccountId(info.getId())
                 .token(info.getToken())
                 .favoriteAccountId(info.getFavoriteAccountId())
                 .build()).orElse(null);
@@ -39,17 +39,17 @@ public class InvestTinkoffInfoService {
         return investFeign.getUserAccounts(token);
     }
 
-    public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(String token, String accountId) {
-        return investFeign.getActivesMoexPercentage(token, accountId);
+    public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(String token, String tinkoffAccountId) {
+        return investFeign.getActivesMoexPercentage(token, tinkoffAccountId);
     }
 
     @SneakyThrows
     public void saveTinkoffinfo(TinkoffInfoDTO tinkoffInfoDTO) {
-        OverMoneyAccount account = overMoneyAccountService.getOverMoneyAccountById(tinkoffInfoDTO.getId());
+        OverMoneyAccount account = overMoneyAccountService.getOverMoneyAccountById(tinkoffInfoDTO.getTinkoffAccountId());
         Optional<Long> favoriteAccountId = Optional.ofNullable(tinkoffInfoDTO.getFavoriteAccountId());
         TinkoffInfo tinkoffInfo = TinkoffInfo
                 .builder()
-                .id(tinkoffInfoDTO.getId())
+                .id(tinkoffInfoDTO.getTinkoffAccountId())
                 .token(tinkoffInfoDTO.getToken())
                 .favoriteAccountId(favoriteAccountId.orElse(null))
                 .account(account)

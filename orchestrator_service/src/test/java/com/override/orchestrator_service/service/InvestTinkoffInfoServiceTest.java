@@ -35,13 +35,13 @@ public class InvestTinkoffInfoServiceTest {
     public void findTinkoffInfoTest(TinkoffInfoDTO tinkoffInfoDTO) {
         OverMoneyAccount savedAccount = new OverMoneyAccount();
         TinkoffInfo build = TinkoffInfo.builder()
-                .id(tinkoffInfoDTO.getId())
+                .id(tinkoffInfoDTO.getTinkoffAccountId())
                 .token(tinkoffInfoDTO.getToken())
                 .favoriteAccountId(tinkoffInfoDTO.getFavoriteAccountId())
                 .account(savedAccount)
                 .build();
-        when(investTinkoffInfoRepository.findTinkoffInfoById(tinkoffInfoDTO.getId())).thenReturn(Optional.ofNullable(build));
-        TinkoffInfoDTO findTinkoffInfoDTO = investTinkoffInfoService.findTinkoffInfo(tinkoffInfoDTO.getId());
+        when(investTinkoffInfoRepository.findTinkoffInfoById(tinkoffInfoDTO.getTinkoffAccountId())).thenReturn(Optional.ofNullable(build));
+        TinkoffInfoDTO findTinkoffInfoDTO = investTinkoffInfoService.findTinkoffInfo(tinkoffInfoDTO.getTinkoffAccountId());
         assertEquals(tinkoffInfoDTO, findTinkoffInfoDTO);
     }
 
