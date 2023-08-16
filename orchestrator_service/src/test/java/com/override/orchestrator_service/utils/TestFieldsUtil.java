@@ -2,10 +2,13 @@ package com.override.orchestrator_service.utils;
 
 import com.override.dto.*;
 import com.override.dto.constants.Type;
+import com.override.dto.tinkoff.TinkoffInfoDTO;
 import com.override.orchestrator_service.model.*;
+import org.junit.jupiter.params.provider.Arguments;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class TestFieldsUtil {
 
@@ -351,5 +354,25 @@ public class TestFieldsUtil {
         return TransactionMessageDTO.builder()
                 .message("пиво 200")
                 .build();
+    }
+
+    public static Stream<Arguments> findTinkoffInfoUser() {
+        return Stream.of(
+                Arguments.of(new TinkoffInfoDTO().builder()
+                        .id(1L)
+                        .token("asdf34vefdvtvfv-sdf")
+                        .favoriteAccountId(1L)
+                        .build()),
+                Arguments.of(new TinkoffInfoDTO().builder()
+                        .id(2L)
+                        .token("lkmdsfktb0023-sdfs")
+                        .favoriteAccountId(21L)
+                        .build()),
+                Arguments.of(new TinkoffInfoDTO().builder()
+                        .id(null)
+                        .token(null)
+                        .favoriteAccountId(null)
+                        .build())
+        );
     }
 }
