@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class TinkoffAccountDTO {
-    private String investAccountName;
-    private String investAccountId;
+public class TinkoffInfoDTO {
+    private Long id;
+    private String token;
+    private Long favoriteAccountId;
 }
