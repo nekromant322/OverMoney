@@ -143,6 +143,7 @@ services:
     environment:
       _JAVA_OPTIONS: -Xmx256m
       INTERNAL_KEY_HEADER: ${INTERNAL_KEY_HEADER}
+      SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
     logging:
       driver: "json-file"
       options:
