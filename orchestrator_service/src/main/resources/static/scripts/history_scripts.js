@@ -177,8 +177,11 @@ $(function editButtonClick() {
             success: () => {
                 location.reload();
             },
-            error: function (error) {
-                console.log(error);
+            error: function(xhr, status, error) {
+                let err = JSON.parse(xhr.responseText);
+                if (err.message.indexOf("only_positive_amount_constraint") >= 0) {
+                    alert("ОШИБКА: Сумма не может быть отрицательной!")
+                }
             }
         })
     })
