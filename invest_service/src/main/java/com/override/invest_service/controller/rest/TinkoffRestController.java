@@ -22,14 +22,14 @@ public class TinkoffRestController {
 
     @GetMapping("/actives")
     public List<TinkoffActiveDTO> getActives(@RequestParam("token") String token,
-                                             @RequestParam("accountId") String accountId) {
-        return tinkoffService.getActives(token, accountId);
+                                             @RequestParam("tinkoffAccountId") String tinkoffAccountId) {
+        return tinkoffService.getActives(token, tinkoffAccountId);
     }
 
     @GetMapping("/moex")
     public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(@RequestParam("token") String token,
-                                                               @RequestParam("accountId") String accountId) {
-        return tinkoffService.getActivesWithMOEXWeight(token, accountId);
+                                                               @RequestParam("tinkoffAccountId") String tinkoffAccountId) {
+        return tinkoffService.getActivesWithMOEXWeight(token, tinkoffAccountId);
     }
 
     /**

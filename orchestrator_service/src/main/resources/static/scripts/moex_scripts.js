@@ -49,7 +49,12 @@ function savePersonalToken() {
             token: token
         }),
         success: function () {
-            addAllAccounts(token, '');
+            let favoriteAccountId = $('#tinkoff-account').val();
+            if (favoriteAccountId === null) {
+                addAllAccounts(token, '');
+            } else {
+                addAllAccounts(token, favoriteAccountId);
+            }
         },
         error: function () {
             console.log("ошибка сохранения токена");
@@ -67,7 +72,7 @@ function saveFavoriteAccountId() {
             contentType: 'application/json; charset=utf8',
             async: false,
             data: JSON.stringify({
-                id: 0,
+                id: null,
                 token: token,
                 favoriteAccountId: favoriteAccountId
             }),
@@ -75,7 +80,7 @@ function saveFavoriteAccountId() {
                 getStatistics(token, favoriteAccountId);
             },
             error: function () {
-                console.log("ошибка сохранения токена");
+                console.log("ошибка сохранения токена и любимого счета");
             }
         });
     }
@@ -85,12 +90,16 @@ function saveFavoriteAccountId() {
 function addAllAccounts(token, favoriteAccountId) {
     let allAccounts = getUserAccounts(token);
     allAccounts.forEach(function (account) {
-        const option = $('<option>').val(account.id).text(account.name);
-        if (Number(account.id) === Number(favoriteAccountId)) {
-            option.attr('selected', true);
-            getStatistics(token, favoriteAccountId);
+        let allFrontOptions = Array.from(document.getElementById("tinkoff-account").options).map(e => e.value);
+        if (!checkAvailability(allFrontOptions, account.investAccountId)) {
+            let option;
+            if (Number(account.id) === Number(favoriteAccountId)) {
+                option = new Option(account.investAccountName, account.investAccountId, true, true);
+            } else {
+                option = new Option(account.investAccountName, account.investAccountId);
+            }
+            tinkoffAccountSelect.append(option);
         }
-        tinkoffAccountSelect.append(option);
     });
 }
 
@@ -114,7 +123,7 @@ function getUserAccounts(token) {
 function getStatistics(token, accountId) {
     let statistics = [];
     $.ajax({
-        url: '/tinkoff/moex?token=' + token + "&accountId=" + accountId,
+        url: '/tinkoff/moex?token=' + token + "&tinkoffAccountId=" + accountId,
         method: 'GET',
         contentType: 'application/json; charset=utf8',
         async: false,
@@ -183,4 +192,8 @@ function clearTableOfMOEX(table) {
             table.deleteRow(0);
         }
     }
+}
+
+function checkAvailability(arr, val) {
+    return arr.some(arrVal => val === arrVal);
 }

@@ -36,7 +36,7 @@ public class InvestTinkoffInfoController {
     public void saveTinkoffToken(Principal principal, @RequestBody TinkoffInfoDTO tinkoffInfoDTO) {
         Long overMoneyAccountId = overMoneyAccountService
                 .getOverMoneyAccountByChatId(telegramUtils.getTelegramId(principal)).getId();
-        tinkoffInfoDTO.setId(overMoneyAccountId);
+        tinkoffInfoDTO.setTinkoffAccountId(overMoneyAccountId);
         investTinkoffInfoService.saveTinkoffinfo(tinkoffInfoDTO);
     }
 
@@ -47,7 +47,7 @@ public class InvestTinkoffInfoController {
 
     @GetMapping("/moex")
     public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(@RequestParam("token") String token,
-                                                               @RequestParam("accountId") String accountId) {
-        return investTinkoffInfoService.getActivesMoexPercentage(token, accountId);
+                                                               @RequestParam("tinkoffAccountId") String tinkoffAccountId) {
+        return investTinkoffInfoService.getActivesMoexPercentage(token, tinkoffAccountId);
     }
 }

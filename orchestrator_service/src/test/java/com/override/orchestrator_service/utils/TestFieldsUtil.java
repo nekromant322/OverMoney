@@ -359,17 +359,17 @@ public class TestFieldsUtil {
     public static Stream<Arguments> findTinkoffInfoUser() {
         return Stream.of(
                 Arguments.of(new TinkoffInfoDTO().builder()
-                        .id(1L)
+                        .tinkoffAccountId(1L)
                         .token("asdf34vefdvtvfv-sdf")
                         .favoriteAccountId(1L)
                         .build()),
                 Arguments.of(new TinkoffInfoDTO().builder()
-                        .id(2L)
+                        .tinkoffAccountId(2L)
                         .token("lkmdsfktb0023-sdfs")
                         .favoriteAccountId(21L)
                         .build()),
                 Arguments.of(new TinkoffInfoDTO().builder()
-                        .id(null)
+                        .tinkoffAccountId(null)
                         .token(null)
                         .favoriteAccountId(null)
                         .build())
