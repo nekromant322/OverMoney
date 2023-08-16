@@ -28,4 +28,7 @@ public class OverMoneyAccount {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "account")
     private Set<User> users;
+
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "account")
+    private TinkoffInfo tinkoffInfo;
 }

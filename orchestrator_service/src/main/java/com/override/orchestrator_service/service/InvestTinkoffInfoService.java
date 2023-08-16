@@ -1,11 +1,13 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.tinkoff.TinkoffAccountDTO;
+import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
 import com.override.dto.tinkoff.TinkoffInfoDTO;
 import com.override.orchestrator_service.feign.InvestFeign;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.TinkoffInfo;
 import com.override.orchestrator_service.repository.InvestTinkoffInfoRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,39 +26,34 @@ public class InvestTinkoffInfoService {
     @Autowired
     private InvestTinkoffInfoRepository investTinkoffInfoRepository;
 
-    public TinkoffInfoDTO findTinkoffInfo(Long userId) {
-        Optional<TinkoffInfo> tinkoffInfo = investTinkoffInfoRepository.findTinkoffInfoById(userId);
+    public TinkoffInfoDTO findTinkoffInfo(Long overMoneyAccountId) {
+        Optional<TinkoffInfo> tinkoffInfo = investTinkoffInfoRepository.findTinkoffInfoById(overMoneyAccountId);
         return tinkoffInfo.map(info -> TinkoffInfoDTO.builder()
                 .id(info.getId())
                 .token(info.getToken())
-                .favoriteAccountId(info.getFavoriteAccountId()) //TODO Вот тут подумать. Не будет ли тут null?
+                .favoriteAccountId(info.getFavoriteAccountId())
                 .build()).orElse(null);
-    }
-
-    public void saveTinkoffToken(Long userId, String token) {
-        OverMoneyAccount account = overMoneyAccountService.getAccountByUserId(userId);
-        if (investTinkoffInfoRepository.findTinkoffInfoById(account.getId()).isEmpty()) {
-            TinkoffInfo tinkoffInfo = TinkoffInfo.builder()
-                    .token(token)
-                    .favoriteAccountId(null)
-                    .account(account)
-                    .build();
-            investTinkoffInfoRepository.save(tinkoffInfo);
-        }
-    }
-
-    public void updateTinkoffInfo(Long userId, String token, Long favoriteAccountId) {
-        OverMoneyAccount account = overMoneyAccountService.getAccountByUserId(userId);
-        TinkoffInfo tinkoffInfo = TinkoffInfo
-                .builder()
-                .token(token)
-                .favoriteAccountId(favoriteAccountId)
-                .account(account)
-                .build();
-        investTinkoffInfoRepository.save(tinkoffInfo);
     }
 
     public List<TinkoffAccountDTO> getUserAccounts(String token) {
         return investFeign.getUserAccounts(token);
+    }
+
+    public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(String token, String accountId) {
+        return investFeign.getActivesMoexPercentage(token, accountId);
+    }
+
+    @SneakyThrows
+    public void saveTinkoffinfo(TinkoffInfoDTO tinkoffInfoDTO) {
+        OverMoneyAccount account = overMoneyAccountService.getOverMoneyAccountById(tinkoffInfoDTO.getId());
+        Optional<Long> favoriteAccountId = Optional.ofNullable(tinkoffInfoDTO.getFavoriteAccountId());
+        TinkoffInfo tinkoffInfo = TinkoffInfo
+                .builder()
+                .id(tinkoffInfoDTO.getId())
+                .token(tinkoffInfoDTO.getToken())
+                .favoriteAccountId(favoriteAccountId.orElse(null))
+                .account(account)
+                .build();
+        investTinkoffInfoRepository.save(tinkoffInfo);
     }
 }

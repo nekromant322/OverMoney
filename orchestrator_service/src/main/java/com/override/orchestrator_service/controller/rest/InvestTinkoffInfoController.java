@@ -1,8 +1,10 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.tinkoff.TinkoffAccountDTO;
+import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
 import com.override.dto.tinkoff.TinkoffInfoDTO;
 import com.override.orchestrator_service.service.InvestTinkoffInfoService;
+import com.override.orchestrator_service.service.OverMoneyAccountService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -18,18 +20,24 @@ public class InvestTinkoffInfoController {
     private InvestTinkoffInfoService investTinkoffInfoService;
 
     @Autowired
+    private OverMoneyAccountService overMoneyAccountService;
+
+    @Autowired
     private TelegramUtils telegramUtils;
 
-    @GetMapping()
+    @GetMapping
     public TinkoffInfoDTO getUserInfo(Principal principal) {
-        Long userId = telegramUtils.getTelegramId(principal);
-        return investTinkoffInfoService.findTinkoffInfo(userId);
+        Long overMoneyAccountId = overMoneyAccountService
+                .getOverMoneyAccountByChatId(telegramUtils.getTelegramId(principal)).getId();
+        return investTinkoffInfoService.findTinkoffInfo(overMoneyAccountId);
     }
 
-    @PostMapping()
-    public void saveTinkoffToken(Principal principal, @RequestBody String token) {
-        Long userId = telegramUtils.getTelegramId(principal);
-        investTinkoffInfoService.saveTinkoffToken(userId, token);
+    @PostMapping
+    public void saveTinkoffToken(Principal principal, @RequestBody TinkoffInfoDTO tinkoffInfoDTO) {
+        Long overMoneyAccountId = overMoneyAccountService
+                .getOverMoneyAccountByChatId(telegramUtils.getTelegramId(principal)).getId();
+        tinkoffInfoDTO.setId(overMoneyAccountId);
+        investTinkoffInfoService.saveTinkoffinfo(tinkoffInfoDTO);
     }
 
     @GetMapping("/accounts")
@@ -37,11 +45,9 @@ public class InvestTinkoffInfoController {
         return investTinkoffInfoService.getUserAccounts(token);
     }
 
-    @PutMapping()
-    public void updateTinkoffInfo(Principal principal,
-                                  @PathVariable("token") String token,
-                                  @PathVariable("favoriteAccountId") Long favoriteAccountId) {
-        Long userId = telegramUtils.getTelegramId(principal);
-        investTinkoffInfoService.updateTinkoffInfo(userId, token, favoriteAccountId);
+    @GetMapping("/moex")
+    public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(@RequestParam("token") String token,
+                                                               @RequestParam("accountId") String accountId) {
+        return investTinkoffInfoService.getActivesMoexPercentage(token, accountId);
     }
 }
