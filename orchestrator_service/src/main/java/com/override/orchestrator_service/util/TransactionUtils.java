@@ -8,6 +8,7 @@ import com.override.orchestrator_service.service.KeywordService;
 import com.override.orchestrator_service.service.OverMoneyAccountService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import javax.management.InstanceNotFoundException;
@@ -16,12 +17,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Random;
 
-//TODO убрать перед релизом
 @Component
+@Profile("dev")
 public class TransactionUtils {
 
     @Autowired
-    OverMoneyAccountService overMoneyAccountService;
+    private OverMoneyAccountService overMoneyAccountService;
     @Autowired
     private KeywordService keywordService;
     @Autowired
