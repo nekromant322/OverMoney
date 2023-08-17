@@ -26,11 +26,13 @@ public class AnalyticService {
     private CategoryRepository categoryRepository;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private UserService userService;
     @PersistenceContext
     private EntityManager entityManager;
 
     public List<AnalyticsDataDTO> getTotalCategorySumsForAnalytics(Long userId, Type type) throws InstanceNotFoundException {
-        Long accId = accountService.getAccountByUserId(userId).getId();
+        Long accId = userService.getUserById(userId).getAccount().getId();
         List<AnalyticsDataDTO> list = categoryRepository.findMediumAmountOfAllCategoriesByAccIdAndType(accId, type);
         return list.stream()
                 .filter(dto -> dto.getMediumAmountOfTransactions() != null)
@@ -39,12 +41,12 @@ public class AnalyticService {
     }
 
     public List<Integer> findAvailableYears(Long telegramId) throws InstanceNotFoundException {
-        Long accountId = accountService.getAccountByUserId(telegramId).getId();
+        Long accountId = userService.getUserById(telegramId).getAccount().getId();
         return transactionService.findAvailableYears(accountId);
     }
 
     public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long telegramId, Integer year) throws InstanceNotFoundException {
-        Long accountId = accountService.getAccountByUserId(telegramId).getId();
+        Long accountId = userService.getUserById(telegramId).getAccount().getId();
         return transactionService.findMonthlyIncomeStatisticsForYearByAccountId(accountId, year);
     }
 
@@ -68,7 +70,7 @@ public class AnalyticService {
     }
 
     private List<AnalyticsDataMonthDTO> mapObjectListToDTO(List<Object[]> objectList) {
-        List<AnalyticsDataMonthDTO> analyticsDataMonthDTOS = new ArrayList<>();
+        List<AnalyticsDataMonthDTO> analyticsDataMonthDTOS;
 
         analyticsDataMonthDTOS = objectList.stream()
                 .map(item -> new AnalyticsDataMonthDTO((String) item[0], (Float) item[1], (Float) item[2]))
@@ -78,7 +80,7 @@ public class AnalyticService {
     }
 
     public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long telegramId, Integer year) throws InstanceNotFoundException {
-        Long accountId = accountService.getAccountByUserId(telegramId).getId();
+        Long accountId = userService.getUserById(telegramId).getAccount().getId();
         return transactionService.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
     }
 }
