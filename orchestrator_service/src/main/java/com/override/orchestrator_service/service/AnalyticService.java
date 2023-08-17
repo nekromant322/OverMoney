@@ -50,8 +50,8 @@ public class AnalyticService {
         return transactionService.findMonthlyIncomeStatisticsForYearByAccountId(accountId, year);
     }
 
-    public List<AnalyticsDataMonthDTO> getTotalIncomeOutcomePerMonth(Long accountId, int year) {
-
+    public List<AnalyticsDataMonthDTO> getTotalIncomeOutcomePerMonth(Long telegramId, int year) throws InstanceNotFoundException {
+        Long accountId = userService.getUserById(telegramId).getAccount().getId();
         String sql = "SELECT to_char(t.date, 'Month') AS month, " +
                 "   SUM(CASE WHEN c.type = 0 THEN t.amount ELSE 0 END) AS totalIncome," +
                 "   SUM(CASE WHEN c.type = 1 THEN t.amount ELSE 0 END) AS totalExpense" +
