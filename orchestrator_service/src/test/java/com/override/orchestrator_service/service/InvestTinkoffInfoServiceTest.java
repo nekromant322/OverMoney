@@ -1,6 +1,9 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.tinkoff.TinkoffAccountDTO;
+import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
 import com.override.dto.tinkoff.TinkoffInfoDTO;
+import com.override.orchestrator_service.feign.InvestFeign;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.TinkoffInfo;
 import com.override.orchestrator_service.repository.InvestTinkoffInfoRepository;
@@ -14,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -28,6 +32,9 @@ public class InvestTinkoffInfoServiceTest {
 
     @Mock
     private InvestTinkoffInfoRepository investTinkoffInfoRepository;
+
+    @Mock
+    private InvestFeign investFeign;
 
     @SneakyThrows
     @ParameterizedTest
@@ -47,5 +54,67 @@ public class InvestTinkoffInfoServiceTest {
 
     private static Stream<Arguments> findTinkoffInfoUser() {
         return TestFieldsUtil.findTinkoffInfoUser();
+    }
+
+    @ParameterizedTest
+    @MethodSource("dataForGetActivesMoexPercentageTest_notNull")
+    public void getActivesMoexPercentageTest_notNull(List<TinkoffActiveMOEXDTO> tinkoffActiveMOEXDTOS,
+                                             TinkoffInfoDTO tinkoffInfoDTO) {
+    when(investFeign.getActivesMoexPercentage(tinkoffInfoDTO.getToken(),
+            tinkoffInfoDTO.getTinkoffAccountId().toString())).thenReturn(tinkoffActiveMOEXDTOS);
+        List<TinkoffActiveMOEXDTO> activesMoexPercentage = investTinkoffInfoService.getActivesMoexPercentage(tinkoffInfoDTO.getToken(), tinkoffInfoDTO.getTinkoffAccountId().toString());
+        assertEquals(tinkoffActiveMOEXDTOS, activesMoexPercentage);
+    }
+
+    private static Stream<Arguments> dataForGetActivesMoexPercentageTest_notNull() {
+        return Stream.of(
+                Arguments.of(TestFieldsUtil.tinkoffActiveMOEXDTOSData_notNull(), TestFieldsUtil.tinkoffInfoDTOData_notNull()),
+                Arguments.of(TestFieldsUtil.tinkoffActiveMOEXDTOSData_withNullFields(), TestFieldsUtil.tinkoffInfoDTOData_notNull())
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("dataForGetActivesMoexPercentageTest_null")
+    public void getActivesMoexPercentageTest_null(List<TinkoffActiveMOEXDTO> tinkoffActiveMOEXDTOS,
+                                             TinkoffInfoDTO tinkoffInfoDTO) {
+        List<TinkoffActiveMOEXDTO> activesMoexPercentage = investTinkoffInfoService.getActivesMoexPercentage(tinkoffInfoDTO.getToken(), tinkoffInfoDTO.getTinkoffAccountId().toString());
+        assertEquals(tinkoffActiveMOEXDTOS, activesMoexPercentage);
+    }
+
+    private static Stream<Arguments> dataForGetActivesMoexPercentageTest_null() {
+        return Stream.of(
+                Arguments.of(TestFieldsUtil.tinkoffActiveMOEXDTOSData_null(), TestFieldsUtil.tinkoffInfoDTOData_empty())
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("dataForGetUserAccountsTest_notNull")
+    public void getUserAccountsTest_notNull(List<TinkoffAccountDTO> tinkoffAccountDTOS,
+                                         TinkoffInfoDTO tinkoffInfoDTO) {
+        when(investFeign.getUserAccounts(tinkoffInfoDTO.getToken())).thenReturn(tinkoffAccountDTOS);
+        List<TinkoffAccountDTO> userAccounts = investTinkoffInfoService.getUserAccounts(tinkoffInfoDTO.getToken());
+        assertEquals(tinkoffAccountDTOS, userAccounts);
+    }
+
+
+    private static Stream<Arguments> dataForGetUserAccountsTest_notNull() {
+        return Stream.of(
+                Arguments.of(TestFieldsUtil.tinkoffAccountDTOSData_notNull(), TestFieldsUtil.tinkoffInfoDTOData_notNull())
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("dataForGetUserAccountsTest_null")
+    public void getUserAccountsTest_null(List<TinkoffAccountDTO> tinkoffAccountDTOS,
+                                                  TinkoffInfoDTO tinkoffInfoDTO) {
+        List<TinkoffAccountDTO> userAccounts = investTinkoffInfoService.getUserAccounts(tinkoffInfoDTO.getToken());
+        assertEquals(tinkoffAccountDTOS, userAccounts);
+    }
+
+
+    private static Stream<Arguments> dataForGetUserAccountsTest_null() {
+        return Stream.of(
+                Arguments.of(TestFieldsUtil.tinkoffAccountDTOSData_null(), TestFieldsUtil.tinkoffInfoDTOData_empty())
+        );
     }
 }

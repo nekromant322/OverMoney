@@ -40,16 +40,18 @@ function getTinkoffInfo() {
 
 function savePersonalToken() {
     let token = $('#tinkoff-token').val();
+    let favoriteAccountId = $('#tinkoff-account').val();
     $.ajax({
         url: '/tinkoff',
         method: 'POST',
         contentType: 'application/json; charset=utf8',
         async: false,
         data: JSON.stringify({
-            token: token
+            tinkoffAccountId: null,
+            token: token,
+            favoriteAccountId: favoriteAccountId
         }),
         success: function () {
-            let favoriteAccountId = $('#tinkoff-account').val();
             if (favoriteAccountId === null) {
                 addAllAccounts(token, '');
             } else {
@@ -72,7 +74,7 @@ function saveFavoriteAccountId() {
             contentType: 'application/json; charset=utf8',
             async: false,
             data: JSON.stringify({
-                id: null,
+                tinkoffAccountId: null,
                 token: token,
                 favoriteAccountId: favoriteAccountId
             }),
@@ -93,7 +95,7 @@ function addAllAccounts(token, favoriteAccountId) {
         let allFrontOptions = Array.from(document.getElementById("tinkoff-account").options).map(e => e.value);
         if (!checkAvailability(allFrontOptions, account.investAccountId)) {
             let option;
-            if (Number(account.id) === Number(favoriteAccountId)) {
+            if (Number(account.investAccountId) === Number(favoriteAccountId)) {
                 option = new Option(account.investAccountName, account.investAccountId, true, true);
             } else {
                 option = new Option(account.investAccountName, account.investAccountId);
@@ -140,7 +142,7 @@ function getStatistics(token, accountId) {
                     "currentWeight": data[i].currentWeight,
                     "percentFollowage": data[i].percentFollowage,
                     "correctQuantity": data[i].correctQuantity,
-                    "quantity": data[i].quantity
+                    "quantity": data[i].tinkoffActiveDTO.quantity
                 });
             }
         },
