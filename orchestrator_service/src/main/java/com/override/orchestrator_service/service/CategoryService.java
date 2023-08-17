@@ -54,7 +54,8 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> findCategoriesListByType(Long id, Type type) throws InstanceNotFoundException {
-        Long accId = accountService.getAccountByUserId(id).getId();
+        Long accId = userService.getUserById(id).getAccount().getId();
+        OverMoneyAccount account = accountService.getOverMoneyAccountById(accId);
         return categoryMapper.mapCategoriesListToJsonResponse(categoryRepository.findAllByTypeAndAccId(accId, type));
     }
 
