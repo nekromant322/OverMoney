@@ -2,10 +2,14 @@ package com.override.orchestrator_service.utils;
 
 import com.override.dto.*;
 import com.override.dto.constants.Type;
+import com.override.dto.tinkoff.TinkoffAccountDTO;
+import com.override.dto.tinkoff.TinkoffActiveDTO;
+import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
 import com.override.dto.tinkoff.TinkoffInfoDTO;
 import com.override.orchestrator_service.model.*;
 import org.junit.jupiter.params.provider.Arguments;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Stream;
@@ -270,9 +274,11 @@ public class TestFieldsUtil {
                 new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithoutNullFields", 11),
                 new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(50000d, "categoryWithoutNullFields", 12));
     }
+
     public static List<AnalyticsAnnualAndMonthlyReportDTO> generateTestListOfAnalyticsAnnualAndMonthlyReportDTOWithNull() {
         return List.of(generateTestAnalyticsAnnualAndMonthlyReportDTOWithNullFields());
     }
+
     public static List<AnalyticsAnnualAndMonthlyReportDTO> generateTestListOfAAnalyticsAnnualAndMonthlyReportDTOWithoutNull() {
         return List.of(generateTestAnalyticsAnnualAndMonthlyReportDTOWithoutNullFields());
     }
@@ -374,5 +380,124 @@ public class TestFieldsUtil {
                         .favoriteAccountId(null)
                         .build())
         );
+    }
+
+    public static List<TinkoffActiveMOEXDTO> tinkoffActiveMOEXDTOSData_notNull() {
+        return List.of(new TinkoffActiveMOEXDTO().builder()
+                        .tinkoffActiveDTO(new TinkoffActiveDTO().builder()
+                                .name("московская биржа")
+                                .ticker("moex")
+                                .currentPrice(new BigDecimal(100))
+                                .averagePositionPrice(new BigDecimal(50))
+                                .quantity(40)
+                                .build())
+                        .lot(10)
+                        .currentTotalPrice(200d)
+                        .moexWeight(0.324)
+                        .currentWeight(0.2)
+                        .percentFollowage(200d)
+                        .correctQuantity(10)
+                        .build(),
+                new TinkoffActiveMOEXDTO().builder()
+                        .tinkoffActiveDTO(new TinkoffActiveDTO().builder()
+                                .name("спб биржа")
+                                .ticker("bfbacx")
+                                .currentPrice(new BigDecimal(30))
+                                .averagePositionPrice(new BigDecimal(10))
+                                .quantity(3)
+                                .build())
+                        .lot(2)
+                        .currentTotalPrice(600d)
+                        .moexWeight(0.844553)
+                        .currentWeight(0.207)
+                        .percentFollowage(400d)
+                        .correctQuantity(4)
+                        .build()
+        );
+    }
+
+    public static TinkoffInfoDTO tinkoffInfoDTOData_notNull() {
+        return new TinkoffInfoDTO().builder()
+                .tinkoffAccountId(10L)
+                .token("adfreg-bdsfbf")
+                .favoriteAccountId(245234518234L)
+                .build();
+    }
+
+    public static List<TinkoffActiveMOEXDTO> tinkoffActiveMOEXDTOSData_withNullFields() {
+        return List.of(new TinkoffActiveMOEXDTO().builder()
+                        .tinkoffActiveDTO(new TinkoffActiveDTO().builder()
+                                .name("московская биржа")
+                                .ticker("moex")
+                                .currentPrice(new BigDecimal(100))
+                                .averagePositionPrice(new BigDecimal(50))
+                                .quantity(40)
+                                .build())
+                        .lot(10)
+                        .currentTotalPrice(200d)
+                        .moexWeight(0.324)
+                        .currentWeight(0.2)
+                        .percentFollowage(200d)
+                        .correctQuantity(10)
+                        .build(),
+                new TinkoffActiveMOEXDTO().builder()
+                        .tinkoffActiveDTO(new TinkoffActiveDTO().builder()
+                                .name(null)
+                                .ticker("bfbacx")
+                                .currentPrice(null)
+                                .averagePositionPrice(null)
+                                .quantity(3)
+                                .build())
+                        .lot(2)
+                        .currentTotalPrice(600d)
+                        .moexWeight(0.844553)
+                        .currentWeight(null)
+                        .percentFollowage(400d)
+                        .correctQuantity(4)
+                        .build(),
+                new TinkoffActiveMOEXDTO().builder()
+                        .tinkoffActiveDTO(new TinkoffActiveDTO().builder()
+                                .name(null)
+                                .ticker("jonsdvos")
+                                .currentPrice(null)
+                                .averagePositionPrice(null)
+                                .quantity(3)
+                                .build())
+                        .lot(2)
+                        .currentTotalPrice(null)
+                        .moexWeight(0.844553)
+                        .currentWeight(null)
+                        .percentFollowage(400d)
+                        .correctQuantity(4)
+                        .build()
+        );
+    }
+
+    public static List<TinkoffActiveMOEXDTO> tinkoffActiveMOEXDTOSData_null() {
+        return null;
+    }
+
+    public static TinkoffInfoDTO tinkoffInfoDTOData_empty() {
+        return new TinkoffInfoDTO().builder()
+                .tinkoffAccountId(1L)
+                .token("")
+                .favoriteAccountId(245234518234L)
+                .build();
+    }
+
+    public static List<TinkoffAccountDTO> tinkoffAccountDTOSData_notNull() {
+        return List.of(new TinkoffAccountDTO().builder()
+                        .investAccountId("123456")
+                        .investAccountName("sdfg")
+                        .build(),
+                new TinkoffAccountDTO().builder()
+                        .investAccountId("9876543")
+                        .investAccountName("кукуруза")
+                        .build()
+        );
+    }
+
+    public static List<TinkoffAccountDTO> tinkoffAccountDTOSData_null() {
+        return null;
     }
 }

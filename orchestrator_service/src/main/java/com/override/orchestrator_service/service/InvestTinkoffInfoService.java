@@ -11,6 +11,7 @@ import com.override.orchestrator_service.util.NumericalUtils;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,20 +40,30 @@ public class InvestTinkoffInfoService {
     }
 
     public List<TinkoffAccountDTO> getUserAccounts(String token) {
-        return investFeign.getUserAccounts(token);
+        Optional<String> optionalToken = Optional.ofNullable(token);
+        if (optionalToken.isPresent() && !StringUtils.isEmpty(token)) {
+            return investFeign.getUserAccounts(optionalToken.get());
+        }
+        return null;
     }
 
     public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(String token, String tinkoffAccountId) {
-        return investFeign.getActivesMoexPercentage(token, tinkoffAccountId).stream()
-                .peek(active -> {
-                    active.getTinkoffActiveDTO().setCurrentPrice(NumericalUtils.roundAmount(active.getTinkoffActiveDTO().getCurrentPrice()));
-                    active.getTinkoffActiveDTO().setAveragePositionPrice(NumericalUtils.roundAmount(active.getTinkoffActiveDTO().getAveragePositionPrice()));
-                    active.setCurrentTotalPrice(NumericalUtils.roundAmount(active.getCurrentTotalPrice()));
-                    active.setMoexWeight(NumericalUtils.roundAmount(active.getMoexWeight()));
-                    active.setCurrentWeight(NumericalUtils.roundAmount(active.getCurrentWeight()));
-                    active.setPercentFollowage(NumericalUtils.roundAmount(active.getPercentFollowage()));
-                })
-                .collect(Collectors.toList());
+        Optional<String> optionalToken = Optional.ofNullable(token);
+        Optional<String> optionalTinkoffAccountId = Optional.ofNullable(tinkoffAccountId);
+
+        if (optionalToken.isPresent() && !StringUtils.isEmpty(token) && optionalTinkoffAccountId.isPresent()) {
+            return investFeign.getActivesMoexPercentage(optionalToken.get(), optionalTinkoffAccountId.get()).stream()
+                    .peek(active -> {
+                        active.getTinkoffActiveDTO().setCurrentPrice(NumericalUtils.roundAmount(active.getTinkoffActiveDTO().getCurrentPrice()));
+                        active.getTinkoffActiveDTO().setAveragePositionPrice(NumericalUtils.roundAmount(active.getTinkoffActiveDTO().getAveragePositionPrice()));
+                        active.setCurrentTotalPrice(NumericalUtils.roundAmount(active.getCurrentTotalPrice()));
+                        active.setMoexWeight(NumericalUtils.roundAmount(active.getMoexWeight()));
+                        active.setCurrentWeight(NumericalUtils.roundAmount(active.getCurrentWeight()));
+                        active.setPercentFollowage(NumericalUtils.roundAmount(active.getPercentFollowage()));
+                    })
+                    .collect(Collectors.toList());
+        }
+        return null;
     }
 
     @SneakyThrows
