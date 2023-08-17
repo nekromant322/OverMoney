@@ -40,9 +40,7 @@ public class AnalyticsController {
 
     @GetMapping("/totalIncomeOutcome/{year}")
     public List<AnalyticsDataMonthDTO> getIncomeOutcomePerMonth(Principal principal, @PathVariable("year") int year) throws InstanceNotFoundException {
-        Long userId = telegramUtils.getTelegramId(principal);
-        Long overMoneyAccountId = overMoneyAccountService.getAccountByUserId(userId).getId();
-        return analyticService.getTotalIncomeOutcomePerMonth(overMoneyAccountId, year);
+        return analyticService.getTotalIncomeOutcomePerMonth(telegramUtils.getTelegramId(principal), year);
     }
 
     @GetMapping("/available-years")
