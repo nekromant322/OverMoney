@@ -102,7 +102,7 @@ public class TinkoffService {
                         correctQuantity = correctQuantity - (correctQuantity % lots);
                     }
                     return TinkoffActiveMOEXDTO.builder()
-                            .currentTotalPrice(currentTotalPrice)
+                            .currentTotalPrice(roundToTwoPlaces(currentTotalPrice))
                             .tinkoffActiveDTO(active)
                             .moexWeight(roundToTwoPlaces(pair.getValue()))
                             .currentWeight(roundToTwoPlaces(currentWeight))
