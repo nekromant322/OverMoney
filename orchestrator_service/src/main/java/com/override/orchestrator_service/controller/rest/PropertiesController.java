@@ -1,6 +1,6 @@
 package com.override.orchestrator_service.controller.rest;
 
-import com.override.orchestrator_service.config.LongPollingOverviewProperties;
+import com.override.orchestrator_service.config.LongPollingOvermoneyProperties;
 import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class PropertiesController {
 
     @Autowired
-    private LongPollingOverviewProperties longPollingOverviewProperties;
+    private LongPollingOvermoneyProperties longPollingOvermoneyProperties;
 
     @Autowired
     private TelegramUtils telegramUtils;
 
     @GetMapping("/longPolling")
     public Integer getLongPollingData() {
-        return longPollingOverviewProperties.getPeriodOfInactivity();
+        return longPollingOvermoneyProperties.getPeriodOfInactivity();
     }
 
     @GetMapping("/telegramBotName")
