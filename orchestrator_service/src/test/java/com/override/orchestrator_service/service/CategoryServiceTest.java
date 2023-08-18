@@ -5,10 +5,12 @@ import com.override.dto.MergeCategoryDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.config.DefaultCategoryProperties;
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
+import com.override.orchestrator_service.mapper.AccountMapper;
 import com.override.orchestrator_service.mapper.CategoryMapper;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.KeywordId;
 import com.override.orchestrator_service.model.OverMoneyAccount;
+import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
@@ -46,6 +48,8 @@ public class CategoryServiceTest {
 
     @Mock
     private DefaultCategoryProperties defaultCategoryProperties;
+    @Mock
+    private UserService userService;
 
     @Test
     public void getCategoryByIdThrowExceptionWhenCategoryNotFound() {
@@ -74,11 +78,14 @@ public class CategoryServiceTest {
     public void saveCategoryForAccTest() throws InstanceNotFoundException {
         final CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
         final OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
-        when(overMoneyAccountService.getAccountByUserId(account.getId()))
-                .thenReturn(account);
+        final User testUser = TestFieldsUtil.generateTestUser();
 
-        when(categoryMapper.mapCategoryDTOToCategory(categoryDTO, account))
+        when(categoryMapper.mapCategoryDTOToCategory(any(), any()))
                 .thenReturn(TestFieldsUtil.generateTestCategory());
+
+        testUser.setAccount(account);
+
+        when(userService.getUserById(any())).thenReturn(testUser);
 
         categoryService.saveCategoryForAcc(TestFieldsUtil.generateTestAccount().getId(), categoryDTO);
 
@@ -116,13 +123,15 @@ public class CategoryServiceTest {
     public void findCategoriesListByTypeWhenTypeExpense() throws InstanceNotFoundException {
         final Category categoryExpense1 = TestFieldsUtil.generateTestCategory();
         final Category categoryExpense2 = TestFieldsUtil.generateTestCategory();
+        final User testUser = TestFieldsUtil.generateTestUser();
         categoryExpense2.setId(12346L);
         categoryExpense2.setName("Тест2");
 
         final OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
+        testUser.setAccount(account);
         List<Category> categoryList = List.of(categoryExpense1, categoryExpense2);
-        when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(account);
         when(categoryRepository.findAllByTypeAndAccId(account.getId(), Type.EXPENSE)).thenReturn(categoryList);
+        when(userService.getUserById(any())).thenReturn(testUser);
 
         List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByType(account.getId(), Type.EXPENSE);
         for (CategoryDTO categoryDTO : categoryDTOList) {
@@ -133,6 +142,7 @@ public class CategoryServiceTest {
     @Test
     public void findCategoriesListByTypeWhenTypeIncome() throws InstanceNotFoundException {
         final Category categoryExpense1 = TestFieldsUtil.generateTestCategory();
+        final User testUser = TestFieldsUtil.generateTestUser();
         categoryExpense1.setType(Type.INCOME);
 
         final Category categoryExpense2 = TestFieldsUtil.generateTestCategory();
@@ -141,9 +151,10 @@ public class CategoryServiceTest {
         categoryExpense2.setType(Type.INCOME);
 
         final OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
+        testUser.setAccount(account);
         List<Category> categoryList = List.of(categoryExpense1, categoryExpense2);
-        when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(account);
         when(categoryRepository.findAllByTypeAndAccId(account.getId(), Type.INCOME)).thenReturn(categoryList);
+        when(userService.getUserById(any())).thenReturn(testUser);
 
         List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByType(account.getId(), Type.INCOME);
         for (CategoryDTO categoryDTO : categoryDTOList) {

@@ -79,7 +79,9 @@ public class CategoryService {
     }
 
     public void saveCategoryForAcc(Long id, CategoryDTO categoryDTO) throws InstanceNotFoundException {
-        OverMoneyAccount account = accountService.getAccountByUserId(id);
+        Long accId = userService.getUserById(id).getAccount().getId();
+        OverMoneyAccount account = accountService.getOverMoneyAccountById(accId);
+
         try {
             categoryRepository.save(categoryMapper.mapCategoryDTOToCategory(categoryDTO, account));
         } catch (DataIntegrityViolationException e) {
