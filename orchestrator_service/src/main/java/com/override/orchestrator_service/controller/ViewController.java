@@ -8,9 +8,9 @@ import java.security.Principal;
 @Controller
 public class ViewController {
 
-    @GetMapping("/overview")
+    @GetMapping("/overmoney")
     public String getMainPage() {
-        return "overview";
+        return "overmoney";
     }
 
     @GetMapping("/history")

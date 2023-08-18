@@ -6,9 +6,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "long-polling.overview")
+@ConfigurationProperties(prefix = "long-polling.overmoney")
 @Getter
 @Setter
-public class LongPollingOverviewProperties {
+public class LongPollingOvermoneyProperties {
     private Integer periodOfInactivity;
 }

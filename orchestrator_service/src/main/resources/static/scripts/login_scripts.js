@@ -30,7 +30,7 @@ function onTelegramAuth(user) {
         contentType: "application/json; charset=utf8",
         success: function () {
             console.log("Successfully authenticated")
-            location.href = "https://" + location.hostname + "/overview";
+            location.href = "https://" + location.hostname + "/overmoney";
         },
         error: function () {
             console.log("ERROR! Something wrong happened")
