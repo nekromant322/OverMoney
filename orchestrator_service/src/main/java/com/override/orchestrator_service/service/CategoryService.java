@@ -91,7 +91,8 @@ public class CategoryService {
     }
 
     public void updateCategoryForAcc(Long id, CategoryDTO categoryDTO) throws InstanceNotFoundException {
-        OverMoneyAccount account = accountService.getAccountByUserId(id);
+        Long accId = userService.getUserById(id).getAccount().getId();
+        OverMoneyAccount account = accountService.getOverMoneyAccountById(accId);
         Category updatedCategory = categoryMapper.mapCategoryDTOToCategory(categoryDTO, account);
         updatedCategory.setId(categoryDTO.getId());
         categoryRepository.save(updatedCategory);

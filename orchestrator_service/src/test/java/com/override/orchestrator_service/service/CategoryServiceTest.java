@@ -184,8 +184,18 @@ public class CategoryServiceTest {
     @Test
     public void updateCategoryTest() throws InstanceNotFoundException {
         final CategoryDTO category = TestFieldsUtil.generateTestCategoryDTO();
-        when(categoryMapper.mapCategoryDTOToCategory(any(), any())).thenReturn(TestFieldsUtil.generateTestCategory());
-        categoryService.updateCategoryForAcc(any(), category);
+        final OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
+        final User testUser = TestFieldsUtil.generateTestUser();
+
+        when(categoryMapper.mapCategoryDTOToCategory(any(), any()))
+                .thenReturn(TestFieldsUtil.generateTestCategory());
+
+        testUser.setAccount(account);
+
+        when(userService.getUserById(any())).thenReturn(testUser);
+
+        categoryService.updateCategoryForAcc(TestFieldsUtil.generateTestAccount().getId(), category);
+
         verify(categoryRepository, times(1)).save(any());
     }
 
