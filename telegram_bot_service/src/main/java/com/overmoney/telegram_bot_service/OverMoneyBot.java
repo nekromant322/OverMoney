@@ -232,6 +232,9 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             case "/money":
                 sendMessage(chatId, Command.MONEY.getDescription());
                 break;
+            case "/web":
+                sendMessage(chatId, orchestratorHost);
+                break;
             case COMMAND_TO_DELETE_TRANSACTION:
                 if (replyToMessage != null) {
                     deleteTransaction(replyToMessage, chatId);
