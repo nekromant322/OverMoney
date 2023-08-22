@@ -44,8 +44,7 @@ public class CategoryService {
     private UserService userService;
 
     public List<CategoryDTO> findCategoriesListByUserId(Long id) throws InstanceNotFoundException {
-        Long accId = userService.getUserById(id).getAccount().getId();
-        OverMoneyAccount account = accountService.getOverMoneyAccountById(accId);
+        OverMoneyAccount account = accountService.getOverMoneyAccountByChatId(id);
         return categoryMapper.mapCategoriesListToJsonResponse(accountMapper.mapAccountToCategoryList(account));
     }
 
@@ -54,8 +53,7 @@ public class CategoryService {
     }
 
     public List<CategoryDTO> findCategoriesListByType(Long id, Type type) throws InstanceNotFoundException {
-        Long accId = userService.getUserById(id).getAccount().getId();
-        OverMoneyAccount account = accountService.getOverMoneyAccountById(accId);
+        Long accId = accountService.getAccountByUserId(id).getId();
         return categoryMapper.mapCategoriesListToJsonResponse(categoryRepository.findAllByTypeAndAccId(accId, type));
     }
 
@@ -79,8 +77,7 @@ public class CategoryService {
     }
 
     public void saveCategoryForAcc(Long id, CategoryDTO categoryDTO) throws InstanceNotFoundException {
-        Long accId = userService.getUserById(id).getAccount().getId();
-        OverMoneyAccount account = accountService.getOverMoneyAccountById(accId);
+        OverMoneyAccount account = accountService.getAccountByUserId(id);
 
         try {
             categoryRepository.save(categoryMapper.mapCategoryDTOToCategory(categoryDTO, account));

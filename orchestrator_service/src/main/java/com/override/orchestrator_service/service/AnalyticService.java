@@ -31,7 +31,7 @@ public class AnalyticService {
     private EntityManager entityManager;
 
     public List<AnalyticsDataDTO> getTotalCategorySumsForAnalytics(Long userId, Type type) throws InstanceNotFoundException {
-        Long accId = userService.getUserById(userId).getAccount().getId();
+        Long accId = accountService.getAccountByUserId(userId).getId();
         List<AnalyticsDataDTO> list = categoryRepository.findMediumAmountOfAllCategoriesByAccIdAndType(accId, type);
         return list.stream()
                 .filter(dto -> dto.getMediumAmountOfTransactions() != null)
@@ -40,12 +40,12 @@ public class AnalyticService {
     }
 
     public List<Integer> findAvailableYears(Long telegramId) throws InstanceNotFoundException {
-        Long accountId = userService.getUserById(telegramId).getAccount().getId();
+        Long accountId = accountService.getAccountByUserId(telegramId).getId();
         return transactionService.findAvailableYears(accountId);
     }
 
     public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long telegramId, Integer year) throws InstanceNotFoundException {
-        Long accountId = userService.getUserById(telegramId).getAccount().getId();
+        Long accountId = accountService.getAccountByUserId(telegramId).getId();
         return transactionService.findMonthlyIncomeStatisticsForYearByAccountId(accountId, year);
     }
 
@@ -79,7 +79,7 @@ public class AnalyticService {
     }
 
     public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long telegramId, Integer year) throws InstanceNotFoundException {
-        Long accountId = userService.getUserById(telegramId).getAccount().getId();
+        Long accountId = accountService.getAccountByUserId(telegramId).getId();
         return transactionService.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
     }
 }

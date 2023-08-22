@@ -48,7 +48,7 @@ public class BackupUserDataServiceTest {
         transactionDTOList.add(transactionDTO);
 
         when(categoryService.findCategoriesListByUserId(any())).thenReturn(categoryDTOList);
-        when(transactionService.findAlltransactionDTOForAcountByUserId(any())).thenReturn(transactionDTOList);
+        when(transactionService.findAlltransactionDTOForAcountByChatId(any())).thenReturn(transactionDTOList);
         backupUserDataService.createBackupUserData(any());
 
         Assertions.assertEquals(backupUserDataDTO.getTransactionDTOList().size(), transactionDTOList.size());
