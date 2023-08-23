@@ -85,7 +85,7 @@ public class CategoryServiceTest {
 
         testUser.setAccount(account);
 
-        when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(account);
+        when(userService.getUserById(any())).thenReturn(testUser);
 
         categoryService.saveCategoryForAcc(TestFieldsUtil.generateTestAccount().getId(), categoryDTO);
 
@@ -131,7 +131,7 @@ public class CategoryServiceTest {
         testUser.setAccount(account);
         List<Category> categoryList = List.of(categoryExpense1, categoryExpense2);
         when(categoryRepository.findAllByTypeAndAccId(account.getId(), Type.EXPENSE)).thenReturn(categoryList);
-        when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(account);
+        when(userService.getUserById(any())).thenReturn(testUser);
 
         List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByType(account.getId(), Type.EXPENSE);
         for (CategoryDTO categoryDTO : categoryDTOList) {
@@ -154,7 +154,7 @@ public class CategoryServiceTest {
         testUser.setAccount(account);
         List<Category> categoryList = List.of(categoryExpense1, categoryExpense2);
         when(categoryRepository.findAllByTypeAndAccId(account.getId(), Type.INCOME)).thenReturn(categoryList);
-        when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(account);
+        when(userService.getUserById(any())).thenReturn(testUser);
 
         List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByType(account.getId(), Type.INCOME);
         for (CategoryDTO categoryDTO : categoryDTOList) {

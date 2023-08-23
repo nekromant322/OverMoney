@@ -30,7 +30,7 @@ public class BackupUserDataService {
 
     public BackupUserDataDTO createBackupUserData(Long telegramId) throws InstanceNotFoundException {
         List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByUserId(telegramId);
-        List<TransactionDTO> transactionDTOList = transactionService.findAlltransactionDTOForAcountByChatId(telegramId);
+        List<TransactionDTO> transactionDTOList = transactionService.findAlltransactionDTOForAcountByUserId(telegramId);
 
         return BackupUserDataDTO.builder()
                 .categoryDTOList(categoryDTOList)
