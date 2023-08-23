@@ -68,7 +68,7 @@ public class AnalyticServiceTest {
         when(categoryRepository.findMediumAmountOfAllCategoriesByAccIdAndType(acc.getId(), Type.EXPENSE))
                 .thenReturn(analyticsDataListTest);
 
-        when(accountService.getAccountByUserId(any())).thenReturn(acc);
+        when(userService.getUserById(any())).thenReturn(testUser);
 
         analyticService.getTotalCategorySumsForAnalytics(123L, Type.EXPENSE);
         Assertions.assertEquals(categoryRepository.findMediumAmountOfAllCategoriesByAccIdAndType(acc.getId(), Type.EXPENSE).size(),
@@ -87,7 +87,8 @@ public class AnalyticServiceTest {
                 .thenReturn(listOfYears);
         when(transactionService.findAvailableYears(any()))
                 .thenReturn(listOfYears);
-        when(accountService.getAccountByUserId(any())).thenReturn(acc);
+        when(userService.getUserById(any()))
+                .thenReturn(testUser);
         analyticService.findAvailableYears(123L);
         Assertions.assertEquals(transactionRepository.findAvailableYearsForAccountByAccountId(acc.getId()).size(),
                 listOfYears.size());
@@ -102,8 +103,8 @@ public class AnalyticServiceTest {
 
         when(transactionService.findMonthlyIncomeStatisticsForYearByAccountId(any(), any()))
                 .thenReturn(requeredList);
-        when(accountService.getAccountByUserId(any()))
-                .thenReturn(acc);
+        when(userService.getUserById(any()))
+                .thenReturn(testUser);
 
         List<AnalyticsMonthlyReportForYearDTO> resultList = analyticService.findMonthlyIncomeStatisticsForYearByAccountId(123L, 123);
 
