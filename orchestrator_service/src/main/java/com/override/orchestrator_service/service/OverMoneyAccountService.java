@@ -169,8 +169,8 @@ public class OverMoneyAccountService {
         return overMoneyAccountRepository.findByChatId(chatId);
     }
 
-    public OverMoneyAccount getAccountByUserId(Long id) {
-        return overMoneyAccountRepository.findByChatId(id);
+    public OverMoneyAccount getAccountByUserId(Long id) throws InstanceNotFoundException {
+        return userService.getUserById(id).getAccount();
     }
 
     public OverMoneyAccount getOverMoneyAccountById(Long id) throws InstanceNotFoundException {

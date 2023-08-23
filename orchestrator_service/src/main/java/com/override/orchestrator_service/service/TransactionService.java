@@ -41,8 +41,8 @@ public class TransactionService {
     @Autowired
     private TransactionProcessingService transactionProcessingService;
 
-    public List<TransactionDTO> findAlltransactionDTOForAcountByUserId(Long telegramId) throws InstanceNotFoundException {
-        OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramId);
+    public List<TransactionDTO> findAlltransactionDTOForAcountByChatId(Long telegramId) {
+        OverMoneyAccount overMoneyAccount = overMoneyAccountService.getOverMoneyAccountByChatId(telegramId);
         List<Transaction> transactionList = transactionRepository.findAllByAccountId(overMoneyAccount.getId());
         List<TransactionDTO> transactionDTOS = new ArrayList<>();
 
