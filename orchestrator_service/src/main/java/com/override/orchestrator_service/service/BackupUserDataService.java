@@ -10,7 +10,6 @@ import com.override.orchestrator_service.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.management.InstanceNotFoundException;
 import java.util.*;
 
 @Service
@@ -28,9 +27,9 @@ public class BackupUserDataService {
     @Autowired
     TransactionProcessingService transactionProcessingService;
 
-    public BackupUserDataDTO createBackupUserData(Long telegramId) throws InstanceNotFoundException {
-        List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByUserId(telegramId);
-        List<TransactionDTO> transactionDTOList = transactionService.findAlltransactionDTOForAcountByUserId(telegramId);
+    public BackupUserDataDTO createBackupUserData(Long telegramId) {
+        List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByChatId(telegramId);
+        List<TransactionDTO> transactionDTOList = transactionService.findAlltransactionDTOForAcountByChatId(telegramId);
 
         return BackupUserDataDTO.builder()
                 .categoryDTOList(categoryDTOList)
