@@ -13,6 +13,9 @@ import java.util.Set;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
+    @Query(value = "SELECT COUNT(*) FROM users", nativeQuery = true)
+    int getUsersCount();
+
     @Query("select u from User u where u.username = :username")
     User findByUsername(@Param("username") String username);
 

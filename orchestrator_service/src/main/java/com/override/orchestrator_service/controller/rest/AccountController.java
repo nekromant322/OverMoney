@@ -73,4 +73,9 @@ public class AccountController {
     public void mergeTransactions(@RequestParam Long userId) {
         accountService.mergeToGroupAccountWithCategoriesAndTransactions(userId);
     }
+
+    @GetMapping("/count")
+    public int getAccountsCount() {
+        return accountService.getAccountsCount();
+    }
 }

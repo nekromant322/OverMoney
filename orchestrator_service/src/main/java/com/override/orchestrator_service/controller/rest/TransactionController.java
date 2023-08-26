@@ -40,6 +40,11 @@ public class TransactionController {
     @Autowired
     private DefineService defineService;
 
+    @GetMapping("/transactions/count")
+    public int getTransactionsCount() {
+        return transactionService.getTransactionsCount();
+    }
+
     @PostMapping("/transaction")
     public TransactionResponseDTO processTransaction(@RequestBody TransactionMessageDTO transactionMessage, Principal principal) throws InstanceNotFoundException {
         Transaction transaction = transactionProcessingService.validateAndProcessTransaction(transactionMessage, principal);

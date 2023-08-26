@@ -41,6 +41,10 @@ public class TransactionService {
     @Autowired
     private TransactionProcessingService transactionProcessingService;
 
+    public int getTransactionsCount() {
+        return transactionRepository.getTransactionsCount();
+    }
+
     public List<TransactionDTO> findAlltransactionDTOForAcountByChatId(Long telegramId) {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService.getOverMoneyAccountByChatId(telegramId);
         List<Transaction> transactionList = transactionRepository.findAllByAccountId(overMoneyAccount.getId());
