@@ -4,7 +4,7 @@ let transactionsCount;
 
 window.onload = function () {
     getUsersCount();
-    getAccountsCount();
+    getGroupAccountsCount();
     getTransactionsCount();
 
     getStat();
@@ -31,7 +31,7 @@ function getUsersCount() {
     })
 }
 
-function getAccountsCount() {
+function getGroupAccountsCount() {
     $.ajax({
         url: "/account/count",
         type: "GET",

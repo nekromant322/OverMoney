@@ -46,8 +46,8 @@ public class OverMoneyAccountService {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
     }
 
-    public int getAccountsCount() {
-        return overMoneyAccountRepository.getAccountsCount();
+    public int getGroupAccountsCount() {
+        return overMoneyAccountRepository.getGroupAccountsCount();
     }
 
     public List<Long> getAllActivityUsers() {
