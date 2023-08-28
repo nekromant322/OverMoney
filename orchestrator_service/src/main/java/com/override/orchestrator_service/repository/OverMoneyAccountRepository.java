@@ -12,6 +12,9 @@ import java.util.List;
 @Repository
 public interface OverMoneyAccountRepository extends CrudRepository<OverMoneyAccount, Long> {
 
+    @Query(value = "SELECT COUNT(*) FROM accounts", nativeQuery = true)
+    int getAccountsCount();
+
     OverMoneyAccount findByChatId(Long chatId);
 
     @Query("SELECT DISTINCT chatId from OverMoneyAccount WHERE id IN (SELECT DISTINCT t.account.id FROM Transaction t WHERE t.date > :minimalDate)")

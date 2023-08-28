@@ -46,6 +46,10 @@ public class OverMoneyAccountService {
         return (List<OverMoneyAccount>) overMoneyAccountRepository.findAll();
     }
 
+    public int getAccountsCount() {
+        return overMoneyAccountRepository.getAccountsCount();
+    }
+
     public List<Long> getAllActivityUsers() {
         LocalDateTime minimalDate = LocalDateTime.now().minusDays(recentActivityProperties.getActivityDays());
         return overMoneyAccountRepository.findAllActivityUsersByAccId(minimalDate);
