@@ -12,9 +12,6 @@ import java.util.List;
 @Repository
 public interface OverMoneyAccountRepository extends CrudRepository<OverMoneyAccount, Long> {
 
-    @Query(value = "SELECT COUNT(*) FROM accounts", nativeQuery = true)
-    int getAccountsCount();
-
     OverMoneyAccount findByChatId(Long chatId);
 
     @Query("SELECT DISTINCT chatId from OverMoneyAccount WHERE id IN (SELECT DISTINCT t.account.id FROM Transaction t WHERE t.date > :minimalDate)")
@@ -22,4 +19,7 @@ public interface OverMoneyAccountRepository extends CrudRepository<OverMoneyAcco
 
     @Query("SELECT a FROM OverMoneyAccount a JOIN User u ON u.account.id = a.id WHERE u.id = :userId")
     OverMoneyAccount findNewAccountByUserId(@Param("userId") Long userId);
+
+    @Query(value = "SELECT count(*) FROM (SELECT account_id FROM users GROUP BY account_id HAVING count(account_id) > 1) as t", nativeQuery = true)
+    int getGroupAccountsCount();
 }

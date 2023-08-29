@@ -76,6 +76,6 @@ public class AccountController {
 
     @GetMapping("/count")
     public int getAccountsCount() {
-        return accountService.getAccountsCount();
+        return accountService.getGroupAccountsCount();
     }
 }
