@@ -65,9 +65,15 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     @Transactional
     void deleteAllByAccountId(Long accountId);
 
-    @Query(value = "SELECT new com.override.dto.AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(cast(t.amount as double), c.name, cast(MONTH(t.date) as int)) " +
+    @Query(value = "SELECT new com.override.dto.AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(cast(t.amount as double), c.name, cast(t.category.id as int), cast(MONTH(t.date) as int)) " +
             "FROM Transaction t JOIN Category c ON t.category.id = c.id " +
             "WHERE t.account.id = :accountId AND YEAR(t.date) = :year AND c.type = 1 " +
-            "GROUP BY c.id, MONTH(t.date), c.name, t.amount")
+            "GROUP BY c.id, t.category.id, MONTH(t.date), c.name, t.amount")
     List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long accountId, Integer year);
+
+    @Query(value = "SELECT t FROM Transaction t WHERE MONTH(t.date) = :month AND YEAR(t.date) = :year " +
+            "AND t.category.id = :categoryId ORDER BY t.date")
+    List<Transaction> findTransactionsBetweenDatesAndCategory(@Param("year") Integer year,
+                                                              @Param("month") Integer month,
+                                                              @Param("categoryId") long categoryId);
 }

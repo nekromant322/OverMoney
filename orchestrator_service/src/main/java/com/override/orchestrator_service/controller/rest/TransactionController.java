@@ -64,6 +64,13 @@ public class TransactionController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/transactions/info")
+    public List<TransactionDTO> getTransactionsListByPeriodAndCategory(@RequestParam Integer year,
+                                                                       @RequestParam Integer month,
+                                                                       @RequestParam long categoryId) {
+        return transactionService.getTransactionsListByPeriodAndCategory(year, month, categoryId);
+    }
+
     @GetMapping("/transactions/history")
     public List<TransactionDTO> getTransactionsHistory(Principal principal,
                                                        @RequestParam(defaultValue = "50") Integer pageSize,

@@ -224,13 +224,14 @@ public class TransactionService {
         objects.forEach(object -> setOfCategoryNames.add(object.getCategoryName()));
 
         setOfCategoryNames.forEach(categoryName -> {
+            final int[] categoryId = new int[1];
             Map<Integer, Double> monthlyAnalytics = new HashMap<>();
             Map<Integer, Double> shareOfMonthlyExpenses = new HashMap<>();
             objects.forEach(object -> {
                 if (Objects.equals(categoryName, object.getCategoryName())) {
+                    categoryId[0] = object.getCategoryId();
                     if (monthlyAnalytics.containsKey(object.getMonth()) &&
                             shareOfMonthlyExpenses.containsKey(object.getMonth())) {
-
                         monthlyAnalytics.replace(object.getMonth(),
                                 NumericalUtils.roundAmount(monthlyAnalytics.get(object.getMonth()) + object.getAmount()));
                         shareOfMonthlyExpenses.replace(object.getMonth(),
@@ -247,7 +248,7 @@ public class TransactionService {
                     shareOfMonthlyExpenses.put(monthCounter, 0d);
                 }
             }
-            result.add(new AnalyticsAnnualAndMonthlyReportDTO(categoryName, monthlyAnalytics, shareOfMonthlyExpenses));
+            result.add(new AnalyticsAnnualAndMonthlyReportDTO(categoryName, categoryId[0], monthlyAnalytics, shareOfMonthlyExpenses));
         });
         return replaceShareOfMonthlyExpenses(objects, result);
     }
@@ -307,5 +308,11 @@ public class TransactionService {
 
         transactionRepository.deleteById(id);
         return transactionMapper.mapTransactionToTelegramResponse(transactionUpdate);
+    }
+
+    public List<TransactionDTO> getTransactionsListByPeriodAndCategory(Integer year, Integer month, long categoryId) {
+        return transactionRepository.findTransactionsBetweenDatesAndCategory(year, month, categoryId).stream()
+                .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
+                .collect(Collectors.toList());
     }
 }

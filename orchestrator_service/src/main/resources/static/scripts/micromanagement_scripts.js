@@ -66,6 +66,7 @@ function parseDataAndCreateTableOfExpense(data) {
         let monthlyExpense = parseMapOfMonthlyAnalysesAndShareAndGetExpense(data[i]["monthlyAnalytics"]);
         let monthlyOpacities = parseMapOfMonthlyAnalysesAndShareAndGetExpense(data[i]["shareOfMonthlyExpenses"]);
         monthlyExpenseToCategoryName.push({
+            "categoryId": data[i].categoryId,
             "categoryName": data[i].categoryName,
             "january": monthlyExpense[0],
             "february": monthlyExpense[1],
@@ -81,6 +82,7 @@ function parseDataAndCreateTableOfExpense(data) {
             "december": monthlyExpense[11]
         });
         monthlyOpacityToCategoryName.push({
+            "categoryId": data[i].categoryId,
             "categoryName": data[i].categoryName,
             "january": monthlyOpacities[0],
             "february": monthlyOpacities[1],
@@ -146,6 +148,7 @@ function addRowFootInTableOfExpense(dataExpense, dataOpacity, numberOfRows) {
     let table = document.getElementById("total-analytics-table").getElementsByTagName("tfoot")[0];
     let tr = table.insertRow(table.rows.length);
 
+    createCategoryTdToFootInTableOfExpense(dataExpense.categoryId, tr);
     insertTdToFootInTableOfExpense(0, dataExpense.categoryName, tr, numberOfRows);
     insertTdToFootInTableOfExpense(dataOpacity.january, dataExpense.january, tr, numberOfRows);
     insertTdToFootInTableOfExpense(dataOpacity.february, dataExpense.february, tr, numberOfRows);
@@ -175,6 +178,14 @@ function insertTdToFootInTableOfExpense(opacity, value, parent, numberOfRows) {
     parent.insertAdjacentElement("beforeend", element);
 }
 
+function createCategoryTdToFootInTableOfExpense(value, parent) {
+    let element = document.createElement("td");
+    element.scope = "row";
+    element.innerText = value;
+    element.setAttribute("hidden", "hidden");
+    parent.insertAdjacentElement("beforeend", element);
+}
+
 function insertTdToBodyInTableOfExpense(value, parent, numberOfRows) {
     let element = document.createElement("td");
     element.scope = "row";
@@ -196,4 +207,35 @@ function clearTableOfExpense(table) {
             table.deleteRow(0);
         }
     }
+}
+
+
+$(document).on("click", "#total-analytics-table-foot td", function () {
+    let rowIndex = $(this).closest("tr").index();
+    
+    let categoryId = $("#total-analytics-table-foot").find("tr").eq(rowIndex).find("td").eq(0).html();
+    let month = $(this).closest("td").index() - 1;
+    let year = $("#yearSelectAnnualAndMonthlyTotalStatistics").val();
+    getTransactionsByCategoryAndMonth(year, month, categoryId);
+})
+
+function getTransactionsByCategoryAndMonth(year, month, categoryId) {
+    $('#categoryInfoModal').modal('show');
+
+    $.ajax({
+        method: 'GET',
+        url: '/transactions/info?year=' + year + '&month=' + month + '&categoryId=' + categoryId,
+        contentType: 'application/json; charset=utf8',
+        async: false,
+        success: function (data) {
+            let list = document.querySelector('#infoField');
+            list.innerHTML = "";
+
+            for (i = 0; i < data.length; i++) {
+                let elem = document.createElement('p');
+                elem.innerHTML = (i + 1) + '. ' + data[i].message + ' ' + data[i].amount;
+                list.appendChild(elem);
+            }
+        }
+    })
 }
