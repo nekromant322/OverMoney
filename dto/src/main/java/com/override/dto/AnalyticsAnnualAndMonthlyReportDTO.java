@@ -13,6 +13,7 @@ import java.util.Map;
 @Builder
 public class AnalyticsAnnualAndMonthlyReportDTO {
     private String categoryName;
+    private Integer categoryId;
     private Map<Integer, Double> monthlyAnalytics;
     private Map<Integer, Double> shareOfMonthlyExpenses;
 }

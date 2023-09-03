@@ -12,5 +12,6 @@ import lombok.NoArgsConstructor;
 public class AnalyticsAnnualAndMonthlyExpenseForCategoryDTO {
     private Double amount;
     private String categoryName;
+    private Integer categoryId;
     private Integer month;
 }

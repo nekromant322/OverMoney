@@ -248,31 +248,31 @@ public class TestFieldsUtil {
     }
 
     public static List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> generateTestAnalyticsAnnualAndMonthlyExpenseForCategoryWithNullFields() {
-        return List.of(new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithNullFields", 1),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithNullFields", 2),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 3),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 4),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(40000d, "categoryWithNullFields", 8),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 9),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithNullFields", 10),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithNullFields", 11),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(50000d, "categoryWithNullFields", 12),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 12));
+        return List.of(new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithNullFields", 1, 1),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithNullFields", 2, 2),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 3, 3),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 4, 4),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(40000d, "categoryWithNullFields", 8, 8),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 9, 9),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithNullFields", 10, 10),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithNullFields", 11, 11),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(50000d, "categoryWithNullFields", 12, 12),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithNullFields", 13, 12));
     }
 
     public static List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> generateTestAnalyticsAnnualAndMonthlyExpenseForCategoryWithoutNullFields() {
-        return List.of(new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithoutNullFields", 1),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithoutNullFields", 2),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithoutNullFields", 3),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithoutNullFields", 4),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithoutNullFields", 5),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(40000d, "categoryWithoutNullFields", 6),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithoutNullFields", 7),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(40000d, "categoryWithoutNullFields", 8),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithoutNullFields", 9),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithoutNullFields", 10),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithoutNullFields", 11),
-                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(50000d, "categoryWithoutNullFields", 12));
+        return List.of(new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithoutNullFields", 1, 1),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithoutNullFields", 2, 2),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithoutNullFields", 3, 3),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithoutNullFields", 4, 4),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithoutNullFields", 5, 5),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(40000d, "categoryWithoutNullFields", 6, 6),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithoutNullFields", 7, 7),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(40000d, "categoryWithoutNullFields", 8, 8),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(30000d, "categoryWithoutNullFields", 9, 9),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(10000d, "categoryWithoutNullFields", 10, 10),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(20000d, "categoryWithoutNullFields", 11, 11),
+                new AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(50000d, "categoryWithoutNullFields", 12, 12));
     }
 
     public static List<AnalyticsAnnualAndMonthlyReportDTO> generateTestListOfAnalyticsAnnualAndMonthlyReportDTOWithNull() {
@@ -285,7 +285,7 @@ public class TestFieldsUtil {
 
 
     public static AnalyticsAnnualAndMonthlyReportDTO generateTestAnalyticsAnnualAndMonthlyReportDTOWithNullFields() {
-        return new AnalyticsAnnualAndMonthlyReportDTO("categoryWithNullFields",
+        return new AnalyticsAnnualAndMonthlyReportDTO("categoryWithNullFields", 13,
                 new HashMap<>() {{
                     put(1, 10000d);
                     put(2, 20000d);
@@ -317,7 +317,7 @@ public class TestFieldsUtil {
     }
 
     public static AnalyticsAnnualAndMonthlyReportDTO generateTestAnalyticsAnnualAndMonthlyReportDTOWithoutNullFields() {
-        return new AnalyticsAnnualAndMonthlyReportDTO("categoryWithoutNullFields",
+        return new AnalyticsAnnualAndMonthlyReportDTO("categoryWithoutNullFields", 12,
                 new HashMap<>() {{
                     put(1, 10000d);
                     put(2, 20000d);
