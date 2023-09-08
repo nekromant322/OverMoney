@@ -38,7 +38,7 @@ public class BackupUserDataServiceTest {
     private TransactionProcessingService transactionProcessingService;
 
     @Test
-    public void createBackupUserDataTest() throws InstanceNotFoundException {
+    public void createBackupTest() throws InstanceNotFoundException {
         BackupUserDataDTO backupUserDataDTO = TestFieldsUtil.generateTestBackupUserDataDTO();
         List<CategoryDTO> categoryDTOList = new ArrayList<>();
         CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
@@ -48,7 +48,49 @@ public class BackupUserDataServiceTest {
         transactionDTOList.add(transactionDTO);
 
         when(transactionService.findAlltransactionDTOForAcountByChatId(any())).thenReturn(transactionDTOList);
+        backupUserDataService.createBackup(any());
+
+        Assertions.assertEquals(backupUserDataDTO.getTransactionDTOList().size(), transactionDTOList.size());
+        Assertions.assertEquals(backupUserDataDTO.getCategoryDTOList().size(), categoryDTOList.size());
+        Assertions.assertEquals(backupUserDataDTO.getTransactionDTOList().get(0).getMessage(), transactionDTOList.get(0).getMessage());
+        Assertions.assertEquals(backupUserDataDTO.getCategoryDTOList().get(0).getId(), categoryDTOList.get(0).getId());
+    }
+
+    @Test
+    public void createBackupRemovedUserDataTest() {
+        BackupUserDataDTO backupUserDataDTO = TestFieldsUtil.generateTestBackupUserDataDTO();
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
+        categoryDTOList.add(categoryDTO);
+        List<TransactionDTO> transactionDTOList = new ArrayList<>();
+        TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
+        transactionDTOList.add(transactionDTO);
+
+        when(transactionService.findAlltransactionDTOForAcountByChatId(any())).thenReturn(transactionDTOList);
+        backupUserDataService.createBackupRemovedUserData(any());
+
+
+        Assertions.assertEquals(backupUserDataDTO.getTransactionDTOList().size(), transactionDTOList.size());
+        Assertions.assertEquals(backupUserDataDTO.getCategoryDTOList().size(), categoryDTOList.size());
+        Assertions.assertEquals(backupUserDataDTO.getTransactionDTOList().get(0).getMessage(), transactionDTOList.get(0).getMessage());
+        Assertions.assertEquals(backupUserDataDTO.getCategoryDTOList().get(0).getId(), categoryDTOList.get(0).getId());
+    }
+
+    @Test
+    public void createBackupUserDataTest() throws InstanceNotFoundException {
+        BackupUserDataDTO backupUserDataDTO = TestFieldsUtil.generateTestBackupUserDataDTO();
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
+        categoryDTOList.add(categoryDTO);
+        List<TransactionDTO> transactionDTOList = new ArrayList<>();
+        TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
+        transactionDTOList.add(transactionDTO);
+        OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
+
+        when(transactionService.findAlltransactionDTOForAcountByChatId(any())).thenReturn(transactionDTOList);
+        when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(account);
         backupUserDataService.createBackupUserData(any());
+
 
         Assertions.assertEquals(backupUserDataDTO.getTransactionDTOList().size(), transactionDTOList.size());
         Assertions.assertEquals(backupUserDataDTO.getCategoryDTOList().size(), categoryDTOList.size());

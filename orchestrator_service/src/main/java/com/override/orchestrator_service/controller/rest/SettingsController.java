@@ -32,8 +32,8 @@ public class SettingsController {
 
     @OnlyServiceUse
     @GetMapping("/backup/{id}")
-    public BackupUserDataDTO getBackupDataFromRemoveUser(@PathVariable Long id) throws InstanceNotFoundException {
-        return backupUserDataService.createBackupUserData(id);
+    public BackupUserDataDTO getBackupDataFromRemoveUser(@PathVariable Long id) {
+        return backupUserDataService.createBackupRemovedUserData(id);
     }
 
     @PostMapping("/backup/read")
