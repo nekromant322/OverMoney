@@ -64,6 +64,7 @@ public class WordsToNumbersService {
         vocabulary.put("тысяча", 1000L);
         vocabulary.put("тысячи", 1000L);
         vocabulary.put("тыща", 1000L);
+        vocabulary.put("тыщу", 1000L);
         vocabulary.put("тыщи", 1000L);
         vocabulary.put("тысяч", 1000L);
         vocabulary.put("миллион", 1000000L);
