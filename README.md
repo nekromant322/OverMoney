@@ -16,6 +16,8 @@
 Полезную информацию о том как поковыряться в кишках тестового окружения можно найти в [confluence](https://override-platform.atlassian.net/wiki/spaces/O/pages/28344321)
 
 
+[overridetech.ru/overmoney](https://overridetech.ru/overmoney)
+
 
 
 
