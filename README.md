@@ -1,3 +1,8 @@
+Распределенный трекер финансов **без** интеграций с банками  
+Распознавание транзакций из текста и голоса, микро и макро менджмент расходов и доходов  
+
+
+
 ![orchestrator-coverage](https://raw.githubusercontent.com/nekromant322/OverMoney/badges-branch/.github/badges/jacoco_orchestrator.svg)
 ![recognizer-coverage](https://raw.githubusercontent.com/nekromant322/OverMoney/badges-branch/.github/badges/jacoco_recognizer.svg)
 ![telegram-bot-coverage](https://raw.githubusercontent.com/nekromant322/OverMoney/badges-branch/.github/badges/jacoco_telegram_bot.svg)
