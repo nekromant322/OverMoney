@@ -38,6 +38,9 @@ server {
         location /twitch-bot/ {
                 proxy_pass http://localhost:9000/;
         }
+        location /labyrinth-challenge/ {
+                proxy_pass http://localhost:3000/;
+        }
 
         location /twitch-bot/ws/ {
                 proxy_pass                              http://localhost:9000;
