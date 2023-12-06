@@ -9,7 +9,7 @@ public class TransactionMapper {
     public String mapTransactionResponseToTelegramMessage(TransactionResponseDTO transactionResponseDTO) {
         return "Записал в " + transactionResponseDTO.getType() +
                 " -> " + transactionResponseDTO.getCategory() +
-                ". Сумма: " + transactionResponseDTO.getAmount() + " р. " +
-                "Примечание: " + transactionResponseDTO.getComment();
+                ". Сумма: " + transactionResponseDTO.getAmount() +
+                " Примечание: " + transactionResponseDTO.getComment();
     }
 }
