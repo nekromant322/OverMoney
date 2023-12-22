@@ -214,7 +214,11 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             TelegramMessage message = telegramMessageService.
                     getTelegramMessageByByMessageIdAndChatId(replyToMessage.getMessageId(), chatId);
             if (message == null) {
-                sendMessage(chatId, INVALID_UPDATE_TRANSACTION_TEXT);
+                if (!userId.equals(replyToMessage.getFrom().getId())) {
+                    sendMessage(chatId, INVALID_UPDATE_TRANSACTION_TEXT);
+                    return;
+                }
+                processTransaction(chatId, messageId, transactionMessageDTO);
                 return;
             }
             if (!receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION) &&
@@ -241,18 +245,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                     break;
                 }
             default:
-                try {
-                    TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
-                            .sendTransaction(transactionMessageDTO);
-                    telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
-                            .messageId(messageId)
-                            .chatId(chatId)
-                            .idTransaction(transactionResponseDTO.getId()).build());
-                    sendMessage(chatId, transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                    sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
-                }
+                processTransaction(chatId, messageId, transactionMessageDTO);
                 break;
         }
     }
@@ -312,6 +305,22 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             telegramMessageService.deleteTelegramMessageByIdTransaction(idTransaction);
             sendMessage(chatId,
                     SUCCESSFUL_UPDATE_TRANSACTION_TEXT + transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
+        }
+    }
+
+    private void processTransaction(Long chatId, Integer messageId, TransactionMessageDTO transactionMessageDTO) {
+        try {
+            TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
+                    .sendTransaction(transactionMessageDTO);
+            telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
+                    .messageId(messageId)
+                    .chatId(chatId)
+                    .idTransaction(transactionResponseDTO.getId()).build());
+            sendMessage(chatId, transactionMapper
+                    .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
         } catch (Exception e) {
             log.error(e.getMessage());
             sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
