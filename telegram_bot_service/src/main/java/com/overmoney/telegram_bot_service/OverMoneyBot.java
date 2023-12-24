@@ -55,7 +55,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private InlineKeyboardMarkupUtil inlineKeyboardMarkupUtil;
     @Autowired
     private FileService fileService;
-
+    @Autowired
+    private TelegramMessageCheckerService telegramMessageCheckerService;
     @Autowired
     private TelegramMessageService telegramMessageService;
     private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
@@ -207,7 +208,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 .chatId(chatId)
                 .date(date)
                 .build();
-        if (receivedMessageText.equals(BLANK_MESSAGE)) {
+        if (telegramMessageCheckerService.isNonTransactionalMessageMentionedToSomeone(receivedMessageText)
+                || receivedMessageText.equals(BLANK_MESSAGE)) {
             return;
         }
         if (replyToMessage != null) {
