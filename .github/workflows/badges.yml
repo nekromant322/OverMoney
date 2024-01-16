@@ -6,7 +6,7 @@ on:
       - master
 
 jobs:
-  build:
+  code-coverage-badges:
     runs-on: ubuntu-latest
 
     steps:
