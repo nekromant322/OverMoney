@@ -71,7 +71,6 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash-logback-encoder.version}</version>
         </dependency>
-
         <dependency>
             <groupId>com.override</groupId>
             <artifactId>dto</artifactId>
