@@ -10,14 +10,11 @@ jobs:
   detect-changes:
     runs-on: ubuntu-latest
     outputs:
-      eureka: ${{ steps.filter.outputs.eureka }}
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
       invest: ${{ steps.filter.outputs.invest }}
       wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
-      prometheus: ${{ steps.filter.outputs.prometheus }}
-      nginx: ${{ steps.filter.outputs.nginx }}
     steps:
       - uses: actions/checkout@v2
       - uses: dorny/paths-filter@v2
@@ -34,10 +31,6 @@ jobs:
               - 'invest_service/**'
             wit-ai-go-proxy:
               - 'wit_ai_go_proxy/**'
-            prometheus:
-              - 'prometheus/**'
-            nginx:
-              - 'nginx/**'
   build_and_push_images:
     name: Build & Push images to DockerHub
     runs-on: ubuntu-latest
