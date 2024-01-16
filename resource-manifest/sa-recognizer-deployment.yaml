@@ -26,6 +26,8 @@ spec:
           name: sa-recognizer
           env:
             - name: SPRING_APPLICATION_PROFILE
-              value: "dev"
+              value: "prod"
+            - name: WIT_AI_TOKEN
+              value: "$(WIT_AI_TOKEN)"
           ports:
             - containerPort: 8080
