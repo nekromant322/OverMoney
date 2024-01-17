@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
-@FeignClient(name = "invest-service")
+@FeignClient(value = "invest", url = "http://sa-invest")
 public interface InvestFeign {
 
     @GetMapping("/tinkoff/actives")

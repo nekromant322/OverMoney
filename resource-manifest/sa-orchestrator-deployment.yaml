@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sa-orchestrator
+  labels:
+    app: sa-orchestrator
+spec:
+  selector:
+    matchLabels:
+      app: sa-orchestrator
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: sa-orchestrator
+    spec:
+      containers:
+        - image: nekromant322/overmoney-orchestrator:latest
+          imagePullPolicy: Always
+          name: sa-orchestrator
+          env:
+            - name: SPRING_APPLICATION_PROFILE
+              value: "prod"
+            - name: WIT_AI_TOKEN
+              value: "{{ WIT_AI_TOKEN }}"
+          ports:
+            - containerPort: 8080
