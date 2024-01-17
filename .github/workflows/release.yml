@@ -85,9 +85,10 @@ jobs:
           push: true
           tags: nekromant322/overmoney-wit-ai-go-proxy
 
-  inject-secrets:
-    name: Inject secrets to yaml files
+  k8s-manifest-update:
+    name: Update manifests on remote host
     runs-on: ubuntu-latest
+#    needs: [build-and-push-images]
     steps:
       - uses: actions/checkout@v4
       - name: Inject secrets in resource manifests
@@ -97,24 +98,26 @@ jobs:
             resource-manifest/sa-recognizer-deployment.yaml
             resource-manifest/service-sa-recognizer-lb.yaml
           secrets: ${{ toJSON(secrets) }} # It would contain all your repository secrets in json
-
-  k8s-manifest-update:
-    name: Copy k8s manifests by ssh
-    runs-on: ubuntu-latest
-    needs: [build-and-push-images, inject-secrets]
-    steps:
-      - uses: actions/checkout@v4
-      - name: copy file via ssh private key
+      - name: copy files via ssh private key
         uses: appleboy/scp-action@v0.1.7
         with:
           host: 195.133.49.108
           username: github
           key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
-          passphrase : ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
+          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
           port: 22
           source: "resource-manifest/*"
-          target: "/home/${{ secrets.SSH_USER }}"
+          target: "/home/github"
           overwrite: true
+
+#  :
+#    name: Copy k8s manifests by ssh
+#    runs-on: ubuntu-latest
+##    needs: [build-and-push-images, inject-secrets]
+#    needs: [inject-secrets]
+#    steps:
+#      - uses: actions/checkout@v4
+#
 #  k8s-rollout-restart:
 #deploy:
 #  name: Deploy
