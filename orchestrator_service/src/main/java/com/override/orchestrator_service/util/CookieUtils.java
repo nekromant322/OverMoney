@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 @Component
 public class CookieUtils {
-
     public void addAccessTokenCookie(JwtResponse token, HttpServletResponse response) {
         Cookie cookie = new Cookie("accessToken", token.getAccessToken());
         cookie.setSecure(true);
