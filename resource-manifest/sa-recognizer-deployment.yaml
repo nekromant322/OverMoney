@@ -24,6 +24,11 @@ spec:
         - image: nekromant322/overmoney-recognizer:latest
           imagePullPolicy: Always
           name: sa-recognizer
+          resources:
+            requests:
+              memory: "256Mi"
+            limits:
+              memory: "512Mi"
           env:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
