@@ -39,6 +39,9 @@ spec:
               value: "{{ JWT_REFRESH_KEY }}"
             - name: ORCHESTRATOR_DB_HOST
               value: "{{ ORCHESTRATOR_DB_HOST }}"
+            - name: ORCHESTRATOR_DB_PORT
+              value: "{{ ORCHESTRATOR_DB_PORT }}"
+#             TODO set ORCHESTRATOR_DB_HOST and ORCHESTRATOR_DB_PORT when db is ready
             - name: ORCHESTRATOR_DB_USER
               value: "{{ ORCHESTRATOR_DB_USER }}"
             - name: ORCHESTRATOR_DB_PASSWORD
