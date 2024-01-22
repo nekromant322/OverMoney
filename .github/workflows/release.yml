@@ -88,6 +88,7 @@ jobs:
   k8s-manifest-update:
     name: Update manifests on remote host
     runs-on: ubuntu-latest
+#    todo раскоментить после отладки
 #    needs: [build-and-push-images]
     steps:
       - uses: actions/checkout@v4
