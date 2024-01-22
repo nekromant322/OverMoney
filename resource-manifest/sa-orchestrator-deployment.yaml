@@ -27,7 +27,21 @@ spec:
           env:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
-            - name: WIT_AI_TOKEN
-              value: "{{ WIT_AI_TOKEN }}"
+            - name: TELEGRAM_BOT_TOKEN
+              value: "{{ TELEGRAM_BOT_TOKEN }}"
+            - name: TELEGRAM_BOT_NAME
+              value: "{{ TELEGRAM_BOT_NAME }}"
+            - name: INTERNAL_KEY_HEADER
+              value: "{{ INTERNAL_KEY_HEADER }}"
+            - name: JWT_ACCESS_KEY
+              value: "{{ JWT_ACCESS_KEY }}"
+            - name: JWT_REFRESH_KEY
+              value: "{{ JWT_REFRESH_KEY }}"
+            - name: ORCHESTRATOR_DB_HOST
+              value: "{{ ORCHESTRATOR_DB_HOST }}"
+            - name: ORCHESTRATOR_DB_USER
+              value: "{{ ORCHESTRATOR_DB_USER }}"
+            - name: ORCHESTRATOR_DB_PASSWORD
+              value: "{{ ORCHESTRATOR_DB_PASSWORD }}"
           ports:
             - containerPort: 8080

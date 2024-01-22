@@ -38,6 +38,7 @@
           "[http.server.requests]": true
 
   audio-recognizer-go-service:
+#    TODO вынести в манифест
     url: http://wit-ai-go-proxy:3333/recognizer
 
   authorization-header:
