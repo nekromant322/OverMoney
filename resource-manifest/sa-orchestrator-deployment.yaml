@@ -30,7 +30,7 @@ spec:
             - name: TELEGRAM_BOT_TOKEN
               value: "{{ TELEGRAM_BOT_TOKEN }}"
             - name: TELEGRAM_BOT_NAME
-              value: "{{ TELEGRAM_BOT_NAME }}"
+              value: "OverMoneyBot"
             - name: INTERNAL_KEY_HEADER
               value: "{{ INTERNAL_KEY_HEADER }}"
             - name: JWT_ACCESS_KEY
