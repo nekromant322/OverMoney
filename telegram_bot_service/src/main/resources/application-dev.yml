@@ -1,9 +1,7 @@
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+server:
+  port: 8082
 
 
 orchestrator:
-    host: overridetech.ru
+  host: overridetech.ru
 
