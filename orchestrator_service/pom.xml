@@ -159,18 +159,21 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.6.2</version>
-                <configuration>
-                    <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://${env.ORCHESTRATOR_DB_HOST}:${env.ORCHESTRATOR_DB_PORT}/orchestrator-db</url>
-                    <username>${env.ORCHESTRATOR_DB_USER}</username>
-                    <password>${env.ORCHESTRATOR_DB_PASSWORD}</password>
-                    <outputChangeLogFile>src/main/resources/db/liquibase=outputChangeLog.xml</outputChangeLogFile>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.liquibase</groupId>-->
+<!--                <artifactId>liquibase-maven-plugin</artifactId>-->
+<!--                <version>3.6.2</version>-->
+<!--                <configuration>-->
+<!--                    <driver>org.postgresql.Driver</driver>-->
+<!--                    <url>jdbc:postgresql://localhost:5433/orchestrator-db</url>-->
+<!--                    <username>postgres</username>-->
+<!--                    <password>postgres</password>-->
+<!--&lt;!&ndash;                    <url>jdbc:postgresql://${env.ORCHESTRATOR_DB_HOST}:${env.ORCHESTRATOR_DB_PORT}/orchestrator-db</url>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <username>${env.ORCHESTRATOR_DB_USER}</username>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <password>${env.ORCHESTRATOR_DB_PASSWORD}</password>&ndash;&gt;-->
+<!--                    <outputChangeLogFile>src/main/resources/db/liquibase=outputChangeLog.xml</outputChangeLogFile>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>

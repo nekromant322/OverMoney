@@ -110,3 +110,9 @@
       - cookie
       - tinkoffAccountId
       - favoriteAccountId
+
+# Отключение поиска эврики (так как после переезда в кубер ее больше не используем)
+  eureka:
+    client:
+      fetch-registry: false
+      register-with-eureka: false

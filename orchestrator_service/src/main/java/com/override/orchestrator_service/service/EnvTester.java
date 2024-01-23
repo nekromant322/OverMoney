@@ -14,7 +14,7 @@ public class EnvTester {
 
     @Value("${spring.datasource.username}")
     String username;
-    @Value("${spring.datasource.username}")
+    @Value("${spring.datasource.password}")
     String password;
 
     @PostConstruct
