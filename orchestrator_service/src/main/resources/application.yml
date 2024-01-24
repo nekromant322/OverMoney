@@ -3,8 +3,8 @@
 
   telegram:
     bot:
-      token: ${TELEGRAM_BOT_TOKEN}
-      name: ${TELEGRAM_BOT_NAME}
+      token: ${TELEGRAM_BOT_TOKEN:asd}
+      name: ${TELEGRAM_BOT_NAME:asd}
 
   default-category:
     categories:
