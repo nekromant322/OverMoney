@@ -4,8 +4,8 @@ server {
         listen [::]:80;
 
       
-        root /home/github/website/dist;
-        index index.html;
+        root /var/www/overrideTech.ru/html;
+        index index.html index.htm index.nginx-debian.html;
 
 
         server_name overrideTech.ru www.overrideTech.ru;
@@ -43,7 +43,7 @@ server {
         }
 
         location / {
-                try_files $uri $uri/ =404;
+                proxy_pass http://localhost:8081/;  # orchestrator
         }
 
         location /twitch-bot/ws/ {
