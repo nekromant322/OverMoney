@@ -27,9 +27,7 @@ server {
 
         resolver 8.8.8.8;
 
-        location / {
-                proxy_pass http://localhost:8081/;  # orchestrator
-        }
+
         location /eureka/ {
                 proxy_pass http://localhost:8761/;  # HTTP
 
@@ -44,7 +42,7 @@ server {
                 proxy_pass http://localhost:3000/;
         }
 
-        location /pricing/ {
+        location / {
                 try_files $uri $uri/ =404;
         }
 
