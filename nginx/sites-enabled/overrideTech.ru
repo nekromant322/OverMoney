@@ -3,8 +3,10 @@ server {
         listen 80;
         listen [::]:80;
 
-        root /var/www/overrideTech.ru/html;
-        index index.html index.htm index.nginx-debian.html;
+      
+        root /home/github/website/dist;
+        index index.html;
+
 
         server_name overrideTech.ru www.overrideTech.ru;
         return 301 https://$host$request_uri;
@@ -40,6 +42,10 @@ server {
         }
         location /labyrinth-challenge/ {
                 proxy_pass http://localhost:3000/;
+        }
+
+        location /pricing/ {
+                try_files $uri $uri/ =404;
         }
 
         location /twitch-bot/ws/ {
