@@ -12,5 +12,11 @@ import java.util.List;
 @Getter
 @Setter
 public class MaskLogProperties {
-            private List<String> maskedFields;
+
+    public static final Integer DEFAULT_MASK_PERCENTAGE = 75;
+    public static final String DEFAULT_MASK = "*****";
+
+    private Integer maskPercentage = DEFAULT_MASK_PERCENTAGE;
+    private String mask = DEFAULT_MASK;
+    private List<String> maskedFields;
 }
