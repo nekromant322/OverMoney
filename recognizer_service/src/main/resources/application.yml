@@ -20,11 +20,6 @@
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
 
-  eureka:
-    client:
-      serviceUrl:
-        defaultZone: http://eureka:8761/eureka
-
   logging:
     level:
       org.zalando.logbook: TRACE
@@ -43,6 +38,7 @@
           "[http.server.requests]": true
 
   audio-recognizer-go-service:
+#    TODO вынести в манифест
     url: http://wit-ai-go-proxy:3333/recognizer
 
   authorization-header:

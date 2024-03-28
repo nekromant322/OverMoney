@@ -10,7 +10,6 @@ COPY /wit_ai_go_proxy /app
 
 RUN apt-get update && apt-get -y install libopus-dev libopusfile-dev
 RUN go mod download
-
 # COPY *.go ./
 
 RUN go build -o /wit_ai_go_proxy
