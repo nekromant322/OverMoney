@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: sa-telegram-bot
-  replicas: 2
+  replicas: 1
   minReadySeconds: 15
   strategy:
     type: RollingUpdate
@@ -32,16 +32,18 @@ spec:
           env:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
+            - name: ORCHESTRATOR_HOST
+              value: "195.133.49.108"
             - name: INTERNAL_KEY_HEADER
               value: "{{ INTERNAL_KEY_HEADER }}"
             - name: TELEGRAM_BOT_NAME
-              value: "OverMoneyBot"
+              value: "Botyarich_Bot"
             - name: TELEGRAM_BOT_TOKEN
-              value: "{{ TELEGRAM_BOT_TOKEN }}"
+              value: "6781862880:AAGIutEbOnddulEdYn7CbHkQBKlH9Vg9jOA"
             - name: TELEGRAM_BOT_DB_HOST
-              value: "{{ TELEGRAM_BOT_DB_HOST }}"
+              value: "194.87.235.171"
             - name: TELEGRAM_BOT_DB_PORT
-              value: "{{ TELEGRAM_BOT_DB_PORT }}"
+              value: "5435"
             - name: TELEGRAM_BOT_DB_USER
               value: "{{ TELEGRAM_BOT_DB_USER }}"
             - name: TELEGRAM_BOT_DB_PASSWORD

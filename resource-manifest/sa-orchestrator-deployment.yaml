@@ -28,9 +28,9 @@ spec:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
             - name: TELEGRAM_BOT_TOKEN
-              value: "{{ TELEGRAM_BOT_TOKEN }}"
+              value: "6781862880:AAGIutEbOnddulEdYn7CbHkQBKlH9Vg9jOA"
             - name: TELEGRAM_BOT_NAME
-              value: "OverMoneyBot"
+              value: "Botyarich_Bot"
             - name: INTERNAL_KEY_HEADER
               value: "{{ INTERNAL_KEY_HEADER }}"
             - name: JWT_ACCESS_KEY
@@ -38,7 +38,7 @@ spec:
             - name: JWT_REFRESH_KEY
               value: "{{ JWT_REFRESH_KEY }}"
             - name: ORCHESTRATOR_DB_HOST
-              value: "{{ ORCHESTRATOR_DB_HOST }}"
+              value: "194.87.235.171"
             - name: ORCHESTRATOR_DB_PORT
               value: "{{ ORCHESTRATOR_DB_PORT }}"
             - name: ORCHESTRATOR_DB_USER

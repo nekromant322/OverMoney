@@ -2,7 +2,7 @@
     name: ${TELEGRAM_BOT_NAME}
     token: ${TELEGRAM_BOT_TOKEN}
     api:
-      url: https://api.telegram.org
+      url: https://kuber-telegram
     voice:
       max_length: 10
 
