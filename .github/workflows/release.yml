@@ -88,35 +88,35 @@ jobs:
           push: true
           tags: nekromant322/overmoney-wit-ai-go-proxy
 
-  k8s-manifest-update:
-    name: Update manifests on remote host
-    runs-on: ubuntu-latest
-#    todo раскоментить после отладки
-#    needs: [build-and-push-images]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Inject secrets in resource manifests
-        uses: none0nfg/yaml-secrets-injector@v0.0.1
-        with:
-          inject_files: |-
-            resource-manifest/sa-recognizer-deployment.yaml
-            resource-manifest/service-sa-recognizer-lb.yaml
-            resource-manifest/sa-orchestrator-deployment.yaml
-            resource-manifest/service-sa-orchestrator-lb.yaml
-            resource-manifest/sa-telegram-bot-deployment.yaml
-            resource-manifest/service-sa-telegram-bot-lb.yaml
-          secrets: ${{ toJSON(secrets) }} # It would contain all your repository secrets in json
-      - name: copy files via ssh private key
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: 195.133.49.108
-          username: github
-          key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
-          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
-          port: 22
-          source: "resource-manifest/*"
-          target: "/home/github"
-          overwrite: true
+#  k8s-manifest-update:
+#    name: Update manifests on remote host
+#    runs-on: ubuntu-latest
+##    todo раскоментить после отладки
+##    needs: [build-and-push-images]
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Inject secrets in resource manifests
+#        uses: none0nfg/yaml-secrets-injector@v0.0.1
+#        with:
+#          inject_files: |-
+#            resource-manifest/sa-recognizer-deployment.yaml
+#            resource-manifest/service-sa-recognizer-lb.yaml
+#            resource-manifest/sa-orchestrator-deployment.yaml
+#            resource-manifest/service-sa-orchestrator-lb.yaml
+#            resource-manifest/sa-telegram-bot-deployment.yaml
+#            resource-manifest/service-sa-telegram-bot-lb.yaml
+#          secrets: ${{ toJSON(secrets) }} # It would contain all your repository secrets in json
+#      - name: copy files via ssh private key
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: 195.133.49.108
+#          username: github
+#          key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
+#          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
+#          port: 22
+#          source: "resource-manifest/*"
+#          target: "/home/github"
+#          overwrite: true
 
 #  :
 #    name: Copy k8s manifests by ssh
