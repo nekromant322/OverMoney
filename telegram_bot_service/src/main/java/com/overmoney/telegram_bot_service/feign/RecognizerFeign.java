@@ -5,7 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value="recognizer", url = "http://sa-recognizer")
+@FeignClient(value="recognizer", url = "http://sa-recognizer-svc")
 public interface RecognizerFeign {
 
     @PostMapping("/voice")

@@ -3,6 +3,7 @@ kind: Ingress
 metadata:
   name: orchestrator-ingress
 spec:
+  ingressClassName: nginx
   rules:
     - http:
         paths:
@@ -10,6 +11,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: sa-orchestrator
+                name: sa-orchestrator-svc
                 port:
-                  number: 8081
+                  number: 80
