@@ -28,7 +28,8 @@
     allowed_users:
       Marandyuk_Anatolii,
       HomerTheBald,
-      shapran_dmitry
+      shapran_dmitry,
+      Galactic_Alex
 
   filters:
     authorization-header:
