@@ -52,7 +52,9 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
             decryptedMessageAsJSON = response.toString();
         }
 
-        return mapper.readValue(decryptedMessageAsJSON, AudioRecognizerGoResponseDTO.class).getText();
+        String recognitionTextResult = mapper.readValue(decryptedMessageAsJSON, AudioRecognizerGoResponseDTO.class).getText();
+        log.info("Got result from wit.ai go proxy " + recognitionTextResult);
+        return recognitionTextResult;
     }
 
     /**
