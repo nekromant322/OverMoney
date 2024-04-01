@@ -20,6 +20,9 @@ spec:
       labels:
         app: wit-ai-go-proxy
     spec:
+      env:
+        - name: WIT_AI_TOKEN
+          value: "{{ WIT_AI_TOKEN }}"
       containers:
         - image: nekromant322/overmoney-wit-ai-go-proxy:latest
           imagePullPolicy: Always
