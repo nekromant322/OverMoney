@@ -39,7 +39,7 @@
 
   audio-recognizer-go-service:
 #    TODO вынести в манифест
-    url: http://wit-ai-go-proxy:3333/recognizer
+    url: http://wit-ai-go-proxy-svc:3333/recognizer
 
   authorization-header:
     header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
