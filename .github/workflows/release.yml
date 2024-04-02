@@ -138,47 +138,19 @@ jobs:
           script: |
             cd /home/github
             sudo kubectl apply -f resource-manifest
+            
+            if ${{ needs.detect-changes.outputs.orchestrator}}; then
+              sudo kubectl rollout restart deployment sa-orchestrator
+            fi
+            
+            if ${{ needs.detect-changes.outputs.recognizer}}; then
+              sudo kubectl rollout restart deployment sa-recognizer
+            fi
 
-      - name: rollout restart orchestrator
-        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: 195.133.49.108
-          username: github
-          key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
-          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
-          port: 22
-          script: |
-            sudo kubectl rollout restart deployment sa-orchestrator
-
-#        - name: Recognizer Build and Push to Dockerhub
-#          if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
-#          uses: docker/build-push-action@v2
-#          with:
-#            file: /recognizer_service/Dockerfile
-#            push: true
-#            tags: nekromant322/overmoney-recognizer
-#
-#        - name: Telegram Bot Build and Push to Dockerhub
-#          if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
-#          uses: docker/build-push-action@v2
-#          with:
-#            file: /telegram_bot_service/Dockerfile
-#            push: true
-#            tags: nekromant322/overmoney-telegram-bot
-#
-#        - name: Invest Build and Push to Dockerhub
-#          if: ${{ needs.detect-changes.outputs.invest == 'true' }}
-#          uses: docker/build-push-action@v2
-#          with:
-#            file: /invest_service/Dockerfile
-#            push: true
-#            tags: nekromant322/overmoney-invest
-#
-#        - name: Wit ai go proxy Build and Push to Dockerhub
-#          if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}
-
-#todo доделать инжекты и копирование манифестов, перенести вероятно в другой шаг
-#todo попробовать профиль прод и подсунуть креды
-#kubectl rollout restart deployment "depName"
-#kubectl rollout restart deployment sa-recognizer
+            if ${{ needs.detect-changes.outputs.telegram-bot}}; then
+              sudo kubectl rollout restart deployment sa-telegram-bot
+            fi
+            
+            if ${{ needs.detect-changes.outputs.wit-ai-go-proxy}}; then
+              sudo kubectl rollout restart deployment wit-ai-go-proxy
+            fi
