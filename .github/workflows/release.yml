@@ -105,6 +105,7 @@ jobs:
             resource-manifest/service-sa-orchestrator-lb.yaml
             resource-manifest/sa-telegram-bot-deployment.yaml
             resource-manifest/service-sa-telegram-bot-lb.yaml
+            resource-manifest/wit-ai-go-proxy-deployment.yaml
           secrets: ${{ toJSON(secrets) }} # It would contain all your repository secrets in json
       - name: copy files via ssh private key
         uses: appleboy/scp-action@v0.1.7
