@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(value = "recognizer", url = "http://sa-recognizer")
+@FeignClient(value = "recognizer", url = "http://sa-recognizer-svc")
 public interface RecognizerFeign {
 
     @PostMapping("/recognizer/category/suggested")

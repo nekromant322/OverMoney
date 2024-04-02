@@ -31,68 +31,68 @@ jobs:
               - 'invest_service/**'
             wit-ai-go-proxy:
               - 'wit_ai_go_proxy/**'
-  build-and-push-images:
-    name: Build & Push images to DockerHub
-    runs-on: ubuntu-latest
-    needs: detect-changes
-    steps:
-      - uses: actions/checkout@v4
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-        with:
-          version: v0.7.0
-
-
-      - name: Orchestrator Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /orchestrator_service/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-orchestrator
-
-      - name: Recognizer Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /recognizer_service/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-recognizer
-
-      - name: Telegram Bot Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /telegram_bot_service/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-telegram-bot
-
-      - name: Invest Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /invest_service/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-invest
-
-      - name: Wit ai go proxy Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /wit_ai_go_proxy/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-wit-ai-go-proxy
+#  build-and-push-images:
+#    name: Build & Push images to DockerHub
+#    runs-on: ubuntu-latest
+#    needs: detect-changes
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Login to DockerHub
+#        uses: docker/login-action@v3
+#        with:
+#          username: ${{ secrets.DOCKERHUB_USERNAME }}
+#          password: ${{ secrets.DOCKERHUB_TOKEN }}
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v1
+#        with:
+#          version: v0.7.0
+#
+#
+#      - name: Orchestrator Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /orchestrator_service/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-orchestrator
+#
+#      - name: Recognizer Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /recognizer_service/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-recognizer
+#
+#      - name: Telegram Bot Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /telegram_bot_service/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-telegram-bot
+#
+#      - name: Invest Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /invest_service/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-invest
+#
+#      - name: Wit ai go proxy Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /wit_ai_go_proxy/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-wit-ai-go-proxy
 
   k8s-manifest-update:
     name: Update manifests on remote host
     runs-on: ubuntu-latest
-#    todo раскоментить после отладки
-#    needs: [build-and-push-images]
+    #    todo раскоментить после отладки
+    #    needs: [build-and-push-images]
     steps:
       - uses: actions/checkout@v4
       - name: Inject secrets in resource manifests
@@ -119,52 +119,64 @@ jobs:
           target: "/home/github"
           overwrite: true
 
-#  :
-#    name: Copy k8s manifests by ssh
-#    runs-on: ubuntu-latest
-##    needs: [build-and-push-images, inject-secrets]
-#    needs: [inject-secrets]
-#    steps:
-#      - uses: actions/checkout@v4
+  #todo kubectl rollout restart deployment "depName"
+  build:
+    name: Manifest apply and rollout restarts
+    runs-on: ubuntu-latest
+    #  needs: [ build_and_push_images, detect-changes, push_compose ]
+    needs: detect-changes
+    steps:
+      - uses: actions/checkout@v4
+      - name: Connect with SSH and Apply
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: 195.133.49.108
+          username: github
+          key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
+          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
+          port: 22
+          script: |
+            cd /home/github
+            sudo kubectl apply -f resource-manifest
+
+      - name: rollout restart orchestrator
+        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: 195.133.49.108
+          username: github
+          key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
+          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
+          port: 22
+          script: |
+            sudo kubectl rollout restart deployment sa-orchestrator
+
+#        - name: Recognizer Build and Push to Dockerhub
+#          if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
+#          uses: docker/build-push-action@v2
+#          with:
+#            file: /recognizer_service/Dockerfile
+#            push: true
+#            tags: nekromant322/overmoney-recognizer
 #
-#  k8s-rollout-restart:
-#todo kubectl rollout restart deployment "depName"
-#deploy:
-#  name: Deploy
-#  runs-on: ubuntu-latest
-#  needs: [ build_and_push_images, detect-changes, push_compose ]
-#  steps:
-#    - name: Connect with SSH and Deploy
-#      uses: appleboy/ssh-action@v0.1.8
-#      with:
-#        host: overridetech.ru
-#        username: ${{ secrets.SSH_USER }}
-#        password: ${{ secrets.SSH_PASSWORD }}
-#        script: |
-#          echo ORCHESTRATOR_DB_USER = ${{ secrets.ORCHESTRATOR_DB_USER }} > overmoney-env.txt
-#          echo ORCHESTRATOR_DB_PASSWORD = ${{ secrets.ORCHESTRATOR_DB_PASSWORD }} >> overmoney-env.txt
-#          echo ORCHESTRATOR_DB_PORT = 5432 >> overmoney-env.txt
-#          echo ORCHESTRATOR_DB_HOST = orchestrator-db >> overmoney-env.txt
-#          echo TELEGRAM_BOT_DB_USER = ${{ secrets.TELEGRAM_BOT_DB_USER }} >> overmoney-env.txt
-#          echo TELEGRAM_BOT_DB_PASSWORD = ${{ secrets.TELEGRAM_BOT_DB_PASSWORD }} >> overmoney-env.txt
-#          echo TELEGRAM_BOT_DB_PORT = 5432 >> overmoney-env.txt
-#          echo TELEGRAM_BOT_DB_HOST = telegram-bot-db >> overmoney-env.txt
-#          echo TELEGRAM_BOT_TOKEN = ${{ secrets.TELEGRAM_BOT_TOKEN }} >> overmoney-env.txt
-#          echo TELEGRAM_BOT_NAME = OverMoneyBot >> overmoney-env.txt
-#          echo JWT_ACCESS_KEY = ${{ secrets.JWT_ACCESS_KEY }} >> overmoney-env.txt
-#          echo JWT_REFRESH_KEY = ${{ secrets.JWT_REFRESH_KEY }} >> overmoney-env.txt
-#          echo WIT_AI_TOKEN = ${{ secrets.WIT_AI_TOKEN }} >> overmoney-env.txt
-#          echo SPRING_APPLICATION_PROFILE = test >> overmoney-env.txt
-#          echo ORCHESTRATOR_HOST = ${{ secrets.ORCHESTRATOR_HOST }} >> overmoney-env.txt
-#          echo INTERNAL_KEY_HEADER = ${{ secrets.INTERNAL_KEY_HEADER }} >> overmoney-env.txt
+#        - name: Telegram Bot Build and Push to Dockerhub
+#          if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
+#          uses: docker/build-push-action@v2
+#          with:
+#            file: /telegram_bot_service/Dockerfile
+#            push: true
+#            tags: nekromant322/overmoney-telegram-bot
 #
-#          if ${{ needs.detect-changes.outputs.eureka}}; then
-#            echo ${{ secrets.SSH_PASSWORD }} | sudo -S docker stop eureka
-
-
-
-
-
+#        - name: Invest Build and Push to Dockerhub
+#          if: ${{ needs.detect-changes.outputs.invest == 'true' }}
+#          uses: docker/build-push-action@v2
+#          with:
+#            file: /invest_service/Dockerfile
+#            push: true
+#            tags: nekromant322/overmoney-invest
+#
+#        - name: Wit ai go proxy Build and Push to Dockerhub
+#          if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}
 
 #todo доделать инжекты и копирование манифестов, перенести вероятно в другой шаг
 #todo попробовать профиль прод и подсунуть креды

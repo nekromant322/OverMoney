@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(value = "telegram-bot", url = "http://sa-telegram-bot")
+@FeignClient(value = "telegram-bot", url = "http://sa-telegram-bot-svc")
 public interface TelegramBotFeign {
 
     @PostMapping("/announce")
