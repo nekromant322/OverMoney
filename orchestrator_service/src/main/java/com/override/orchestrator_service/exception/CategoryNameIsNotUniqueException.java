@@ -13,7 +13,7 @@ public class CategoryNameIsNotUniqueException extends BaseException{
 
     @Override
     public int getStatusCode() {
-        return HttpStatus.BAD_REQUEST.value();
+        return HttpStatus.BAD_REQUEST.va123123lue(2353646);
     }
 
     @Override
