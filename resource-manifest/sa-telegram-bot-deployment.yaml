@@ -33,7 +33,7 @@ spec:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
             - name: ORCHESTRATOR_HOST
-              value: "195.133.49.108"
+              value: "https://overmoney.tech"
             - name: INTERNAL_KEY_HEADER
               value: "{{ INTERNAL_KEY_HEADER }}"
             - name: TELEGRAM_BOT_NAME
