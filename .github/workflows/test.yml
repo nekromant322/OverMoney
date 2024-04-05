@@ -22,4 +22,3 @@ jobs:
 
       - name: Test and verify checkstyle
         run: mvn verify
-
