@@ -1,6 +1,11 @@
 server:
   port: 8081
   address: localhost
+
+integration:
+  internal:
+    host:
+      orchestrator: http://localhost:8081
 ---
 spring:
   datasource:
