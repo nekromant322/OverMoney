@@ -10,6 +10,12 @@
   orchestrator:
     host: ${ORCHESTRATOR_HOST}
 
+  integration:
+    internal:
+      host:
+        orchestrator: http://sa-orchestrator-svc
+        recognizer: http://sa-recognizer-svc
+
   server:
     port: 8080
 

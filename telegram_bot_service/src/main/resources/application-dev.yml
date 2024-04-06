@@ -5,3 +5,9 @@ server:
 orchestrator:
   host: overridetech.ru
 
+integration:
+  internal:
+    host:
+      orchestrator: http://localhost:8081
+      recognizer: http://localhost:8080
+

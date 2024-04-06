@@ -1,2 +1,7 @@
 server:
   port: 8080
+
+integration:
+  internal:
+    host:
+      orchestrator: http://localhost:8081

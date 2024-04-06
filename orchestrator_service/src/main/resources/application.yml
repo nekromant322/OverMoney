@@ -1,6 +1,13 @@
   server:
     port: 8080
 
+  integration:
+    internal:
+      host:
+        telegram-bot: http://sa-telegram-bot-svc
+        recognizer: http://sa-recognizer-svc
+        invest: http://sa-invest-svc
+
   telegram:
     bot:
       token: ${TELEGRAM_BOT_TOKEN:asd}
