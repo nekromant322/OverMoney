@@ -3,7 +3,7 @@ name: Build & Push & Deploy to k8s cluster
 on:
   push:
     branches:
-      - release
+      - master
 
 jobs:
   detect-changes:
