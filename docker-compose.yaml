@@ -58,20 +58,6 @@ services:
       - telegram-bot-db
       - prometheus
 
-  eureka:
-    container_name: eureka
-    image: nekromant322/overmoney:eureka
-    restart: unless-stopped
-    ports:
-      - '8761:8761'
-    environment:
-      _JAVA_OPTIONS: -Xmx256m
-      SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: 50m
-
   orchestrator:
     container_name: orchestrator
     image: nekromant322/overmoney:orchestrator
