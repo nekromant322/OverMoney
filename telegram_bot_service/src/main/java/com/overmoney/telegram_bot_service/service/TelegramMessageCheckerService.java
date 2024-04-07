@@ -1,7 +1,8 @@
 package com.overmoney.telegram_bot_service.service;
 
+
 import org.springframework.stereotype.Service;
-import static org.apache.commons.lang.StringUtils.isNumeric;
+import static org.apache.commons.lang3.StringUtils.isNumeric;
 
 @Service
 public class TelegramMessageCheckerService {

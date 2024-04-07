@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sa-orchestrator
+  labels:
+    app: sa-orchestrator
+spec:
+  selector:
+    matchLabels:
+      app: sa-orchestrator
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: sa-orchestrator
+    spec:
+      containers:
+        - image: nekromant322/overmoney-orchestrator:latest
+          imagePullPolicy: Always
+          name: sa-orchestrator
+          env:
+            - name: SPRING_APPLICATION_PROFILE
+              value: "prod"
+            - name: TELEGRAM_BOT_TOKEN
+              value: "{{ TELEGRAM_BOT_TOKEN }}"
+            - name: TELEGRAM_BOT_NAME
+              value: "OverMoneyBot"
+            - name: INTERNAL_KEY_HEADER
+              value: "{{ INTERNAL_KEY_HEADER }}"
+            - name: JWT_ACCESS_KEY
+              value: "{{ JWT_ACCESS_KEY }}"
+            - name: JWT_REFRESH_KEY
+              value: "{{ JWT_REFRESH_KEY }}"
+            - name: ORCHESTRATOR_DB_HOST
+              value: "194.87.235.171"
+            - name: ORCHESTRATOR_DB_PORT
+              value: "{{ ORCHESTRATOR_DB_PORT }}"
+            - name: ORCHESTRATOR_DB_USER
+              value: "{{ ORCHESTRATOR_DB_USER }}"
+            - name: ORCHESTRATOR_DB_PASSWORD
+              value: "{{ ORCHESTRATOR_DB_PASSWORD }}"
+          ports:
+            - containerPort: 8080

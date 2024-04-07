@@ -23,16 +23,6 @@ services:
       POSTGRES_DB: telegram-bot-db
     restart: always
 
-  eureka:
-    container_name: eureka
-    build:
-      context: .
-      dockerfile: eureka_service/Dockerfile
-    ports:
-      - '8761:8761'
-    environment:
-      _JAVA_OPTIONS: -Xmx256m
-
   orchestrator:
     container_name: orchestrator
     build:

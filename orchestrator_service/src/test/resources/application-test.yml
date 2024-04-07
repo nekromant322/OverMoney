@@ -1,6 +1,13 @@
 server:
   port: 8081
   address: localhost
+
+integration:
+  internal:
+    host:
+      orchestrator: http://localhost:8081
+      recognizer: http://localhost:8080
+      invest: http://localhost:8087
 ---
 spring:
   datasource:
@@ -21,10 +28,6 @@ spring:
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
 
-  eureka:
-    client:
-      serviceUrl:
-        defaultZone: http://eureka:8761/eureka
 
 telegram:
   bot:

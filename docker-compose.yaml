@@ -1,3 +1,5 @@
+# DEPRECATED
+#  todo избавиться после полноценной миграции экспортеров и invest в кубер
 version: '3.1'
 
 services:

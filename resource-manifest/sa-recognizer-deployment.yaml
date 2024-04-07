@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sa-recognizer
+  labels:
+    app: sa-recognizer
+spec:
+  selector:
+    matchLabels:
+      app: sa-recognizer
+  replicas: 2
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: sa-recognizer
+    spec:
+      containers:
+        - image: nekromant322/overmoney-recognizer:latest
+          imagePullPolicy: Always
+          name: sa-recognizer
+          resources:
+            requests:
+              memory: "256Mi"
+            limits:
+              memory: "512Mi"
+          env:
+            - name: SPRING_APPLICATION_PROFILE
+              value: "prod"
+            - name: WIT_AI_TOKEN
+              value: "{{ WIT_AI_TOKEN }}"
+            - name: INTERNAL_KEY_HEADER
+              value: "{{ INTERNAL_KEY_HEADER }}"
+
+          ports:
+            - containerPort: 8080

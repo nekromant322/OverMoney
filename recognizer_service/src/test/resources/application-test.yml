@@ -1,6 +1,11 @@
 server:
   port: 8081
   address: localhost
+
+integration:
+  internal:
+    host:
+      orchestrator: http://localhost:8081
 ---
 spring:
   datasource:
@@ -20,8 +25,3 @@ spring:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
   liquibase:
     change-log: classpath:db/changelog/db.changelog-1.0.xml
-
-  eureka:
-    client:
-      serviceUrl:
-        defaultZone: http://eureka:8761/eureka

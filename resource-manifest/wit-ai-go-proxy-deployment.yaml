@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wit-ai-go-proxy
+  labels:
+    app: wit-ai-go-proxy
+spec:
+  selector:
+    matchLabels:
+      app: wit-ai-go-proxy
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: wit-ai-go-proxy
+    spec:
+      containers:
+        - image: nekromant322/overmoney-wit-ai-go-proxy:latest
+          imagePullPolicy: Always
+          name: sa-recognizer
+          env:
+            - name: WIT_AI_TOKEN
+              value: "{{ WIT_AI_TOKEN }}"
+          resources:
+            requests:
+              memory: "256Mi"
+            limits:
+              memory: "512Mi"
+          ports:
+            - containerPort: 8080

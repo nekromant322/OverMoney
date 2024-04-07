@@ -44,10 +44,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
@@ -102,20 +98,17 @@
             <version>6.5.0</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
             <groupId>com.override</groupId>
             <artifactId>dto</artifactId>
             <version>0.0.1</version>
         </dependency>
-
         <dependency>
             <groupId>com.opentable.components</groupId>
             <artifactId>otj-pg-embedded</artifactId>
             <version>0.13.4</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
@@ -166,18 +159,21 @@
                     </excludes>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.liquibase</groupId>
-                <artifactId>liquibase-maven-plugin</artifactId>
-                <version>3.6.2</version>
-                <configuration>
-                    <driver>org.postgresql.Driver</driver>
-                    <url>jdbc:postgresql://localhost:5433/orchestrator-db</url>
-                    <username>postgres</username>
-                    <password>postgres</password>
-                    <outputChangeLogFile>src/main/resources/db/liquibase=outputChangeLog.xml</outputChangeLogFile>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.liquibase</groupId>-->
+<!--                <artifactId>liquibase-maven-plugin</artifactId>-->
+<!--                <version>3.6.2</version>-->
+<!--                <configuration>-->
+<!--                    <driver>org.postgresql.Driver</driver>-->
+<!--                    <url>jdbc:postgresql://localhost:5433/orchestrator-db</url>-->
+<!--                    <username>postgres</username>-->
+<!--                    <password>postgres</password>-->
+<!--&lt;!&ndash;                    <url>jdbc:postgresql://${env.ORCHESTRATOR_DB_HOST}:${env.ORCHESTRATOR_DB_PORT}/orchestrator-db</url>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <username>${env.ORCHESTRATOR_DB_USER}</username>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <password>${env.ORCHESTRATOR_DB_PASSWORD}</password>&ndash;&gt;-->
+<!--                    <outputChangeLogFile>src/main/resources/db/liquibase=outputChangeLog.xml</outputChangeLogFile>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>

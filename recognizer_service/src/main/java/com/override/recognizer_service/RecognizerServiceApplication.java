@@ -7,7 +7,6 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
 @EnableFeignClients
-@EnableDiscoveryClient
 public class RecognizerServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RecognizerServiceApplication.class, args);

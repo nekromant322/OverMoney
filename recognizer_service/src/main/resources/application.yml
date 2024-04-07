@@ -1,6 +1,12 @@
   server:
     port: 8080
 
+  integration:
+    internal:
+      host:
+        orchestrator: http://sa-orchestrator-svc
+
+
   wit-ai:
     url: https://api.wit.ai/speech
     token: ${WIT_AI_TOKEN}
@@ -20,11 +26,6 @@
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
 
-  eureka:
-    client:
-      serviceUrl:
-        defaultZone: http://eureka:8761/eureka
-
   logging:
     level:
       org.zalando.logbook: TRACE
@@ -43,7 +44,8 @@
           "[http.server.requests]": true
 
   audio-recognizer-go-service:
-    url: http://wit-ai-go-proxy:3333/recognizer
+#    TODO вынести в манифест
+    url: http://wit-ai-go-proxy-svc:3333/recognizer
 
   authorization-header:
     header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}

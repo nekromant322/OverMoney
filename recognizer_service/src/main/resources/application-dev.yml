@@ -1,4 +1,7 @@
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
+server:
+  port: 8080
+
+integration:
+  internal:
+    host:
+      orchestrator: http://localhost:8081
