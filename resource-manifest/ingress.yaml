@@ -14,3 +14,10 @@ spec:
                 name: sa-orchestrator-svc
                 port:
                   number: 80
+          - path: /front
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend-svc
+                port:
+                  number: 80
