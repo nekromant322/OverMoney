@@ -1,7 +1,7 @@
 FROM node:18.20.1-alpine3.18 as build
 WORKDIR /usr/app
 COPY . /usr/app
-RUN npm ci --noproxy registry.npmjs.org
+RUN npm ci
 RUN npm run build
 
 FROM nginx:1.23.1-alpine
