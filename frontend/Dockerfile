@@ -1,6 +1,6 @@
 FROM node:18.20.1-alpine3.18 as build
 WORKDIR /usr/app
-COPY . /usr/app
+COPY /frontend/ /usr/app
 RUN npm install
 RUN npm run build
 
