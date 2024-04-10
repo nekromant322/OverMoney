@@ -25,7 +25,8 @@ public class MaskLogConfiguration {
                         requestTo("/scripts/**"),
                         requestTo("/css/**"),
                         contentType("text/html;charset=UTF-8")))
-                .responseFilter(ResponseFilters.replaceBody(message -> contentType("text/html;charset=UTF-8").test(message) ? "some HTML code" : null))
+//                ниже вариация вместо полного отсечения логов по html
+//                .responseFilter(ResponseFilters.replaceBody(message -> contentType("text/html;charset=UTF-8").test(message) ? "some HTML code" : null))
                 .sink(new DefaultSink(maskLogFormatter, new DefaultHttpLogWriter()))
                 .build();
     }

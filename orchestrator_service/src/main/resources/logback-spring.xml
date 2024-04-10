@@ -5,6 +5,7 @@
         <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
             <destination>194.87.237.197:50000</destination>
             <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
+                <charset>UTF-8</charset>
                 <providers>
                     <mdc/>
                     <context/>
