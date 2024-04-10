@@ -4,8 +4,7 @@
     <springProfile name="!dev">
         <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
             <destination>194.87.237.197:50000</destination>
-            <encoder class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
-                <charset>UTF-8</charset>
+            <encoder charset="UTF-8" class="net.logstash.logback.encoder.LoggingEventCompositeJsonEncoder">
                 <providers>
                     <mdc/>
                     <context/>
