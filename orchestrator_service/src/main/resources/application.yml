@@ -1,5 +1,9 @@
   server:
     port: 8080
+    servlet:
+      encoding:
+        charset: UTF-8
+        force-response: true
 
   integration:
     internal:
