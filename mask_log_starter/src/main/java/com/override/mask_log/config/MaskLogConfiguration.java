@@ -23,7 +23,8 @@ public class MaskLogConfiguration {
                 .condition(exclude(
                         requestTo("/actuator/**"),
                         requestTo("/scripts/**"),
-                        requestTo("/css/**")))
+                        requestTo("/css/**"),
+                        contentType("text/html;charset=UTF-8")))
                 .responseFilter(ResponseFilters.replaceBody(message -> contentType("text/html;charset=UTF-8").test(message) ? "some HTML code" : null))
                 .sink(new DefaultSink(maskLogFormatter, new DefaultHttpLogWriter()))
                 .build();
