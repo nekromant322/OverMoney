@@ -10,6 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(value = "moex", url = "${moex.index-url-data}")
 public interface MOEXFeignClient {
 
-    @GetMapping("/imoex.json")
-    ResponseEntity<JsonNode> getIndexIMOEX(@RequestParam("limit") int limit);
+    @GetMapping("/imoex.json?limit=100")
+    ResponseEntity<JsonNode> getIndexIMOEX();
 }

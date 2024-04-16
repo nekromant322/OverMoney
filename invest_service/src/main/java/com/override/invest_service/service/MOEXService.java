@@ -46,7 +46,7 @@ public class MOEXService {
             if (jsonDataFile.exists() && checkJsonByFreshness(jsonDataFile)) {
                 jsonNode = readDataFromFile(jsonDataFile);
             } else {
-                ResponseEntity<JsonNode> response = MOEXFeignClient.getIndexIMOEX(100);
+                ResponseEntity<JsonNode> response = MOEXFeignClient.getIndexIMOEX();
 
                 if (response.getStatusCode() == HttpStatus.OK) {
                     jsonNode = response.getBody();
