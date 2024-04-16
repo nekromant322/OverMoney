@@ -36,3 +36,6 @@
       - token
       - tinkoffAccountId
       - favoriteAccountId
+
+  moex:
+    index-url-data: https://iss.moex.com/iss/statistics/engines/stock/markets/index/analytics
