@@ -73,14 +73,10 @@ public class MOEXService {
     }
 
     private JsonNode readDataFromFile(File jsonDataFile) {
-        JsonNode jsonNode = null;
-
         try {
-            jsonNode = objectMapper.readTree(jsonDataFile);
+            return objectMapper.readTree(jsonDataFile);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        return jsonNode;
     }
 }
