@@ -112,6 +112,8 @@ jobs:
             resource-manifest/service-sa-orchestrator-lb.yaml
             resource-manifest/sa-telegram-bot-deployment.yaml
             resource-manifest/service-sa-telegram-bot-lb.yaml
+            resource-manifest/sa-invest-deployment.yaml
+            resource-manifest/service-sa-invest-lb.yaml
             resource-manifest/wit-ai-go-proxy-deployment.yaml
             resource-manifest/frontend-deployment.yaml
             resource-manifest/service-frontend-lb.yaml
@@ -156,6 +158,10 @@ jobs:
 
             if ${{ needs.detect-changes.outputs.telegram-bot}}; then
               sudo kubectl rollout restart deployment sa-telegram-bot
+            fi
+            
+            if ${{ needs.detect-changes.outputs.invest}}; then
+              sudo kubectl rollout restart deployment sa-invest
             fi
             
             if ${{ needs.detect-changes.outputs.wit-ai-go-proxy}}; then

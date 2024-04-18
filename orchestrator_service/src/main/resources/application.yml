@@ -40,7 +40,8 @@
       Marandyuk_Anatolii,
       HomerTheBald,
       shapran_dmitry,
-      Galactic_Alex
+      Galactic_Alex,
+      coderror404
 
   filters:
     authorization-header:
