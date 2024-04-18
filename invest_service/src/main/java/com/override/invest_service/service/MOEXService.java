@@ -3,6 +3,7 @@ package com.override.invest_service.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.override.dto.IMOEXDataDTO;
 import com.override.invest_service.feign.MOEXFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,7 +16,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class MOEXService {
@@ -23,8 +26,6 @@ public class MOEXService {
     private final String IMOEX_DATA_FILENAME = "IMOEX_Data-invest.json";
     private final File jsonDataFile = new File(IMOEX_DATA_FILENAME);
     private final Long DATA_AGE_LIMIT = 1L;
-    private final int SECIDS_INDEX = 4;
-    private final int WEIGHT_INDEX = 5;
 
     @Autowired
     private MOEXFeignClient MOEXFeignClient;
@@ -41,24 +42,30 @@ public class MOEXService {
     @PostConstruct
     public void init() {
         try {
-            JsonNode jsonNode;
+            Optional<IMOEXDataDTO> imoexDataDTO;
 
             if (jsonDataFile.exists() && checkJsonByFreshness(jsonDataFile)) {
-                jsonNode = readDataFromFile(jsonDataFile);
+                imoexDataDTO = Optional.of(readDataFromFile(jsonDataFile));
             } else {
-                ResponseEntity<JsonNode> response = MOEXFeignClient.getIndexIMOEX();
+                ResponseEntity<IMOEXDataDTO> response = MOEXFeignClient.getIndexIMOEX();
 
                 if (response.getStatusCode() == HttpStatus.OK) {
-                    jsonNode = response.getBody();
-                    objectWriter.writeValue(jsonDataFile, jsonNode);
+                    imoexDataDTO = Optional.ofNullable(response.getBody());
+                    objectWriter.writeValue(jsonDataFile, imoexDataDTO);
                 } else {
-                    jsonNode = readDataFromFile(jsonDataFile);
+                    imoexDataDTO = Optional.of(readDataFromFile(jsonDataFile));
                 }
             }
 
-            for (JsonNode jn : jsonNode.get("analytics").get("data")) {
-                tickerToWeight.put(jn.get(SECIDS_INDEX).asText(), jn.get(WEIGHT_INDEX).asDouble());
-            }
+            tickerToWeight = imoexDataDTO
+                    .orElseThrow()
+                    .getAnalytics()
+                    .getImoexData()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            IMOEXDataDTO.IMOEXData::getSecIds,
+                            IMOEXDataDTO.IMOEXData::getWeight));
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -72,9 +79,9 @@ public class MOEXService {
         return (LocalDate.now().toEpochDay() - TimeUnit.MILLISECONDS.toDays(file.lastModified()) <= DATA_AGE_LIMIT);
     }
 
-    private JsonNode readDataFromFile(File jsonDataFile) {
+    private IMOEXDataDTO readDataFromFile(File jsonDataFile) {
         try {
-            return objectMapper.readTree(jsonDataFile);
+            return objectMapper.readValue(jsonDataFile, IMOEXDataDTO.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
