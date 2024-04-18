@@ -32,8 +32,6 @@ spec:
           env:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
-            - name: ORCHESTRATOR_HOST
-              value: "https://overmoney.tech/overmoney"
             - name: INTERNAL_KEY_HEADER
               value: "{{ INTERNAL_KEY_HEADER }}"
 
