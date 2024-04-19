@@ -12,6 +12,7 @@ import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class MOEXService {
     private final String IMOEX_DATA_FILENAME = "classpath:moexReserveData/imoex.json";
+    private final int DATA_AGE_LIMIT = 1;
+
     private Optional<IMOEXDataDTO> cachedImoexDataDTO = Optional.empty();
     private Map<String, Double> tickerToWeight = new HashMap<>();
 
@@ -31,14 +34,24 @@ public class MOEXService {
 
     @PostConstruct
     public void init() {
-        Optional<IMOEXDataDTO> imoexDataDTO;
-        ResponseEntity<IMOEXDataDTO> response = MOEXFeignClient.getIndexIMOEX();
+        updateIMOEXData();
+    }
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            imoexDataDTO = Optional.ofNullable(response.getBody());
-            cachedImoexDataDTO = imoexDataDTO;
+    private void updateIMOEXData() {
+        Optional<IMOEXDataDTO> imoexDataDTO;
+
+        if (cachedImoexDataDTO.isPresent() && checkCachedDataByFreshness()) {
+            imoexDataDTO = cachedImoexDataDTO;
         } else {
-            imoexDataDTO = Optional.ofNullable(getReserveData());
+            ResponseEntity<IMOEXDataDTO> response = MOEXFeignClient.getIndexIMOEX();
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                imoexDataDTO = Optional.ofNullable(response.getBody());
+            } else {
+                imoexDataDTO = Optional.ofNullable(getReserveData());
+            }
+
+            cachedImoexDataDTO = imoexDataDTO;
         }
 
         tickerToWeight = imoexDataDTO
@@ -52,6 +65,7 @@ public class MOEXService {
     }
 
     public Map<String, Double> getTickerToWeight() {
+        updateIMOEXData();
         return tickerToWeight;
     }
 
@@ -66,5 +80,12 @@ public class MOEXService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private boolean checkCachedDataByFreshness() {
+        long dateAge = LocalDate.now().toEpochDay()
+                - cachedImoexDataDTO.get().getAnalyticsDates().getDate().toEpochDay();
+
+        return (dateAge <= DATA_AGE_LIMIT);
     }
 }
