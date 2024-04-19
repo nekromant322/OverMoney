@@ -1,12 +1,9 @@
 package com.override.invest_service.feign;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.override.dto.IMOEXDataDTO;
+import com.override.invest_service.dto.IMOEXDataDTO.IMOEXDataDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
 
 @FeignClient(value = "moex", url = "${moex.index-url-data}")
 public interface MOEXFeignClient {

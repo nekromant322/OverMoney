@@ -1,30 +1,27 @@
 package com.override.invest_service.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-import com.override.dto.IMOEXDataDTO;
+import com.override.invest_service.dto.IMOEXDataDTO.IMOEXData;
+import com.override.invest_service.dto.IMOEXDataDTO.IMOEXDataDTO;
 import com.override.invest_service.feign.MOEXFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
 public class MOEXService {
-
-    private final String IMOEX_DATA_FILENAME = "IMOEX_Data-invest.json";
-    private final File jsonDataFile = new File(IMOEX_DATA_FILENAME);
-    private final Long DATA_AGE_LIMIT = 1L;
+    private final String IMOEX_DATA_FILENAME = "classpath:moexReserveData/imoex.json";
+    private Optional<IMOEXDataDTO> cachedImoexDataDTO = Optional.empty();
+    private Map<String, Double> tickerToWeight = new HashMap<>();
 
     @Autowired
     private MOEXFeignClient MOEXFeignClient;
@@ -32,55 +29,40 @@ public class MOEXService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private ObjectWriter objectWriter;
-
-    private Map<String, Double> tickerToWeight = new HashMap<>();
-
-
     @PostConstruct
     public void init() {
-        try {
-            Optional<IMOEXDataDTO> imoexDataDTO;
+        Optional<IMOEXDataDTO> imoexDataDTO;
+        ResponseEntity<IMOEXDataDTO> response = MOEXFeignClient.getIndexIMOEX();
 
-            if (jsonDataFile.exists() && checkJsonByFreshness(jsonDataFile)) {
-                imoexDataDTO = Optional.of(readDataFromFile(jsonDataFile));
-            } else {
-                ResponseEntity<IMOEXDataDTO> response = MOEXFeignClient.getIndexIMOEX();
-
-                if (response.getStatusCode() == HttpStatus.OK) {
-                    imoexDataDTO = Optional.ofNullable(response.getBody());
-                    objectWriter.writeValue(jsonDataFile, imoexDataDTO);
-                } else {
-                    imoexDataDTO = Optional.of(readDataFromFile(jsonDataFile));
-                }
-            }
-
-            tickerToWeight = imoexDataDTO
-                    .orElseThrow()
-                    .getAnalytics()
-                    .getImoexData()
-                    .stream()
-                    .collect(Collectors.toMap(
-                            IMOEXDataDTO.IMOEXData::getSecIds,
-                            IMOEXDataDTO.IMOEXData::getWeight));
-
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        if (response.getStatusCode() == HttpStatus.OK) {
+            imoexDataDTO = Optional.ofNullable(response.getBody());
+            cachedImoexDataDTO = imoexDataDTO;
+        } else {
+            imoexDataDTO = Optional.ofNullable(getReserveData());
         }
+
+        tickerToWeight = imoexDataDTO
+                .orElseThrow()
+                .getAnalytics()
+                .getImoexData()
+                .stream()
+                .collect(Collectors.toMap(
+                        IMOEXData::getSecIds,
+                        IMOEXData::getWeight));
     }
 
     public Map<String, Double> getTickerToWeight() {
         return tickerToWeight;
     }
 
-    private boolean checkJsonByFreshness(File file) {
-        return (LocalDate.now().toEpochDay() - TimeUnit.MILLISECONDS.toDays(file.lastModified()) <= DATA_AGE_LIMIT);
-    }
-
-    private IMOEXDataDTO readDataFromFile(File jsonDataFile) {
+    private IMOEXDataDTO getReserveData() {
         try {
-            return objectMapper.readValue(jsonDataFile, IMOEXDataDTO.class);
+            if (cachedImoexDataDTO.isPresent()) {
+                return cachedImoexDataDTO.get();
+            } else {
+                return objectMapper.readValue(
+                        ResourceUtils.getFile(IMOEX_DATA_FILENAME), IMOEXDataDTO.class);
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

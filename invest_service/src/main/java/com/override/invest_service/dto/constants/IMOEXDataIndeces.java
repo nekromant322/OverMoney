@@ -1,4 +1,4 @@
-package com.override.dto.constants;
+package com.override.invest_service.dto.constants;
 
 public class IMOEXDataIndeces {
         public final static int INDEXID_INDEX = 0;
