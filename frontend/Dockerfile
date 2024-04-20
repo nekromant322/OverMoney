@@ -1,10 +1,13 @@
 FROM node:18.20.1-alpine3.18 as build
-WORKDIR /usr/app
-COPY /frontend/ /usr/app
+WORKDIR /app
+COPY package.json package-lock.json ./
 RUN npm install
+COPY . .
 RUN npm run build
 
 FROM nginx:1.23.1-alpine
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=build /app/build /usr/share/nginx/html
+COPY /docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
-COPY /frontend/docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /usr/app/build /usr/share/nginx/html
+ENTRYPOINT ["nginx", "-g", "daemon off;"]
