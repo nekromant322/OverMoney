@@ -10,4 +10,5 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=build /app/build /usr/share/nginx/html
 COPY /frontend/docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+COPY /frontend/docker/nginx/conf.d/default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /usr/app/build /usr/share/nginx/html
