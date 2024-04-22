@@ -1,72 +1,91 @@
 package com.override.invest_service.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.override.invest_service.dto.IMOEXDataDTO.IMOEXData;
+import com.override.invest_service.dto.IMOEXDataDTO.IMOEXDataDTO;
+import com.override.invest_service.feign.MOEXFeignClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MOEXService {
-    private final Map<String, Double> tickerToWeight = new HashMap<>();
-    //todo
-    // стянуть веса индекса мосбиржи с картинки  https://informer.moex.com/ru/index/constituents-IMOEX-20230721.gif?page=0
-    // можно просто совать актуальную дату в имя файла
+    private final String IMOEX_DATA_FILENAME = "classpath:moexReserveData/imoex.json";
+    private final int DATA_AGE_LIMIT = 1;
+
+    private Optional<IMOEXDataDTO> cachedImoexDataDTO = Optional.empty();
+    private Map<String, Double> tickerToWeight = new HashMap<>();
+
+    @Autowired
+    private MOEXFeignClient MOEXFeignClient;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @PostConstruct
     public void init() {
-        tickerToWeight.put("AFKS", 0.58d);
-        tickerToWeight.put("AFLT", 0.53d);
-        tickerToWeight.put("AGRO", 0.86d);
-        tickerToWeight.put("ALRS", 1.28d);
-        tickerToWeight.put("CBOM", 0.74d);
-        tickerToWeight.put("CHMF", 2.22d);
-        tickerToWeight.put("ENPG", 0.41d);
-        tickerToWeight.put("FEES", 0.49d);
-        tickerToWeight.put("FIVE", 0.97d);
-        tickerToWeight.put("FLOT", 0.62d);
-        tickerToWeight.put("GAZP", 11.14d);
-        tickerToWeight.put("GLTR", 0.24d);
-        tickerToWeight.put("GMKN", 6.05d);
-        tickerToWeight.put("HYDR", 0.26d);
-        tickerToWeight.put("IRAO", 1.55d);
-        tickerToWeight.put("LKOH", 14.47d);
-        tickerToWeight.put("MAGN", 1.28d);
-        tickerToWeight.put("MGNT", 1.97d);
-        tickerToWeight.put("MOEX", 1.02d);
-        tickerToWeight.put("MSNG", 0.38d);
-        tickerToWeight.put("MTLR", 0.53d);
-        tickerToWeight.put("MTLRP",0.38d);
-        tickerToWeight.put("MTSS", 1.22d);
-        tickerToWeight.put("NLMK", 1.74d);
-        tickerToWeight.put("NVTK", 3.06d);
-        tickerToWeight.put("OZON", 0.96d);
-        tickerToWeight.put("PHOR", 0.8d);
-        tickerToWeight.put("PIKK", 2.06d);
-        tickerToWeight.put("PLZL", 2.34d);
-        tickerToWeight.put("POLY", 0.21d);
-        tickerToWeight.put("POSI", 0.35d);
-        tickerToWeight.put("ROSN", 2.33d);
-        tickerToWeight.put("RTKM", 1.06d);
-        tickerToWeight.put("RUAL", 1.66d);
-        tickerToWeight.put("SBER", 13.11d);
-        tickerToWeight.put("SBERP", 2.53d);
-        tickerToWeight.put("SELG", 0.29d);
-        tickerToWeight.put("SGZH", 0.24d);
-        tickerToWeight.put("SMLT", 0.35d);
-        tickerToWeight.put("SNGS", 3.13d);
-        tickerToWeight.put("SNGSP", 2.98d);
-        tickerToWeight.put("TATN", 5.73d);
-        tickerToWeight.put("TATNP", 1.05d);
-        tickerToWeight.put("TCSG", 0.62d);
-        tickerToWeight.put("TRNFP", 0.66d);
-        tickerToWeight.put("UPRO", 0.31d);
-        tickerToWeight.put("VKCO", 0.41d);
-        tickerToWeight.put("VTBR", 0.94d);
-        tickerToWeight.put("YNDX", 1.9d);
+        updateIMOEXData();
+    }
+
+    private void updateIMOEXData() {
+        Optional<IMOEXDataDTO> imoexDataDTO;
+
+        if (cachedImoexDataDTO.isPresent() && checkCachedDataByFreshness()) {
+            imoexDataDTO = cachedImoexDataDTO;
+        } else {
+            ResponseEntity<IMOEXDataDTO> response = MOEXFeignClient.getIndexIMOEX();
+
+            if (response.getStatusCode() == HttpStatus.OK) {
+                imoexDataDTO = Optional.ofNullable(response.getBody());
+            } else {
+                imoexDataDTO = Optional.ofNullable(getReserveData());
+            }
+
+            cachedImoexDataDTO = imoexDataDTO;
+        }
+
+        tickerToWeight = imoexDataDTO
+                .orElseThrow()
+                .getAnalytics()
+                .getImoexData()
+                .stream()
+                .collect(Collectors.toMap(
+                        IMOEXData::getSecIds,
+                        IMOEXData::getWeight));
     }
 
     public Map<String, Double> getTickerToWeight() {
+        updateIMOEXData();
         return tickerToWeight;
+    }
+
+    private IMOEXDataDTO getReserveData() {
+        try {
+            if (cachedImoexDataDTO.isPresent()) {
+                return cachedImoexDataDTO.get();
+            } else {
+                return objectMapper.readValue(
+                        ResourceUtils.getFile(IMOEX_DATA_FILENAME), IMOEXDataDTO.class);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean checkCachedDataByFreshness() {
+        long dateAge = LocalDate.now().toEpochDay()
+                - cachedImoexDataDTO.get().getAnalyticsDates().getDate().toEpochDay();
+
+        return (dateAge <= DATA_AGE_LIMIT);
     }
 }
