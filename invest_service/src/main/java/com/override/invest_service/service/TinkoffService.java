@@ -3,24 +3,19 @@ package com.override.invest_service.service;
 import com.override.dto.tinkoff.TinkoffAccountDTO;
 import com.override.dto.tinkoff.TinkoffActiveDTO;
 import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
+import com.override.invest_service.model.TinkoffApiData;
 import com.override.invest_service.model.TinkoffShareInfo;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ru.tinkoff.piapi.contract.v1.Instrument;
-import ru.tinkoff.piapi.contract.v1.InstrumentStatus;
-import ru.tinkoff.piapi.contract.v1.Quotation;
-import ru.tinkoff.piapi.contract.v1.Share;
+import ru.tinkoff.piapi.contract.v1.*;
 import ru.tinkoff.piapi.core.InvestApi;
 import ru.tinkoff.piapi.core.models.Portfolio;
 import ru.tinkoff.piapi.core.models.Position;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -33,19 +28,22 @@ public class TinkoffService {
     @Autowired
     private MOEXService moexService;
 
-    private final String MOEX_CLASS_CODE = "TQBR";
-
     @SneakyThrows
     public List<TinkoffActiveDTO> getActives(String token, String tinkoffAccountId) {
-        InvestApi api = InvestApi.createReadonly(token);
+        return getActives(new TinkoffApiData(token, tinkoffAccountId));
+    }
+
+    @SneakyThrows
+    public List<TinkoffActiveDTO> getActives(TinkoffApiData tinkoffApiData) {
+        InvestApi api = InvestApi.createReadonly(tinkoffApiData.getToken());
 
         try {
-            Portfolio portfolio = api.getOperationsService().getPortfolioSync(tinkoffAccountId);
+            Portfolio portfolio = api.getOperationsService().getPortfolioSync(tinkoffApiData.getTinkoffAccountId());
             List<Position> positions = portfolio.getPositions();
 
             return positions.stream()
                     .map(position -> {
-                        Instrument instrument = api.getInstrumentsService().getInstrumentByFigiSync(position.getFigi());
+                        Instrument instrument = api.getInstrumentsService().getInstrumentByFigiSync(position.getFigi()); //todo тут надо подумать в какую сторону оптимизировать, пока нет однозначного решения
                         return TinkoffActiveDTO.builder()
                                 .name(instrument.getName())
                                 .ticker(instrument.getTicker())
@@ -63,16 +61,19 @@ public class TinkoffService {
         }
     }
 
-
     public List<TinkoffActiveMOEXDTO> getActivesWithMOEXWeight(String token, String tinkoffAccountId) {
         InvestApi api = InvestApi.createReadonly(token);
+        TinkoffApiData tinkoffApiData = new TinkoffApiData(token, tinkoffAccountId);
 
         try {
-            final Double minimalSum = calculateMinimalPorfolioSum(token);
+            final Double minimalSum = calculateMinimalPorfolioSum(tinkoffApiData);
 
             Map<String, Double> tickerToWeight = moexService.getTickerToWeight();
-            Map<String, TinkoffActiveDTO> actives = getActives(token, tinkoffAccountId).stream()
+            Map<String, TinkoffActiveDTO> actives = getActives(tinkoffApiData).stream()
                     .collect(Collectors.toMap(TinkoffActiveDTO::getTicker, Function.identity(), (prev, next) -> next, HashMap::new));
+
+            Map<String, Share> tickerShareMap = tinkoffApiData.getTickerShareMap();
+            Map<String, Quotation> figiPriceMap = tinkoffApiData.getFigiPriceMap();
 
             return tickerToWeight
                     .entrySet()
@@ -80,8 +81,8 @@ public class TinkoffService {
                     .map(pair -> {
                         TinkoffActiveDTO active = actives.get(pair.getKey());
                         if (active == null) {
-                            Share share = api.getInstrumentsService().getShareByTickerSync(pair.getKey(), MOEX_CLASS_CODE);
-                            Quotation price = api.getMarketDataService().getLastPricesSync(List.of(share.getFigi())).get(0).getPrice();
+                            Share share = tickerShareMap.get(pair.getKey());
+                            Quotation price = figiPriceMap.get(share.getFigi());
                             int lots = share.getLot();
                             Double priceForOne = price.getUnits() + price.getNano() / 1_000_000_000d;
                             Double correctPrice = minimalSum * pair.getValue() / 100;
@@ -126,9 +127,8 @@ public class TinkoffService {
         }
     }
 
-
-    public Double calculateMinimalPorfolioSum(String token) {
-        TinkoffShareInfo shareHighestPriceForLot = getMOEXSharesInfo(token).stream()
+    private Double calculateMinimalPorfolioSum(TinkoffApiData tinkoffApiData) {
+        TinkoffShareInfo shareHighestPriceForLot = getMOEXSharesInfo(tinkoffApiData).stream()
                 .max(Comparator.comparing(TinkoffShareInfo::getPriceForLot))
                 .get();
 
@@ -136,33 +136,24 @@ public class TinkoffService {
         return shareHighestPriceForLot.getPriceForLot() * 100 / weightOfHighestShare;
     }
 
-    public List<TinkoffShareInfo> getMOEXSharesInfo(String token) {
-        InvestApi api = InvestApi.createReadonly(token);
+    private List<TinkoffShareInfo> getMOEXSharesInfo(TinkoffApiData tinkoffApiData) {
+        Map<String, Quotation> figiPriceMap = tinkoffApiData.getFigiPriceMap();
 
-        try {
-            Map<String, Share> tickerToShare =
-                    api.getInstrumentsService().getSharesSync(InstrumentStatus.INSTRUMENT_STATUS_ALL)
-                            .stream()
-                            .filter(x -> x.getClassCode().equals(MOEX_CLASS_CODE))
-                            .collect(Collectors.toMap(Share::getTicker, Function.identity(), (prev, next) -> next, HashMap::new));
-            return moexService.getTickerToWeight()
-                    .keySet()
-                    .stream()
-                    .map(tickerToShare::get)
-                    .map(share -> {
-                                Quotation price = api.getMarketDataService().getLastPricesSync(List.of(share.getFigi())).get(0).getPrice();
-                                return TinkoffShareInfo.builder()
-                                        .name(share.getName())
-                                        .ticker(share.getTicker())
-                                        .lot(share.getLot())
-                                        .priceForOne(price.getUnits() + price.getNano() / 1_000_000_000d)
-                                        .priceForLot((price.getUnits() + price.getNano() / 1_000_000_000d) * share.getLot())
-                                        .build();
-                            }
-                    ).collect(Collectors.toList());
-        } finally {
-            api.destroy(0);
-        }
+        return moexService.getTickerToWeight()
+                .keySet()
+                .stream()
+                .map(tinkoffApiData.getTickerShareMap()::get)
+                .map(share -> {
+                            Quotation price = figiPriceMap.get(share.getFigi());
+                            return TinkoffShareInfo.builder()
+                                    .name(share.getName())
+                                    .ticker(share.getTicker())
+                                    .lot(share.getLot())
+                                    .priceForOne(price.getUnits() + price.getNano() / 1_000_000_000d)
+                                    .priceForLot((price.getUnits() + price.getNano() / 1_000_000_000d) * share.getLot())
+                                    .build();
+                        }
+                ).collect(Collectors.toList());
     }
 
     public List<TinkoffAccountDTO> getAccounts(String token) {
@@ -179,7 +170,6 @@ public class TinkoffService {
         } finally {
             api.destroy(0);
         }
-
     }
 
     private Double roundToTwoPlaces(Double value) {
