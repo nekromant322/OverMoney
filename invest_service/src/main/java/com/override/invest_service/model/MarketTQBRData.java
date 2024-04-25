@@ -1,6 +1,5 @@
 package com.override.invest_service.model;
 
-import lombok.Builder;
 import lombok.Data;
 import ru.tinkoff.piapi.contract.v1.LastPrice;
 import ru.tinkoff.piapi.contract.v1.Quotation;
@@ -12,29 +11,34 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Хранит подробную информацию об инструментах торгуемых на площадке BOARDID = "TQBR"
+ */
 @Data
-public class TinkoffApiData {
+public class MarketTQBRData {
     private final String MOEX_CLASS_CODE = "TQBR";
     private final String tinkoffAccountId;
     private final String token;
     private final Map<String, Share> tickerShareMap;
     private final Map<String, Quotation> figiPriceMap;
 
-    public TinkoffApiData(String token, String tinkoffAccountId) {
+    public MarketTQBRData(String token, String tinkoffAccountId) {
         this.tinkoffAccountId = tinkoffAccountId;
         this.token = token;
 
         InvestApi api = InvestApi.createReadonly(token);
 
         try {
-            this.tickerShareMap = buildSharesMap(api);
+            this.tickerShareMap = buildTickerSharesMap(api);
             this.figiPriceMap = buildFigiesPricesMap(api);
+        } catch (RuntimeException ex) {
+            throw new RuntimeException("Ошибка сборки данных из tinkoffAPI в хэшмапы", ex);
         } finally {
             api.destroy(0);
         }
     }
 
-    private Map<String, Share> buildSharesMap(InvestApi api) {
+    private Map<String, Share> buildTickerSharesMap(InvestApi api) {
         List<Share> shares = api.getInstrumentsService().getTradableSharesSync().stream()
                 .filter(s -> s.getClassCode().equals(MOEX_CLASS_CODE))
                 .collect(Collectors.toList());
