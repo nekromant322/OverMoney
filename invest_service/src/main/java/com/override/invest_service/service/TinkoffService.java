@@ -34,11 +34,11 @@ public class TinkoffService {
     }
 
     @SneakyThrows
-    public List<TinkoffActiveDTO> getActives(MarketTQBRData tinkoffApiData) {
-        InvestApi api = InvestApi.createReadonly(tinkoffApiData.getToken());
+    public List<TinkoffActiveDTO> getActives(MarketTQBRData marketTQBRData) {
+        InvestApi api = InvestApi.createReadonly(marketTQBRData.getToken());
 
         try {
-            Portfolio portfolio = api.getOperationsService().getPortfolioSync(tinkoffApiData.getTinkoffAccountId());
+            Portfolio portfolio = api.getOperationsService().getPortfolioSync(marketTQBRData.getTinkoffAccountId());
             List<Position> positions = portfolio.getPositions();
 
             return positions.stream()
@@ -127,8 +127,8 @@ public class TinkoffService {
         }
     }
 
-    private Double calculateMinimalPorfolioSum(MarketTQBRData MarketTQBRData) {
-        TinkoffShareInfo shareHighestPriceForLot = getMOEXSharesInfo(MarketTQBRData).stream()
+    private Double calculateMinimalPorfolioSum(MarketTQBRData marketTQBRData) {
+        TinkoffShareInfo shareHighestPriceForLot = getMOEXSharesInfo(marketTQBRData).stream()
                 .max(Comparator.comparing(TinkoffShareInfo::getPriceForLot))
                 .get();
 
@@ -136,13 +136,13 @@ public class TinkoffService {
         return shareHighestPriceForLot.getPriceForLot() * 100 / weightOfHighestShare;
     }
 
-    private List<TinkoffShareInfo> getMOEXSharesInfo(MarketTQBRData MarketTQBRData) {
-        Map<String, Quotation> figiPriceMap = MarketTQBRData.getFigiPriceMap();
+    private List<TinkoffShareInfo> getMOEXSharesInfo(MarketTQBRData marketTQBRData) {
+        Map<String, Quotation> figiPriceMap = marketTQBRData.getFigiPriceMap();
 
         return moexService.getTickerToWeight()
                 .keySet()
                 .stream()
-                .map(MarketTQBRData.getTickerShareMap()::get)
+                .map(marketTQBRData.getTickerShareMap()::get)
                 .map(share -> {
                             Quotation price = figiPriceMap.get(share.getFigi());
                             return TinkoffShareInfo.builder()
