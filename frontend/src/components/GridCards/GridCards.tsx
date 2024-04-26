@@ -1,10 +1,21 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
+import { ICard } from '../../types/types';
+import { Col, Row } from 'react-bootstrap';
+import ItemCard from '../ItemCard/ItemCard';
 
-const GridCards: FC = (cards: ICard) => {
+interface GridCardsProps {
+    cards: ICard[]
+}
+const GridCards: FC<GridCardsProps> = ({cards}) => {
+    
     return (
-        <div>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero nihil minima quis sint deserunt voluptatem aliquam cupiditate voluptatibus, nostrum similique eos explicabo hic, commodi quas odit ea dolor est. Perferendis.</p>
-        </div>
+        <Row xs={1} md={2} className="g-4">
+            {cards.map((card : ICard) => (
+                <Col key={card.id}>
+                    <ItemCard card={card} />
+                </Col>
+            ))}
+        </Row>
     );
 };
 

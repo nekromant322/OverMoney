@@ -8,7 +8,7 @@ const Overmoney: FC = () => {
         <Container>
             <Row>
                 <Col sm={8}>
-                    <GridCards />
+                    <GridCards cards={[]} />
                 </Col>
                 <Col sm={4}>
                     <ListCategories />
