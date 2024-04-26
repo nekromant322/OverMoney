@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
@@ -7,17 +7,16 @@ import History from '../History/History';
 import Analytics from '../Analytics/Analytics';
 import Micromanagement from '../Micromanagement/Micromanagement';
 import Settings from '../Settings/Settings';
-import Navigate from '../Navigate/Navigate';
+import Header from '../Header/Header';
+import { Container } from 'react-bootstrap';
 
 const App: FC = () => {
 
-  const [activeSatate, setActiveState] = useState();
 
   return (
     <BrowserRouter>
-      <div className="App">
-        <header className="App-header">
-          <Navigate activePage={activeSatate} />
+      <Container className="App">
+          <Header />
           <Routes>
             <Route path="/" Component={Overmoney} />
             <Route path="/overmoney" Component={Overmoney} />
@@ -26,8 +25,7 @@ const App: FC = () => {
             <Route path="/micromanagement" Component={Micromanagement} />
             <Route path="/settings" Component={Settings} />
           </Routes>
-        </header>
-      </div>
+      </Container>
     </BrowserRouter>
   );
 }
