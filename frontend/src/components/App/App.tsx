@@ -1,5 +1,4 @@
 import React, { FC } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.scss';
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 import Overmoney from '../Overmoney/Overmoney';
@@ -15,7 +14,7 @@ const App: FC = () => {
 
   return (
     <BrowserRouter>
-      <Container className="App">
+      <Container >
           <Header />
           <Routes>
             <Route path="/" Component={Overmoney} />
