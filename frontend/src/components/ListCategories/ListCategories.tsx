@@ -1,10 +1,29 @@
 import React, { FC } from 'react';
+import { Badge, Container, ListGroup } from 'react-bootstrap';
+import ListGroupItem from 'react-bootstrap/ListGroupItem'
+import { IListItem } from '../../types/types';
 
-const ListCategories : FC = () => {
+interface ListCategoriesProps {
+    items: IListItem[]
+}
+
+const ListCategories : FC<ListCategoriesProps> = ({items}) => {
     return (
-        <div>
-            <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Officia accusantium nobis similique, nostrum facere reprehenderit accusamus repellat, rerum eum, minus sunt doloremque dicta ullam omnis quibusdam. Aperiam explicabo minus id!</p>
-        </div>
+        <Container>
+            <div className="listgroup__header">Категории</div>
+            <ListGroup as={"ul"}>
+                {items.map((item : IListItem) => (
+                    <ListGroupItem as="li" className="d-flex justify-content-between align-items-start " key={item.id}>
+                        <div className="mt-4 mb-4 ms-2 me-auto">
+                            {item.title}
+                        </div>
+                        <Badge bg="primary" pill>
+                            {item.keywords.length}
+                        </Badge>
+                    </ListGroupItem>
+                ))}
+            </ListGroup>
+        </Container>
     );
 };
 
