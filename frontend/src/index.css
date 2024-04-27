@@ -1,16 +1,3 @@
-@import url(./components/Header/Header.scss);
-/* @import url(./components/ItemCard/ItemCard.scss); */
-
-:root {
-  --bs-dark-rgb: #0D1117;
-  --bs-emphasis-color: #e6edf3;
-  --bs-body-bg: #0D1117;
-  --bs-body-color: #e6edf3;
-  --bs-card-border-color: #e6edf3;
-  --bs-border-width: 3px;
-  --bs-border-color-translucent: #e6edf3;
-}
-
 body {
   background-color: #0D1117;
   color: #e6edf3;

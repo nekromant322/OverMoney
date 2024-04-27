@@ -14,7 +14,7 @@ const App: FC = () => {
 
   return (
     <BrowserRouter>
-      <Container >
+      <Container className="App">
           <Header />
           <Routes>
             <Route path="/" Component={Overmoney} />

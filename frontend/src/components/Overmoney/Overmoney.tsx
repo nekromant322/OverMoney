@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Col, Container, Row } from 'react-bootstrap';
+import { Button, Col, Container, Row } from 'react-bootstrap';
 import GridCards from '../GridCards/GridCards';
 import ListCategories from '../ListCategories/ListCategories';
 import { ICard, IListItem } from '../../types/types';
@@ -7,7 +7,7 @@ import { ICard, IListItem } from '../../types/types';
 const cards = [
     {
         id: 1,
-        title: 'Карта 1',
+        title: 'Карта 1sddsagagsgdsads',
         amount: 1000,
         size: 4
     },
@@ -44,7 +44,7 @@ const cards = [
 
 ] as ICard[];
 
-const ListItems = [
+const listItems = [
     {
         id: 1,
         title: 'Категория 1',
@@ -73,13 +73,15 @@ const ListItems = [
 ] as IListItem[];
 const Overmoney: FC = () => {
     return (
-        <Container>
+        <Container className='mt-5'>
             <Row>
                 <Col sm={8}>
                     <GridCards cards={cards} />
+                    <Button variant="success">Добавить транзакцию</Button>
                 </Col>
                 <Col sm={4}>
-                    <ListCategories items={ListItems} />
+                    <ListCategories items={listItems} />
+                    <Button  variant="success">Добавить категорию</Button>
                 </Col>
             </Row>
         </Container>
