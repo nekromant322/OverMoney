@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 const Header: FC = () => {
   let location = useLocation();
   return (
-    <header className="p-auto me-0">
+    <header className="w-100 m-0">
       <Navbar sticky="top" data-bs-theme="dark">
         <Container className="mt-3 mb-3">
           <Navbar.Brand href="/">OverMoney</Navbar.Brand>

@@ -7,13 +7,19 @@
     --bs-body-color: #e6edf3;
     // --bs-card-border-color: #30363d;
     --bs-border-width: 3px;
+    --bs-border-block: 1px;
     --bs-border-color-translucent: #30363d;
     --bs-border-color: #30363d; 
 }
 
+.border-block {
+    border: var(--bs-border-block) solid var(--bs-border-color);
+    border-radius: 6px;
+}
+
 header {
-    padding: 0 auto;
     background-color: #010409;
+    box-shadow: 0 1px 0 var(--bs-border-color) ;
 }
 
 .nav-link {
@@ -37,10 +43,11 @@ header {
         }
     }
 }
-.list-group {
-    --bs-list-group-border-width: 1px;
 
-    &-item {
-        border: var(--bs-list-group-border-width) solid var(--bs-border-color);
+.listgroup {
+
+    &__item {
+        border: var(--bs-border-block) solid var(--bs-border-color);
     }
 }
+

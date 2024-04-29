@@ -1,4 +1,8 @@
 body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   background-color: #0D1117;
   color: #e6edf3;
   margin: 0;

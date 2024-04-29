@@ -6,38 +6,38 @@ import { ICard, IListItem } from '../../types/types';
 
 const cards = [
     {
-        id: 1,
-        title: 'Карта 1sddsagagsgdsads',
+        id: '1',
+        message: 'Карта 1sddsagagsgdsads',
         amount: 1000,
         size: 4
     },
     {
-        id: 2,
-        title: 'Карта 2',
+        id: '2',
+        message: 'Карта 2',
         amount: 800,
         size: 3
     },
     {
-        id: 3,
-        title: 'Карта 3',
+        id: '3',
+        message: 'Карта 3',
         amount: 600,
         size: 2
     },
     {
-        id: 4,
-        title: 'Карта 4',
+        id: '4',
+        message: 'Карта 4',
         amount: 400,
         size: 1
     },
     {
-        id: 5,
-        title: 'Карта 5',
+        id: '5',
+        message: 'Карта 5',
         amount: 200,
         size: 1
     },
     {
-        id: 6,
-        title: 'Карта 6',
+        id: '6',
+        message: 'Карта 6',
         amount: 100,
         size: 0
     },
@@ -47,26 +47,26 @@ const cards = [
 const listItems = [
     {
         id: 1,
-        title: 'Категория 1',
-        subtype: "income",
+        name: 'Категория 1',
+        type: "INCOME",
         keywords: ['Ключевое слово 1', 'Ключевое слово 2', 'Ключевое слово 3'],
     },
     {
         id: 3,
-        title: 'Категория 3',
-        subtype: "income",
+        name: 'Категория 3',
+        type: "INCOME",
         keywords: ['Ключевое слово 1', 'Ключевое слово 2', 'Ключевое слово 3'],
     },
     {
         id: 2,
-        title: 'Категория 2',
-        subtype: "expense",
+        name: 'Категория 2',
+        type: "EXPENSE",
         keywords: ['Ключевое слово 1', 'Ключевое слово 2', 'Ключевое слово 3'],
     },
     {
         id: 4,
-        title: 'Категория 4',
-        subtype: "expense",
+        name: 'Категория 4',
+        type: "EXPENSE",
         keywords: ['Ключевое слово 1', 'Ключевое слово 2', 'Ключевое слово 3'],
     },
 
@@ -77,11 +77,9 @@ const Overmoney: FC = () => {
             <Row>
                 <Col sm={8}>
                     <GridCards cards={cards} />
-                    <Button variant="success">Добавить транзакцию</Button>
                 </Col>
                 <Col sm={4}>
                     <ListCategories items={listItems} />
-                    <Button  variant="success">Добавить категорию</Button>
                 </Col>
             </Row>
         </Container>

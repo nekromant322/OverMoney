@@ -7,14 +7,11 @@ import Analytics from '../Analytics/Analytics';
 import Micromanagement from '../Micromanagement/Micromanagement';
 import Settings from '../Settings/Settings';
 import Header from '../Header/Header';
-import { Container } from 'react-bootstrap';
 
 const App: FC = () => {
 
-
   return (
     <BrowserRouter>
-      <Container className="App">
           <Header />
           <Routes>
             <Route path="/" Component={Overmoney} />
@@ -24,7 +21,6 @@ const App: FC = () => {
             <Route path="/micromanagement" Component={Micromanagement} />
             <Route path="/settings" Component={Settings} />
           </Routes>
-      </Container>
     </BrowserRouter>
   );
 }
