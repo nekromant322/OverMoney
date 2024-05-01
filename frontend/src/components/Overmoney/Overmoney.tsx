@@ -1,8 +1,9 @@
-import React, { FC } from 'react';
-import { Button, Col, Container, Row } from 'react-bootstrap';
+import React, { FC, useCallback, useState } from 'react';
+import { Col, Container, Row } from 'react-bootstrap';
 import GridCards from '../GridCards/GridCards';
 import ListCategories from '../ListCategories/ListCategories';
 import { ICard, IListItem } from '../../types/types';
+import PopupAddCategory from '../PopupAddCategory/PopupAddCategory';
 
 const cards = [
     {
@@ -44,7 +45,7 @@ const cards = [
 
 ] as ICard[];
 
-const listItems = [
+const constlistItems = [
     {
         id: 1,
         name: 'Категория 1',
@@ -72,17 +73,44 @@ const listItems = [
 
 ] as IListItem[];
 const Overmoney: FC = () => {
+
+    const [listItems, setListItems] = React.useState<IListItem[]>(constlistItems);
+
+    const [showModalAddCategory, setShowModalAddCategory] = useState<boolean>(false);
+    const handleCloseModalAddCategory = () => setShowModalAddCategory(false);
+    const handleShowModalAddCategory = () => setShowModalAddCategory(true);
+
+    const handleSubmitAddCategory = useCallback((formData: IListItem) => {
+        //вызов API добавления категории 
+        setListItems([
+            ...listItems,
+            {
+                name: formData.name,
+                type: formData.type,
+                keywords: [formData.name]
+            }
+        ]);
+        handleCloseModalAddCategory();
+    }, [listItems]);
+
     return (
-        <Container className='mt-5'>
-            <Row>
-                <Col sm={8}>
-                    <GridCards cards={cards} />
-                </Col>
-                <Col sm={4}>
-                    <ListCategories items={listItems} />
-                </Col>
-            </Row>
-        </Container>
+        <>
+            <Container className='mt-5 pb-5'>
+                <Row>
+                    <Col sm={8}>
+                        <GridCards cards={cards} />
+                    </Col>
+                    <Col sm={4}>
+                        <ListCategories items={listItems} handleClickAddCategory={handleShowModalAddCategory} />
+                    </Col>
+                </Row>
+            </Container>
+            <PopupAddCategory 
+                showModalAddCategory={showModalAddCategory} 
+                handleCloseModalAddCategory={handleCloseModalAddCategory} 
+                handleButtonSubmit={handleSubmitAddCategory}
+            />
+        </>
     );
 };
 
