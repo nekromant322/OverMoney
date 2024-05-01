@@ -12,11 +12,11 @@ interface PopupProps {
 
 const Popup: FC<PopupProps> = ({children, title, titleButton, show, onSubmit, handleClose}) => {
   return (
-    <Modal  show={show} onHide={handleClose}>
+    <Modal show={show} onHide={handleClose}>
       <Modal.Header data-bs-theme="dark" closeButton>
         <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
+      <Modal.Body data-bs-theme="dark">
         {children}
       </Modal.Body>
       <Modal.Footer>

@@ -1,13 +1,13 @@
 export interface ICard {
-    id: string;
+    id?: string;
     message: string;
     amount: number;
     size: number;
 }
 
 export interface IListItem {
-    id: number;
+    id?: number;
     name: string;
     type: "INCOME" | "EXPENSE";
-    keywords: string[];
+    keywords?: string[];
 }

@@ -39,6 +39,7 @@ const PopupAddCategory: FC<PopupAddCategoryProps>  = ({showModalAddCategory, han
                     <Form.Control
                         onChange={onChange}
                         type="text"
+                        placeholder='Введите название категории'
                         autoFocus
                         required
                         name='name'

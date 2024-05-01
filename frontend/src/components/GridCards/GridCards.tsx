@@ -13,7 +13,7 @@ const GridCards: FC<GridCardsProps> = ({cards}) => {
             <Row xs={1} md={2} className="g-4">
                 {cards.map((card : ICard) => (
                     <Col key={card.id} className="d-flex justify-content-center">
-                        <ItemCard {...card} />
+                        <ItemCard key={card.id} {...card} />
                     </Col>
                 ))}
             </Row>

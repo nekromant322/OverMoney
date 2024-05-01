@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import './App.scss';
-import { BrowserRouter, Navigate,  Route, Routes, useLocation } from 'react-router-dom';
+import { BrowserRouter, Navigate,  Route, Routes } from 'react-router-dom';
 import Overmoney from '../Overmoney/Overmoney';
 import History from '../History/History';
 import Analytics from '../Analytics/Analytics';

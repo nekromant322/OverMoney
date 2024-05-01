@@ -1,6 +1,7 @@
 @import "~bootstrap/scss/bootstrap.scss";
 
 :root {
+    height: 100%;
     --bs-dark-rgb: #0D1117;
     --bs-emphasis-color: #e6edf3;
     --bs-body-bg: #161B22;
@@ -45,6 +46,12 @@ header {
 }
 
 .listgroup {
+
+    &__items {
+        overflow-y: auto; 
+        max-height: 60vh;
+        scrollbar-color: var(--bs-border-color) var(--bs-dark-rgb);
+    }
 
     &__item {
         border: var(--bs-border-block) solid var(--bs-border-color);
