@@ -1,0 +1,53 @@
+@import "~bootstrap/scss/bootstrap.scss";
+
+:root {
+    --bs-dark-rgb: #0D1117;
+    --bs-emphasis-color: #e6edf3;
+    --bs-body-bg: #161B22;
+    --bs-body-color: #e6edf3;
+    // --bs-card-border-color: #30363d;
+    --bs-border-width: 3px;
+    --bs-border-block: 1px;
+    --bs-border-color-translucent: #30363d;
+    --bs-border-color: #30363d; 
+}
+
+.border-block {
+    border: var(--bs-border-block) solid var(--bs-border-color);
+    border-radius: 6px;
+}
+
+header {
+    background-color: #010409;
+    box-shadow: 0 1px 0 var(--bs-border-color) ;
+}
+
+.nav-link {
+    font-size: calc(8px + 2vmin);
+    line-height: calc(8px + 2vmin);
+}
+
+.card {
+    background-color: var(--bs-body-bg);
+    border-radius: 50%;
+
+    &-text {
+        margin-top: 16px;
+        margin-bottom: 0;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        &:last-child {
+            margin-top: 0;
+        }
+    }
+}
+
+.listgroup {
+
+    &__item {
+        border: var(--bs-border-block) solid var(--bs-border-color);
+    }
+}
+

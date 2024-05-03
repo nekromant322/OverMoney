@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class MOEXService {
-    private final String IMOEX_DATA_FILENAME = "classpath:moexReserveData/imoex.json";
+    public static final String IMOEX_DATA_FILENAME = "classpath:moexReserveData/imoex.json";
     private final int DATA_AGE_LIMIT = 1;
 
     private Optional<IMOEXDataDTO> cachedImoexDataDTO = Optional.empty();

@@ -3,6 +3,7 @@ package com.override.invest_service.service;
 import com.override.dto.tinkoff.TinkoffAccountDTO;
 import com.override.dto.tinkoff.TinkoffActiveDTO;
 import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
+import com.override.invest_service.dto.MarketTQBRDataDTO;
 import com.override.invest_service.model.MarketTQBRData;
 import com.override.invest_service.model.TinkoffShareInfo;
 import lombok.SneakyThrows;
@@ -24,21 +25,17 @@ import static ru.tinkoff.piapi.contract.v1.AccountStatus.UNRECOGNIZED;
 
 @Service
 public class TinkoffService {
+    private double TOTAL_WEIGHT = 100d;
 
     @Autowired
     private MOEXService moexService;
 
     @SneakyThrows
     public List<TinkoffActiveDTO> getActives(String token, String tinkoffAccountId) {
-        return getActives(new MarketTQBRData(token, tinkoffAccountId));
-    }
-
-    @SneakyThrows
-    public List<TinkoffActiveDTO> getActives(MarketTQBRData marketTQBRData) {
-        InvestApi api = InvestApi.createReadonly(marketTQBRData.getToken());
+        InvestApi api = InvestApi.createReadonly(token);
 
         try {
-            Portfolio portfolio = api.getOperationsService().getPortfolioSync(marketTQBRData.getTinkoffAccountId());
+            Portfolio portfolio = api.getOperationsService().getPortfolioSync(tinkoffAccountId);
             List<Position> positions = portfolio.getPositions();
 
             return positions.stream()
@@ -61,50 +58,47 @@ public class TinkoffService {
         }
     }
 
-    public List<TinkoffActiveMOEXDTO> getActivesWithMOEXWeight(String token, String tinkoffAccountId) {
+    public List<TinkoffActiveMOEXDTO> getActivesWithMOEXWeight(String token, String tinkoffAccountId, Double investAmount) {
         InvestApi api = InvestApi.createReadonly(token);
-        MarketTQBRData marketTQBRData = new MarketTQBRData(token, tinkoffAccountId);
+
+        Map<String, MarketTQBRDataDTO> marketTQBRDataDTOMap = buildMarketTQBRDataDTO(token, tinkoffAccountId);
 
         try {
-            final Double minimalSum = calculateMinimalPorfolioSum(marketTQBRData);
+            Map<String, Double> tickerToWeight =
+                    rebalanceIndexByAmount(moexService.getTickerToWeight(), marketTQBRDataDTOMap, investAmount);
 
-            Map<String, Double> tickerToWeight = moexService.getTickerToWeight();
-            Map<String, TinkoffActiveDTO> actives = getActives(marketTQBRData).stream()
+            Map<String, TinkoffActiveDTO> actives = getActives(token, tinkoffAccountId).stream()
                     .collect(Collectors.toMap(TinkoffActiveDTO::getTicker, Function.identity(), (prev, next) -> next, HashMap::new));
-
-            Map<String, Share> tickerShareMap = marketTQBRData.getTickerShareMap();
-            Map<String, Quotation> figiPriceMap = marketTQBRData.getFigiPriceMap();
 
             return tickerToWeight
                     .entrySet()
                     .stream()
-                    .map(pair -> {
-                        TinkoffActiveDTO active = actives.get(pair.getKey());
+                    .map(tickerWeightPair -> {
+                        TinkoffActiveDTO active = actives.get(tickerWeightPair.getKey());
                         if (active == null) {
-                            Share share = tickerShareMap.get(pair.getKey());
-                            Quotation price = figiPriceMap.get(share.getFigi());
-                            int lots = share.getLot();
-                            Double priceForOne = price.getUnits() + price.getNano() / 1_000_000_000d;
-                            Double correctPrice = minimalSum * pair.getValue() / 100;
+                            double priceForOne = marketTQBRDataDTOMap.get(tickerWeightPair.getKey()).getPrice();
+                            double correctPrice = investAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT;
                             int correctQuantity = (int) (correctPrice / priceForOne);
+                            int lots = marketTQBRDataDTOMap.get(tickerWeightPair.getKey()).getLots();
                             if (lots > 1) {
                                 correctQuantity = correctQuantity - (correctQuantity % lots);
                             }
                             return TinkoffActiveMOEXDTO.builder()
-                                    .tinkoffActiveDTO(TinkoffActiveDTO.builder().ticker(pair.getKey()).build())
-                                    .moexWeight(pair.getValue() / 100)
+                                    .tinkoffActiveDTO(TinkoffActiveDTO.builder().ticker(tickerWeightPair.getKey()).build())
+                                    .moexWeight(tickerWeightPair.getValue())
                                     .currentWeight(0d)
                                     .percentFollowage(0d)
+                                    .currentTotalPrice(priceForOne * correctQuantity)
                                     .correctQuantity(correctQuantity)//todo
                                     .quantityToBuy(correctQuantity)//todo same
                                     .lot(lots)
                                     .build();
                         }
                         Double currentTotalPrice = active.getQuantity() * active.getCurrentPrice().doubleValue();
-                        Double currentWeight = currentTotalPrice / minimalSum * 100;
+                        Double currentWeight = currentTotalPrice / investAmount * TOTAL_WEIGHT;
                         int lots = active.getQuantity() / active.getQuantityLots();
 
-                        double correctPriceToBuy = minimalSum * pair.getValue() / 100d;
+                        double correctPriceToBuy = investAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT;
                         int correctQuantity = (int) (correctPriceToBuy / active.getCurrentPrice().doubleValue());
                         if (lots > 1) {
                             correctQuantity = correctQuantity - (correctQuantity % lots);
@@ -112,9 +106,9 @@ public class TinkoffService {
                         return TinkoffActiveMOEXDTO.builder()
                                 .currentTotalPrice(roundToTwoPlaces(currentTotalPrice))
                                 .tinkoffActiveDTO(active)
-                                .moexWeight(roundToTwoPlaces(pair.getValue()))
+                                .moexWeight(roundToTwoPlaces(tickerWeightPair.getValue()))
                                 .currentWeight(roundToTwoPlaces(currentWeight))
-                                .percentFollowage(roundToTwoPlaces(100d * active.getQuantity() / correctQuantity))
+                                .percentFollowage(roundToTwoPlaces(TOTAL_WEIGHT * active.getQuantity() / correctQuantity))
                                 .correctQuantity(correctQuantity)
                                 .quantityToBuy(correctQuantity - active.getQuantity())
                                 .lot(lots)
@@ -127,13 +121,72 @@ public class TinkoffService {
         }
     }
 
+    private Map<String, MarketTQBRDataDTO> buildMarketTQBRDataDTO(String token, String tinkoffAccountId) {
+        MarketTQBRData marketTQBRData = new MarketTQBRData(token, tinkoffAccountId);
+        Map<String, Quotation> figiPriceMap = marketTQBRData.getFigiPriceMap();
+
+        return marketTQBRData.getTickerShareMap()
+                .entrySet()
+                .stream()
+                .map(ticker -> {
+                    Quotation price = figiPriceMap.get(ticker.getValue().getFigi());
+
+                    return MarketTQBRDataDTO.builder()
+                            .ticker(ticker.getKey())
+                            .lots(ticker.getValue().getLot())
+                            .price(price.getUnits() + price.getNano() / 1_000_000_000d)
+                            .build();
+                })
+                .collect(Collectors.toMap(MarketTQBRDataDTO::getTicker, Function.identity()));
+    }
+
+    public Map<String, Double> rebalanceIndexByAmount(Map<String, Double> srcIndex, Map<String, MarketTQBRDataDTO> marketTQBRData, double investmentAmount) {
+        Map<String, Double> rebalancedIndex = new HashMap<>();
+
+        double remainderPriceRatioThreshold = 0.01d;
+        double overweight = 0d;
+
+        for (var tickerWeightPair : srcIndex.entrySet()) {
+            int lots = marketTQBRData.get(tickerWeightPair.getKey()).getLots();
+            double priceForOne = marketTQBRData.get(tickerWeightPair.getKey()).getPrice();
+            double finalPrice = lots * priceForOne;
+
+            double instrumentCount = (investmentAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT) / finalPrice;
+            double remainderCount = (instrumentCount % 1);
+            double remainderPrice = remainderCount * finalPrice;
+            double remainderPriceRatio = remainderPrice / investmentAmount;
+
+            if (instrumentCount < 1.0d || (remainderPriceRatio > remainderPriceRatioThreshold)) {
+                rebalancedIndex.put(tickerWeightPair.getKey(), 0.0d);
+                overweight += tickerWeightPair.getValue();
+            } else {
+                rebalancedIndex.put(tickerWeightPair.getKey(), tickerWeightPair.getValue());
+            }
+        }
+
+        return weightsReallocationByRatio(rebalancedIndex, overweight);
+    }
+
+    private Map<String, Double> weightsReallocationByRatio(Map<String, Double> rebalancedIndex,
+                                                           Double additionalWeight) {
+        for (var tickerWeightPair : rebalancedIndex.entrySet()) {
+            double oldWeight = tickerWeightPair.getValue();
+            double newWeight = oldWeight +
+                    (oldWeight / (TOTAL_WEIGHT - additionalWeight) * additionalWeight);
+
+            rebalancedIndex.put(tickerWeightPair.getKey(), newWeight);
+        }
+
+        return rebalancedIndex;
+    }
+
     private Double calculateMinimalPorfolioSum(MarketTQBRData marketTQBRData) {
         TinkoffShareInfo shareHighestPriceForLot = getMOEXSharesInfo(marketTQBRData).stream()
                 .max(Comparator.comparing(TinkoffShareInfo::getPriceForLot))
                 .get();
 
         Double weightOfHighestShare = moexService.getTickerToWeight().get(shareHighestPriceForLot.getTicker());
-        return shareHighestPriceForLot.getPriceForLot() * 100 / weightOfHighestShare;
+        return shareHighestPriceForLot.getPriceForLot() * TOTAL_WEIGHT / weightOfHighestShare;
     }
 
     private List<TinkoffShareInfo> getMOEXSharesInfo(MarketTQBRData marketTQBRData) {
