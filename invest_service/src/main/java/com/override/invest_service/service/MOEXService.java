@@ -1,6 +1,7 @@
 package com.override.invest_service.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.override.invest_service.config.MoexProperties;
 import com.override.invest_service.dto.IMOEXDataDTO.IMOEXData;
 import com.override.invest_service.dto.IMOEXDataDTO.IMOEXDataDTO;
 import com.override.invest_service.feign.MOEXFeignClient;
@@ -20,7 +21,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class MOEXService {
-    public static final String IMOEX_DATA_FILENAME = "classpath:moexReserveData/imoex.json";
     private final int DATA_AGE_LIMIT = 1;
 
     private Optional<IMOEXDataDTO> cachedImoexDataDTO = Optional.empty();
@@ -75,7 +75,7 @@ public class MOEXService {
                 return cachedImoexDataDTO.get();
             } else {
                 return objectMapper.readValue(
-                        ResourceUtils.getFile(IMOEX_DATA_FILENAME), IMOEXDataDTO.class);
+                        ResourceUtils.getFile(MoexProperties.IMOEX_DATA_FILENAME), IMOEXDataDTO.class);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -1,5 +1,6 @@
 package com.override.invest_service.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.override.dto.tinkoff.TinkoffAccountDTO;
 import com.override.dto.tinkoff.TinkoffActiveDTO;
 import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
@@ -9,11 +10,14 @@ import com.override.invest_service.model.TinkoffShareInfo;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ResourceUtils;
 import ru.tinkoff.piapi.contract.v1.*;
 import ru.tinkoff.piapi.core.InvestApi;
 import ru.tinkoff.piapi.core.models.Portfolio;
 import ru.tinkoff.piapi.core.models.Position;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -25,7 +29,7 @@ import static ru.tinkoff.piapi.contract.v1.AccountStatus.UNRECOGNIZED;
 
 @Service
 public class TinkoffService {
-    private double TOTAL_WEIGHT = 100d;
+    private final double TOTAL_WEIGHT = 100d;
 
     @Autowired
     private MOEXService moexService;
@@ -62,6 +66,11 @@ public class TinkoffService {
         InvestApi api = InvestApi.createReadonly(token);
 
         Map<String, MarketTQBRDataDTO> marketTQBRDataDTOMap = buildMarketTQBRDataDTO(token, tinkoffAccountId);
+        try {
+            new ObjectMapper().writeValue(ResourceUtils.getFile("marketTQBRDataDTOMap.json"), marketTQBRDataDTOMap);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         try {
             Map<String, Double> tickerToWeight =
@@ -140,7 +149,9 @@ public class TinkoffService {
                 .collect(Collectors.toMap(MarketTQBRDataDTO::getTicker, Function.identity()));
     }
 
-    public Map<String, Double> rebalanceIndexByAmount(Map<String, Double> srcIndex, Map<String, MarketTQBRDataDTO> marketTQBRData, double investmentAmount) {
+    public Map<String, Double> rebalanceIndexByAmount(Map<String, Double> srcIndex, Map<String,
+            MarketTQBRDataDTO> marketTQBRData, double investAmount) {
+
         Map<String, Double> rebalancedIndex = new HashMap<>();
 
         double remainderPriceRatioThreshold = 0.01d;
@@ -151,10 +162,10 @@ public class TinkoffService {
             double priceForOne = marketTQBRData.get(tickerWeightPair.getKey()).getPrice();
             double finalPrice = lots * priceForOne;
 
-            double instrumentCount = (investmentAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT) / finalPrice;
+            double instrumentCount = (investAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT) / finalPrice;
             double remainderCount = (instrumentCount % 1);
             double remainderPrice = remainderCount * finalPrice;
-            double remainderPriceRatio = remainderPrice / investmentAmount;
+            double remainderPriceRatio = remainderPrice / investAmount;
 
             if (instrumentCount < 1.0d || (remainderPriceRatio > remainderPriceRatioThreshold)) {
                 rebalancedIndex.put(tickerWeightPair.getKey(), 0.0d);
