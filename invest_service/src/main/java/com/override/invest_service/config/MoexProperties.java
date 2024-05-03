@@ -13,5 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 public class MoexProperties {
+    public static final String IMOEX_DATA_FILENAME = "classpath:moexReserveData/imoex.json";
+
     private String indexUrlData;
 }
