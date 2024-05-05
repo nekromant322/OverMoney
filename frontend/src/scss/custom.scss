@@ -30,7 +30,8 @@ header {
 
 .card {
     background-color: var(--bs-body-bg);
-    border-radius: 50%;
+    border-radius: 15px;
+    cursor: grab;
 
     &-text {
         margin-top: 16px;
@@ -46,7 +47,7 @@ header {
 }
 
 .listgroup {
-
+    
     &__items {
         overflow-y: auto; 
         max-height: 60vh;
@@ -55,6 +56,13 @@ header {
 
     &__item {
         border: var(--bs-border-block) solid var(--bs-border-color);
+        
+    }
+    
+    &__text-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 

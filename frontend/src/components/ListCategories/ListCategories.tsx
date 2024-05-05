@@ -1,38 +1,84 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Badge, Button, Container, ListGroup } from 'react-bootstrap';
 import ListGroupItem from 'react-bootstrap/ListGroupItem'
 import { IListItem } from '../../types/types';
+import ItemGategory from '../ItemGategory/ItemGategory';
+import ListGroupCategories from '../ListGroupCategories/ListGroupCategories';
+import PopupAddCategory from '../PopupAddCategory/PopupAddCategory';
 
-interface ListCategoriesProps {
-    items: IListItem[],
-    handleClickAddCategory: () => void
-}
+const constlistItems = [
+    {
+        id: 1,
+        name: 'Категория 1',
+        type: "INCOME",
+        keywords: ['Ключевое слово 1', 'Ключевое слово 2', 'Ключевое слово 3'],
+    },
+    {
+        id: 3,
+        name: 'Категория 3',
+        type: "INCOME",
+        keywords: ['Ключевое слово 1', 'Ключевое слово 2', 'Ключевое слово 3'],
+    },
+    {
+        id: 2,
+        name: 'Категория 2',
+        type: "EXPENSE",
+        keywords: ['Ключевое слово 1', 'Ключевое слово 2', 'Ключевое слово 3'],
+    },
+    {
+        id: 4,
+        name: 'Категория 4',
+        type: "EXPENSE",
+        keywords: ['Ключевое слово 1', 'Ключевое слово 2', 'Ключевое слово 3'],
+    },
 
-const ListCategories : FC<ListCategoriesProps> = ({items, handleClickAddCategory}) => {
+] as IListItem[];
 
-    const [listItems, setListItems] = React.useState<IListItem[]>(items);
+const ListCategories : FC = () => {
+
+    const [listItems, setListItems] = useState<IListItem[]>(constlistItems);
+    const [listItemsIncome, setListItemsIncome] = useState<IListItem[]>([]);
+    const [listItemsExpense, setListItemsExpense] = useState<IListItem[]>([]);
+    const [showModalAddCategory, setShowModalAddCategory] = useState<boolean>(false);
+    const handleCloseModalAddCategory = () => setShowModalAddCategory(false);
+    const handleShowModalAddCategory = () => setShowModalAddCategory(true);
 
     useEffect(() => {
-        setListItems(items);
-    }, [items]);
+        setListItemsIncome(listItems.filter(item => item.type === "INCOME"));
+        setListItemsExpense(listItems.filter(item => item.type === "EXPENSE"));
+    }, [listItems]);
+
+    const handleSubmitAddCategory = useCallback((formData: IListItem) => {
+        //вызов API добавления категории 
+        setListItems([
+            ...listItems,
+            {
+                name: formData.name,
+                type: formData.type,
+                keywords: [formData.name]
+            }
+        ]);
+        handleCloseModalAddCategory();
+    }, [listItems]);
+
 
     return (
+        <>
         <Container className="listgroup border-block p-3">
-            <div className="listgroup__header mb-3">Категории</div>
-            <ListGroup as={"ul"} className='listgroup__items'>
-                {listItems.map((item : IListItem) => (
-                    <ListGroupItem as="li" className="listgroup__item d-flex justify-content-between align-items-start " key={item.id}>
-                        <div className="mt-4 mb-4 ms-2 me-auto">
-                            {item.name}
-                        </div>
-                        <Badge bg={item.type === "INCOME" ? "success" : "danger"} pill>
-                            {item.keywords?.length}
-                        </Badge>
-                    </ListGroupItem>
-                ))}
-            </ListGroup>
-            <Button onClick={handleClickAddCategory} className="listgroup__button w-100 mt-5" variant="success">Добавить категорию</Button>
+            <div className="listgroup__header h4 mb-3">Категории</div>
+            <Container className='listgroup__items'>
+                <ListGroupCategories listItems={listItemsExpense} />
+                <hr></hr>
+                <ListGroupCategories listItems={listItemsIncome} />
+            </Container>
+            <Button onClick={handleShowModalAddCategory} className="listgroup__button w-100 mt-5" variant="success">Добавить категорию</Button>
         </Container>
+        <PopupAddCategory
+            showModalAddCategory={showModalAddCategory} 
+            handleCloseModalAddCategory={handleCloseModalAddCategory} 
+            handleButtonSubmit={handleSubmitAddCategory}
+        />
+        </>
     );
 };
 
