@@ -4,62 +4,15 @@ import { Button, Col, Container, Row } from 'react-bootstrap';
 import ItemCard from '../ItemCard/ItemCard';
 import PopupAddCard from '../PopupAddCard/PopupAddCard';
 
-const constCards = [
-    {
-        id: '1',
-        message: 'Карта 1sddsagagsgdsads',
-        amount: 1000,
-    },
-    {
-        id: '2',
-        message: 'Карта 2',
-        amount: 800,
-    },
-    {
-        id: '3',
-        message: 'Карта 3',
-        amount: 600,
-    },
-    {
-        id: '4',
-        message: 'Карта 4',
-        amount: 400,
-    },
-    {
-        id: '5',
-        message: 'Карта 5',
-        amount: 200,
-    },
-    {
-        id: '6',
-        message: 'Карта 6',
-        amount: 100,
-    },
+const GridCards: FC = ({cards}) => {
 
-] as ICard[];
-
-const GridCards: FC = () => {
-
-    const [cards, setCards] = useState<ICard[]>(constCards);
     const [showModalAddCard, setShowModalAddCard] = useState<boolean>(false);
     const handleShowModalAddCard = () => setShowModalAddCard(true);
     const handleCloseModalAddCard = () => setShowModalAddCard(false);
     
-    useEffect(() => {
-        setCards(cards);
-    }, [cards]);
+    
 
-    const handleSubmitAddCard = useCallback((formData: ICard) => {
-        //вызов API добавления категории 
-        setCards([
-            ...cards,
-            {
-                message: formData.message,
-                amount: formData.amount,
-            }
-        ]);
-        handleCloseModalAddCard();
-    }, [cards]);
+    
 
     
     return (
