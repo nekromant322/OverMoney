@@ -6,9 +6,9 @@ public class TransactionHandlerImplSingleAmountAtFront implements TransactionHan
     private final char EN_DECIMAL_DELIMITER = '.';
 
     @Override
-    public float calculateAmount(String transaction) {
+    public double calculateAmount(String transaction) {
         String amountAsString = transaction.substring(0, transaction.indexOf(SPACE));
-        return Float.parseFloat(amountAsString.replace(RU_DECIMAL_DELIMITER, EN_DECIMAL_DELIMITER));
+        return Double.parseDouble(amountAsString.replace(RU_DECIMAL_DELIMITER, EN_DECIMAL_DELIMITER));
     }
 
     @Override

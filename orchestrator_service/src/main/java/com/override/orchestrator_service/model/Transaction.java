@@ -31,7 +31,7 @@ public class Transaction {
     private Category category;
 
     @Column
-    private Float amount;
+    private Double amount;
 
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;

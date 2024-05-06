@@ -35,8 +35,8 @@ public class TransactionUtils {
     private  final int MAX_TRANSACTION_SECOND_RANDOM_AMOUNT = 1000;
     private  final int MIN_TRANSACTION_SECOND_RANDOM_AMOUNT = 500;
     private  final int YEARS_NUMBER = 3;
-    private  final float SMALLER_TRANSACTION_PORTION = 0.25F;
-    private  final float LARGER_TRANSACTION_PORTION = 0.75F;
+    private  final double SMALLER_TRANSACTION_PORTION = 0.25d;
+    private  final double LARGER_TRANSACTION_PORTION = 0.75d;
 
     public void generateRandomTransactionsByPortion(long telegramId, int totalTransactionsCount) throws InstanceNotFoundException {
         generateRandomTransactions(SMALLER_TRANSACTION_PORTION, MIN_TRANSACTION_RANDOM_AMOUNT,
@@ -45,7 +45,7 @@ public class TransactionUtils {
                 MAX_TRANSACTION_SECOND_RANDOM_AMOUNT, telegramId, totalTransactionsCount);
     }
 
-    void generateRandomTransactions(float transactionPortion, int minRandomAmount, int maxRandomAmount,
+    void generateRandomTransactions(double transactionPortion, int minRandomAmount, int maxRandomAmount,
                                     long telegramId, int totalTransactionsCount) throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramId);
         List<Keyword> accountKeyWords = keywordService.findAllByOverMoneyAccount(overMoneyAccount);

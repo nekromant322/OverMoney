@@ -9,10 +9,14 @@ import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
+import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
 public class TransactionMapperTest {
@@ -57,25 +61,39 @@ public class TransactionMapperTest {
         Assertions.assertEquals(transactionResponseDTO.getAmount(), transaction.getAmount().toString());
     }
 
-    @Test
-    public void mapTransactionToTelegramResponseRoundAmountTest() throws InstanceNotFoundException {
+    @ParameterizedTest
+    @MethodSource("provideAmountsString")
+    public void mapTransactionToTelegramResponseRoundAmountTest(double amount, String resultRoundAmount) throws InstanceNotFoundException {
         Transaction transaction = TestFieldsUtil.generateTestTransaction();
-        transaction.setAmount(200.45678F);
-        String resultRoundAmount = "200.46";
+        transaction.setAmount(amount);
 
         TransactionResponseDTO transactionResponseDTO = transactionMapper.mapTransactionToTelegramResponse(transaction);
 
         Assertions.assertEquals(transactionResponseDTO.getAmount(), resultRoundAmount);
     }
 
-    @Test
-    public void mapTransactionToDTORoundAmountTest() {
+    @ParameterizedTest
+    @MethodSource("provideAmountsDouble")
+    public void mapTransactionToDTORoundAmountTest(double amount, double resultRoundAmount) {
         Transaction transaction = TestFieldsUtil.generateTestTransaction();
-        transaction.setAmount(200.45678F);
-        Float resultRoundAmount = 200.46F;
+        transaction.setAmount(amount);
 
         TransactionDTO transactionDTO = transactionMapper.mapTransactionToDTO(transaction);
 
         Assertions.assertEquals(transactionDTO.getAmount(), resultRoundAmount);
+    }
+
+    private static Stream<Arguments> provideAmountsDouble() {
+        return Stream.of(
+                Arguments.of(200.45678d, 200.46d),
+                Arguments.of(188926.54d, 188926.54d)
+        );
+    }
+
+    private static Stream<Arguments> provideAmountsString() {
+        return Stream.of(
+                Arguments.of(200.45678d, "200.46"),
+                Arguments.of(188926.54d, "188926.54")
+        );
     }
 }

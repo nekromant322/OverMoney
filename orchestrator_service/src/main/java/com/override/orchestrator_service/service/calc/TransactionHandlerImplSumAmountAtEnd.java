@@ -14,15 +14,15 @@ public class TransactionHandlerImplSumAmountAtEnd implements TransactionHandler 
     private final String regexpForAmountAtEnd = "(\\s+)((\\s*)(\\d*(\\,|\\.)?\\d+)(\\s*)\\+(\\s*))*((\\s*)\\d*(\\,|\\.)?\\d+)$";
 
     @Override
-    public float calculateAmount(String transaction) {
+    public double calculateAmount(String transaction) {
         Pattern pattern = Pattern.compile(regexpForAmountAtEnd);
         Matcher matcher = pattern.matcher(transaction);
         matcher.find();
         String amountAsString = matcher.group().trim().replace(RU_DECIMAL_DELIMITER, EN_DECIMAL_DELIMITER).replace(SPACE, NOTHING);
         Stream<String> amountAsStream = Arrays.stream(amountAsString.split(PLUS));
-        final float[] sum = {0};
+        final double[] sum = {0};
         amountAsStream.forEach(t -> {
-            sum[0] += Float.parseFloat(t);
+            sum[0] += Double.parseDouble(t);
         });
         return sum[0];
     }

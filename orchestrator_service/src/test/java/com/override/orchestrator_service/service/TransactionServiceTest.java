@@ -225,7 +225,7 @@ public class TransactionServiceTest {
     public void editTransactionTestWhenChangesKeyword() {
         TransactionDTO transactionDTO = TransactionDTO.builder()
                 .message("тест")
-                .amount(250F)
+                .amount(188926.54D)
                 .date(LocalDateTime.now())
                 .categoryName("продукты")
                 .build();
@@ -248,7 +248,7 @@ public class TransactionServiceTest {
     public void editTransactionTestWhenChangesCategory() {
         TransactionDTO transactionDTO = TransactionDTO.builder()
                 .message("продукты")
-                .amount(250F)
+                .amount(250d)
                 .date(LocalDateTime.now())
                 .categoryName("Тест")
                 .build();
@@ -270,7 +270,7 @@ public class TransactionServiceTest {
     public void editTransactionTestWhenChangesCategoryAndKeyword() {
         TransactionDTO transactionDTO = TransactionDTO.builder()
                 .message("тест")
-                .amount(250F)
+                .amount(250d)
                 .date(LocalDateTime.now())
                 .categoryName("Тест")
                 .build();

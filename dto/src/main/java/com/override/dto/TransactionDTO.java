@@ -16,7 +16,7 @@ public class TransactionDTO {
     private UUID id;
     private String categoryName;
     private String message;
-    private Float amount;
+    private Double amount;
     private LocalDateTime date;
     private Long suggestedCategoryId;
     private Long telegramUserId;
