@@ -2,7 +2,7 @@ export interface ICard {
     id?: string;
     message: string;
     amount: number;
-    size: number;
+    size?: number;
 }
 
 export interface IListItem {

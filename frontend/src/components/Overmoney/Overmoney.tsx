@@ -13,7 +13,7 @@ const Overmoney: FC = () => {
             <Container className='mt-5 pb-5'>
                 <Row>
                     <Col sm={8}>
-                        <GridCards cards={cards} />
+                        <GridCards />
                     </Col>
                     <Col sm={4}>
                         <ListCategories />

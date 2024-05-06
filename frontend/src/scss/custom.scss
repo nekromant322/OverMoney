@@ -28,6 +28,15 @@ header {
     line-height: calc(8px + 2vmin);
 }
 
+.gridcards {
+    
+    &__items {
+        overflow-y: auto; 
+        max-height: 64vh;
+        scrollbar-color: var(--bs-border-color) var(--bs-dark-rgb);
+    }
+}
+
 .card {
     background-color: var(--bs-body-bg);
     border-radius: 15px;
