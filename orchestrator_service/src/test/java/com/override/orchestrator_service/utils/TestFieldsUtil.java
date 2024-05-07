@@ -74,7 +74,7 @@ public class TestFieldsUtil {
         return Transaction.builder()
                 .id(UUID.randomUUID())
                 .message("продукты")
-                .amount(200F)
+                .amount(200d)
                 .date(LocalDateTime.now())
                 .category(generateTestCategory())
                 .account(generateTestAccount())
@@ -95,7 +95,7 @@ public class TestFieldsUtil {
     public static TransactionDTO generateTestTransactionDTO() {
         return TransactionDTO.builder()
                 .message("продукты")
-                .amount(200F)
+                .amount(200d)
                 .date(LocalDateTime.now())
                 .categoryName(generateTestCategory().getName())
                 .build();

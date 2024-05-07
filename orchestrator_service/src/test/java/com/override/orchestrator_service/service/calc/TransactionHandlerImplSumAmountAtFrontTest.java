@@ -18,8 +18,8 @@ public class TransactionHandlerImplSumAmountAtFrontTest {
 
     @ParameterizedTest
     @MethodSource("provideTransactions")
-    public void calculateAmountWorksCorrectTest(String message, String unusedField, float expectedResult) {
-        assertEquals(handler.calculateAmount(message), expectedResult);
+    public void calculateAmountWorksCorrectTest(String message, String unusedField, double expectedResult) {
+        assertEquals(handler.calculateAmount(message), expectedResult, 0.0001d);
     }
 
     @ParameterizedTest

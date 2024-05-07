@@ -15,7 +15,7 @@ public class TransactionHandlerImplSumAmountAtFront implements TransactionHandle
             "^(\\d*(\\,|\\.)?\\d+)((\\s*)(\\+((\\s*)\\d*(\\,|\\.)?\\d+)(\\s*)))+\\s+";
 
     @Override
-    public float calculateAmount(String transaction) {
+    public double calculateAmount(String transaction) {
         Pattern pattern = Pattern.compile(regexpForAmountAtFront);
         Matcher matcher = pattern.matcher(transaction);
         matcher.find();
@@ -24,9 +24,9 @@ public class TransactionHandlerImplSumAmountAtFront implements TransactionHandle
                 .replace(RU_DECIMAL_DELIMITER, EN_DECIMAL_DELIMITER)
                 .replace(SPACE, NOTHING);
         Stream<String> amountAsStream = Arrays.stream(amountAsString.split(PLUS));
-        final float[] sum = {0};
+        final double[] sum = {0};
         amountAsStream.forEach(t -> {
-            sum[0] += Float.parseFloat(t);
+            sum[0] += Double.parseDouble(t);
         });
         return sum[0];
     }

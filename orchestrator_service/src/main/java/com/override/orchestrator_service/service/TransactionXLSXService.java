@@ -65,7 +65,7 @@ public class TransactionXLSXService {
                 TransactionDTO transactionDTO = TransactionDTO.builder()
                         .categoryName(StringUtils.capitalize(row.getCell(0).getStringCellValue()))
                         .message(row.getCell(2).getStringCellValue())
-                        .amount(amount.floatValue())
+                        .amount(amount.doubleValue())
                         .date(row.getCell(4).getLocalDateTimeCellValue())
                         .build();
                 if (!transactionDTO.getCategoryName().isEmpty()) {

@@ -10,6 +10,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TransactionAmountAndCommentDTO {
-    private float amount;
+    private double amount;
     private String comment;
 }

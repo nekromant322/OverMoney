@@ -61,7 +61,7 @@ public class TransactionXLSXServiceTest {
             "электричество, ЖКХ, 1500F",
             "колонка, техника, 1000F",
     })
-    public void createTransactionTest(String message, String nameCategory, Float amount) {
+    public void createTransactionTest(String message, String nameCategory, Double amount) {
         Category category = TestFieldsUtil.generateTestCategory();
         TransactionDTO transactionDTO = generateTestTransactionDTO();
         category.setName(nameCategory);
@@ -114,7 +114,7 @@ public class TransactionXLSXServiceTest {
         return TransactionDTO.builder()
                 .categoryName("Продукты")
                 .message("продукты")
-                .amount(500F)
+                .amount(500d)
                 .date(LocalDateTime.now())
                 .build();
     }

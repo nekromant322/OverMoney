@@ -14,5 +14,6 @@
     <include file="v1.0.0/007-db.changelog-createBugReportTable.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/008-db.changelog-createTinkoffInfoTable.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/009-db.changelog-addCheckConstraintForTransactions.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/010-db.changelog-updateAmountType.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

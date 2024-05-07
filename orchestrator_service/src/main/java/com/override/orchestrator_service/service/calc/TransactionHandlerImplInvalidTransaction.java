@@ -4,7 +4,7 @@ import com.override.orchestrator_service.exception.TransactionProcessingExceptio
 
 public class TransactionHandlerImplInvalidTransaction implements TransactionHandler {
     @Override
-    public float calculateAmount(String transaction) {
+    public double calculateAmount(String transaction) {
         throw new TransactionProcessingException("Неподдерживаемый формат транзакции");
     }
 
