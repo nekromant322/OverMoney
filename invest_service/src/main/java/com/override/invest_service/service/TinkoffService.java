@@ -66,11 +66,6 @@ public class TinkoffService {
         InvestApi api = InvestApi.createReadonly(token);
 
         Map<String, MarketTQBRDataDTO> marketTQBRDataDTOMap = buildMarketTQBRDataDTO(token, tinkoffAccountId);
-        try {
-            new ObjectMapper().writeValue(ResourceUtils.getFile("marketTQBRDataDTOMap.json"), marketTQBRDataDTOMap);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
         try {
             Map<String, Double> tickerToWeight =

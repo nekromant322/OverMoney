@@ -29,8 +29,9 @@ public class TinkoffRestController {
 
     @GetMapping("/moex")
     public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(@RequestParam("token") String token,
-                                                               @RequestParam("tinkoffAccountId") String tinkoffAccountId) {
-        return tinkoffService.getActivesWithMOEXWeight(token, tinkoffAccountId, 30_000_000d);
+                                                               @RequestParam("tinkoffAccountId") String tinkoffAccountId,
+                                                               @RequestParam("investAmount") Double investAmount) {
+        return tinkoffService.getActivesWithMOEXWeight(token, tinkoffAccountId, investAmount);
     }
 
     /**

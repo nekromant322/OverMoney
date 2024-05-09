@@ -13,4 +13,5 @@ public class TinkoffInfoDTO {
     private Long tinkoffAccountId;
     private String token;
     private Long favoriteAccountId;
+    private Double investAmount;
 }
