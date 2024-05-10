@@ -26,7 +26,7 @@ public class TinkoffInfo {
 
     @Column
     @Nullable
-    private Double investAmount;
+    private Double userTargetInvestAmount;
 
     @OneToOne
     @MapsId

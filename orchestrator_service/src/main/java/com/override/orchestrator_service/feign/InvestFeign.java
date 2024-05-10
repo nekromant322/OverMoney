@@ -19,7 +19,7 @@ public interface InvestFeign {
     @GetMapping("/tinkoff/moex")
     List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(@RequestParam("token") String token,
                                                         @RequestParam("tinkoffAccountId") String tinkoffAccountId,
-                                                        @RequestParam("investAmount") Double investAmount);
+                                                        @RequestParam("userTargetInvestAmount") Double userTargetInvestAmount);
 
     @GetMapping("/tinkoff/accounts")
     List<TinkoffAccountDTO> getUserAccounts(@RequestParam("token") String token);
