@@ -57,9 +57,9 @@ class TinkoffServiceTest {
      * сумма весов должна быть равна 100%
      */
     @ParameterizedTest
-    @MethodSource("provideInvestAmounts")
-    public void complianceToTotalWeightTest(double investAmount) throws IOException {
-        Map<String, Double> tickerToWeight = buildRebalancedIMOEXIndexTest(investAmount);
+    @MethodSource("provideUserTargetInvestAmounts")
+    public void complianceToTotalWeightTest(double userTargetInvestAmount) throws IOException {
+        Map<String, Double> tickerToWeight = buildRebalancedIMOEXIndexTest(userTargetInvestAmount);
 
         double totalWeight = tickerToWeight.values().stream().mapToDouble(Double::doubleValue).sum();
 
@@ -68,16 +68,16 @@ class TinkoffServiceTest {
 
 
     /**
-     * Тест для сравнения значений весов с референсными значениями, при определенной investAmount
+     * Тест для сравнения значений весов с референсными значениями, при определенной userTargetInvestAmount
      */
     @ParameterizedTest
-    @MethodSource("provideInvestAmounts")
-    public void complianceWeightsToReferenceValuesTest(double investAmount) throws IOException {
+    @MethodSource("provideUserTargetInvestAmounts")
+    public void complianceWeightsToReferenceValuesTest(double userTargetInvestAmount) throws IOException {
         String dataFilePath = String.format("%sreferenceData/tickerToWeight_%s.json",
                 ResourceUtils.CLASSPATH_URL_PREFIX,
-                investAmount);
+                userTargetInvestAmount);
 
-        Map<String, Double> calculatedTickerToWeight = buildRebalancedIMOEXIndexTest(investAmount);
+        Map<String, Double> calculatedTickerToWeight = buildRebalancedIMOEXIndexTest(userTargetInvestAmount);
         Map<String, Double> referenceTickerToWeight = objectMapper.readValue(
                 ResourceUtils.getFile(dataFilePath),
                 new TypeReference<>() {
@@ -91,9 +91,9 @@ class TinkoffServiceTest {
      * стоимость не должна превышать заданную сумму инвестиции
      */
     @ParameterizedTest
-    @MethodSource("provideInvestAmounts")
-    public void portfolioValueInLimitAmountTest(double investAmount) throws IOException {
-        Map<String, Double> tickerToWeight = buildRebalancedIMOEXIndexTest(investAmount);
+    @MethodSource("provideUserTargetInvestAmounts")
+    public void portfolioValueInLimitAmountTest(double userTargetInvestAmount) throws IOException {
+        Map<String, Double> tickerToWeight = buildRebalancedIMOEXIndexTest(userTargetInvestAmount);
 
         double currentSum = tickerToWeight
                 .entrySet()
@@ -101,7 +101,7 @@ class TinkoffServiceTest {
                 .flatMapToDouble(tickerWeightPair -> {
                     int lots = marketTQBRDataDTOMap.get(tickerWeightPair.getKey()).getLots();
                     double priceForOne = marketTQBRDataDTOMap.get(tickerWeightPair.getKey()).getPrice();
-                    double correctPrice = investAmount * tickerWeightPair.getValue() / 100;
+                    double correctPrice = userTargetInvestAmount * tickerWeightPair.getValue() / 100;
 
                     int correctQuantity = (int) (correctPrice / priceForOne);
                     if (lots > 1) {
@@ -110,11 +110,11 @@ class TinkoffServiceTest {
                     return DoubleStream.of(correctQuantity * priceForOne);
                 }).sum();
 
-        assertTrue(currentSum <= investAmount);
+        assertTrue(currentSum <= userTargetInvestAmount);
         assertTrue(0 < currentSum);
     }
 
-    private Map<String, Double> buildRebalancedIMOEXIndexTest(double investAmount) throws IOException {
+    private Map<String, Double> buildRebalancedIMOEXIndexTest(double userTargetInvestAmount) throws IOException {
         Mockito.when(moexService.getTickerToWeight()).thenReturn(
                 objectMapper.readValue(ResourceUtils.getFile(MoexProperties.IMOEX_DATA_FILENAME), IMOEXDataDTO.class)
                         .getAnalytics()
@@ -125,10 +125,10 @@ class TinkoffServiceTest {
                                 IMOEXData::getWeight)));
 
         return tinkoffService.rebalanceIndexByAmount(
-                moexService.getTickerToWeight(), marketTQBRDataDTOMap, investAmount);
+                moexService.getTickerToWeight(), marketTQBRDataDTOMap, userTargetInvestAmount);
     }
 
-    private static Stream<Arguments> provideInvestAmounts() {
+    private static Stream<Arguments> provideUserTargetInvestAmounts() {
         return Stream.of(
                 Arguments.of(30000),
                 Arguments.of(50000),

@@ -61,14 +61,14 @@ public class InvestTinkoffInfoServiceTest {
     public void getActivesMoexPercentageTest_notNull(List<TinkoffActiveMOEXDTO> tinkoffActiveMOEXDTOS,
                                              TinkoffInfoDTO tinkoffInfoDTO) {
     when(investFeign.getActivesMoexPercentage(tinkoffInfoDTO.getToken(),
-            tinkoffInfoDTO.getTinkoffAccountId().toString())).thenReturn(tinkoffActiveMOEXDTOS);
-        List<TinkoffActiveMOEXDTO> activesMoexPercentage = investTinkoffInfoService.getActivesMoexPercentage(tinkoffInfoDTO.getToken(), tinkoffInfoDTO.getTinkoffAccountId().toString());
+            tinkoffInfoDTO.getTinkoffAccountId().toString(), tinkoffInfoDTO.getUserTargetInvestAmount())).thenReturn(tinkoffActiveMOEXDTOS);
+        List<TinkoffActiveMOEXDTO> activesMoexPercentage = investTinkoffInfoService.getActivesMoexPercentage(tinkoffInfoDTO.getToken(), tinkoffInfoDTO.getTinkoffAccountId().toString(), tinkoffInfoDTO.getUserTargetInvestAmount());
         assertEquals(tinkoffActiveMOEXDTOS, activesMoexPercentage);
     }
 
     private static Stream<Arguments> dataForGetActivesMoexPercentageTest_notNull() {
         return Stream.of(
-                Arguments.of(TestFieldsUtil.tinkoffActiveMOEXDTOSData_notNull(), TestFieldsUtil.tinkoffInfoDTOData_notNull()),
+                Arguments.of(TestFieldsUtil.tinkoffActiveMOEXDTOSData_notNull(), TestFieldsUtil.tinkoffInfoDTOData_notNull(), TestFieldsUtil.tinkoffInfoDTOData_notNull()),
                 Arguments.of(TestFieldsUtil.tinkoffActiveMOEXDTOSData_withNullFields(), TestFieldsUtil.tinkoffInfoDTOData_notNull())
         );
     }
@@ -77,7 +77,7 @@ public class InvestTinkoffInfoServiceTest {
     @MethodSource("dataForGetActivesMoexPercentageTest_null")
     public void getActivesMoexPercentageTest_null(List<TinkoffActiveMOEXDTO> tinkoffActiveMOEXDTOS,
                                              TinkoffInfoDTO tinkoffInfoDTO) {
-        List<TinkoffActiveMOEXDTO> activesMoexPercentage = investTinkoffInfoService.getActivesMoexPercentage(tinkoffInfoDTO.getToken(), tinkoffInfoDTO.getTinkoffAccountId().toString());
+        List<TinkoffActiveMOEXDTO> activesMoexPercentage = investTinkoffInfoService.getActivesMoexPercentage(tinkoffInfoDTO.getToken(), tinkoffInfoDTO.getTinkoffAccountId().toString(), tinkoffInfoDTO.getUserTargetInvestAmount());
         assertEquals(tinkoffActiveMOEXDTOS, activesMoexPercentage);
     }
 

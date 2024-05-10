@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface InvestTinkoffInfoRepository extends JpaRepository<TinkoffInfo, Long> {
 
     Optional<TinkoffInfo> findTinkoffInfoById(Long userId);
+
+    Optional<TinkoffInfo> findByToken(String token);
 }
