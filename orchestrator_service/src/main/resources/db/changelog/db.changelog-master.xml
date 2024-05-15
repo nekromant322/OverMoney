@@ -16,5 +16,4 @@
     <include file="v1.0.0/009-db.changelog-addCheckConstraintForTransactions.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/010-db.changelog-updateAmountType.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/011-db.changelog-add_investAmount_column.xml" relativeToChangelogFile="true"/>
-
 </databaseChangeLog>

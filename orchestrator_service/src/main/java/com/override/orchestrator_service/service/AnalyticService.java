@@ -72,7 +72,7 @@ public class AnalyticService {
         List<AnalyticsDataMonthDTO> analyticsDataMonthDTOS;
 
         analyticsDataMonthDTOS = objectList.stream()
-                .map(item -> new AnalyticsDataMonthDTO((String) item[0], (Float) item[1], (Float) item[2]))
+                .map(item -> new AnalyticsDataMonthDTO((String) item[0], (Double) item[1], (Double) item[2]))
                 .collect(Collectors.toList());
 
         return analyticsDataMonthDTOS;
