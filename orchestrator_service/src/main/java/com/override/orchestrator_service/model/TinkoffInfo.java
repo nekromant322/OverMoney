@@ -24,6 +24,10 @@ public class TinkoffInfo {
     @Nullable
     private Long favoriteAccountId;
 
+    @Column
+    @Nullable
+    private Double userTargetInvestAmount;
+
     @OneToOne
     @MapsId
     @JoinColumn

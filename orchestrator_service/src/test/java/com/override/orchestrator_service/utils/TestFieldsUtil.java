@@ -421,6 +421,7 @@ public class TestFieldsUtil {
                 .tinkoffAccountId(10L)
                 .token("adfreg-bdsfbf")
                 .favoriteAccountId(245234518234L)
+                .userTargetInvestAmount(50000d)
                 .build();
     }
 
@@ -482,6 +483,7 @@ public class TestFieldsUtil {
                 .tinkoffAccountId(1L)
                 .token("")
                 .favoriteAccountId(245234518234L)
+                .userTargetInvestAmount(0d)
                 .build();
     }
 
