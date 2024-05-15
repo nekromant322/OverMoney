@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class AnalyticsDataMonthDTO {
     private String month;
-    private float totalIncome;
-    private float totalExpense;
+    private Double totalIncome;
+    private Double totalExpense;
 }
