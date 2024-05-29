@@ -6,8 +6,17 @@ export interface ICard {
 }
 
 export interface IListItem {
-    id?: number;
+    id?: string;
     name: string;
     type: "INCOME" | "EXPENSE";
-    keywords?: string[];
+    keywords: string[];
+}
+
+export interface IRowHistory {
+    id: string;
+    amount: number; 
+    categoryName: string;
+    date: string;
+    message: string;
+    telegramUserName: string;
 }
