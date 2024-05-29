@@ -2,12 +2,13 @@ import React, { FC, useState } from 'react';
 import { Badge, ListGroupItem } from 'react-bootstrap';
 import { ICard, IListItem } from '../../types/types';
 
-interface ItemGategoryProps {
+interface ItemCategoryProps {
     item: IListItem,
-    handleDeleteCard: (card: ICard) => void
+    handleDeleteCard: (card: ICard, category: string) => void,
+    handleClickCategory: (listItem: IListItem) => void
 }
 
-const ItemGategory: FC<ItemGategoryProps> = ({item, handleDeleteCard}) => {
+const ItemCategory: FC<ItemCategoryProps> = ({item, handleDeleteCard, handleClickCategory}) => {
 
     const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
@@ -18,19 +19,23 @@ const ItemGategory: FC<ItemGategoryProps> = ({item, handleDeleteCard}) => {
         const card : ICard = JSON.parse(data)
         item.keywords?.push(card.message);
         console.log('DROP', card)
-        handleDeleteCard(card);
+        handleDeleteCard(card, item.name);
     }
 
     const dragWithPreventHandler = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
         setIsDragOver(true)
-        console.log('DRAGover', e.target)
     }
 
     const leaveHandler = (e: React.DragEvent<HTMLDivElement>) => {
         e.preventDefault()
-        console.log('LEAVE', e.target)
         setIsDragOver(false)
+    }
+
+    const onClickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.preventDefault()
+        console.log('click')
+        handleClickCategory(item)
     }
 
     return (
@@ -41,11 +46,12 @@ const ItemGategory: FC<ItemGategoryProps> = ({item, handleDeleteCard}) => {
             onDrop={(e: React.DragEvent<HTMLDivElement>) => dropHandler(e, item)} 
             onDragLeave={leaveHandler} 
             onDragOver={dragWithPreventHandler} 
-            style={{backgroundColor: isDragOver ? 'lightgreen' : 'inherit'}}
+            onClick={onClickHandler}
+            style={{backgroundColor: isDragOver ? 'blue' : 'inherit'}}
         >
-            <p className="listgroup__text-item mt-2 mb-2 ms-2 me-auto">
+            <span className="listgroup__text-item mt-2 mb-2 ms-2 me-auto">
                 {item.name}
-            </p>
+            </span>
             <Badge bg={item.type === "INCOME" ? "success" : "danger"} pill>
                 {item.keywords?.length}
             </Badge>
@@ -53,4 +59,4 @@ const ItemGategory: FC<ItemGategoryProps> = ({item, handleDeleteCard}) => {
     );
 };
 
-export default ItemGategory;
+export default ItemCategory;

@@ -1,7 +1,7 @@
 @import "~bootstrap/scss/bootstrap.scss";
 
 :root {
-    height: 100%;
+    height: 100dvh;
     --bs-dark-rgb: #0D1117;
     --bs-emphasis-color: #e6edf3;
     --bs-body-bg: #161B22;
@@ -23,6 +23,11 @@ header {
     box-shadow: 0 1px 0 var(--bs-border-color) ;
 }
 
+.toast-header {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+}
+
 .nav-link {
     font-size: calc(8px + 2vmin);
     line-height: calc(8px + 2vmin);
@@ -38,6 +43,7 @@ header {
 }
 
 .card {
+    min-width: 150px;
     background-color: var(--bs-body-bg);
     border-radius: 15px;
     cursor: grab;
@@ -66,6 +72,9 @@ header {
     &__item {
         border: var(--bs-border-block) solid var(--bs-border-color);
         
+        &:hover {
+            cursor: pointer;
+        }
     }
     
     &__text-item {

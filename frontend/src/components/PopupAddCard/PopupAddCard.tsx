@@ -50,13 +50,13 @@ const PopupAddCard : FC<PopupAddCardProps> = ({showModalAddCard, handleCloseModa
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="amount">
                     <Form.Label>Сумма:</Form.Label>
-                        <Form.Control 
-                            onChange={onChange}
-                            type="number"
-                            placeholder='Введите сумму'
-                            required
-                            name='amount'
-                        />
+                    <Form.Control 
+                        onChange={onChange}
+                        type="number"
+                        placeholder='Введите сумму'
+                        required
+                        name='amount'
+                    />
                 </Form.Group>
             </Form>
         </Popup>

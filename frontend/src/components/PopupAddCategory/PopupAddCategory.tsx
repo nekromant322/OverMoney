@@ -10,7 +10,8 @@ interface PopupAddCategoryProps {
 }
 const PopupAddCategory: FC<PopupAddCategoryProps>  = ({showModalAddCategory, handleCloseModalAddCategory, handleButtonSubmit}) => {
 
-    const defaultFormData : IListItem = {name: '', type: 'EXPENSE'}
+    const defaultFormData : IListItem = {name: '', type: 'EXPENSE', keywords: []};
+    
     const [formData, setFormData] = useState<IListItem>(defaultFormData);
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
