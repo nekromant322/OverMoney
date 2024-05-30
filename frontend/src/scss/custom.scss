@@ -1,4 +1,6 @@
 @import "~bootstrap/scss/bootstrap.scss";
+@import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
+@import "@ag-grid-community/styles/ag-theme-material.css"; // Theme
 
 :root {
     height: 100dvh;
@@ -11,6 +13,16 @@
     --bs-border-block: 1px;
     --bs-border-color-translucent: #30363d;
     --bs-border-color: #30363d; 
+}
+
+.ag-theme-material-dark {
+    --ag-background-color: #0D1117;
+    --ag-header-foreground-color: #e6edf3;
+    --ag-header-background-color: #161B22;
+    --ag-odd-row-background-color: #161B22;;
+
+    --ag-font-size: 18px;
+    --ag-font-family: monospace;
 }
 
 .border-block {
