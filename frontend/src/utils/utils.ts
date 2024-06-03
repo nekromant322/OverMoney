@@ -1,4 +1,4 @@
-import { ICard, IListItem, IRowHistory } from "../types/types";
+import { ICard, IListItem, ITransaction } from "../types/types";
 
 export const constlistItems: IListItem[] = [
     {
@@ -62,9 +62,9 @@ export const constCards: ICard[] = [
 
 ];
 
-export const transactions: IRowHistory[] = [
+export const transactions: ITransaction[] = [
         {
-            id: "b110c552-f1eb-455e-bdf7-54c1045b1d78",
+            id: "1",
             categoryName: "Нераспознаное",
             message: "вода",
             amount: 100,
@@ -74,7 +74,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "1b2ad92a-a552-4bf4-b603-ab8abab57b05",
+            id: "2",
             categoryName: "Продукты",
             message: "вода",
             amount: 100,
@@ -84,7 +84,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "edf469ea-c0b1-4b67-8d83-c07e516504b0",
+            id: "3",
             categoryName: "Нераспознаное",
             message: "PG",
             amount: 50000,
@@ -94,7 +94,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "310c6525-297d-49ce-9a5d-60dac115c640",
+            id: "4",
             categoryName: "Рестораны",
             message: "gjgsn",
             amount: 100,
@@ -104,7 +104,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "14cd53bf-37a1-4ee2-ade9-bacff6364665",
+            id: "5",
             categoryName: "Нераспознаное",
             message: "сон",
             amount: 50,
@@ -114,7 +114,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "ef367e34-8adc-4e8e-9067-5c8cd1526d91",
+            id: "6",
             categoryName: "Рестораны",
             message: "еда",
             amount: 300,
@@ -124,7 +124,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "9aa660f7-8ed0-4c6d-bdd2-f8e8baa73822",
+            id: "7",
             categoryName: "Рестораны",
             message: "cat",
             amount: 100,
@@ -134,7 +134,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "a65490eb-5a19-486e-81c0-91e21e81536e",
+            id: "8",
             categoryName: "Продукты",
             message: "вода",
             amount: 100,
@@ -144,7 +144,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "ffe4bcea-be4e-4242-b0d3-9ef7b7dbff95",
+            id: "9",
             categoryName: "Продукты",
             message: "вода",
             amount: 100,
@@ -154,7 +154,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "b110c552-f1eb-455e-bdf7-54c1045b1d78",
+            id: "10",
             categoryName: "Нераспознаное",
             message: "вода",
             amount: 100,
@@ -164,7 +164,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "1b2ad92a-a552-4bf4-b603-ab8abab57b05",
+            id: "11",
             categoryName: "Продукты",
             message: "вода",
             amount: 100,
@@ -174,7 +174,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "edf469ea-c0b1-4b67-8d83-c07e516504b0",
+            id: "12",
             categoryName: "Нераспознаное",
             message: "PG",
             amount: 50000,
@@ -184,7 +184,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "310c6525-297d-49ce-9a5d-60dac115c640",
+            id: "13",
             categoryName: "Рестораны",
             message: "gjgsn",
             amount: 100,
@@ -194,7 +194,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "14cd53bf-37a1-4ee2-ade9-bacff6364665",
+            id: "14",
             categoryName: "Нераспознаное",
             message: "сон",
             amount: 50,
@@ -204,7 +204,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "ef367e34-8adc-4e8e-9067-5c8cd1526d91",
+            id: "15",
             categoryName: "Рестораны",
             message: "еда",
             amount: 300,
@@ -214,7 +214,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "9aa660f7-8ed0-4c6d-bdd2-f8e8baa73822",
+            id: "16",
             categoryName: "Рестораны",
             message: "cat",
             amount: 100,
@@ -224,7 +224,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "a65490eb-5a19-486e-81c0-91e21e81536e",
+            id: "17",
             categoryName: "Продукты",
             message: "вода",
             amount: 100,
@@ -234,7 +234,7 @@ export const transactions: IRowHistory[] = [
             telegramUserName: "NikoTiN_RnD"
         },
         {
-            id: "ffe4bcea-be4e-4242-b0d3-9ef7b7dbff95",
+            id: "18",
             categoryName: "Продукты",
             message: "вода",
             amount: 100,
