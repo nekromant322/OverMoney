@@ -63,31 +63,31 @@ const Overmoney: FC = () => {
 
 
     return (
-            <Container className='mt-5 pb-5'>
-                <Row>
-                    <Col sm={8}>
-                        <GridCards 
-                            cards={cards}
-                            handleSubmitAddCard={handleSubmitAddCard}
-                            />
-                    </Col>
-                    <Col sm={4}>
-                        <ListCategories 
-                            listItems={listItems} 
-                            handleSubmitAddCategory={handleSubmitAddCategory}
-                            handleDropCard={handleDeleteCard}
-                            handleChangeCategory={handleChangeCategory}
+        <Container className='mt-5 pb-5'>
+            <Row>
+                <Col sm={8}>
+                    <GridCards 
+                        cards={cards}
+                        handleSubmitAddCard={handleSubmitAddCard}
                         />
-                    </Col>
-                </Row>
-                <Toast bg='dark' onClose={() => setShowAddCardToast(false)} show={showAddCardToast} delay={3000} autohide>
-                    <Toast.Header closeVariant='white' >
-                        <strong className="me-auto">Успешно!</strong>
-                        <Button variant='outline-danger' onClick={onClickCancelDropCard}>Отменить</Button>
-                    </Toast.Header>
-                    <Toast.Body>Транзакция {`${lastDeletedCard.message} ${lastDeletedCard.amount}`} была успешно добавлена в категорию {lastCategory}</Toast.Body>
-                </Toast>
-            </Container>
+                </Col>
+                <Col sm={4}>
+                    <ListCategories 
+                        listItems={listItems} 
+                        handleSubmitAddCategory={handleSubmitAddCategory}
+                        handleDropCard={handleDeleteCard}
+                        handleChangeCategory={handleChangeCategory}
+                    />
+                </Col>
+            </Row>
+            <Toast bg='dark' onClose={() => setShowAddCardToast(false)} show={showAddCardToast} delay={3000} autohide>
+                <Toast.Header closeVariant='white' >
+                    <strong className="me-auto">Успешно!</strong>
+                    <Button variant='outline-danger' onClick={onClickCancelDropCard}>Отменить</Button>
+                </Toast.Header>
+                <Toast.Body>Транзакция {`${lastDeletedCard.message} ${lastDeletedCard.amount}`} была успешно добавлена в категорию {lastCategory}</Toast.Body>
+            </Toast>
+        </Container>
     )
 }
 

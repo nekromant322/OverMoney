@@ -1,4 +1,4 @@
-import React, { FC, Fragment, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Badge, CloseButton, Form } from 'react-bootstrap';
 import Popup from '../Popup/Popup';
 import { IListItem } from '../../types/types';
@@ -9,7 +9,7 @@ interface PopupChangeCategoryProps {
     handleCloseModalChangeCategory: () => void,
     handleButtonSave: (formData: IListItem) => void
 }
-const PopupChangeCategory: FC<PopupChangeCategoryProps>  = ({item ,showModalChangeCategory, handleCloseModalChangeCategory, handleButtonSave}) => {
+const PopupChangeCategory: FC<PopupChangeCategoryProps>  = ({item, showModalChangeCategory, handleCloseModalChangeCategory, handleButtonSave}) => {
 
     // const itemCategory : IListItem = {id: item.id, name: item.name, type: item.type, keywords: item.keywords};
     const [formData, setFormData] = useState<IListItem>(item)
@@ -75,12 +75,14 @@ const PopupChangeCategory: FC<PopupChangeCategoryProps>  = ({item ,showModalChan
                 </Form.Group>
                 <Form.Group>
                     {keywords.map((keyword: string, index: number) => (
-                        // <Fragment key={index}>
                             <Badge  key={index} bg="secondary" className="me-2 mb-3 pe-1">
                                 {keyword}
-                                <CloseButton onClick={() => setKeywords(keywords.filter((elem: string) => elem !== keyword))} className='ml-2' />
+                                <CloseButton 
+                                    onClick={() => setKeywords(keywords.filter((elem: string) => elem !== keyword))} 
+                                    className='ms-2'
+                                    style={{outline: 'none'}}
+                                    />
                             </Badge>
-                        //</Fragment>
                     ))}
                 </Form.Group>
             </Form>

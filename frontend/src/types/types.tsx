@@ -12,7 +12,7 @@ export interface IListItem {
     keywords: string[];
 }
 
-export interface IRowHistory {
+export interface ITransaction {
     id: string;
     amount: number; 
     categoryName: string;

@@ -42,7 +42,11 @@ const ItemCard: FC<ICard> = (card: ICard) => {
     }
 
     return (
-        <Card onDragStart={(event: React.DragEvent<HTMLDivElement>) => handleDragStart(event, card)} onDragEnd={handleDragEnd} draggable style={{ width: `calc(${40 + 10 * size}% + 2vmin)`, opacity: isDrag ? 0.5 : 1 }}>
+        <Card 
+            onDragStart={(event: React.DragEvent<HTMLDivElement>) => handleDragStart(event, card)} 
+            onDragEnd={handleDragEnd} 
+            draggable 
+            style={{ width: `calc(${40 + 10 * size}% + 2vmin)`, opacity: isDrag ? 0.3 : 1 }}>
             <Card.Body className="d-block text-center" style={{ fontSize: `calc(${7 + 2 * size}px + 2vmin)` }}>
                 <Card.Text>{card.message}</Card.Text>
                 <Card.Text>{card.amount}</Card.Text>

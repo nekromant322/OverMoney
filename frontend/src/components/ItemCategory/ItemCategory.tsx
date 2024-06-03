@@ -34,7 +34,6 @@ const ItemCategory: FC<ItemCategoryProps> = ({item, handleDeleteCard, handleClic
 
     const onClickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
         e.preventDefault()
-        console.log('click')
         handleClickCategory(item)
     }
 
