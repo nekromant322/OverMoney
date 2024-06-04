@@ -1,15 +1,46 @@
 @import "~bootstrap/scss/bootstrap.scss";
+@import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
+@import "@ag-grid-community/styles/ag-theme-material.css"; // Theme
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+
+
 
 :root {
+    width: 100%;
+    height: 100%;
     --bs-dark-rgb: #0D1117;
     --bs-emphasis-color: #e6edf3;
     --bs-body-bg: #161B22;
     --bs-body-color: #e6edf3;
     // --bs-card-border-color: #30363d;
-    --bs-border-width: 3px;
+    --bs-border-width: 1px;
     --bs-border-block: 1px;
     --bs-border-color-translucent: #30363d;
     --bs-border-color: #30363d; 
+}
+
+#root {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+div[col-id="edit"] {
+    padding: 0;
+}
+
+
+.ag-theme-material-dark {
+    --ag-background-color: #0D1117;
+    --ag-header-foreground-color: #e6edf3;
+    --ag-header-background-color: #161B22;
+    --ag-odd-row-background-color: #161B22;;
+
+    --ag-font-size: 18px;
+    --ag-font-family: monospace;
 }
 
 .border-block {
@@ -22,14 +53,33 @@ header {
     box-shadow: 0 1px 0 var(--bs-border-color) ;
 }
 
+.toast-header {
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+}
+
 .nav-link {
     font-size: calc(8px + 2vmin);
     line-height: calc(8px + 2vmin);
 }
 
+.gridcards {
+    
+    &__items {
+        overflow-y: auto; 
+        max-height: 64vh;
+        scrollbar-color: var(--bs-border-color) var(--bs-dark-rgb);
+    }
+}
+
 .card {
+    min-width: 150px;
     background-color: var(--bs-body-bg);
-    border-radius: 50%;
+    border-radius: 15px;
+
+    &:hover {
+        cursor: grab;
+    }
 
     &-text {
         margin-top: 16px;
@@ -45,9 +95,25 @@ header {
 }
 
 .listgroup {
+    
+    &__items {
+        overflow-y: auto; 
+        max-height: 60vh;
+        scrollbar-color: var(--bs-border-color) var(--bs-dark-rgb);
+    }
 
     &__item {
         border: var(--bs-border-block) solid var(--bs-border-color);
+        
+        &:hover {
+            cursor: pointer;
+        }
+    }
+    
+    &__text-item {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 }
 
