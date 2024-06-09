@@ -10,6 +10,7 @@ const Overmoney: FC = () => {
 
     const [cards, setCards] = useState<ICard[]>(constCards)
     const [listItems, setListItems] = useState<IListItem[]>(constlistItems)
+    const [isTwoCollumns, setIsTwoColumns] = useState<boolean>(false)
     const [lastDeletedCard, setLastDeletedCard] = useState<ICard>({} as ICard)
     //TODO удалить при рифакторинге добавления suggestedCategoryId к карточке транзакции
     const [lastCategory, setLastCategory] = useState<string>("")
@@ -17,7 +18,11 @@ const Overmoney: FC = () => {
 
     useEffect(() => {
         setCards(cards)
-    }, [cards])
+        setListItems(listItems)
+        if (listItems.length > 12) {
+            setIsTwoColumns(true)
+        }
+    }, [cards, listItems])
 
     const handleSubmitAddCard = useCallback((formData: ICard) => {
         //вызов API добавления категории 
@@ -44,6 +49,7 @@ const Overmoney: FC = () => {
         setListItems([
             ...listItems,
             {
+                id: `${listItems.length + 1}`,
                 name: formData.name,
                 type: formData.type,
                 keywords: [formData.name]
@@ -63,17 +69,18 @@ const Overmoney: FC = () => {
 
 
     return (
-        <Container className='mt-5 pb-5'>
+        <Container className='mt-5 pb-1 h-100 d-flex'>
             <Row>
-                <Col sm={8}>
+                <Col sm={isTwoCollumns ? 7 : 8}>
                     <GridCards 
                         cards={cards}
                         handleSubmitAddCard={handleSubmitAddCard}
                         />
                 </Col>
-                <Col sm={4}>
+                <Col sm={isTwoCollumns ? 5 : 4}>
                     <ListCategories 
                         listItems={listItems} 
+                        isTwoCollumns={isTwoCollumns}
                         handleSubmitAddCategory={handleSubmitAddCategory}
                         handleDropCard={handleDeleteCard}
                         handleChangeCategory={handleChangeCategory}

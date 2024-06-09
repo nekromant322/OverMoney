@@ -7,12 +7,13 @@ import PopupChangeCategory from '../PopupChangeCategory/PopupChangeCategory';
 
 interface ListCategoriesProps {
     listItems: IListItem[],
+    isTwoCollumns: boolean,
     handleDropCard: (card: ICard, category: string) => void,
     handleSubmitAddCategory: (formData: IListItem) => void,
     handleChangeCategory: (formData: IListItem) => void
 }
 
-const ListCategories : FC<ListCategoriesProps> = ({listItems, handleSubmitAddCategory, handleDropCard, handleChangeCategory}) => {
+const ListCategories : FC<ListCategoriesProps> = ({listItems, isTwoCollumns, handleSubmitAddCategory, handleDropCard, handleChangeCategory}) => {
 
     const [listItemsIncome, setListItemsIncome] = useState<IListItem[]>([]);
     const [listItemsExpense, setListItemsExpense] = useState<IListItem[]>([]);
@@ -44,14 +45,22 @@ const ListCategories : FC<ListCategoriesProps> = ({listItems, handleSubmitAddCat
 
     return (
         <>
-        <Container className="listgroup border-block p-3">
-            <div className="listgroup__header h4 mb-3">Категории</div>
+        <Container className="listgroup border-block p-2">
+            <div className="listgroup__header h4 ms-2 mb-3">Категории</div>
             <Container className='listgroup__items'>
-                <ListGroupCategories handleDeleteCard={(card, category) => handleDropCard(card, category)} handleClickCategory={handleClickCategory} listItems={listItemsExpense} />
+                <ListGroupCategories 
+                    isTwoCollumns={isTwoCollumns}
+                    handleDeleteCard={(card, category) => handleDropCard(card, category)} 
+                    handleClickCategory={handleClickCategory} 
+                    listItems={listItemsExpense} />
                 <hr></hr>
-                <ListGroupCategories handleDeleteCard={(card, category) => handleDropCard(card, category)} handleClickCategory={handleClickCategory} listItems={listItemsIncome} />
+                <ListGroupCategories 
+                    isTwoCollumns={isTwoCollumns}
+                    handleDeleteCard={(card, category) => handleDropCard(card, category)} 
+                    handleClickCategory={handleClickCategory} 
+                    listItems={listItemsIncome} />
             </Container>
-            <Button onClick={handleShowModalAddCategory} className="listgroup__button w-100 mt-5" variant="success">Добавить категорию</Button>
+            <Button onClick={handleShowModalAddCategory} className="listgroup__button w-100 mt-3" variant="success">Добавить категорию</Button>
         </Container>
         <PopupAddCategory
             showModalAddCategory={showModalAddCategory} 

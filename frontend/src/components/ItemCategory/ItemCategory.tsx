@@ -48,7 +48,7 @@ const ItemCategory: FC<ItemCategoryProps> = ({item, handleDeleteCard, handleClic
             onClick={onClickHandler}
             style={{backgroundColor: isDragOver ? 'blue' : 'inherit'}}
         >
-            <span className="listgroup__text-item mt-2 mb-2 ms-2 me-auto">
+            <span className="listgroup__text-item mt-1 mb-1 ms-1 me-auto">
                 {item.name}
             </span>
             <Badge bg={item.type === "INCOME" ? "success" : "danger"} pill>

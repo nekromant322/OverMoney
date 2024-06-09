@@ -34,11 +34,10 @@ const ItemCard: FC<ICard> = (card: ICard) => {
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>, card: ICard) => {
         setIsDrag(true);
         event.dataTransfer.setData("ICard", JSON.stringify(card));
-        console.log("isDragStart")
     }
-    const handleDragEnd = (event: React.DragEvent<HTMLDivElement>) => {
+
+    const handleDragEnd = () => {
         setIsDrag(false);
-        console.log("isDragEnd")
     }
 
     return (
