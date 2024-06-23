@@ -16,17 +16,9 @@ public class RecognizerController {
     @Autowired
     private CategoryRecognizerService categoryRecognizerService;
 
-    @GetMapping("/recognizer")
-    public String getRecognizer() {
-        log.info("GET request on /recognizer, test");
-        return "Recognizer";
-    }
-
 
     @PostMapping("/recognizer/category/suggested")
-    public void recognizeCategory(@RequestParam(name = "message") String message,
-                                  @RequestParam(name = "transactionId") UUID transactionId,
-                                  @RequestBody List<CategoryDTO> categories) {
+    public void recognizeCategory(@RequestParam(name = "message") String message, @RequestParam(name = "transactionId") UUID transactionId, @RequestBody List<CategoryDTO> categories) {
         categoryRecognizerService.sendTransactionWithSuggestedCategory(message, categories, transactionId);
     }
 
