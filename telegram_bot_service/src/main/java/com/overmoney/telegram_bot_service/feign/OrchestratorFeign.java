@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@FeignClient(value = "orchestrator", url = "http://localhost:8081", configuration = FeignConfiguration.class)
+@FeignClient(value = "orchestrator", url = "http://194.87.235.171:8081", configuration = FeignConfiguration.class)
 public interface OrchestratorFeign {
 
     @PostMapping("/transaction")
