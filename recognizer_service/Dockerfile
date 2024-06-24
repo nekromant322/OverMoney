@@ -18,7 +18,6 @@ COPY /recognizer_service/src /recognizer/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
 FROM openjdk:11-bullseye
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
 RUN apt-get -y update \
     && apt-get -y upgrade \
     && apt-get install -y --no-install-recommends ffmpeg

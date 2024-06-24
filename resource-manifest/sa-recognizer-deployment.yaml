@@ -30,6 +30,8 @@ spec:
             limits:
               memory: "512Mi"
           env:
+            - name: DOCKER_OPTS
+              value: "-dns 8.8.8.8 -dns 8.8.4.4"
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
             - name: WIT_AI_TOKEN
