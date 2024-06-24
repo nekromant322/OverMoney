@@ -3,7 +3,7 @@ name: Build & Push & Deploy to k8s cluster
 on:
   push:
     branches:
-      - master
+      - hotfix/ruvds
 
 jobs:
   detect-changes:
@@ -96,77 +96,77 @@ jobs:
           push: true
           tags: nekromant322/overmoney-frontend
 
-  k8s-manifest-update:
-    name: Update manifests on remote host
-    runs-on: ubuntu-latest
-    needs: build-and-push-images
-    steps:
-      - uses: actions/checkout@v4
-      - name: Inject secrets in resource manifests
-        uses: none0nfg/yaml-secrets-injector@v0.0.1
-        with:
-          inject_files: |-
-            resource-manifest/sa-recognizer-deployment.yaml
-            resource-manifest/service-sa-recognizer-lb.yaml
-            resource-manifest/sa-orchestrator-deployment.yaml
-            resource-manifest/service-sa-orchestrator-lb.yaml
-            resource-manifest/sa-telegram-bot-deployment.yaml
-            resource-manifest/service-sa-telegram-bot-lb.yaml
-            resource-manifest/sa-invest-deployment.yaml
-            resource-manifest/service-sa-invest-lb.yaml
-            resource-manifest/wit-ai-go-proxy-deployment.yaml
-            resource-manifest/frontend-deployment.yaml
-            resource-manifest/service-frontend-lb.yaml
-          secrets: ${{ toJSON(secrets) }} # It would contain all your repository secrets in json
-      - name: copy files via ssh private key
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: 195.133.49.108
-          username: github
-          key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
-          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
-          port: 22
-          source: "resource-manifest/*"
-          target: "/home/github"
-          overwrite: true
-
-  build:
-    name: Manifest apply and rollout restarts
-    runs-on: ubuntu-latest
-    needs: [ detect-changes, k8s-manifest-update ]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Connect with SSH and Apply
-        uses: appleboy/ssh-action@v0.1.8
-        with:
-          host: 195.133.49.108
-          username: github
-          key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
-          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
-          port: 22
-          script: |
-            cd /home/github
-            sudo kubectl apply -f resource-manifest
-            
-            if ${{ needs.detect-changes.outputs.orchestrator}}; then
-              sudo kubectl rollout restart deployment sa-orchestrator
-            fi
-            
-            if ${{ needs.detect-changes.outputs.recognizer}}; then
-              sudo kubectl rollout restart deployment sa-recognizer
-            fi
-
-            if ${{ needs.detect-changes.outputs.telegram-bot}}; then
-              sudo kubectl rollout restart deployment sa-telegram-bot
-            fi
-            
-            if ${{ needs.detect-changes.outputs.invest}}; then
-              sudo kubectl rollout restart deployment sa-invest
-            fi
-            
-            if ${{ needs.detect-changes.outputs.wit-ai-go-proxy}}; then
-              sudo kubectl rollout restart deployment wit-ai-go-proxy
-            fi
-            if ${{ needs.detect-changes.outputs.frontend}}; then
-              sudo kubectl rollout restart deployment frontend
-            fi
+#  k8s-manifest-update:
+#    name: Update manifests on remote host
+#    runs-on: ubuntu-latest
+#    needs: build-and-push-images
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Inject secrets in resource manifests
+#        uses: none0nfg/yaml-secrets-injector@v0.0.1
+#        with:
+#          inject_files: |-
+#            resource-manifest/sa-recognizer-deployment.yaml
+#            resource-manifest/service-sa-recognizer-lb.yaml
+#            resource-manifest/sa-orchestrator-deployment.yaml
+#            resource-manifest/service-sa-orchestrator-lb.yaml
+#            resource-manifest/sa-telegram-bot-deployment.yaml
+#            resource-manifest/service-sa-telegram-bot-lb.yaml
+#            resource-manifest/sa-invest-deployment.yaml
+#            resource-manifest/service-sa-invest-lb.yaml
+#            resource-manifest/wit-ai-go-proxy-deployment.yaml
+#            resource-manifest/frontend-deployment.yaml
+#            resource-manifest/service-frontend-lb.yaml
+#          secrets: ${{ toJSON(secrets) }} # It would contain all your repository secrets in json
+#      - name: copy files via ssh private key
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: 195.133.49.108
+#          username: github
+#          key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
+#          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
+#          port: 22
+#          source: "resource-manifest/*"
+#          target: "/home/github"
+#          overwrite: true
+#
+#  build:
+#    name: Manifest apply and rollout restarts
+#    runs-on: ubuntu-latest
+#    needs: [ detect-changes, k8s-manifest-update ]
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Connect with SSH and Apply
+#        uses: appleboy/ssh-action@v0.1.8
+#        with:
+#          host: 195.133.49.108
+#          username: github
+#          key: ${{ secrets.SSH_PRIVATE_KEY_GITHUB_USER }}
+#          passphrase: ${{ secrets.SSH_PRIVATE_KEY_PASSPHRASE_GITHUB_USER }}
+#          port: 22
+#          script: |
+#            cd /home/github
+#            sudo kubectl apply -f resource-manifest
+#
+#            if ${{ needs.detect-changes.outputs.orchestrator}}; then
+#              sudo kubectl rollout restart deployment sa-orchestrator
+#            fi
+#
+#            if ${{ needs.detect-changes.outputs.recognizer}}; then
+#              sudo kubectl rollout restart deployment sa-recognizer
+#            fi
+#
+#            if ${{ needs.detect-changes.outputs.telegram-bot}}; then
+#              sudo kubectl rollout restart deployment sa-telegram-bot
+#            fi
+#
+#            if ${{ needs.detect-changes.outputs.invest}}; then
+#              sudo kubectl rollout restart deployment sa-invest
+#            fi
+#
+#            if ${{ needs.detect-changes.outputs.wit-ai-go-proxy}}; then
+#              sudo kubectl rollout restart deployment wit-ai-go-proxy
+#            fi
+#            if ${{ needs.detect-changes.outputs.frontend}}; then
+#              sudo kubectl rollout restart deployment frontend
+#            fi
