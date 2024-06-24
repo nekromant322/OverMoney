@@ -8,6 +8,7 @@ import com.overmoney.telegram_bot_service.model.TelegramMessage;
 import com.overmoney.telegram_bot_service.service.*;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
 import com.override.dto.AccountDataDTO;
+import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.StatusMailing;
@@ -226,6 +227,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             if (!receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION) &&
                     !receivedMessageText.equalsIgnoreCase(replyToMessage.getText())) {
                 UUID idTransaction = message.getIdTransaction();
+                TransactionDTO previousTransaction = orchestratorRequestService.getTransactionById(idTransaction);
+                transactionMessageDTO.setDate(previousTransaction.getDate());
                 updateTransaction(transactionMessageDTO, idTransaction, chatId, messageId);
                 return;
             }

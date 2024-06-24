@@ -67,4 +67,7 @@ public class OrchestratorRequestService {
     public TransactionResponseDTO submitTransactionForUpdate(TransactionMessageDTO transaction, UUID id) {
         return orchestratorFeign.submitTransactionForUpdate(transaction, id);
     }
+    public TransactionDTO getTransactionById(UUID id) {
+        return orchestratorFeign.getTransactionById(id);
+    }
 }
