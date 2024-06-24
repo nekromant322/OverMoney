@@ -1,7 +1,5 @@
 FROM maven:3.6.3-jdk-11-slim AS build
 
-RUN echo "nameserver 8.8.8.8" > /etc/resolv.conf
-
 RUN mkdir -p /dto
 WORKDIR /dto
 COPY /dto/pom.xml /dto
