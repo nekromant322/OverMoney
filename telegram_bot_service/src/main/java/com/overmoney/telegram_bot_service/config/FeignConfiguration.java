@@ -1,6 +1,7 @@
 package com.overmoney.telegram_bot_service.config;
 
 import feign.RequestInterceptor;
+import feign.okhttp.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,5 +19,10 @@ public class FeignConfiguration {
         return requestTemplate -> {
             requestTemplate.header(HEADER_NAME, headerValue);
         };
+    }
+
+    @Bean
+    public feign.Client feignClient() {
+        return new OkHttpClient();
     }
 }

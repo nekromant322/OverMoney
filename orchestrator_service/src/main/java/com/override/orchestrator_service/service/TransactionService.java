@@ -294,20 +294,40 @@ public class TransactionService {
     @Transactional
     public TransactionResponseDTO updateTransactionFromTelegramChat(TransactionMessageDTO transactionMessage,
                                                                     UUID id) throws InstanceNotFoundException {
-        Optional<Transaction> transactionToDelete = transactionRepository.findById(id);
-        Transaction transactionUpdate = transactionProcessingService.processTransaction(transactionMessage);
-        saveTransaction(transactionUpdate);
-        transactionProcessingService.suggestCategoryToProcessedTransaction(transactionMessage, transactionUpdate.getId());
+        Transaction receivedTransactionFromReply = transactionProcessingService.processTransaction(transactionMessage);
+        Optional<Transaction> optionalTransaction = transactionRepository.findById(id);
+        if (!optionalTransaction.isPresent()) {
+            throw new InstanceNotFoundException("Транзакция не найдена");
+        }
+        Transaction transactionToUpdate = optionalTransaction.get();
+        transactionToUpdate.setAmount(receivedTransactionFromReply.getAmount());
+        transactionToUpdate.setMessage(receivedTransactionFromReply.getMessage());
+        saveTransaction(transactionToUpdate);
+        transactionProcessingService.suggestCategoryToProcessedTransaction(transactionMessage, id);
+        return transactionMapper.mapTransactionToTelegramResponse(transactionToUpdate);
+    }
 
-        transactionToDelete.flatMap(this::getKeywordByTransaction).ifPresent(k -> {
-            if (!k.getKeywordId().getName().equalsIgnoreCase(transactionUpdate.getMessage())) {
-                keywordRepository.deleteByNameAndAccountIdWithJpqlQuery(transactionToDelete.get().getMessage(),
-                        transactionToDelete.get().getAccount().getId());
+    @Transactional
+    public TransactionResponseDTO patchTransaction(TransactionMessageDTO transactionMessage,
+                                                   UUID id) throws InstanceNotFoundException {
+
+        Transaction receivedTransactionFromReply = transactionProcessingService.processTransaction(transactionMessage);
+
+        Optional<Transaction> transactionToUpdate = transactionRepository.findById(id);
+
+        if (transactionToUpdate.isPresent()) {
+            if (receivedTransactionFromReply.getMessage() != null
+                    && !receivedTransactionFromReply.getMessage().equals(transactionToUpdate.get().getMessage())) {
+                transactionToUpdate.get().setMessage(transactionMessage.getMessage());
             }
-        });
-
-        transactionRepository.deleteById(id);
-        return transactionMapper.mapTransactionToTelegramResponse(transactionUpdate);
+            if (receivedTransactionFromReply.getAmount() != null
+                    && (receivedTransactionFromReply.getAmount() != (transactionToUpdate.get().getAmount()))) {
+                transactionToUpdate.get().setAmount(receivedTransactionFromReply.getAmount());
+            }
+            transactionRepository.save(transactionToUpdate.get());
+            return transactionMapper.mapTransactionToTelegramResponse(transactionToUpdate.get());
+        }
+        return null;
     }
 
     public List<TransactionDTO> getTransactionsListByPeriodAndCategory(Integer year, Integer month, long categoryId) {

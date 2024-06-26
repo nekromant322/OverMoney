@@ -68,6 +68,10 @@ public class OrchestratorRequestService {
         return orchestratorFeign.submitTransactionForUpdate(transaction, id);
     }
 
+    public TransactionResponseDTO submitTransactionForPatch(TransactionMessageDTO transaction, UUID id) {
+        return orchestratorFeign.submitTransactionForPatch(transaction, id);
+    }
+
     public TransactionDTO getTransactionById(UUID id) {
         return orchestratorFeign.getTransactionById(id);
     }

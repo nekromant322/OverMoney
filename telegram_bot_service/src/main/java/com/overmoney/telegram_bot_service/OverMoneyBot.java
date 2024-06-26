@@ -301,13 +301,12 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private void updateTransaction(TransactionMessageDTO transactionMessageDTO, UUID idTransaction, Long chatId, Integer messageId) {
         try {
             TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
-                    .submitTransactionForUpdate(transactionMessageDTO, idTransaction);
+                    .submitTransactionForPatch(transactionMessageDTO, idTransaction);
             telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
                     .messageId(messageId)
                     .chatId(chatId)
                     .idTransaction(transactionResponseDTO.getId())
                     .build());
-            telegramMessageService.deleteTelegramMessageByIdTransaction(idTransaction);
             sendMessage(chatId,
                     SUCCESSFUL_UPDATE_TRANSACTION_TEXT + transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
         } catch (Exception e) {
