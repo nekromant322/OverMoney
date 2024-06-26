@@ -4,6 +4,7 @@ import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.util.NumericalUtils;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,16 @@ public class TransactionMapper {
                 .telegramUserId(transaction.getTelegramUserId());
         if (transaction.getCategory() != null) {
             builder.categoryName(transaction.getCategory().getName());
+            builder.type(transaction.getCategory().getType());
         }
+        StringBuilder usersNames = new StringBuilder();
+        for (User user : transaction.getAccount().getUsers()) {
+            if (usersNames.length() > 0) {
+                usersNames.append(", ");
+            }
+            usersNames.append(user.getUsername());
+        }
+        builder.telegramUserName(usersNames.toString());
 
         return builder.build();
     }

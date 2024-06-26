@@ -1,5 +1,6 @@
 package com.override.dto;
 
+import com.override.dto.constants.Type;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,4 +22,5 @@ public class TransactionDTO {
     private Long suggestedCategoryId;
     private Long telegramUserId;
     private String telegramUserName;
+    private Type type;
 }

@@ -7,11 +7,13 @@ import com.override.orchestrator_service.service.BackupUserDataService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
+import java.io.IOException;
 import java.security.Principal;
 
 @RestController
@@ -28,6 +30,11 @@ public class SettingsController {
     @GetMapping("/backup")
     public BackupUserDataDTO getUserBackupData(Principal principal) throws InstanceNotFoundException {
         return backupUserDataService.createBackupUserData(telegramUtils.getTelegramId(principal));
+    }
+
+    @GetMapping("/backup/excel")
+    public ResponseEntity<InputStreamResource> getUserBackupDataExcel(Principal principal) throws IOException, InstanceNotFoundException {
+        return backupUserDataService.downloadExelFile(telegramUtils.getTelegramId(principal));
     }
 
     @OnlyServiceUse

@@ -8,14 +8,21 @@ import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import javax.management.InstanceNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -133,6 +140,26 @@ public class BackupUserDataServiceTest {
         Assertions.assertEquals(transactionList.size(), transactionDTOList.size());
         Assertions.assertEquals(transactionList.get(0).getMessage(), transactionDTOList.get(0).getMessage());
         Assertions.assertEquals(transactionList.get(0).getAmount(), transactionDTOList.get(0).getAmount());
+    }
+
+    @Test
+    public void downloadExcelFileTest() throws IOException {
+        List<CategoryDTO> categoryDTOList = new ArrayList<>();
+        CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
+        categoryDTOList.add(categoryDTO);
+        List<TransactionDTO> transactionDTOList = new ArrayList<>();
+        TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
+        transactionDTOList.add(transactionDTO);
+        Long testId = 1L;
+        when(categoryService.findCategoriesListByChatId(testId)).thenReturn(categoryDTOList);
+        when(transactionService.findAlltransactionDTOForAcountByChatId(testId)).thenReturn(transactionDTOList);
+
+        ResponseEntity<InputStreamResource> response = backupUserDataService.downloadExelFile(testId);
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertEquals("attachment; filename=backup.xlsx", response.getHeaders().getFirst("Content-Disposition"));
+        Assertions.assertNotNull(response.getBody());
+
     }
 
 
