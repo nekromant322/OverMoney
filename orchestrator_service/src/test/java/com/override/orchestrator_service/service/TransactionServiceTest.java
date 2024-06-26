@@ -8,7 +8,6 @@ import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -26,11 +25,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Stream;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -54,6 +52,8 @@ public class TransactionServiceTest {
     private TelegramBotFeign telegramBotFeign;
     @Mock
     private CategoryRepository categoryRepository;
+    @Mock
+    private TransactionProcessingService transactionProcessingService;
 
     @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
@@ -101,7 +101,7 @@ public class TransactionServiceTest {
         when(userService.getUserById(any())).thenReturn(user);
         List<Transaction> testListTransaction =
                 transactionService.findTransactionsListByUserIdWithoutCategories(user.getId());
-        Assertions.assertEquals(List.of(transaction1, transaction2), testListTransaction);
+        assertEquals(List.of(transaction1, transaction2), testListTransaction);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class TransactionServiceTest {
 
         List<TransactionDTO> testListTransaction =
                 transactionService.findTransactionsByUserIdLimited(user.getId(), 50, 0);
-        Assertions.assertEquals(List.of(transactionDTO1, transactionDTO2), testListTransaction);
+        assertEquals(List.of(transactionDTO1, transactionDTO2), testListTransaction);
     }
 
     @Test
@@ -149,7 +149,7 @@ public class TransactionServiceTest {
                 .thenReturn(listOfYears);
 
         transactionService.findAvailableYears(123L);
-        Assertions.assertEquals(transactionRepository.findAvailableYearsForAccountByAccountId(acc.getId()).size(),
+        assertEquals(transactionRepository.findAvailableYearsForAccountByAccountId(acc.getId()).size(),
                 listOfYears.size());
     }
 
@@ -163,7 +163,7 @@ public class TransactionServiceTest {
 
         List<AnalyticsMonthlyReportForYearDTO> resultList = transactionService.findMonthlyIncomeStatisticsForYearByAccountId(123L, 123);
 
-        Assertions.assertEquals(resultList, requeredList);
+        assertEquals(resultList, requeredList);
     }
 
     private static Stream<Arguments> provideMonthlyIncomeStatisticsForYear() {
@@ -209,7 +209,7 @@ public class TransactionServiceTest {
         List<AnalyticsAnnualAndMonthlyReportDTO> resultList = transactionService
                 .findAnnualAndMonthlyTotalStatisticsByAccountId(1L, 1999);
 
-        Assertions.assertEquals(resultList, outputList);
+        assertEquals(resultList, outputList);
     }
 
     private static Stream<Arguments> provideAnnualAndMonthlyTotalStatisticsForYear() {
@@ -286,5 +286,33 @@ public class TransactionServiceTest {
         transactionService.editTransaction(transactionDTO);
 
         verify(keywordRepository, times(2)).delete(keyword.get());
+    }
+
+    @Test
+    void patchTransaction_SuccessfulUpdate() throws InstanceNotFoundException {
+        UUID transactionId = UUID.randomUUID();
+
+        TransactionMessageDTO transactionMessage = new TransactionMessageDTO();
+        transactionMessage.setMessage("фрукты 100");
+
+        Transaction transactionFromRepo = new Transaction();
+        transactionFromRepo.setId(transactionId);
+        transactionFromRepo.setMessage("фрукты");
+        transactionFromRepo.setAmount(200.0);
+
+        Transaction receivedTransactionFromReply = new Transaction();
+        receivedTransactionFromReply.setMessage("фрукты");
+        receivedTransactionFromReply.setAmount(100.0);
+
+        when(transactionProcessingService.processTransaction(transactionMessage)).thenReturn(receivedTransactionFromReply);
+        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transactionFromRepo));
+        when(transactionMapper.mapTransactionToTelegramResponse(any(Transaction.class))).thenReturn(new TransactionResponseDTO());
+
+        TransactionResponseDTO response = transactionService.patchTransaction(transactionMessage, transactionId);
+
+        verify(transactionRepository).save(transactionFromRepo);
+        assertNotNull(response);
+        assertEquals("фрукты", transactionFromRepo.getMessage());
+        assertEquals(100, transactionFromRepo.getAmount());
     }
 }
