@@ -69,7 +69,7 @@ function saveFile() {
 }
 function downloadExcel() {
     $.ajax({
-        url: './settings/backup/excel',
+        url: './settings/export/excel',
         method: 'GET',
         xhrFields: {
             responseType: 'blob'

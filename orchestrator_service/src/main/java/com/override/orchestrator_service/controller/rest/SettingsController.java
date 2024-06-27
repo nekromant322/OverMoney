@@ -4,6 +4,7 @@ package com.override.orchestrator_service.controller.rest;
 import com.override.dto.BackupUserDataDTO;
 import com.override.orchestrator_service.annotations.OnlyServiceUse;
 import com.override.orchestrator_service.service.BackupUserDataService;
+import com.override.orchestrator_service.service.ExportUserDataService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,14 +28,17 @@ public class SettingsController {
     @Autowired
     private TelegramUtils telegramUtils;
 
+    @Autowired
+    private ExportUserDataService exportUserDataService;
+
     @GetMapping("/backup")
     public BackupUserDataDTO getUserBackupData(Principal principal) throws InstanceNotFoundException {
         return backupUserDataService.createBackupUserData(telegramUtils.getTelegramId(principal));
     }
 
-    @GetMapping("/backup/excel")
+    @GetMapping("/export/excel")
     public ResponseEntity<InputStreamResource> getUserBackupDataExcel(Principal principal) throws IOException, InstanceNotFoundException {
-        return backupUserDataService.downloadExelFile(telegramUtils.getTelegramId(principal));
+        return exportUserDataService.downloadExelFile(telegramUtils.getTelegramId(principal));
     }
 
     @OnlyServiceUse

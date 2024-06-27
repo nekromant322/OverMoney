@@ -142,26 +142,6 @@ public class BackupUserDataServiceTest {
         Assertions.assertEquals(transactionList.get(0).getAmount(), transactionDTOList.get(0).getAmount());
     }
 
-    @Test
-    public void downloadExcelFileTest() throws IOException {
-        List<CategoryDTO> categoryDTOList = new ArrayList<>();
-        CategoryDTO categoryDTO = TestFieldsUtil.generateTestCategoryDTO();
-        categoryDTOList.add(categoryDTO);
-        List<TransactionDTO> transactionDTOList = new ArrayList<>();
-        TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
-        transactionDTOList.add(transactionDTO);
-        Long testId = 1L;
-        when(categoryService.findCategoriesListByChatId(testId)).thenReturn(categoryDTOList);
-        when(transactionService.findAlltransactionDTOForAcountByChatId(testId)).thenReturn(transactionDTOList);
-
-        ResponseEntity<InputStreamResource> response = backupUserDataService.downloadExelFile(testId);
-
-        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assertions.assertEquals("attachment; filename=backup.xlsx", response.getHeaders().getFirst("Content-Disposition"));
-        Assertions.assertNotNull(response.getBody());
-
-    }
-
 
 }
 
