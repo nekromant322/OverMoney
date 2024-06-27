@@ -92,7 +92,7 @@ public class TransactionService {
         return enrichTransactionsWithTgUsernames(transactionList);
     }
 
-    private List<TransactionDTO> enrichTransactionsWithTgUsernames(List<TransactionDTO> transactionList) {
+    public List<TransactionDTO> enrichTransactionsWithTgUsernames(List<TransactionDTO> transactionList) {
         Map<Long, User> userMap = userService.getUsersByIds(transactionList.stream()
                         .map(TransactionDTO::getTelegramUserId)
                         .distinct()
