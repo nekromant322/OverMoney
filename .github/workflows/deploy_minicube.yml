@@ -114,7 +114,8 @@ jobs:
             resource-manifest/service-sa-telegram-bot-lb.yaml
             resource-manifest/sa-invest-deployment.yaml
             resource-manifest/service-sa-invest-lb.yaml
-            resource-manifest/wit-ai-go-proxy-deployment.yaml
+            resource-manifest/sa-wit-ai-go-proxy-deployment.yaml
+            resource-manifest/service-wit-ai-go-proxy-lb.yaml
             resource-manifest/frontend-deployment.yaml
             resource-manifest/service-frontend-lb.yaml
           secrets: ${{ toJSON(secrets) }} # It would contain all your repository secrets in json
@@ -165,7 +166,7 @@ jobs:
             fi
             
             if ${{ needs.detect-changes.outputs.wit-ai-go-proxy}}; then
-              sudo kubectl rollout restart deployment wit-ai-go-proxy
+              sudo kubectl rollout restart deployment sa-wit-ai-go-proxy
             fi
             if ${{ needs.detect-changes.outputs.frontend}}; then
               sudo kubectl rollout restart deployment frontend
