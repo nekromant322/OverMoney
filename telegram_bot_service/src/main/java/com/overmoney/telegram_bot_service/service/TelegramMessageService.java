@@ -30,7 +30,7 @@ public class TelegramMessageService {
         orchestratorRequestService.deleteTransactionById(telegramMessage.getIdTransaction());
     }
 
-    public TelegramMessage getTelegramMessageByByMessageIdAndChatId(Integer messageId, Long chatId) {
+    public TelegramMessage getTelegramMessageMessageIdAndChatId(Integer messageId, Long chatId) {
         return telegramMessageRepository.findByMessageIdAndChatId(messageId, chatId);
     }
 }
