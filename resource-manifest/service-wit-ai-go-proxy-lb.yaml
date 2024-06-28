@@ -4,8 +4,8 @@ metadata:
   name: wit-ai-go-proxy-svc
 spec:
   ports:
-    - port: 3333
+    - port: 80
       protocol: TCP
       targetPort: 8080
   selector:
-    app: wit-ai-go-proxy
+    app: sa-wit-ai-go-proxy

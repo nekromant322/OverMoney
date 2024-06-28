@@ -31,7 +31,7 @@ func main() {
 
 	ctx := context.Background()
 	server := &http.Server{
-		Addr:    ":3333",
+		Addr:    ":8080",
 		Handler: mux,
 		BaseContext: func(l net.Listener) context.Context {
 			ctx = context.WithValue(ctx, keyServerAddr, l.Addr().String())
