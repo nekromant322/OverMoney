@@ -214,7 +214,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         }
         if (replyToMessage != null) {
             TelegramMessage message = telegramMessageService.
-                    getTelegramMessageByByMessageIdAndChatId(replyToMessage.getMessageId(), chatId);
+                    getTelegramMessageMessageIdAndChatId(replyToMessage.getMessageId(), chatId);
             if (message == null) {
                 if (!userId.equals(replyToMessage.getFrom().getId())) {
                     sendMessage(chatId, INVALID_UPDATE_TRANSACTION_TEXT);
