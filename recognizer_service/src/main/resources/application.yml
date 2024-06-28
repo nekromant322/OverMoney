@@ -5,19 +5,7 @@
     internal:
       host:
         orchestrator: http://sa-orchestrator-svc
-
-
-  wit-ai:
-    url: https://api.wit.ai/speech
-    token: ${WIT_AI_TOKEN}
-    version: 20230215
-    charset: UTF-8
-    method: POST
-    authProperty: Authorization
-    contentTypeProperty: Content-Type
-    contentTypeValue: audio/wav
-    paramSeparator: "?"
-    versionParam: v=%s
+        wit-ai-proxy: http://wit-ai-go-proxy-svc
 
   spring:
     application:
@@ -42,10 +30,6 @@
       distribution:
         percentiles-histogram:
           "[http.server.requests]": true
-
-  audio-recognizer-go-service:
-#    TODO вынести в манифест
-    url: http://wit-ai-go-proxy-svc:3333/recognizer
 
   authorization-header:
     header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}

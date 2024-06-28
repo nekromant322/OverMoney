@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTORecognitionService {
 
-    @Value("${audio-recognizer-go-service.url}")
+    @Value("${integration.internal.host.wit-ai-proxy}")
     private String goServiceUrl;
 
 
