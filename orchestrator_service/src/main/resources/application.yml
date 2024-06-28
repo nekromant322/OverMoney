@@ -42,7 +42,7 @@
       shapran_dmitry,
       Galactic_Alex,
       coderror404
-
+      Kulpinov_Evgeny
   filters:
     authorization-header:
       header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
