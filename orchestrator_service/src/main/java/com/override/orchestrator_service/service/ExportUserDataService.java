@@ -28,6 +28,7 @@ public class ExportUserDataService {
     private CategoryService categoryService;
     @Autowired
     private TransactionService transactionService;
+    static final int EXCEL_CELL_WIDTH = 5837;
 
     public ResponseEntity<InputStreamResource> downloadExelFile(Long id) throws IOException {
         ByteArrayInputStream in = createExcelExport(id);
@@ -78,14 +79,9 @@ public class ExportUserDataService {
             fillDataTransactions(Type.INCOME, transactionDTOList, sheetTransactionsIncome);
             fillDataTransactions(Type.EXPENSE, transactionDTOList, sheetTransactionsExpense);
 
-            // Авто-масштабирование столбцов
-            for (int i = 0; i < columnsCategories.length; i++) {
-                sheetCategories.autoSizeColumn(i);
-            }
-            for (int i = 0; i < columnsTransactions.length; i++) {
-                sheetTransactionsIncome.autoSizeColumn(i);
-                sheetTransactionsExpense.autoSizeColumn(i);
-            }
+            setWidth(columnsCategories, sheetCategories);
+            setWidth(columnsTransactions, sheetTransactionsIncome);
+            setWidth(columnsTransactions, sheetTransactionsExpense);
 
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
@@ -113,6 +109,12 @@ public class ExportUserDataService {
                 rowExpense.createCell(3).setCellValue(transaction.getDate().toString());
                 rowExpense.createCell(4).setCellValue(transaction.getTelegramUserName());
             }
+        }
+    }
+
+    private void setWidth(String[] columns, Sheet sheet) {
+        for (int i = 0; i < columns.length; i++) {
+            sheet.setColumnWidth(i, EXCEL_CELL_WIDTH);
         }
     }
 }
