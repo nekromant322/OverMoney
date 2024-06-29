@@ -78,14 +78,10 @@ public class ExportUserDataService {
             fillDataTransactions(Type.INCOME, transactionDTOList, sheetTransactionsIncome);
             fillDataTransactions(Type.EXPENSE, transactionDTOList, sheetTransactionsExpense);
 
-            // Авто-масштабирование столбцов
-            for (int i = 0; i < columnsCategories.length; i++) {
-                sheetCategories.autoSizeColumn(i);
-            }
-            for (int i = 0; i < columnsTransactions.length; i++) {
-                sheetTransactionsIncome.autoSizeColumn(i);
-                sheetTransactionsExpense.autoSizeColumn(i);
-            }
+            final int width = 5837;
+            setWidth(width, columnsCategories, sheetCategories);
+            setWidth(width, columnsTransactions, sheetTransactionsIncome);
+            setWidth(width, columnsTransactions, sheetTransactionsExpense);
 
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
@@ -113,6 +109,12 @@ public class ExportUserDataService {
                 rowExpense.createCell(3).setCellValue(transaction.getDate().toString());
                 rowExpense.createCell(4).setCellValue(transaction.getTelegramUserName());
             }
+        }
+    }
+
+    private void setWidth(int width, String[] columns, Sheet sheet) {
+        for (int i = 0; i < columns.length; i++) {
+            sheet.setColumnWidth(i, width);
         }
     }
 }
