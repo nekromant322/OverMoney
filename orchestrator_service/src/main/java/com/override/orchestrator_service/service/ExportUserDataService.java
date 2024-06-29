@@ -28,6 +28,7 @@ public class ExportUserDataService {
     private CategoryService categoryService;
     @Autowired
     private TransactionService transactionService;
+    static final int WIDTH = 5837;
 
     public ResponseEntity<InputStreamResource> downloadExelFile(Long id) throws IOException {
         ByteArrayInputStream in = createExcelExport(id);
@@ -78,10 +79,9 @@ public class ExportUserDataService {
             fillDataTransactions(Type.INCOME, transactionDTOList, sheetTransactionsIncome);
             fillDataTransactions(Type.EXPENSE, transactionDTOList, sheetTransactionsExpense);
 
-            final int width = 5837;
-            setWidth(width, columnsCategories, sheetCategories);
-            setWidth(width, columnsTransactions, sheetTransactionsIncome);
-            setWidth(width, columnsTransactions, sheetTransactionsExpense);
+            setWidth(columnsCategories, sheetCategories);
+            setWidth(columnsTransactions, sheetTransactionsIncome);
+            setWidth(columnsTransactions, sheetTransactionsExpense);
 
             workbook.write(out);
             return new ByteArrayInputStream(out.toByteArray());
@@ -112,9 +112,9 @@ public class ExportUserDataService {
         }
     }
 
-    private void setWidth(int width, String[] columns, Sheet sheet) {
+    private void setWidth(String[] columns, Sheet sheet) {
         for (int i = 0; i < columns.length; i++) {
-            sheet.setColumnWidth(i, width);
+            sheet.setColumnWidth(i, WIDTH);
         }
     }
 }
