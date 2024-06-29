@@ -28,7 +28,7 @@ public class ExportUserDataService {
     private CategoryService categoryService;
     @Autowired
     private TransactionService transactionService;
-    static final int WIDTH = 5837;
+    static final int EXCEL_CELL_WIDTH = 5837;
 
     public ResponseEntity<InputStreamResource> downloadExelFile(Long id) throws IOException {
         ByteArrayInputStream in = createExcelExport(id);
@@ -114,7 +114,7 @@ public class ExportUserDataService {
 
     private void setWidth(String[] columns, Sheet sheet) {
         for (int i = 0; i < columns.length; i++) {
-            sheet.setColumnWidth(i, WIDTH);
+            sheet.setColumnWidth(i, EXCEL_CELL_WIDTH);
         }
     }
 }
