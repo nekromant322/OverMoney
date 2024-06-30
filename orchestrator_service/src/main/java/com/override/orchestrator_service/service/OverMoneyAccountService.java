@@ -5,6 +5,7 @@ import com.override.dto.ChatMemberDTO;
 import com.override.orchestrator_service.config.RecentActivityProperties;
 import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.OverMoneyAccount;
+import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -189,5 +191,23 @@ public class OverMoneyAccountService {
         keywordRepository.deleteAllByKeywordId_AccountId(accountId);
         transactionRepository.deleteAllByAccountId(accountId);
         categoryRepository.deleteAllByAccountId(accountId);
+    }
+
+    public int getActiveAccountCount() {
+        Iterable<OverMoneyAccount> accounts = overMoneyAccountRepository.findAll();
+        int count = 0;
+        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
+
+        for (OverMoneyAccount account : accounts) {
+            Set<Transaction> transactions = account.getTransactions();
+            for (Transaction transaction : transactions) {
+                LocalDate transactionDate = transaction.getDate().toLocalDate();
+                if (transactionDate.isAfter(thirtyDaysAgo)) {
+                    count++;
+                    break;
+                }
+            }
+        }
+        return count;
     }
 }

@@ -119,4 +119,9 @@ public class TransactionController {
                                                     @PathVariable("id") UUID id) throws InstanceNotFoundException {
         return transactionService.updateTransactionFromTelegramChat(transactionMessage, id);
     }
+
+    @GetMapping("/transactions/countLastDays/{numberDays}")
+    public int getTransactionsCountLastDays(@PathVariable("numberDays") int numberDays) {
+        return transactionService.getTransactionsCountLastDays(numberDays);
+    }
 }
