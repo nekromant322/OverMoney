@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -314,5 +315,10 @@ public class TransactionService {
         return transactionRepository.findTransactionsBetweenDatesAndCategory(year, month, categoryId).stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                 .collect(Collectors.toList());
+    }
+
+    public int getTransactionsCountLastDays(int numberDays) {
+        LocalDateTime numberDaysAgo = LocalDateTime.now().minusDays(numberDays);
+        return transactionRepository.findCountTransactionsLastDays(numberDaysAgo);
     }
 }
