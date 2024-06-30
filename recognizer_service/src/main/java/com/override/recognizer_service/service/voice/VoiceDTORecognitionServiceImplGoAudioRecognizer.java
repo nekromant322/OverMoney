@@ -34,7 +34,7 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
     public String voiceToText(AudioRecognizerGoRequestDTO request) {
 
         ObjectMapper mapper = new ObjectMapper();
-        String decryptedMessageAsJSON;
+        String decryptedMessageAsJSON = null;
         HttpURLConnection connection = getConnection();
 
         try(OutputStream outputStream = connection.getOutputStream()) {
