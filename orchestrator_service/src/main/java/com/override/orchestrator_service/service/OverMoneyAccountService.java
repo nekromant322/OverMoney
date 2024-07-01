@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -193,21 +192,8 @@ public class OverMoneyAccountService {
         categoryRepository.deleteAllByAccountId(accountId);
     }
 
-    public int getActiveAccountCount() {
-        Iterable<OverMoneyAccount> accounts = overMoneyAccountRepository.findAll();
-        int count = 0;
-        LocalDate thirtyDaysAgo = LocalDate.now().minusDays(30);
-
-        for (OverMoneyAccount account : accounts) {
-            Set<Transaction> transactions = account.getTransactions();
-            for (Transaction transaction : transactions) {
-                LocalDate transactionDate = transaction.getDate().toLocalDate();
-                if (transactionDate.isAfter(thirtyDaysAgo)) {
-                    count++;
-                    break;
-                }
-            }
-        }
-        return count;
+    public int getActiveAccountCount(int numberDays) {
+        LocalDateTime numberDaysAgo = LocalDateTime.now().minusDays(numberDays);
+        return overMoneyAccountRepository.findActiveAccountCount(numberDaysAgo);
     }
 }

@@ -14,7 +14,7 @@ window.onload = function () {
     getTransactionsCount();
     getActiveAccountCount();
     getTransactionsCountLastThirtyDays();
-    getTransactionsCountLastFullDays();
+    getTransactionsCountLastFullDay();
     getTransactionsAverage();
 
     getStat();
@@ -77,7 +77,7 @@ function getStatLastLastThirtyDays() {
 
 function getActiveAccountCount() {
     $.ajax({
-        url: "/account/activeAccountCount",
+        url: "/admin/activeAccountCount/" + numberDays,
         type: "GET",
         async: false,
         success: function (data) {
@@ -88,7 +88,7 @@ function getActiveAccountCount() {
 
 function getTransactionsCountLastThirtyDays() {
     $.ajax({
-        url: "/transactions/countLastDays/" + numberDays,
+        url: "/admin/countTransactionsLastDays/" + numberDays,
         type: "GET",
         async: false,
         success: function (data) {
@@ -97,9 +97,9 @@ function getTransactionsCountLastThirtyDays() {
     })
 }
 
-function getTransactionsCountLastFullDays() {
+function getTransactionsCountLastFullDay() {
     $.ajax({
-        url: "/transactions/countLastDays/" + 1,
+        url: "/admin/countTransactionsLastDays/" + 1,
         type: "GET",
         async: false,
         success: function (data) {
