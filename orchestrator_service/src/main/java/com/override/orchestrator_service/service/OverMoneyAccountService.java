@@ -5,7 +5,6 @@ import com.override.dto.ChatMemberDTO;
 import com.override.orchestrator_service.config.RecentActivityProperties;
 import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.OverMoneyAccount;
-import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
