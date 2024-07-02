@@ -16,6 +16,7 @@
         orchestrator: http://sa-orchestrator-svc
         recognizer: http://sa-recognizer-svc
 
+
   server:
     port: 8080
 

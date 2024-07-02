@@ -190,4 +190,9 @@ public class OverMoneyAccountService {
         transactionRepository.deleteAllByAccountId(accountId);
         categoryRepository.deleteAllByAccountId(accountId);
     }
+
+    public int getActiveAccountCount(int numberDays) {
+        LocalDateTime numberDaysAgo = LocalDateTime.now().minusDays(numberDays);
+        return overMoneyAccountRepository.findActiveAccountCount(numberDaysAgo);
+    }
 }

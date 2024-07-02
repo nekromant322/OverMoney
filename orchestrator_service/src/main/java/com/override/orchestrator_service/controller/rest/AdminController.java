@@ -3,7 +3,9 @@ package com.override.orchestrator_service.controller.rest;
 import com.override.dto.BugReportDTO;
 import com.override.dto.MailDTO;
 import com.override.orchestrator_service.service.BugReportService;
+import com.override.orchestrator_service.service.OverMoneyAccountService;
 import com.override.orchestrator_service.service.TelegramBotRequestService;
+import com.override.orchestrator_service.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,12 @@ public class AdminController {
 
     @Autowired
     private BugReportService bugReportService;
+
+    @Autowired
+    private TransactionService transactionService;
+
+    @Autowired
+    private OverMoneyAccountService accountService;
 
     @PostMapping("/announce")
     public void sendAnnounce(@RequestBody String text) {
@@ -42,5 +50,15 @@ public class AdminController {
     @GetMapping("/bugreports/{id}")
     public BugReportDTO getBugReport(@PathVariable Long id) {
         return bugReportService.getBugReportDTO(id);
+    }
+
+    @GetMapping("/countTransactionsLastDays/{numberDays}")
+    public int getTransactionsCountLastDays(@PathVariable("numberDays") int numberDays) {
+        return transactionService.getTransactionsCountLastDays(numberDays);
+    }
+
+    @GetMapping("/activeAccountCount/{numberDays}")
+    public int getActiveUsersCount(@PathVariable("numberDays") int numberDays) {
+        return accountService.getActiveAccountCount(numberDays);
     }
 }

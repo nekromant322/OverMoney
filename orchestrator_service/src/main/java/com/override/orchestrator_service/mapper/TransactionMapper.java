@@ -37,6 +37,7 @@ public class TransactionMapper {
                 .telegramUserId(transaction.getTelegramUserId());
         if (transaction.getCategory() != null) {
             builder.categoryName(transaction.getCategory().getName());
+            builder.type(transaction.getCategory().getType());
         }
 
         return builder.build();

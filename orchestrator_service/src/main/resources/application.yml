@@ -41,7 +41,9 @@
       HomerTheBald,
       shapran_dmitry,
       Galactic_Alex,
-      coderror404
+      coderror404,
+      Shainara,
+      Kulpinov_Evgeny
 
   filters:
     authorization-header:
