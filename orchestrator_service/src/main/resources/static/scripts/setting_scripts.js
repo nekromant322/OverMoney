@@ -32,6 +32,9 @@ function openModalSuccessfulBackup() {
 $("#downloadButton").click(function () {
     saveFile();
 });
+$("#downloadExelButton").click(function () {
+    downloadExcel();
+});
 
 $("#readButton").click(function () {
     modalConfirmation.style.display = "block";
@@ -61,6 +64,39 @@ function saveFile() {
             a.download = dateString + '-overmoney.json';
             a.href = url;
             a.click();
+        }
+    });
+}
+function downloadExcel() {
+    $.ajax({
+        url: './settings/export/excel',
+        method: 'GET',
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function (blob) {
+            let url = URL.createObjectURL(blob);
+
+            let a = document.createElement('a');
+
+            // текущая дата в строку в формате dd.mm.yyyy
+            let date = new Date();
+            let dateString = [
+                ('0' + date.getDate()).slice(-2),
+                ('0' + (date.getMonth() + 1)).slice(-2),
+                date.getFullYear()
+            ].join('.');
+
+            // имя файла с датой и расширением .xlsx
+            a.download = dateString + '-backup.xlsx';
+            a.href = url;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            console.error('Ошибка скачивания: ', textStatus, errorThrown);
         }
     });
 }

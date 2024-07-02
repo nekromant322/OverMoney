@@ -239,3 +239,6 @@
 .loader {
     display: none;
 }
+.get-backup-button {
+    margin-bottom: 10px;
+}

@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 @Slf4j
 public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTORecognitionService {
 
-    @Value("${audio-recognizer-go-service.url}")
+    @Value("${integration.internal.host.wit-ai-proxy}")
     private String goServiceUrl;
 
 
@@ -34,12 +34,15 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
     public String voiceToText(AudioRecognizerGoRequestDTO request) {
 
         ObjectMapper mapper = new ObjectMapper();
-        String decryptedMessageAsJSON;
+        String decryptedMessageAsJSON = null;
         HttpURLConnection connection = getConnection();
 
         try(OutputStream outputStream = connection.getOutputStream()) {
             byte[] input = mapper.writeValueAsBytes(request);
             outputStream.write(input, 0, input.length);
+        } catch (Exception e) {
+            log.error("Error sending voice message to wit ai go proxy, id= " + request.getId(), e);
+            throw e;
         }
 
         try(BufferedReader br = new BufferedReader(
@@ -50,6 +53,9 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
                 response.append(responseLine.trim());
             }
             decryptedMessageAsJSON = response.toString();
+        } catch (Exception e) {
+            log.error("Error processing response from wit ai go proxy, id= " + request.getId(), e);
+            throw e;
         }
         log.info("Got json result from wit.ai go proxy " + decryptedMessageAsJSON);
         return mapper.readValue(decryptedMessageAsJSON, AudioRecognizerGoResponseDTO.class).getText();
