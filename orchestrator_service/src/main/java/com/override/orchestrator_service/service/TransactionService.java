@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TransactionService {
@@ -298,21 +299,21 @@ public class TransactionService {
 
         Transaction receivedTransactionFromReply = transactionProcessingService.processTransaction(transactionMessage);
 
-        Optional<Transaction> transactionToUpdate = transactionRepository.findById(id);
+        Transaction transactionToUpdate = transactionRepository.findById(id)
+                .orElseThrow(() -> new InstanceNotFoundException("Транзакция не найдена"));
 
-        if (transactionToUpdate.isPresent()) {
-            if (receivedTransactionFromReply.getMessage() != null
-                    && !receivedTransactionFromReply.getMessage().equals(transactionToUpdate.get().getMessage())) {
-                transactionToUpdate.get().setMessage(receivedTransactionFromReply.getMessage());
-            }
-            if (receivedTransactionFromReply.getAmount() != null
-                    && (receivedTransactionFromReply.getAmount() != (transactionToUpdate.get().getAmount()))) {
-                transactionToUpdate.get().setAmount(receivedTransactionFromReply.getAmount());
-            }
-            transactionRepository.save(transactionToUpdate.get());
-            return transactionMapper.mapTransactionToTelegramResponse(transactionToUpdate.get());
-        }
-        return null;
+        Stream.of(transactionToUpdate)
+                .filter(transaction -> receivedTransactionFromReply.getMessage() != null
+                        && !receivedTransactionFromReply.getMessage().equals(transaction.getMessage()))
+                .forEach(transaction -> transaction.setMessage(receivedTransactionFromReply.getMessage()));
+
+        Stream.of(transactionToUpdate)
+                .filter(transaction -> receivedTransactionFromReply.getAmount() != null
+                        && !receivedTransactionFromReply.getAmount().equals(transaction.getAmount()))
+                .forEach(transaction -> transaction.setAmount(receivedTransactionFromReply.getAmount()));
+
+        transactionRepository.save(transactionToUpdate);
+        return transactionMapper.mapTransactionToTelegramResponse(transactionToUpdate);
     }
 
     public List<TransactionDTO> getTransactionsListByPeriodAndCategory(Integer year, Integer month, long categoryId) {

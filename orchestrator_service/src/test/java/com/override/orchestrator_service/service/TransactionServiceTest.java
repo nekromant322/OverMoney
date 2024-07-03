@@ -8,6 +8,7 @@ import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
+import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -292,27 +293,38 @@ public class TransactionServiceTest {
     void patchTransaction_SuccessfulUpdate() throws InstanceNotFoundException {
         UUID transactionId = UUID.randomUUID();
 
-        TransactionMessageDTO transactionMessage = new TransactionMessageDTO();
-        transactionMessage.setMessage("фрукты 100");
+        TransactionMessageDTO transactionMessageDTO = new TransactionMessageDTO();
+        TransactionMessageDTO transactionMessageDTO1 = new TransactionMessageDTO();
+        TransactionMessageDTO transactionMessageDTO2 = new TransactionMessageDTO();
+        TransactionMessageDTO transactionMessageDTO3 = new TransactionMessageDTO();
 
-        Transaction transactionFromRepo = new Transaction();
+        transactionMessageDTO.setMessage("фрукты 100");
+        transactionMessageDTO1.setMessage("100 фрукты");
+        transactionMessageDTO2.setMessage("фрукты 100+200");
+        transactionMessageDTO3.setMessage("100+200 фрукты");
+
+        List<TransactionMessageDTO> transactionMessages = new ArrayList<>();
+        transactionMessages.add(transactionMessageDTO);
+        transactionMessages.add(transactionMessageDTO1);
+        transactionMessages.add(transactionMessageDTO2);
+        transactionMessages.add(transactionMessageDTO3);
+
+        Transaction transactionFromRepo = TestFieldsUtil.generateTestTransaction();
         transactionFromRepo.setId(transactionId);
-        transactionFromRepo.setMessage("фрукты");
-        transactionFromRepo.setAmount(200.0);
-
         Transaction receivedTransactionFromReply = new Transaction();
-        receivedTransactionFromReply.setMessage("фрукты");
-        receivedTransactionFromReply.setAmount(100.0);
 
-        when(transactionProcessingService.processTransaction(transactionMessage)).thenReturn(receivedTransactionFromReply);
-        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transactionFromRepo));
-        when(transactionMapper.mapTransactionToTelegramResponse(any(Transaction.class))).thenReturn(new TransactionResponseDTO());
+        for (TransactionMessageDTO transactionMessage : transactionMessages) {
 
-        TransactionResponseDTO response = transactionService.patchTransaction(transactionMessage, transactionId);
+            when(transactionProcessingService.processTransaction(transactionMessage)).thenReturn(receivedTransactionFromReply);
+            when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transactionFromRepo));
+            when(transactionMapper.mapTransactionToTelegramResponse(any(Transaction.class))).thenReturn(new TransactionResponseDTO());
 
-        verify(transactionRepository).save(transactionFromRepo);
-        assertNotNull(response);
-        assertEquals("фрукты", transactionFromRepo.getMessage());
-        assertEquals(100, transactionFromRepo.getAmount());
+            TransactionResponseDTO response = transactionService.patchTransaction(transactionMessage, transactionId);
+
+            verify(transactionRepository).save(transactionFromRepo);
+            assertNotNull(response);
+            assertEquals(receivedTransactionFromReply.getMessage(), transactionFromRepo.getMessage());
+            assertEquals(receivedTransactionFromReply.getAmount(), transactionFromRepo.getAmount());
+        }
     }
 }
