@@ -51,7 +51,7 @@ public class ExportUserDataServiceTest {
         ResponseEntity<InputStreamResource> response = exportUserDataService.downloadExelFile(testTelegramId);
 
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
-        Assertions.assertEquals("attachment; filename=backup.xlsx", response.getHeaders().getFirst("Content-Disposition"));
+        Assertions.assertEquals("attachment; filename=export.xlsx", response.getHeaders().getFirst("Content-Disposition"));
         Assertions.assertNotNull(response.getBody());
 
     }
