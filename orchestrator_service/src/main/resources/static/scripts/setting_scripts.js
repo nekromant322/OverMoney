@@ -88,7 +88,7 @@ function downloadExcel() {
             ].join('.');
 
             // имя файла с датой и расширением .xlsx
-            a.download = dateString + '-backup.xlsx';
+            a.download = dateString + '-export.xlsx';
             a.href = url;
             document.body.appendChild(a);
             a.click();

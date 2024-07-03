@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.management.InstanceNotFoundException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,10 +29,13 @@ public class ExportUserDataService {
     private CategoryService categoryService;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private OverMoneyAccountService overMoneyAccountService;
     static final int EXCEL_CELL_WIDTH = 5837;
 
-    public ResponseEntity<InputStreamResource> downloadExelFile(Long id) throws IOException {
-        ByteArrayInputStream in = createExcelExport(id);
+    public ResponseEntity<InputStreamResource> downloadExelFile(Long telegramId) throws IOException, InstanceNotFoundException {
+        Long chatId = overMoneyAccountService.getAccountByUserId(telegramId).getChatId();
+        ByteArrayInputStream in = createExcelExport(chatId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Disposition", "attachment; filename=backup.xlsx");
