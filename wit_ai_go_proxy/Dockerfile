@@ -14,6 +14,6 @@ RUN go mod download
 
 RUN go build -o /wit_ai_go_proxy
 
-EXPOSE 3333
+EXPOSE 8080
 
 CMD ["/wit_ai_go_proxy"]

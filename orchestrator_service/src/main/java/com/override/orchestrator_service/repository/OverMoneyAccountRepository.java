@@ -22,4 +22,7 @@ public interface OverMoneyAccountRepository extends CrudRepository<OverMoneyAcco
 
     @Query(value = "SELECT count(*) FROM (SELECT account_id FROM users GROUP BY account_id HAVING count(account_id) > 1) as t", nativeQuery = true)
     int getGroupAccountsCount();
+
+    @Query("SELECT COUNT(DISTINCT a.id) FROM OverMoneyAccount a WHERE a.id IN (SELECT DISTINCT t.account.id FROM Transaction t WHERE t.date >= :date)")
+    int findActiveAccountCount(@Param("date") LocalDateTime date);
 }

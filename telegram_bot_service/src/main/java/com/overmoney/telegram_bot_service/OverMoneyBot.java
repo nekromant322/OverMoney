@@ -9,6 +9,7 @@ import com.overmoney.telegram_bot_service.model.TelegramMessage;
 import com.overmoney.telegram_bot_service.service.*;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
 import com.override.dto.AccountDataDTO;
+import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.StatusMailing;
@@ -216,7 +217,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             }
             if (replyToMessage != null) {
                 TelegramMessage message = telegramMessageService.
-                        getTelegramMessageByByMessageIdAndChatId(replyToMessage.getMessageId(), chatId);
+                        getTelegramMessageMessageIdAndChatId(replyToMessage.getMessageId(), chatId);
                 if (message == null) {
                     if (!userId.equals(replyToMessage.getFrom().getId())) {
                         sendMessage(chatId, INVALID_UPDATE_TRANSACTION_TEXT);
@@ -228,6 +229,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                 if (!receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION) &&
                         !receivedMessageText.equalsIgnoreCase(replyToMessage.getText())) {
                     UUID idTransaction = message.getIdTransaction();
+                    TransactionDTO previousTransaction = orchestratorRequestService.getTransactionById(idTransaction);
+                    transactionMessageDTO.setDate(previousTransaction.getDate());
                     updateTransaction(transactionMessageDTO, idTransaction, chatId, messageId);
                     return;
                 }
@@ -304,7 +307,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private void updateTransaction(TransactionMessageDTO transactionMessageDTO, UUID idTransaction, Long chatId, Integer messageId) {
         try {
             TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
-                    .submitTransactionForUpdate(transactionMessageDTO, idTransaction);
+                    .submitTransactionForPatch(transactionMessageDTO, idTransaction);
             telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
                     .messageId(messageId)
                     .chatId(chatId)

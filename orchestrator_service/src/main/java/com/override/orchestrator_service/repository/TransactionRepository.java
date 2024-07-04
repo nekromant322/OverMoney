@@ -12,6 +12,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -76,4 +77,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<Transaction> findTransactionsBetweenDatesAndCategory(@Param("year") Integer year,
                                                               @Param("month") Integer month,
                                                               @Param("categoryId") long categoryId);
+
+    @Query(value = "SELECT COUNT(t) FROM Transaction t WHERE t.date >= :date")
+    int findCountTransactionsLastDays(@Param("date") LocalDateTime date);
 }
