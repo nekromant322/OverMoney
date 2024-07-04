@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
@@ -302,18 +303,22 @@ public class TransactionService {
         Transaction transactionToUpdate = transactionRepository.findById(id)
                 .orElseThrow(() -> new InstanceNotFoundException("Транзакция не найдена"));
 
-        Stream.of(transactionToUpdate)
-                .filter(transaction -> receivedTransactionFromReply.getMessage() != null
-                        && !receivedTransactionFromReply.getMessage().equals(transaction.getMessage()))
-                .forEach(transaction -> transaction.setMessage(receivedTransactionFromReply.getMessage()));
+        if (receivedTransactionFromReply.getDate().isEqual(transactionToUpdate.getDate())) {
+            Stream.of(transactionToUpdate)
+                    .filter(t -> receivedTransactionFromReply.getMessage() != null)
+                    .filter(t -> !receivedTransactionFromReply.getMessage().equals(t.getMessage()))
+                    .forEach(transaction -> transaction.setMessage(receivedTransactionFromReply.getMessage()));
 
-        Stream.of(transactionToUpdate)
-                .filter(transaction -> receivedTransactionFromReply.getAmount() != null
-                        && !receivedTransactionFromReply.getAmount().equals(transaction.getAmount()))
-                .forEach(transaction -> transaction.setAmount(receivedTransactionFromReply.getAmount()));
+            Stream.of(transactionToUpdate)
+                    .filter(t -> receivedTransactionFromReply.getAmount() != null)
+                    .filter(t -> !receivedTransactionFromReply.getAmount().equals(t.getAmount()))
+                    .forEach(transaction -> transaction.setAmount(receivedTransactionFromReply.getAmount()));
 
-        transactionRepository.save(transactionToUpdate);
-        return transactionMapper.mapTransactionToTelegramResponse(transactionToUpdate);
+            transactionRepository.save(transactionToUpdate);
+            return transactionMapper.mapTransactionToTelegramResponse(transactionToUpdate);
+        } else {
+            throw new DateTimeException("Даты транзакций не совпадают");
+        }
     }
 
     public List<TransactionDTO> getTransactionsListByPeriodAndCategory(Integer year, Integer month, long categoryId) {
