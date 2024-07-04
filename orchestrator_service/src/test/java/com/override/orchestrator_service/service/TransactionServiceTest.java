@@ -292,6 +292,7 @@ public class TransactionServiceTest {
     @Test
     void patchTransaction_SuccessfulUpdate() throws InstanceNotFoundException {
         UUID transactionId = UUID.randomUUID();
+        LocalDateTime date = TestFieldsUtil.generateTestTransaction().getDate();
 
         TransactionMessageDTO transactionMessageDTO = new TransactionMessageDTO();
         transactionMessageDTO.setMessage("фрукты 300");
@@ -299,12 +300,14 @@ public class TransactionServiceTest {
         Transaction receivedTransactionFromReply = new Transaction();
         receivedTransactionFromReply.setMessage("гвозди");
         receivedTransactionFromReply.setAmount(300.0);
+        receivedTransactionFromReply.setDate(date);
 
         TransactionResponseDTO expectedResponse = new TransactionResponseDTO();
         expectedResponse.setComment("гвозди");
         expectedResponse.setAmount("300");
 
         Transaction transactionFromRepo = TestFieldsUtil.generateTestTransaction();
+        transactionFromRepo.setDate(date);
 
         when(transactionProcessingService.processTransaction(transactionMessageDTO)).thenReturn(receivedTransactionFromReply);
         when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transactionFromRepo));
