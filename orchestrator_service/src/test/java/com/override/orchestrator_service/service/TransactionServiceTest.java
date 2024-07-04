@@ -294,37 +294,27 @@ public class TransactionServiceTest {
         UUID transactionId = UUID.randomUUID();
 
         TransactionMessageDTO transactionMessageDTO = new TransactionMessageDTO();
-        TransactionMessageDTO transactionMessageDTO1 = new TransactionMessageDTO();
-        TransactionMessageDTO transactionMessageDTO2 = new TransactionMessageDTO();
-        TransactionMessageDTO transactionMessageDTO3 = new TransactionMessageDTO();
+        transactionMessageDTO.setMessage("фрукты 300");
 
-        transactionMessageDTO.setMessage("фрукты 100");
-        transactionMessageDTO1.setMessage("100 фрукты");
-        transactionMessageDTO2.setMessage("фрукты 100+200");
-        transactionMessageDTO3.setMessage("100+200 фрукты");
+        Transaction receivedTransactionFromReply = new Transaction();
+        receivedTransactionFromReply.setMessage("гвозди");
+        receivedTransactionFromReply.setAmount(300.0);
 
-        List<TransactionMessageDTO> transactionMessages = new ArrayList<>();
-        transactionMessages.add(transactionMessageDTO);
-        transactionMessages.add(transactionMessageDTO1);
-        transactionMessages.add(transactionMessageDTO2);
-        transactionMessages.add(transactionMessageDTO3);
+        TransactionResponseDTO expectedResponse = new TransactionResponseDTO();
+        expectedResponse.setComment("гвозди");
+        expectedResponse.setAmount("300");
 
         Transaction transactionFromRepo = TestFieldsUtil.generateTestTransaction();
-        transactionFromRepo.setId(transactionId);
-        Transaction receivedTransactionFromReply = new Transaction();
 
-        for (TransactionMessageDTO transactionMessage : transactionMessages) {
+        when(transactionProcessingService.processTransaction(transactionMessageDTO)).thenReturn(receivedTransactionFromReply);
+        when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transactionFromRepo));
+        when(transactionMapper.mapTransactionToTelegramResponse(any(Transaction.class))).thenReturn(new TransactionResponseDTO());
 
-            when(transactionProcessingService.processTransaction(transactionMessage)).thenReturn(receivedTransactionFromReply);
-            when(transactionRepository.findById(transactionId)).thenReturn(Optional.of(transactionFromRepo));
-            when(transactionMapper.mapTransactionToTelegramResponse(any(Transaction.class))).thenReturn(new TransactionResponseDTO());
+        TransactionResponseDTO response = transactionService.patchTransaction(transactionMessageDTO, transactionId);
 
-            TransactionResponseDTO response = transactionService.patchTransaction(transactionMessage, transactionId);
-
-            verify(transactionRepository).save(transactionFromRepo);
-            assertNotNull(response);
-            assertEquals(receivedTransactionFromReply.getMessage(), transactionFromRepo.getMessage());
-            assertEquals(receivedTransactionFromReply.getAmount(), transactionFromRepo.getAmount());
-        }
+        verify(transactionRepository).save(transactionFromRepo);
+        assertNotNull(response);
+        assertEquals(receivedTransactionFromReply.getMessage(), transactionFromRepo.getMessage());
+        assertEquals(receivedTransactionFromReply.getAmount(), transactionFromRepo.getAmount());
     }
 }
