@@ -204,6 +204,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         try {
             receivedMessageText = getReceivedMessage(receivedMessage).toLowerCase();
         } catch (VoiceProcessingException e) {
+            log.error("Сетевая ошибка", e);
             String errorMessage = "При обработке голосового сообщения произошла: " + e.getMessage();
             sendMessage(chatId, errorMessage);
             return;
