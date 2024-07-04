@@ -40,6 +40,9 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
         try(OutputStream outputStream = connection.getOutputStream()) {
             byte[] input = mapper.writeValueAsBytes(request);
             outputStream.write(input, 0, input.length);
+        } catch (IOException e) {
+            log.error("Ошибка при отправке запроса в сервис AudioRecognizer: " + e.getMessage(), e);
+            throw e;
         }
 
         try(BufferedReader br = new BufferedReader(
@@ -50,6 +53,9 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
                 response.append(responseLine.trim());
             }
             decryptedMessageAsJSON = response.toString();
+        } catch (IOException e) {
+            log.error("Ошибка при получении ответа от сервиса AudioRecognizer: " + e.getMessage(), e);
+            throw e;
         }
         log.info("Got json result from wit.ai go proxy " + decryptedMessageAsJSON);
         return mapper.readValue(decryptedMessageAsJSON, AudioRecognizerGoResponseDTO.class).getText();

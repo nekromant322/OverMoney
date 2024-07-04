@@ -2,6 +2,7 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
+import com.overmoney.telegram_bot_service.exception.VoiceProcessingException;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
 import com.overmoney.telegram_bot_service.model.TelegramMessage;
@@ -196,59 +197,64 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     private void botAnswer(Message receivedMessage) {
         Long chatId = receivedMessage.getChatId();
-        Long userId = receivedMessage.getFrom().getId();
-        Integer messageId = receivedMessage.getMessageId();
-        String receivedMessageText = getReceivedMessage(receivedMessage).toLowerCase();
-        Message replyToMessage = receivedMessage.getReplyToMessage();
-        LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
-                .atOffset(MOSCOW_OFFSET).toLocalDateTime();
-        TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
-                .message(receivedMessageText)
-                .userId(userId)
-                .chatId(chatId)
-                .date(date)
-                .build();
-        if (telegramMessageCheckerService.isNonTransactionalMessageMentionedToSomeone(receivedMessageText)
-                || receivedMessageText.equals(BLANK_MESSAGE)) {
-            return;
-        }
-        if (replyToMessage != null) {
-            TelegramMessage message = telegramMessageService.
-                    getTelegramMessageByByMessageIdAndChatId(replyToMessage.getMessageId(), chatId);
-            if (message == null) {
-                if (!userId.equals(replyToMessage.getFrom().getId())) {
-                    sendMessage(chatId, INVALID_UPDATE_TRANSACTION_TEXT);
+        try {
+            Long userId = receivedMessage.getFrom().getId();
+            Integer messageId = receivedMessage.getMessageId();
+            String receivedMessageText = getReceivedMessage(receivedMessage).toLowerCase();
+            Message replyToMessage = receivedMessage.getReplyToMessage();
+            LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
+                    .atOffset(MOSCOW_OFFSET).toLocalDateTime();
+            TransactionMessageDTO transactionMessageDTO = TransactionMessageDTO.builder()
+                    .message(receivedMessageText)
+                    .userId(userId)
+                    .chatId(chatId)
+                    .date(date)
+                    .build();
+            if (telegramMessageCheckerService.isNonTransactionalMessageMentionedToSomeone(receivedMessageText)
+                    || receivedMessageText.equals(BLANK_MESSAGE)) {
+                return;
+            }
+            if (replyToMessage != null) {
+                TelegramMessage message = telegramMessageService.
+                        getTelegramMessageByByMessageIdAndChatId(replyToMessage.getMessageId(), chatId);
+                if (message == null) {
+                    if (!userId.equals(replyToMessage.getFrom().getId())) {
+                        sendMessage(chatId, INVALID_UPDATE_TRANSACTION_TEXT);
+                        return;
+                    }
+                    processTransaction(chatId, messageId, transactionMessageDTO);
                     return;
                 }
-                processTransaction(chatId, messageId, transactionMessageDTO);
-                return;
-            }
-            if (!receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION) &&
-                    !receivedMessageText.equalsIgnoreCase(replyToMessage.getText())) {
-                UUID idTransaction = message.getIdTransaction();
-                updateTransaction(transactionMessageDTO, idTransaction, chatId, messageId);
-                return;
-            }
-        }
-        switch (receivedMessageText) {
-            case "/start":
-                sendMessage(chatId, Command.START.getDescription() + orchestratorHost);
-                orchestratorRequestService.registerSingleAccount(new AccountDataDTO(chatId, userId));
-                break;
-            case "/money":
-                sendMessage(chatId, Command.MONEY.getDescription());
-                break;
-            case "/web":
-                sendMessage(chatId, orchestratorHost);
-                break;
-            case COMMAND_TO_DELETE_TRANSACTION:
-                if (replyToMessage != null) {
-                    deleteTransaction(replyToMessage, chatId);
-                    break;
+                if (!receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION) &&
+                        !receivedMessageText.equalsIgnoreCase(replyToMessage.getText())) {
+                    UUID idTransaction = message.getIdTransaction();
+                    updateTransaction(transactionMessageDTO, idTransaction, chatId, messageId);
+                    return;
                 }
-            default:
-                processTransaction(chatId, messageId, transactionMessageDTO);
-                break;
+            }
+            switch (receivedMessageText) {
+                case "/start":
+                    sendMessage(chatId, Command.START.getDescription() + orchestratorHost);
+                    orchestratorRequestService.registerSingleAccount(new AccountDataDTO(chatId, userId));
+                    break;
+                case "/money":
+                    sendMessage(chatId, Command.MONEY.getDescription());
+                    break;
+                case "/web":
+                    sendMessage(chatId, orchestratorHost);
+                    break;
+                case COMMAND_TO_DELETE_TRANSACTION:
+                    if (replyToMessage != null) {
+                        deleteTransaction(replyToMessage, chatId);
+                        break;
+                    }
+                default:
+                    processTransaction(chatId, messageId, transactionMessageDTO);
+                    break;
+            }
+        } catch (VoiceProcessingException e) {
+            String errorMessage = "При обработке голосового сообщения произошла: " + e.getMessage();
+            sendMessage(chatId, errorMessage);
         }
     }
 
