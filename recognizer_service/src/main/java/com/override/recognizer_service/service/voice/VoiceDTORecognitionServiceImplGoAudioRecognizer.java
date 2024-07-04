@@ -67,6 +67,7 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
      */
     @SneakyThrows
     private HttpURLConnection getConnection() {
+        log.info("getting connection to " + goServiceUrl);
         URLConnection connectionURL =
                 new URL(goServiceUrl).openConnection();
         HttpURLConnection connection = (HttpURLConnection) connectionURL;
