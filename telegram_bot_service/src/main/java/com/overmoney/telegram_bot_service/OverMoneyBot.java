@@ -206,6 +206,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         } catch (VoiceProcessingException e) {
             String errorMessage = "При обработке голосового сообщения произошла: " + e.getMessage();
             sendMessage(chatId, errorMessage);
+            return;
         }
         Message replyToMessage = receivedMessage.getReplyToMessage();
         LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
