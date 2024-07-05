@@ -8,6 +8,7 @@ import com.override.invest_service.dto.MarketTQBRDataDTO;
 import com.override.invest_service.model.MarketTQBRData;
 import com.override.invest_service.model.TinkoffShareInfo;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
@@ -28,6 +29,7 @@ import static ru.tinkoff.piapi.contract.v1.AccountStatus.ACCOUNT_STATUS_CLOSED;
 import static ru.tinkoff.piapi.contract.v1.AccountStatus.UNRECOGNIZED;
 
 @Service
+@Slf4j
 public class TinkoffService {
     private final double TOTAL_WEIGHT = 100d;
 
@@ -82,7 +84,7 @@ public class TinkoffService {
                         MarketTQBRDataDTO marketTQBRDataDTO = marketTQBRDataDTOMap.get(tickerWeightPair.getKey());
 
                         if (marketTQBRDataDTO == null) {
-                            System.out.println("Рыночные данные для: " + tickerWeightPair.getKey() + " отсутствуют.");
+                            log.info("Рыночные данные для: " + tickerWeightPair.getKey() + " отсутствуют.");
                             return TinkoffActiveMOEXDTO.builder()
                                     .tinkoffActiveDTO(TinkoffActiveDTO.builder().ticker(tickerWeightPair.getKey()).build())
                                     .moexWeight(tickerWeightPair.getValue())
@@ -172,7 +174,7 @@ public class TinkoffService {
             MarketTQBRDataDTO marketTQBRDataDTO = marketTQBRData.get(tickerWeightPair.getKey());
 
             if (marketTQBRDataDTO == null) {
-                System.out.println("Рыночные данные для: " + tickerWeightPair.getKey() + " отсутствуют.");
+                log.info("Рыночные данные для: " + tickerWeightPair.getKey() + " отсутствуют.");
                 rebalancedIndex.put(tickerWeightPair.getKey(), 0.0d);
                 overweight += tickerWeightPair.getValue();
                 continue;
