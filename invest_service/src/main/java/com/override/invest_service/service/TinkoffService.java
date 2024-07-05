@@ -180,7 +180,6 @@ public class TinkoffService {
             int lots = marketTQBRDataDTO.getLots();
             double priceForOne = marketTQBRDataDTO.getPrice();
             double finalPrice = lots * priceForOne;
-
             double instrumentCount = (userTargetInvestAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT) / finalPrice;
             double remainderCount = (instrumentCount % 1);
             double remainderPrice = remainderCount * finalPrice;
