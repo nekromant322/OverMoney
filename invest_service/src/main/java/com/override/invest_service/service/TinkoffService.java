@@ -79,11 +79,27 @@ public class TinkoffService {
                     .stream()
                     .map(tickerWeightPair -> {
                         TinkoffActiveDTO active = actives.get(tickerWeightPair.getKey());
+                        MarketTQBRDataDTO marketTQBRDataDTO = marketTQBRDataDTOMap.get(tickerWeightPair.getKey());
+
+                        if (marketTQBRDataDTO == null) {
+                            System.out.println("Рыночные данные для: " + tickerWeightPair.getKey() + " отсутствуют.");
+                            return TinkoffActiveMOEXDTO.builder()
+                                    .tinkoffActiveDTO(TinkoffActiveDTO.builder().ticker(tickerWeightPair.getKey()).build())
+                                    .moexWeight(tickerWeightPair.getValue())
+                                    .currentWeight(0d)
+                                    .percentFollowage(0d)
+                                    .currentTotalPrice(0d)
+                                    .correctQuantity(0)
+                                    .quantityToBuy(0)
+                                    .lot(0)
+                                    .build();
+                        }
+
                         if (active == null) {
-                            double priceForOne = marketTQBRDataDTOMap.get(tickerWeightPair.getKey()).getPrice();
+                            double priceForOne = marketTQBRDataDTO.getPrice();
                             double correctPrice = userTargetInvestAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT;
                             int correctQuantity = (int) (correctPrice / priceForOne);
-                            int lots = marketTQBRDataDTOMap.get(tickerWeightPair.getKey()).getLots();
+                            int lots = marketTQBRDataDTO.getLots();
                             if (lots > 1) {
                                 correctQuantity = correctQuantity - (correctQuantity % lots);
                             }
@@ -153,8 +169,16 @@ public class TinkoffService {
         double overweight = 0d;
 
         for (var tickerWeightPair : srcIndex.entrySet()) {
-            int lots = marketTQBRData.get(tickerWeightPair.getKey()).getLots();
-            double priceForOne = marketTQBRData.get(tickerWeightPair.getKey()).getPrice();
+            MarketTQBRDataDTO marketTQBRDataDTO = marketTQBRData.get(tickerWeightPair.getKey());
+
+            if (marketTQBRDataDTO == null) {
+                System.out.println("Рыночные данные для: " + tickerWeightPair.getKey() + " отсутствуют.");
+                rebalancedIndex.put(tickerWeightPair.getKey(), 0.0d);
+                overweight += tickerWeightPair.getValue();
+                continue;
+            }
+            int lots = marketTQBRDataDTO.getLots();
+            double priceForOne = marketTQBRDataDTO.getPrice();
             double finalPrice = lots * priceForOne;
 
             double instrumentCount = (userTargetInvestAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT) / finalPrice;
