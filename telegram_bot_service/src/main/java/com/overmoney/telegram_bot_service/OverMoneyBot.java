@@ -2,6 +2,7 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
+import com.overmoney.telegram_bot_service.exception.VoiceProcessingException;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
 import com.overmoney.telegram_bot_service.model.TelegramMessage;
@@ -199,7 +200,15 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         Long chatId = receivedMessage.getChatId();
         Long userId = receivedMessage.getFrom().getId();
         Integer messageId = receivedMessage.getMessageId();
-        String receivedMessageText = getReceivedMessage(receivedMessage).toLowerCase();
+        String receivedMessageText = null;
+        try {
+            receivedMessageText = getReceivedMessage(receivedMessage).toLowerCase();
+        } catch (VoiceProcessingException e) {
+            log.error("При обработке голосового сообщения произошла: " + e.getMessage(), e);
+            String errorMessage = "При обработке голосового сообщения произошла: " + e.getMessage();
+            sendMessage(chatId, errorMessage);
+            return;
+        }
         Message replyToMessage = receivedMessage.getReplyToMessage();
         LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
                 .atOffset(MOSCOW_OFFSET).toLocalDateTime();
