@@ -204,7 +204,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         try {
             receivedMessageText = getReceivedMessage(receivedMessage).toLowerCase();
         } catch (VoiceProcessingException e) {
-            log.error("Сетевая ошибка", e);
+            log.error("При обработке голосового сообщения произошла: " + e.getMessage(), e);
             String errorMessage = "При обработке голосового сообщения произошла: " + e.getMessage();
             sendMessage(chatId, errorMessage);
             return;
@@ -316,7 +316,6 @@ public class OverMoneyBot extends TelegramLongPollingBot {
                     .chatId(chatId)
                     .idTransaction(transactionResponseDTO.getId())
                     .build());
-            telegramMessageService.deleteTelegramMessageByIdTransaction(idTransaction);
             sendMessage(chatId,
                     SUCCESSFUL_UPDATE_TRANSACTION_TEXT + transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
         } catch (Exception e) {
