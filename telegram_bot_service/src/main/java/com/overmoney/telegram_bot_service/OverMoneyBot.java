@@ -2,12 +2,14 @@ package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
+import com.overmoney.telegram_bot_service.exception.VoiceProcessingException;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
 import com.overmoney.telegram_bot_service.model.TelegramMessage;
 import com.overmoney.telegram_bot_service.service.*;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
 import com.override.dto.AccountDataDTO;
+import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.StatusMailing;
@@ -198,7 +200,15 @@ public class OverMoneyBot extends TelegramLongPollingBot {
         Long chatId = receivedMessage.getChatId();
         Long userId = receivedMessage.getFrom().getId();
         Integer messageId = receivedMessage.getMessageId();
-        String receivedMessageText = getReceivedMessage(receivedMessage).toLowerCase();
+        String receivedMessageText = null;
+        try {
+            receivedMessageText = getReceivedMessage(receivedMessage).toLowerCase();
+        } catch (VoiceProcessingException e) {
+            log.error("При обработке голосового сообщения произошла: " + e.getMessage(), e);
+            String errorMessage = "При обработке голосового сообщения произошла: " + e.getMessage();
+            sendMessage(chatId, errorMessage);
+            return;
+        }
         Message replyToMessage = receivedMessage.getReplyToMessage();
         LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
                 .atOffset(MOSCOW_OFFSET).toLocalDateTime();
@@ -226,6 +236,8 @@ public class OverMoneyBot extends TelegramLongPollingBot {
             if (!receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION) &&
                     !receivedMessageText.equalsIgnoreCase(replyToMessage.getText())) {
                 UUID idTransaction = message.getIdTransaction();
+                TransactionDTO previousTransaction = orchestratorRequestService.getTransactionById(idTransaction);
+                transactionMessageDTO.setDate(previousTransaction.getDate());
                 updateTransaction(transactionMessageDTO, idTransaction, chatId, messageId);
                 return;
             }
@@ -298,13 +310,12 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private void updateTransaction(TransactionMessageDTO transactionMessageDTO, UUID idTransaction, Long chatId, Integer messageId) {
         try {
             TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
-                    .submitTransactionForUpdate(transactionMessageDTO, idTransaction);
+                    .submitTransactionForPatch(transactionMessageDTO, idTransaction);
             telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
                     .messageId(messageId)
                     .chatId(chatId)
                     .idTransaction(transactionResponseDTO.getId())
                     .build());
-            telegramMessageService.deleteTelegramMessageByIdTransaction(idTransaction);
             sendMessage(chatId,
                     SUCCESSFUL_UPDATE_TRANSACTION_TEXT + transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
         } catch (Exception e) {

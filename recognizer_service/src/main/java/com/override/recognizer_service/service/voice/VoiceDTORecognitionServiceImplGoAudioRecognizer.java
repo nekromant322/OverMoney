@@ -27,6 +27,7 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
     /**
      * Метод открывает соединение  HttpURLConnection и отправляюет запрос
      * на распознавание файла в сервис AudioRecognizer
+     *
      * @param request принимает на вход ДТО для отправки в сервис AudioRecognizer
      * @return Возвращает распознанную строку (цифры приходят прописью)
      */
@@ -37,7 +38,7 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
         String decryptedMessageAsJSON = null;
         HttpURLConnection connection = getConnection();
 
-        try(OutputStream outputStream = connection.getOutputStream()) {
+        try (OutputStream outputStream = connection.getOutputStream()) {
             byte[] input = mapper.writeValueAsBytes(request);
             outputStream.write(input, 0, input.length);
         } catch (Exception e) {
@@ -45,7 +46,7 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
             throw e;
         }
 
-        try(BufferedReader br = new BufferedReader(
+        try (BufferedReader br = new BufferedReader(
                 new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
             StringBuilder response = new StringBuilder();
             String responseLine;
@@ -63,12 +64,14 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
 
     /**
      * Метод, открывающий соединение с сервисом AudioRecognizer
+     *
      * @return соединение с этим сервисом
      */
     @SneakyThrows
     private HttpURLConnection getConnection() {
+        log.info("getting connection to " + goServiceUrl);
         URLConnection connectionURL =
-                new URL(goServiceUrl).openConnection();
+                new URL(goServiceUrl + "/recognizer").openConnection();
         HttpURLConnection connection = (HttpURLConnection) connectionURL;
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");

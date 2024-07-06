@@ -17,10 +17,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
+import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class TransactionService {
@@ -293,22 +295,30 @@ public class TransactionService {
     }
 
     @Transactional
-    public TransactionResponseDTO updateTransactionFromTelegramChat(TransactionMessageDTO transactionMessage,
-                                                                    UUID id) throws InstanceNotFoundException {
-        Optional<Transaction> transactionToDelete = transactionRepository.findById(id);
-        Transaction transactionUpdate = transactionProcessingService.processTransaction(transactionMessage);
-        saveTransaction(transactionUpdate);
-        transactionProcessingService.suggestCategoryToProcessedTransaction(transactionMessage, transactionUpdate.getId());
+    public TransactionResponseDTO patchTransaction(TransactionMessageDTO transactionMessage,
+                                                   UUID id) throws InstanceNotFoundException {
 
-        transactionToDelete.flatMap(this::getKeywordByTransaction).ifPresent(k -> {
-            if (!k.getKeywordId().getName().equalsIgnoreCase(transactionUpdate.getMessage())) {
-                keywordRepository.deleteByNameAndAccountIdWithJpqlQuery(transactionToDelete.get().getMessage(),
-                        transactionToDelete.get().getAccount().getId());
-            }
-        });
+        Transaction receivedTransactionFromReply = transactionProcessingService.processTransaction(transactionMessage);
 
-        transactionRepository.deleteById(id);
-        return transactionMapper.mapTransactionToTelegramResponse(transactionUpdate);
+        Transaction transactionToUpdate = transactionRepository.findById(id)
+                .orElseThrow(() -> new InstanceNotFoundException("Транзакция не найдена"));
+
+        if (receivedTransactionFromReply.getDate().isEqual(transactionToUpdate.getDate())) {
+            Stream.of(transactionToUpdate)
+                    .filter(t -> receivedTransactionFromReply.getMessage() != null)
+                    .filter(t -> !receivedTransactionFromReply.getMessage().equals(t.getMessage()))
+                    .forEach(transaction -> transaction.setMessage(receivedTransactionFromReply.getMessage()));
+
+            Stream.of(transactionToUpdate)
+                    .filter(t -> receivedTransactionFromReply.getAmount() != null)
+                    .filter(t -> !receivedTransactionFromReply.getAmount().equals(t.getAmount()))
+                    .forEach(transaction -> transaction.setAmount(receivedTransactionFromReply.getAmount()));
+
+            transactionRepository.save(transactionToUpdate);
+            return transactionMapper.mapTransactionToTelegramResponse(transactionToUpdate);
+        } else {
+            throw new DateTimeException("Даты транзакций не совпадают");
+        }
     }
 
     public List<TransactionDTO> getTransactionsListByPeriodAndCategory(Integer year, Integer month, long categoryId) {

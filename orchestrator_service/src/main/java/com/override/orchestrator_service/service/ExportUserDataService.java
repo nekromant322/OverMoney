@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.management.InstanceNotFoundException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -28,13 +29,15 @@ public class ExportUserDataService {
     private CategoryService categoryService;
     @Autowired
     private TransactionService transactionService;
+    @Autowired
+    private OverMoneyAccountService overMoneyAccountService;
     static final int EXCEL_CELL_WIDTH = 5837;
 
-    public ResponseEntity<InputStreamResource> downloadExelFile(Long id) throws IOException {
-        ByteArrayInputStream in = createExcelExport(id);
+    public ResponseEntity<InputStreamResource> downloadExelFile(Long telegramId) throws IOException, InstanceNotFoundException {
+        ByteArrayInputStream in = createExcelExport(telegramId);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Content-Disposition", "attachment; filename=backup.xlsx");
+        headers.add("Content-Disposition", "attachment; filename=export.xlsx");
 
         return ResponseEntity
                 .ok()
@@ -43,9 +46,10 @@ public class ExportUserDataService {
                 .body(new InputStreamResource(in));
     }
 
-    private ByteArrayInputStream createExcelExport(Long id) throws IOException {
-        List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByChatId(id);
-        List<TransactionDTO> transactionDTOList = transactionService.findAlltransactionDTOForAcountByChatId(id);
+    private ByteArrayInputStream createExcelExport(Long telegramId) throws IOException, InstanceNotFoundException {
+        Long chatId = overMoneyAccountService.getAccountByUserId(telegramId).getChatId();
+        List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByChatId(chatId);
+        List<TransactionDTO> transactionDTOList = transactionService.findAlltransactionDTOForAcountByChatId(chatId);
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheetCategories = workbook.createSheet("Категории");
