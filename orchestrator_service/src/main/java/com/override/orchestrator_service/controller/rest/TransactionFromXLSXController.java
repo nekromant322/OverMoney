@@ -3,6 +3,8 @@ package com.override.orchestrator_service.controller.rest;
 import com.override.orchestrator_service.service.TransactionXLSXService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,10 @@ public class TransactionFromXLSXController {
 
     @GetMapping("/loading/transactions")
     @Operation(summary = "Загрузка транзакций из XLSX", description = "Загружает транзакции из данного XLSX файла")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "400", description = "Некорректный формат файла"),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+    })
     public ResponseEntity<String> loadingTransactionsFromXLSX(Principal principal,
                                                               @Parameter(description = "XLSX файл с транзакциями") @RequestPart("data") MultipartFile file) {
         return transactionXLSXService.loadingTransactionsFromXLSX(principal, file);
