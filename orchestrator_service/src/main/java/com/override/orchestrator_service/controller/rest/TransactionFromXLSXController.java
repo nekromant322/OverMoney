@@ -1,6 +1,9 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.orchestrator_service.service.TransactionXLSXService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +16,15 @@ import java.security.Principal;
 
 @Slf4j
 @RestController
+@Tag(name = "Контроллер загрузки транзакций из XLSX", description = "Операции по загрузке транзакций из XLSX файлов")
 public class TransactionFromXLSXController {
     @Autowired
     private TransactionXLSXService transactionXLSXService;
 
     @GetMapping("/loading/transactions")
-    public ResponseEntity<String> loadingTransactionsFromXLSX(Principal principal, @RequestPart("data") MultipartFile file) {
+    @Operation(summary = "Загрузка транзакций из XLSX", description = "Загружает транзакции из данного XLSX файла")
+    public ResponseEntity<String> loadingTransactionsFromXLSX(Principal principal,
+                                                              @Parameter(description = "XLSX файл с транзакциями") @RequestPart("data") MultipartFile file) {
         return transactionXLSXService.loadingTransactionsFromXLSX(principal, file);
     }
 }
