@@ -3,16 +3,20 @@ package com.override.orchestrator_service.service;
 import com.override.dto.*;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
+import com.override.orchestrator_service.filter.TransactionFilter;
+import com.override.orchestrator_service.mapper.TransactionFilterMapper;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
+import com.override.orchestrator_service.repository.specification.TransactionSpecification;
 import com.override.orchestrator_service.util.NumericalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,6 +45,8 @@ public class TransactionService {
     private TelegramBotFeign telegramBotFeign;
     @Autowired
     private TransactionProcessingService transactionProcessingService;
+    @Autowired
+    private TransactionFilterMapper transactionFilterMapper;
 
     public int getTransactionsCount() {
         return transactionRepository.getTransactionsCount();
@@ -83,11 +89,15 @@ public class TransactionService {
         transactionRepository.updateCategoryIdWhereCategoryIsNull(categoryId, transactionMessage, accId);
     }
 
-    public List<TransactionDTO> findTransactionsByUserIdLimited(Long id, Integer pageSize, Integer pageNumber) throws InstanceNotFoundException {
+    public List<TransactionDTO> findTransactionsByUserIdLimited(Long id, Integer pageSize, Integer pageNumber, String filterJson) throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("date").descending());
 
-        List<TransactionDTO> transactionList = transactionRepository.findAllByAccountId(accID, pageable).getContent().stream()
+        TransactionFilter filter = transactionFilterMapper.mapStringJsonToTransactionFilter(filterJson, accID);
+
+        Specification<Transaction> spec = TransactionSpecification.createSpecification(accID, filter);
+
+        List<TransactionDTO> transactionList = transactionRepository.findAll(spec, pageable).getContent().stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                 .collect(Collectors.toList());
         return enrichTransactionsWithTgUsernames(transactionList);

@@ -18,19 +18,27 @@ $(window).scroll(function () {
 })
 
 function getTransactions() {
+    // let filter = {
+    //     "category": "Продукты",
+    //     "amount": {"start": 5, "end": 300},
+    //     "message": "пиво",
+    //     "date": {"start": "2024-07-04T20:00:00.000000", "end": "2024-07-06T00:00:00.000000"},
+    //     "telegramUserNameList": ["Kulpinov_Evgeny"]
+    // };
+    // пример json
+    let filter = null // заглушка
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "./transactions/history?pageSize=" + pageSize + "&pageNumber=" + pageNumber,
         contentType: "application/json; charset=utf8",
-        async: false,
+        data: JSON.stringify(filter),
         success: function (data) {
             prepareAndDraw(data);
-            working = false;
         },
         error: function () {
             console.log("Something went wrong!");
         }
-    })
+    });
 }
 
 function prepareAndDraw(data) {
@@ -177,7 +185,7 @@ $(function editButtonClick() {
             success: () => {
                 location.reload();
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 let err = JSON.parse(xhr.responseText);
                 if (err.message.indexOf("only_positive_amount_constraint") >= 0) {
                     alert("ОШИБКА: Сумма не может быть отрицательной!")

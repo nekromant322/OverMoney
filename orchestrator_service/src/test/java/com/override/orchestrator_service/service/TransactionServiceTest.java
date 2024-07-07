@@ -2,6 +2,8 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
+import com.override.orchestrator_service.filter.TransactionFilter;
+import com.override.orchestrator_service.mapper.TransactionFilterMapper;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.CategoryRepository;
@@ -26,9 +28,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -54,6 +53,8 @@ public class TransactionServiceTest {
     private TelegramBotFeign telegramBotFeign;
     @Mock
     private CategoryRepository categoryRepository;
+    @Mock
+    TransactionFilterMapper filterMapper;
 
     @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
@@ -116,14 +117,20 @@ public class TransactionServiceTest {
         TransactionDTO transactionDTO1 = TestFieldsUtil.generateTestTransactionDTO();
         TransactionDTO transactionDTO2 = TestFieldsUtil.generateTestTransactionDTO();
         Page<Transaction> page = new PageImpl<>(List.of(transaction1, transaction2));
+        String filter = "{\"category\":\"Продукты\"," +
+                "\"amount\":{\"start\":5,\"end\":1000}," +
+                "\"message\":\"пиво\"," +
+                "\"date\":{\"start\":\"2023-07-04T20:00:00.000000\",\"end\":\"2024-07-06T00:00:00.000000\"}," +
+                "\"telegramUserName\":[\"Marandyuk_Anatolii\"]}";
 
-        when(transactionRepository.findAllByAccountId(any(), any())).thenReturn(page);
+        when(filterMapper.mapStringJsonToTransactionFilter(anyString(), anyLong())).thenReturn(new TransactionFilter());
+        when(transactionRepository.findAll(any(), any())).thenReturn(page);
         when(userService.getUserById(any())).thenReturn(user);
         when(transactionMapper.mapTransactionToDTO(transaction1)).thenReturn(transactionDTO1);
         when(transactionMapper.mapTransactionToDTO(transaction2)).thenReturn(transactionDTO2);
 
         List<TransactionDTO> testListTransaction =
-                transactionService.findTransactionsByUserIdLimited(user.getId(), 50, 0);
+                transactionService.findTransactionsByUserIdLimited(user.getId(), 50, 0, filter);
         Assertions.assertEquals(List.of(transactionDTO1, transactionDTO2), testListTransaction);
     }
 

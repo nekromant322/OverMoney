@@ -71,13 +71,14 @@ public class TransactionController {
         return transactionService.getTransactionsListByPeriodAndCategory(year, month, categoryId);
     }
 
-    @GetMapping("/transactions/history")
+    @PostMapping("/transactions/history")
     public List<TransactionDTO> getTransactionsHistory(Principal principal,
-                                                       @RequestParam(defaultValue = "50") Integer pageSize,
-                                                       @RequestParam(defaultValue = "0") Integer pageNumber)
+                                                       @RequestParam Integer pageSize,
+                                                       @RequestParam Integer pageNumber,
+                                                       @RequestBody String filterJson)
             throws InstanceNotFoundException {
         return transactionService
-                .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
+                .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber, filterJson);
     }
 
     @PostMapping("/transaction/define")
