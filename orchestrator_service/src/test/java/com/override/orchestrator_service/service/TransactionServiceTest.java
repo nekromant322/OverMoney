@@ -57,7 +57,7 @@ public class TransactionServiceTest {
     private CategoryRepository categoryRepository;
     @Mock
     TransactionFilterMapper filterMapper;
-
+    @Mock
     private TransactionProcessingService transactionProcessingService;
 
     @Test
