@@ -1,6 +1,5 @@
 package com.override.invest_service.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.override.dto.tinkoff.TinkoffAccountDTO;
 import com.override.dto.tinkoff.TinkoffActiveDTO;
 import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
@@ -11,14 +10,11 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import ru.tinkoff.piapi.contract.v1.*;
 import ru.tinkoff.piapi.core.InvestApi;
 import ru.tinkoff.piapi.core.models.Portfolio;
 import ru.tinkoff.piapi.core.models.Position;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
