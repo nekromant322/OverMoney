@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,18 +52,26 @@ public class AnnounceCommand extends OverMoneyCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] args) {
-        SendMessage message = new SendMessage();
-        String chatId = chat.getId().toString();
         if (!admins.contains(user.getUserName())) {
-            message.setChatId(chatId);
-            message.setText(NO_RIGHTS);
-            execute(absSender, message, user);
+            sendMessage(absSender, chat.getId(), NO_RIGHTS);
             return;
         }
         ValidationUtils.validateArguments(args);
         String announce = String.join(" ", args);
         Set<Long> userIds = telegramMessageService.getAllUniqChatIds();
         sendAnnounce(announce, userIds, absSender);
+    }
+
+    public StatusMailing sendMessage(AbsSender sender, Long chatId, String messageText) {
+        SendMessage message = new SendMessage(chatId.toString(), messageText);
+        try {
+            sender.execute(message);
+            log.info("сообщение отправлено " + chatId);
+            return StatusMailing.SUCCESS;
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+            return StatusMailing.ERROR;
+        }
     }
 
     public void sendAnnounce(String announceText, Set<Long> userIds, AbsSender absSender) {
@@ -83,15 +92,8 @@ public class AnnounceCommand extends OverMoneyCommand {
                 throw new RuntimeException(e);
             }
             List<Mail> mailsInPending = mailService.findAllMailsByStatusAndAnnounce(StatusMailing.PENDING, announce);
-            if (mailsInPending.isEmpty()) {
-                log.info("pusto");
-            }
-            for (int i = 0; i < mailsInPending.size(); i++) {
-                log.info("pochta " + mailsInPending.get(i));
-            }
             long countMessage = 0;
             for (Mail mail : mailsInPending) {
-                log.info("Готовим почту");
                 long userTgId = mail.getUserTgId();
                 if (countMessage < MAX_MESSAGES_PER_SECOND) {
                     StatusMailing statusMailing = sendMessage(absSender, userTgId, announceText);

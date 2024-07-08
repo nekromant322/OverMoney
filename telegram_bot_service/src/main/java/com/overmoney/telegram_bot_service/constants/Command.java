@@ -7,7 +7,7 @@ public enum Command {
 
     START("/start", "OverMoney - бот для учета финансов!\n"),
     MONEY("/money", "Приложение OverMoney"),
-    ANNOUNCE("announce", "Отправить аннонс о новых возможностях указанным пользователям");
+    ANNOUNCE("announce", "Отправить аннонс о новых возможностях пользователям");
 
     private final String alias;
     private final String description;
