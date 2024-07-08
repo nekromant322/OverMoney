@@ -20,6 +20,8 @@
   server:
     port: 8080
 
+  service: kafka
+
   spring:
     application:
       name: telegram-bot-service
@@ -47,6 +49,26 @@
 
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
+    kafka:
+      producer:
+        bootstrap-servers: localhost:9092
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      consumer:
+        bootstrap-servers: localhost:9092
+        key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        group-id: transaction-sent-events
+        properties:
+          spring.json.trusted.packages: com.override.dto
+          spring:
+            deserializer:
+              key:
+                delegate:
+                  class: org.apache.kafka.common.serialization.StringDeserializer
+              value:
+                delegate:
+                  class: org.springframework.kafka.support.serializer.JsonDeserializer
 
   logging:
     level:
