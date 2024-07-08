@@ -26,6 +26,7 @@ public class AdminPageFilter extends OncePerRequestFilter {
     @Autowired
     private JwtProvider jwtProvider;
     private final String ADMIN_PATH = "/admin";
+    private final String SWAGGER_PATH = "/swagger";
     private final String USERNAME_CLAIM = "username";
 
     @Override
@@ -46,6 +47,6 @@ public class AdminPageFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
-        return !path.startsWith(ADMIN_PATH);
+        return !path.startsWith(ADMIN_PATH) && !path.startsWith(SWAGGER_PATH);
     }
 }

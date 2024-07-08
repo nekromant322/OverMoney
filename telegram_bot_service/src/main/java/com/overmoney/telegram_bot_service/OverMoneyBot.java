@@ -1,5 +1,6 @@
 package com.overmoney.telegram_bot_service;
 
+import com.overmoney.telegram_bot_service.commands.OverMoneyCommand;
 import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
 import com.overmoney.telegram_bot_service.exception.VoiceProcessingException;
@@ -18,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
@@ -36,7 +37,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Slf4j
-public class OverMoneyBot extends TelegramLongPollingBot {
+public class OverMoneyBot extends TelegramLongPollingCommandBot {
     @Value("${bot.name}")
     private String botName;
     @Value("${bot.token}")
@@ -87,6 +88,12 @@ public class OverMoneyBot extends TelegramLongPollingBot {
     private final String INVALID_UPDATE_TRANSACTION_TEXT = "Некорректная транзакция для изменения.\n" +
             "Возможно, Вы выбрали транзакцию, которая уже была изменена или сообщение бота";
 
+    @Autowired
+    public OverMoneyBot(List<OverMoneyCommand> allCommands) {
+        super();
+        allCommands.forEach(this::register);
+    }
+
     @Override
     public String getBotUsername() {
         return botName;
@@ -99,7 +106,7 @@ public class OverMoneyBot extends TelegramLongPollingBot {
 
     @Override
     @SneakyThrows
-    public void onUpdateReceived(Update update) {
+    public void processNonCommandUpdate(Update update) {
         if (update.hasMessage()) {
             Message receivedMessage = update.getMessage();
             Long chatId = receivedMessage.getChatId();
