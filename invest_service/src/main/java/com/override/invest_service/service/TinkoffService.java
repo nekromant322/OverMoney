@@ -1,6 +1,5 @@
 package com.override.invest_service.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.override.dto.tinkoff.TinkoffAccountDTO;
 import com.override.dto.tinkoff.TinkoffActiveDTO;
 import com.override.dto.tinkoff.TinkoffActiveMOEXDTO;
@@ -8,16 +7,14 @@ import com.override.invest_service.dto.MarketTQBRDataDTO;
 import com.override.invest_service.model.MarketTQBRData;
 import com.override.invest_service.model.TinkoffShareInfo;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import ru.tinkoff.piapi.contract.v1.*;
 import ru.tinkoff.piapi.core.InvestApi;
 import ru.tinkoff.piapi.core.models.Portfolio;
 import ru.tinkoff.piapi.core.models.Position;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -28,6 +25,7 @@ import static ru.tinkoff.piapi.contract.v1.AccountStatus.ACCOUNT_STATUS_CLOSED;
 import static ru.tinkoff.piapi.contract.v1.AccountStatus.UNRECOGNIZED;
 
 @Service
+@Slf4j
 public class TinkoffService {
     private final double TOTAL_WEIGHT = 100d;
 
@@ -79,11 +77,27 @@ public class TinkoffService {
                     .stream()
                     .map(tickerWeightPair -> {
                         TinkoffActiveDTO active = actives.get(tickerWeightPair.getKey());
+                        MarketTQBRDataDTO marketTQBRDataDTO = marketTQBRDataDTOMap.get(tickerWeightPair.getKey());
+
+                        if (marketTQBRDataDTO == null) {
+                            log.info("Рыночные данные для: " + tickerWeightPair.getKey() + " отсутствуют.");
+                            return TinkoffActiveMOEXDTO.builder()
+                                    .tinkoffActiveDTO(TinkoffActiveDTO.builder().ticker(tickerWeightPair.getKey()).build())
+                                    .moexWeight(tickerWeightPair.getValue())
+                                    .currentWeight(0d)
+                                    .percentFollowage(0d)
+                                    .currentTotalPrice(0d)
+                                    .correctQuantity(0)
+                                    .quantityToBuy(0)
+                                    .lot(0)
+                                    .build();
+                        }
+
                         if (active == null) {
-                            double priceForOne = marketTQBRDataDTOMap.get(tickerWeightPair.getKey()).getPrice();
+                            double priceForOne = marketTQBRDataDTO.getPrice();
                             double correctPrice = userTargetInvestAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT;
                             int correctQuantity = (int) (correctPrice / priceForOne);
-                            int lots = marketTQBRDataDTOMap.get(tickerWeightPair.getKey()).getLots();
+                            int lots = marketTQBRDataDTO.getLots();
                             if (lots > 1) {
                                 correctQuantity = correctQuantity - (correctQuantity % lots);
                             }
@@ -153,10 +167,17 @@ public class TinkoffService {
         double overweight = 0d;
 
         for (var tickerWeightPair : srcIndex.entrySet()) {
-            int lots = marketTQBRData.get(tickerWeightPair.getKey()).getLots();
-            double priceForOne = marketTQBRData.get(tickerWeightPair.getKey()).getPrice();
-            double finalPrice = lots * priceForOne;
+            MarketTQBRDataDTO marketTQBRDataDTO = marketTQBRData.get(tickerWeightPair.getKey());
 
+            if (marketTQBRDataDTO == null) {
+                log.info("Рыночные данные для: " + tickerWeightPair.getKey() + " отсутствуют.");
+                rebalancedIndex.put(tickerWeightPair.getKey(), 0.0d);
+                overweight += tickerWeightPair.getValue();
+                continue;
+            }
+            int lots = marketTQBRDataDTO.getLots();
+            double priceForOne = marketTQBRDataDTO.getPrice();
+            double finalPrice = lots * priceForOne;
             double instrumentCount = (userTargetInvestAmount * tickerWeightPair.getValue() / TOTAL_WEIGHT) / finalPrice;
             double remainderCount = (instrumentCount % 1);
             double remainderPrice = remainderCount * finalPrice;
