@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static com.overmoney.telegram_bot_service.constants.MessageConstants.NETWORK_ERROR;
+
 @Service
 @Slf4j
 public class RecognizerRequestService {
@@ -20,7 +22,7 @@ public class RecognizerRequestService {
             return recognizerFeign.sendVoiceMessage(voiceMessage);
         } catch (FeignException e) {
             log.error("Сетевая ошибка: " + e.status(), e);
-            throw new VoiceProcessingException("сетевая ошибка, функционал временно не доступен", e);
+            throw new VoiceProcessingException(NETWORK_ERROR, e);
         }
     }
 }
