@@ -26,6 +26,7 @@ public class TransactionFromXLSXController {
     @GetMapping("/loading/transactions")
     @Operation(summary = "Загрузка транзакций из XLSX", description = "Загружает транзакции из данного XLSX файла")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Транзакции загружены"),
             @ApiResponse(responseCode = "400", description = "Некорректный формат файла"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })

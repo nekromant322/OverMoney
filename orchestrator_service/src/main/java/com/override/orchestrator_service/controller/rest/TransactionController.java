@@ -48,6 +48,10 @@ public class TransactionController {
 
     @GetMapping("/transactions/count")
     @Operation(summary = "Получить количество транзакций", description = "Возвращает общее количество транзакций")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Количество транзакций получено"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные")
+    })
     public int getTransactionsCount() {
         return transactionService.getTransactionsCount();
     }
@@ -55,6 +59,7 @@ public class TransactionController {
     @PostMapping("/transaction")
     @Operation(summary = "Обработать транзакцию", description = "Обрабатывает транзакцию и сохраняет её")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Транзакция обработана и сохранена"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные транзакции")
     })
@@ -70,6 +75,7 @@ public class TransactionController {
     @GetMapping("/transactions")
     @Operation(summary = "Получить список транзакций", description = "Возвращает список всех транзакций пользователя без категорий")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список транзакций получен"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     public List<TransactionDTO> getTransactionsList(Principal principal) throws InstanceNotFoundException {
@@ -85,6 +91,7 @@ public class TransactionController {
     @GetMapping("/transactions/info")
     @Operation(summary = "Получить список транзакций по периоду и категории", description = "Возвращает список транзакций за указанный период")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список транзакций получен"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные периода или категории")
     })
     public List<TransactionDTO> getTransactionsListByPeriodAndCategory(
@@ -97,6 +104,7 @@ public class TransactionController {
     @GetMapping("/transactions/history")
     @Operation(summary = "Получить историю транзакций", description = "Возвращает историю транзакций")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "История транзакций получена"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     public List<TransactionDTO> getTransactionsHistory(Principal principal,
@@ -110,6 +118,7 @@ public class TransactionController {
     @PostMapping("/transaction/define")
     @Operation(summary = "Установить категорию транзакции", description = "Устанавливает категорию для указанной транзакции по её ID")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Категория установлена"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные для определения категории")
     })
     public ResponseEntity<String> define(
@@ -122,6 +131,7 @@ public class TransactionController {
     @PostMapping("/transaction/undefine")
     @Operation(summary = "Удаляет категорию транзакции", description = "Снимает с транзакции категорию")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Категория удалена"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные для удаления категории")
     })
     public ResponseEntity<String> undefine(
@@ -133,6 +143,7 @@ public class TransactionController {
     @PutMapping("/transaction")
     @Operation(summary = "Редактировать транзакцию", description = "Редактирует транзакцию")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Транзакция отредактиирована"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные транзакции")
     })
     public ResponseEntity<String> editTransaction(
@@ -144,6 +155,7 @@ public class TransactionController {
     @GetMapping("/history/{id}")
     @Operation(summary = "Получить транзакцию по ID", description = "Возвращает транзакцию по указанному ID")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Транзакция получена"),
             @ApiResponse(responseCode = "404", description = "Транзакция не найдена")
     })
     public TransactionDTO getTransactionById(
@@ -154,6 +166,7 @@ public class TransactionController {
     @PutMapping("/transactions")
     @Operation(summary = "Обновить транзакцию", description = "Обновляет существующую транзакцию")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Транзакция обновлена"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные транзакции")
     })
     public void updateTransaction(
@@ -164,6 +177,7 @@ public class TransactionController {
     @DeleteMapping("/transaction/{id}")
     @Operation(summary = "Удалить транзакцию по ID", description = "Удаляет транзакцию по указанному ID")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Транзакция удалена"),
             @ApiResponse(responseCode = "404", description = "Транзакция не найдена")
     })
     public void deleteTransactionById(
@@ -174,6 +188,7 @@ public class TransactionController {
     @PatchMapping("/transaction/update/{id}")
     @Operation(summary = "Частично обновить транзакцию", description = "Обновляет поля message и amount у транзакции")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Транзакция обновлена"),
             @ApiResponse(responseCode = "404", description = "Транзакция не найдена"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные транзакции")
     })

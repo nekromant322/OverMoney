@@ -24,7 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/categories")
 @Slf4j
-@Tag(name = "Контроллер категорий", description = "Операции, относящиеся к категориям")
+@Tag(name = "Контроллер категорий", description = "Операции с категориями")
 public class CategoryController {
 
     @Autowired
@@ -36,6 +36,7 @@ public class CategoryController {
     @GetMapping("/")
     @Operation(summary = "Получить список категорий", description = "Возвращает список категорий, связанных с ID пользователя")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список категорий получен"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     public List<CategoryDTO> getCategoriesList(Principal principal) throws InstanceNotFoundException {
@@ -44,6 +45,7 @@ public class CategoryController {
 
     @GetMapping("/{id}")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Категория получена"),
             @ApiResponse(responseCode = "404", description = "Категория не найдена")
     })
     @Operation(summary = "Получить категорию по ID", description = "Возвращает категорию по указанному ID")
@@ -54,6 +56,7 @@ public class CategoryController {
 
     @GetMapping("/types/{type}")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Категории получены"),
             @ApiResponse(responseCode = "404", description = "Пользователь или тип категории не найдены")
     })
     @Operation(summary = "Получить категории по типу", description = "Возвращает список категорий по указанному типу")
@@ -64,6 +67,7 @@ public class CategoryController {
 
     @PostMapping("/add-default-categories")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Стандартные категории добавлены"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     @Operation(summary = "Добавить стандартные категории", description = "Добавляет стандартные категории в аккаунт")
@@ -74,6 +78,8 @@ public class CategoryController {
     @PostMapping("/")
     @Operation(summary = "Сохранить категорию", description = "Сохраняет новую для аккаунта категорию")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Категория сохранена"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные категории"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     public ResponseEntity<HttpStatus> saveCategoryForAcc(Principal principal,
@@ -85,6 +91,8 @@ public class CategoryController {
     @PutMapping("/")
     @Operation(summary = "Обновить категорию", description = "Обновляет категорию для аккаунта")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Категория обновлена"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные категории"),
             @ApiResponse(responseCode = "404", description = "Пользователь или категория не найдены")
     })
     public ResponseEntity<HttpStatus> updateCategoryForAcc(Principal principal,
@@ -96,6 +104,8 @@ public class CategoryController {
     @PostMapping("/merge")
     @Operation(summary = "Объединить категории", description = "Объединяет категории по указанным ID")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Категории объединены"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные для объединения"),
             @ApiResponse(responseCode = "404", description = "Категории не найдены")
     })
     public ResponseEntity<HttpStatus> mergeCategory(
@@ -107,6 +117,7 @@ public class CategoryController {
     @DeleteMapping("/keywords")
     @Operation(summary = "Удалить ключевое слово", description = "Удаляет ключевое слово по указанному ID")
     @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Ключевое слово удалено"),
             @ApiResponse(responseCode = "404", description = "Ключевое слово не найдено")
     })
     public ResponseEntity<HttpStatus> deleteKeyword(
