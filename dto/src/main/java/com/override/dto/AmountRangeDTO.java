@@ -8,12 +8,12 @@ import lombok.Setter;
 @Setter
 @Getter
 public class AmountRangeDTO {
-    private int start;
+    private int begin;
     private int end;
 
     @JsonCreator
-    public AmountRangeDTO(@JsonProperty("start") int start, @JsonProperty("end") int end) {
-        this.start = start;
+    public AmountRangeDTO(@JsonProperty("begin") int begin, @JsonProperty("end") int end) {
+        this.begin = begin;
         this.end = end;
     }
 }

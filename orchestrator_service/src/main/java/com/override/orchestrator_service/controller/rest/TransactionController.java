@@ -1,9 +1,7 @@
 package com.override.orchestrator_service.controller.rest;
 
-import com.override.dto.TransactionDTO;
-import com.override.dto.TransactionDefineDTO;
-import com.override.dto.TransactionMessageDTO;
-import com.override.dto.TransactionResponseDTO;
+import com.override.dto.*;
+import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.service.DefineService;
@@ -71,14 +69,21 @@ public class TransactionController {
         return transactionService.getTransactionsListByPeriodAndCategory(year, month, categoryId);
     }
 
-    @PostMapping("/transactions/history")
+    @GetMapping("/transactions/history")
     public List<TransactionDTO> getTransactionsHistory(Principal principal,
-                                                       @RequestParam Integer pageSize,
-                                                       @RequestParam Integer pageNumber,
-                                                       @RequestBody String filterJson)
+                                                       @RequestParam(defaultValue = "50") Integer pageSize,
+                                                       @RequestParam(defaultValue = "0") Integer pageNumber)
             throws InstanceNotFoundException {
         return transactionService
-                .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber, filterJson);
+                .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
+    }
+
+    @PostMapping("/transactions/filtered")
+    public List<TransactionDTO> getFilteredTransactionsHistory(Principal principal,
+                                                               @RequestBody TransactionFilter filter)
+            throws InstanceNotFoundException {
+        return transactionService
+                .findTransactionsByUserIdLimitedAndFiltered(telegramUtils.getTelegramId(principal), filter);
     }
 
     @PostMapping("/transaction/define")

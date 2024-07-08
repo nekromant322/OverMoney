@@ -18,7 +18,8 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class TransactionSpecificationTest {
@@ -41,7 +42,7 @@ public class TransactionSpecificationTest {
         filters.setAmount(new AmountRangeDTO(100, 200));
         filters.setMessage("пиво");
         filters.setDate(new DateRangeDTO(LocalDateTime.now(), LocalDateTime.now().plusDays(1)));
-        filters.setTelegramUsersId(Arrays.asList(1L, 2L));
+        filters.setTelegramUserIdList(Arrays.asList(1L, 2L));
 
         doReturn(predicate).when(criteriaBuilder).equal(any(), eq(1L));
         when(criteriaBuilder.between(any(), any(Integer.class), any(Integer.class))).thenReturn(predicate);

@@ -4,7 +4,6 @@ import com.override.dto.*;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.filter.TransactionFilter;
-import com.override.orchestrator_service.mapper.TransactionFilterMapper;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.CategoryRepository;
@@ -47,8 +46,6 @@ public class TransactionService {
     private TelegramBotFeign telegramBotFeign;
     @Autowired
     private TransactionProcessingService transactionProcessingService;
-    @Autowired
-    private TransactionFilterMapper transactionFilterMapper;
 
     public int getTransactionsCount() {
         return transactionRepository.getTransactionsCount();
@@ -91,11 +88,19 @@ public class TransactionService {
         transactionRepository.updateCategoryIdWhereCategoryIsNull(categoryId, transactionMessage, accId);
     }
 
-    public List<TransactionDTO> findTransactionsByUserIdLimited(Long id, Integer pageSize, Integer pageNumber, String filterJson) throws InstanceNotFoundException {
+    public List<TransactionDTO> findTransactionsByUserIdLimited(Long id, Integer pageSize, Integer pageNumber) throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("date").descending());
 
-        TransactionFilter filter = transactionFilterMapper.mapStringJsonToTransactionFilter(filterJson, accID);
+        List<TransactionDTO> transactionList = transactionRepository.findAllByAccountId(accID, pageable).getContent().stream()
+                .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
+                .collect(Collectors.toList());
+        return enrichTransactionsWithTgUsernames(transactionList);
+    }
+
+    public List<TransactionDTO> findTransactionsByUserIdLimitedAndFiltered(Long id, TransactionFilter filter) throws InstanceNotFoundException {
+        Long accID = userService.getUserById(id).getAccount().getId();
+        Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by("date").descending());
 
         Specification<Transaction> spec = TransactionSpecification.createSpecification(accID, filter);
 

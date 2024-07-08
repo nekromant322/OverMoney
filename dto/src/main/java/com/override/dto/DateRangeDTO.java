@@ -10,15 +10,12 @@ import java.time.LocalDateTime;
 @Setter
 @Getter
 public class DateRangeDTO {
-    private LocalDateTime start;
+    private LocalDateTime begin;
     private LocalDateTime end;
 
-    public DateRangeDTO() {
-    }
-
     @JsonCreator
-    public DateRangeDTO(@JsonProperty("start") LocalDateTime start, @JsonProperty("end") LocalDateTime end) {
-        this.start = start;
+    public DateRangeDTO(@JsonProperty("begin") LocalDateTime begin, @JsonProperty("end") LocalDateTime end) {
+        this.begin = begin;
         this.end = end;
     }
 }

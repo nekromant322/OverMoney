@@ -16,5 +16,7 @@ public class TransactionFilter {
     private AmountRangeDTO amount;
     private String message;
     private DateRangeDTO date;
-    private List<Long> telegramUsersId;
+    private List<Long> telegramUserIdList;
+    private Integer pageSize;
+    private Integer pageNumber;
 }

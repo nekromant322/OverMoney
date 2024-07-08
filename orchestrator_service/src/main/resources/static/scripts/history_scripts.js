@@ -18,27 +18,19 @@ $(window).scroll(function () {
 })
 
 function getTransactions() {
-    // let filter = {
-    //     "category": "Продукты",
-    //     "amount": {"start": 5, "end": 300},
-    //     "message": "пиво",
-    //     "date": {"start": "2024-07-04T20:00:00.000000", "end": "2024-07-06T00:00:00.000000"},
-    //     "telegramUserNameList": ["Kulpinov_Evgeny"]
-    // };
-    // пример json
-    let filter = null // заглушка
     $.ajax({
-        type: "POST",
+        type: "GET",
         url: "./transactions/history?pageSize=" + pageSize + "&pageNumber=" + pageNumber,
         contentType: "application/json; charset=utf8",
-        data: JSON.stringify(filter),
+        async: false,
         success: function (data) {
             prepareAndDraw(data);
+            working = false;
         },
         error: function () {
             console.log("Something went wrong!");
         }
-    });
+    })
 }
 
 function prepareAndDraw(data) {
