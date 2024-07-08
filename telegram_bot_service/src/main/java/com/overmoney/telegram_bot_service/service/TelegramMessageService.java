@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -32,5 +34,9 @@ public class TelegramMessageService {
 
     public TelegramMessage getTelegramMessageMessageIdAndChatId(Integer messageId, Long chatId) {
         return telegramMessageRepository.findByMessageIdAndChatId(messageId, chatId);
+    }
+
+    public Set<Long> getAllUniqChatIds() {
+        return new HashSet<>(telegramMessageRepository.findUniqChatIds());
     }
 }

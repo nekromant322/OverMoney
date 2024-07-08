@@ -5,6 +5,10 @@
       url: https://api.telegram.org
     voice:
       max_length: 10
+  admin:
+    allowed_users:
+      Marandyuk_Anatolii,
+      Denis_Shvartcer
 
 #настройка веб адреса приложения
   orchestrator:

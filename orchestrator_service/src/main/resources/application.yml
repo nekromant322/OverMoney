@@ -44,7 +44,8 @@
       coderror404,
       Shainara,
       Kulpinov_Evgeny,
-      Ubeev_Valerii
+      Ubeev_Valerii,
+      Denis_Shvartcer
 
   filters:
     authorization-header:
