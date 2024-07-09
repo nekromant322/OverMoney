@@ -114,7 +114,14 @@ public class TransactionController {
     }
 
     @PostMapping("/transactions/filtered")
+    @Operation(summary = "Получить отфильтрованную историю транзакций", description = "Возвращает историю транзакций, отфильтрованных по заданным критериям")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Отфильтрованная история транзакций получена"),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные фильтра")
+    })
     public List<TransactionDTO> getFilteredTransactionsHistory(Principal principal,
+                                                               @Parameter(description = "Фильтры для транзакций, количество транзакций на странице и номер страницы")
                                                                @RequestBody TransactionFilter filter)
             throws InstanceNotFoundException {
         return transactionService
