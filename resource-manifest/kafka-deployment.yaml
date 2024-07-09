@@ -39,3 +39,5 @@ spec:
               value: "1@localhost:9093"
             - name: ALLOW_PLAINTEXT_LISTENER
               value: "yes"
+            - name: KAFKA_CFG_KRAFT_CLUSTER_ID
+              value: "f47ac10b-58cc-4372-a567-0e02b2c3d479"

@@ -10,6 +10,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -17,7 +18,7 @@ import java.util.concurrent.TimeoutException;
 
 @Service
 @Slf4j
-@ConditionalOnProperty(name = "service", havingValue = "kafka", matchIfMissing = true)
+@ConditionalOnProperty(name = "service.transaction.processing", havingValue = "kafka", matchIfMissing = true)
 public class KafkaRequestService implements RequestService{
 
     @Autowired
@@ -27,13 +28,16 @@ public class KafkaRequestService implements RequestService{
     private KafkaConsumerTransactionResponse transactionResponse;
 
     @Override
+    @Transactional
     public TransactionResponseDTO sendTransaction(TransactionMessageDTO transaction)
             throws ExecutionException, InterruptedException, TimeoutException {
+        log.info("Отправляется транзакция с сообщением: {}", transaction.getMessage());
 
         kafkaTemplate.send("transaction-request-events-topic", transaction).get();
+        log.info("Отправлена транзакция с сообщением: {}", transaction.getMessage());
 
         CompletableFuture<TransactionResponseDTO> future = transactionResponse.getFuture();
-        log.info("Получена обработанная транзакция с ID: {}", future.get().getId());
+        log.info("Возвращена обработанная транзакция с ID: {}", future.get().getId());
 
         return future.get(10, TimeUnit.SECONDS);
     }

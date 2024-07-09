@@ -24,7 +24,9 @@
   server:
     port: 8080
 
-  service: kafka
+  service:
+    transaction:
+      processing: kafka
 
   spring:
     application:
@@ -55,11 +57,13 @@
       active: ${SPRING_APPLICATION_PROFILE:dev}
     kafka:
       producer:
-        bootstrap-servers: localhost:9092
+        bootstrap-servers: ${HOSTNAME:localhost}:9092
+#        bootstrap-servers: 192.168.49.2:31092
         key-serializer: org.apache.kafka.common.serialization.StringSerializer
         value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       consumer:
-        bootstrap-servers: localhost:9092
+        bootstrap-servers: ${HOSTNAME:localhost}:9092
+#        bootstrap-servers: 192.168.49.2:31092
         key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
         value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
         group-id: transaction-sent-events

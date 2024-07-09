@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutionException;
 
 @Component
 @Slf4j
-@KafkaListener(topics = "transaction-sent-events-topic")
+@KafkaListener(topics = "transaction-request-events-topic")
 public class TransactionReceiver {
     @Autowired
     private TransactionProcessingService transactionProcessingService;
@@ -37,7 +37,8 @@ public class TransactionReceiver {
     @Transactional
     public void processTransaction(TransactionMessageDTO transaction)
             throws InstanceNotFoundException, ExecutionException, InterruptedException {
-        log.info("Получена транзакция: {}", transaction.getMessage());
+        log.info("Получена транзакция с сообщением: {}", transaction.toString());
+
         Transaction transactionResult = transactionProcessingService.processTransaction(transaction);
         transactionService.saveTransaction(transactionResult);
         transactionProcessingService.suggestCategoryToProcessedTransaction(transaction, transactionResult.getId());
