@@ -23,7 +23,8 @@
 
   server:
     port: 8080
-
+# Используется для переключения получения транзакций через kafka или через http
+# Для выбора http необходимо установить значение processing: orchestrator
   service:
     transaction:
       processing: kafka
@@ -56,14 +57,11 @@
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
     kafka:
+      bootstrap-servers: kafka-service:9092
       producer:
-        bootstrap-servers: ${HOSTNAME:localhost}:9092
-#        bootstrap-servers: 192.168.49.2:31092
         key-serializer: org.apache.kafka.common.serialization.StringSerializer
         value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
       consumer:
-        bootstrap-servers: ${HOSTNAME:localhost}:9092
-#        bootstrap-servers: 192.168.49.2:31092
         key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
         value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
         group-id: transaction-sent-events

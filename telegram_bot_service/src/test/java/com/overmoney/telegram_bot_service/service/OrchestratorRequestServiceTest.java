@@ -25,15 +25,6 @@ public class OrchestratorRequestServiceTest {
     private OrchestratorFeign orchestratorFeign;
 
     @Test
-    public void sendTransactionTest() {
-        TransactionMessageDTO transaction = generateTransactionDTO();
-
-        orchestratorRequestService.sendTransaction(transaction);
-
-        verify(orchestratorFeign, times(1)).sendTransaction(transaction);
-    }
-
-    @Test
     public void registerSingleAccountTest() {
         AccountDataDTO accountData = new AccountDataDTO();
 

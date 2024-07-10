@@ -14,10 +14,6 @@ public class OrchestratorRequestService {
     @Autowired
     private OrchestratorFeign orchestratorFeign;
 
-    public TransactionResponseDTO sendTransaction(TransactionMessageDTO transaction) {
-        return orchestratorFeign.sendTransaction(transaction);
-    }
-
     public void registerSingleAccount(AccountDataDTO accountData) {
         orchestratorFeign.registerSingleAccount(accountData);
     }
