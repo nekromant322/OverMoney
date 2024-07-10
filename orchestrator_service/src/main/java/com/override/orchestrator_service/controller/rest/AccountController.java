@@ -2,6 +2,7 @@ package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.AccountDataDTO;
 import com.override.dto.ChatMemberDTO;
+import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.service.OverMoneyAccountService;
 import com.override.orchestrator_service.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/account")
@@ -130,5 +132,17 @@ public class AccountController {
     })
     public int getAccountsCount() {
         return accountService.getGroupAccountsCount();
+    }
+
+    @GetMapping("/users")
+    @Operation(summary = "Получить пользователей аккаунта", description = "Возвращает список пользователей группового" +
+            "аккаунта")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список пользователей получен"),
+            @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
+            @ApiResponse(responseCode = "404", description = "Данные не найдены"),
+    })
+    public Set<User> getUsersFromAccount(@Parameter(description = "ID пользователя") @RequestParam Long userId) throws InstanceNotFoundException {
+        return accountService.getUsersFromGroupAccount(userId);
     }
 }
