@@ -4,6 +4,7 @@ import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionDefineDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
+import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.service.DefineService;
@@ -113,6 +114,21 @@ public class TransactionController {
             throws InstanceNotFoundException {
         return transactionService
                 .findTransactionsByUserIdLimited(telegramUtils.getTelegramId(principal), pageSize, pageNumber);
+    }
+
+    @PostMapping("/transactions/filtered")
+    @Operation(summary = "Получить отфильтрованную историю транзакций", description = "Возвращает историю транзакций, отфильтрованных по заданным критериям")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Отфильтрованная история транзакций получена"),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные фильтра")
+    })
+    public List<TransactionDTO> getFilteredTransactionsHistory(Principal principal,
+                                                               @Parameter(description = "Фильтры для транзакций, количество транзакций на странице и номер страницы")
+                                                               @RequestBody TransactionFilter filter)
+            throws InstanceNotFoundException {
+        return transactionService
+                .findTransactionsByUserIdLimitedAndFiltered(telegramUtils.getTelegramId(principal), filter);
     }
 
     @PostMapping("/transaction/define")
