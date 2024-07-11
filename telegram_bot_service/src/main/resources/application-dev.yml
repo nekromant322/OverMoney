@@ -11,3 +11,6 @@ integration:
       orchestrator: http://localhost:8081
       recognizer: http://localhost:8080
 
+spring:
+  kafka:
+    bootstrap-servers: http://localhost:9092

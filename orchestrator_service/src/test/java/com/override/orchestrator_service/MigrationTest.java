@@ -1,11 +1,18 @@
 package com.override.orchestrator_service;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
+import com.override.orchestrator_service.kafka.config.KafkaConfig;
+import com.override.orchestrator_service.kafka.consumerproducer.TransactionReceiver;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
@@ -27,6 +34,12 @@ public class MigrationTest {
             log.error(ex.getMessage());
         }
     }
+
+    @MockBean(KafkaConfig.class)
+    private KafkaConfig kafkaConfig;
+
+    @MockBean(TransactionReceiver.class)
+    private TransactionReceiver transactionReceiver;
 
     @Test
     @DisplayName("Схема бд в миграции совпадает с моделями в коде")

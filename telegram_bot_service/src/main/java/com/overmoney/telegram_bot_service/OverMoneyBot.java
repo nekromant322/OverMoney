@@ -48,6 +48,8 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
     @Autowired
+    private RequestService requestService;
+    @Autowired
     private TransactionMapper transactionMapper;
     @Autowired
     private VoiceMessageProcessingService voiceMessageProcessingService;
@@ -304,7 +306,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
 
     private void processTransaction(Long chatId, Integer messageId, TransactionMessageDTO transactionMessageDTO) {
         try {
-            TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
+            TransactionResponseDTO transactionResponseDTO = requestService
                     .sendTransaction(transactionMessageDTO);
             telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
                     .messageId(messageId)
