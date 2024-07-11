@@ -8,6 +8,7 @@ import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -20,6 +21,7 @@ import java.util.concurrent.ExecutionException;
 @Component
 @Slf4j
 @KafkaListener(topics = "transaction-request-events-topic")
+@ConditionalOnProperty(name = "service.transaction.processing", havingValue = "kafka", matchIfMissing = true)
 public class TransactionReceiver {
     @Autowired
     private TransactionProcessingService transactionProcessingService;

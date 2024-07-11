@@ -41,9 +41,6 @@ public class MigrationTest {
     @MockBean(KafkaConsumerTransactionResponse.class)
     private KafkaConsumerTransactionResponse transactionResponse;
 
-    @MockBean(KafkaRequestService.class)
-    private KafkaRequestService kafkaRequestService;
-
     @Test
     @DisplayName("Схема бд в миграции совпадает с моделями в коде")
     void checkLiquibase() {

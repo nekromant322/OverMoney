@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 @Service
-@ConditionalOnProperty(name = "service", havingValue = "orchestrator")
+@ConditionalOnProperty(name = "service.transaction.processing", havingValue = "orchestrator")
 public class OrchestratorTransactionRequestService implements RequestService{
 
     @Autowired

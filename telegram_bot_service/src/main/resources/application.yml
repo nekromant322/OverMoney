@@ -25,9 +25,10 @@
     port: 8080
 # Используется для переключения получения транзакций через kafka или через http
 # Для выбора http необходимо установить значение processing: orchestrator
+# Значение необходимо устанвливать одинаковое в оркестраторе и телеграм-боте
   service:
     transaction:
-      processing: kafka
+      processing: orchestrator
 
   spring:
     application:

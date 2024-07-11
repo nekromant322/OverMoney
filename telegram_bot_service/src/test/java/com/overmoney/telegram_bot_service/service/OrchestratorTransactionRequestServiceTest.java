@@ -9,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import static com.overmoney.telegram_bot_service.utils.TestFieldsUtil.generateTransactionDTO;
 import static org.mockito.Mockito.*;
@@ -17,7 +19,7 @@ import static org.mockito.Mockito.*;
 public class OrchestratorTransactionRequestServiceTest {
 
     @InjectMocks
-    private OrchestratorTransactionRequestService orchestratorTransactionRequestService;
+    private OrchestratorTransactionRequestService orchestratorRequestService;
 
     @Mock
     private OrchestratorFeign orchestratorFeign;
@@ -26,7 +28,7 @@ public class OrchestratorTransactionRequestServiceTest {
     public void sendTransactionTest() {
         TransactionMessageDTO transaction = generateTransactionDTO();
 
-        orchestratorTransactionRequestService.sendTransaction(transaction);
+        orchestratorRequestService.sendTransaction(transaction);
 
         verify(orchestratorFeign, times(1)).sendTransaction(transaction);
     }
