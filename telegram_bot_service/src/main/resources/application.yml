@@ -28,7 +28,7 @@
 # Значение необходимо устанвливать одинаковое в оркестраторе и телеграм-боте
   service:
     transaction:
-      processing: kafka
+      processing: orchestrator
 
   spring:
     application:
