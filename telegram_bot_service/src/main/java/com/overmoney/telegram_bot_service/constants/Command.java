@@ -6,7 +6,6 @@ import lombok.Getter;
 public enum Command {
 
     START("start", "OverMoney - бот для учета финансов!\n"),
-    MONEY("money", "Приложение OverMoney"),
     ANNOUNCE("announce", "Отправить аннонс о новых возможностях пользователям"),
     WEB("web", "Получить хост");
 
