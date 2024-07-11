@@ -46,7 +46,8 @@
       Shainara,
       Kulpinov_Evgeny,
       Ubeev_Valerii,
-      Denis_Shvartcer
+      Denis_Shvartcer,
+      NikoTiN_RnD
 
   filters:
     authorization-header:

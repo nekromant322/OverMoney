@@ -11,11 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Chat;
 import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.bots.AbsSender;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -60,18 +58,6 @@ public class AnnounceCommand extends OverMoneyCommand {
         String announce = String.join(" ", args);
         Set<Long> userIds = telegramMessageService.getAllUniqChatIds();
         sendAnnounce(announce, userIds, absSender);
-    }
-
-    public StatusMailing sendMessage(AbsSender sender, Long chatId, String messageText) {
-        SendMessage message = new SendMessage(chatId.toString(), messageText);
-        try {
-            sender.execute(message);
-            log.info("сообщение отправлено " + chatId);
-            return StatusMailing.SUCCESS;
-        } catch (TelegramApiException e) {
-            log.error(e.getMessage());
-            return StatusMailing.ERROR;
-        }
     }
 
     public void sendAnnounce(String announceText, Set<Long> userIds, AbsSender absSender) {
