@@ -129,14 +129,10 @@ public class TransactionServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideFilters")
-    public void findTransactionsByUserIdLimitedAndFilteredTest(Long userId, TransactionFilter filter, List<TransactionDTO> expectedDTOs) throws InstanceNotFoundException {
+    public void findTransactionsByUserIdLimitedAndFilteredTest(Long userId, TransactionFilter filter, List<TransactionDTO> expectedDTOs, Page<Transaction> page) throws InstanceNotFoundException {
         OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
         User user = TestFieldsUtil.generateTestUser();
         user.setAccount(account);
-        Page<Transaction> page = new PageImpl<>(List.of(
-                TestFieldsUtil.generateTestTransaction(),
-                TestFieldsUtil.generateTestTransaction()
-        ));
 
         when(userService.getUserById(userId)).thenReturn(user);
         when(transactionRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
@@ -157,7 +153,7 @@ public class TransactionServiceTest {
         Long userId = 1L;
         TransactionFilter filter1 = new TransactionFilter();
         filter1.setCategory(TestFieldsUtil.generateTestCategory());
-        filter1.setAmount(new AmountRangeDTO(100, 500));
+        filter1.setAmount(new AmountRangeDTO(1000, 5000));
         filter1.setMessage("продукты");
         LocalDateTime beginDate = LocalDateTime.of(2020, 1, 1, 0, 0);
         LocalDateTime endDate = LocalDateTime.now();
@@ -176,15 +172,49 @@ public class TransactionServiceTest {
         filter3.setPageSize(50);
         filter3.setPageNumber(0);
 
-        List<TransactionDTO> expectedDTOList = List.of(
-                TestFieldsUtil.generateTestTransactionDTO(),
-                TestFieldsUtil.generateTestTransactionDTO()
-        );
+        Transaction transaction1 = Transaction.builder()
+                .id(UUID.randomUUID())
+                .message("пиво")
+                .amount(2000d)
+                .date(LocalDateTime.now())
+                .category(TestFieldsUtil.generateTestCategory())
+                .account(TestFieldsUtil.generateTestAccount())
+                .build();
+
+        Transaction transaction2 = Transaction.builder()
+                .id(UUID.randomUUID())
+                .message("продукты")
+                .amount(200d)
+                .date(LocalDateTime.now())
+                .category(TestFieldsUtil.generateTestCategory())
+                .account(TestFieldsUtil.generateTestAccount())
+                .build();
+        Page<Transaction> page1 = new PageImpl<>(List.of(transaction1));
+        Page<Transaction> page2 = new PageImpl<>(List.of(transaction2));
+        Page<Transaction> page3 = new PageImpl<>(List.of(transaction1, transaction2));
+
+        TransactionDTO transactionDTO1 = TransactionDTO.builder()
+                .message("пиво")
+                .amount(2000d)
+                .date(LocalDateTime.now())
+                .categoryName(TestFieldsUtil.generateTestCategory().getName())
+                .build();
+
+        TransactionDTO transactionDTO2 = TransactionDTO.builder()
+                .message("продукты")
+                .amount(200d)
+                .date(LocalDateTime.now())
+                .categoryName(TestFieldsUtil.generateTestCategory().getName())
+                .build();
+
+        List<TransactionDTO> expectedDTOList1 = List.of(transactionDTO1);
+        List<TransactionDTO> expectedDTOList2 = List.of(transactionDTO2);
+        List<TransactionDTO> expectedDTOList3 = List.of(transactionDTO1, transactionDTO2);
 
         return Stream.of(
-                Arguments.of(userId, filter1, expectedDTOList),
-                Arguments.of(userId, filter2, expectedDTOList),
-                Arguments.of(userId, filter3, expectedDTOList)
+                Arguments.of(userId, filter1, expectedDTOList1, page1),
+                Arguments.of(userId, filter2, expectedDTOList2, page2),
+                Arguments.of(userId, filter3, expectedDTOList3, page3)
         );
     }
 

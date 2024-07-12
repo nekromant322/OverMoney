@@ -17,8 +17,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class TransactionSpecificationTest {
@@ -49,9 +48,13 @@ public class TransactionSpecificationTest {
         when(criteriaBuilder.like(any(), any(String.class))).thenReturn(predicate);
         when(path.in(anyList())).thenReturn(predicate);
         when(root.get(anyString())).thenReturn(path);
+        when(criteriaBuilder.and(predicate, predicate, predicate, predicate, predicate)).thenReturn(predicate);
 
         Specification<Transaction> specification = TransactionSpecification.createSpecification(accountId, filters);
+
         Predicate resultPredicate = specification.toPredicate(root, criteriaQuery, criteriaBuilder);
+
         assertThat(specification).isNotNull();
+        assertThat(resultPredicate).isNotNull();
     }
 }
