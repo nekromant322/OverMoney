@@ -11,6 +11,7 @@
         telegram-bot: http://sa-telegram-bot-svc
         recognizer: http://sa-recognizer-svc
         invest: http://sa-invest-svc
+        kafka: http://sa-kafka-client-service
 
   telegram:
     bot:
@@ -51,6 +52,12 @@
   filters:
     authorization-header:
       header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+# Используется для переключения получения транзакций через kafka или через http
+# Для выбора http необходимо установить значение processing: orchestrator
+# Значение необходимо устанвливать одинаковое в оркестраторе и телеграм-боте
+  service:
+    transaction:
+      processing: orchestrator
 
   jwt:
     secret:
@@ -66,6 +73,26 @@
         ## переменная используется в классе CommonExceptionHandler при ошибке MaxUploadSizeExceededException
         ## для формирования error message, кт в дальнейшем будет отображена на фронт пользователю
         max-request-size: 10MB
+    kafka:
+      bootstrap-servers: kafka-service:9092
+      producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      consumer:
+        key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        group-id: transaction-sent-events
+        properties:
+          spring.json.trusted.packages: com.override.dto
+          spring:
+            deserializer:
+              key:
+                delegate:
+                  class: org.apache.kafka.common.serialization.StringDeserializer
+              value:
+                delegate:
+                  class: org.springframework.kafka.support.serializer.JsonDeserializer
+
 
     datasource:
       url: jdbc:postgresql://${ORCHESTRATOR_DB_HOST:localhost}:${ORCHESTRATOR_DB_PORT:5433}/orchestrator-db

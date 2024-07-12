@@ -23,6 +23,12 @@
 
   server:
     port: 8080
+# Используется для переключения получения транзакций через kafka или через http
+# Для выбора http необходимо установить значение processing: orchestrator
+# Значение необходимо устанвливать одинаковое в оркестраторе и телеграм-боте
+  service:
+    transaction:
+      processing: orchestrator
 
   spring:
     application:
@@ -51,6 +57,25 @@
 
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
+    kafka:
+      bootstrap-servers: kafka-service:9092
+      producer:
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      consumer:
+        key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        group-id: transaction-sent-events
+        properties:
+          spring.json.trusted.packages: com.override.dto
+          spring:
+            deserializer:
+              key:
+                delegate:
+                  class: org.apache.kafka.common.serialization.StringDeserializer
+              value:
+                delegate:
+                  class: org.springframework.kafka.support.serializer.JsonDeserializer
 
   logging:
     level:

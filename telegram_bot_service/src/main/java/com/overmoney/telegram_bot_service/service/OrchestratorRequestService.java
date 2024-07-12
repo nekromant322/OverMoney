@@ -2,6 +2,8 @@ package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
 import com.override.dto.*;
+import feign.FeignException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,17 +11,20 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class OrchestratorRequestService {
 
     @Autowired
     private OrchestratorFeign orchestratorFeign;
 
-    public TransactionResponseDTO sendTransaction(TransactionMessageDTO transaction) {
-        return orchestratorFeign.sendTransaction(transaction);
-    }
-
-    public void registerSingleAccount(AccountDataDTO accountData) {
-        orchestratorFeign.registerSingleAccount(accountData);
+    public boolean registerSingleAccount(AccountDataDTO accountData) {
+        try {
+            orchestratorFeign.registerSingleAccount(accountData);
+            return true;
+        } catch (FeignException e) {
+            log.error("Ошибка при регистрации аккаунта: " + e.getMessage());
+            return false;
+        }
     }
 
     public void registerGroupAccountAndMergeWithCategoriesAndWithoutTransactions(AccountDataDTO accountDataDTO) {

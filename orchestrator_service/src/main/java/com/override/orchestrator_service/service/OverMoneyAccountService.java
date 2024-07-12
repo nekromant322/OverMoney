@@ -195,4 +195,10 @@ public class OverMoneyAccountService {
         LocalDateTime numberDaysAgo = LocalDateTime.now().minusDays(numberDays);
         return overMoneyAccountRepository.findActiveAccountCount(numberDaysAgo);
     }
+
+    public Set<User> getUsersFromGroupAccount(Long userId) throws InstanceNotFoundException {
+        User user = userService.getUserById(userId);
+        OverMoneyAccount overMoneyAccount = user.getAccount();
+        return overMoneyAccount.getUsers();
+    }
 }

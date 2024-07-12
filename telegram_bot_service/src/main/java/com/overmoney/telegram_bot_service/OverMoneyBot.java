@@ -1,7 +1,6 @@
 package com.overmoney.telegram_bot_service;
 
 import com.overmoney.telegram_bot_service.commands.OverMoneyCommand;
-import com.overmoney.telegram_bot_service.constants.Command;
 import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
 import com.overmoney.telegram_bot_service.exception.VoiceProcessingException;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
@@ -35,6 +34,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static com.overmoney.telegram_bot_service.constants.MessageConstants.*;
+
 @Component
 @Slf4j
 public class OverMoneyBot extends TelegramLongPollingCommandBot {
@@ -46,6 +47,8 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     private String orchestratorHost;
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
+    @Autowired
+    private RequestService requestService;
     @Autowired
     private TransactionMapper transactionMapper;
     @Autowired
@@ -62,29 +65,9 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     private TelegramMessageCheckerService telegramMessageCheckerService;
     @Autowired
     private TelegramMessageService telegramMessageService;
-    private final String TRANSACTION_MESSAGE_INVALID = "Мы не смогли распознать ваше сообщение. " +
-            "Убедитесь, что сумма и товар указаны верно и попробуйте еще раз :)";
     private final Integer MILLISECONDS_CONVERSION = 1000;
     private final ZoneOffset MOSCOW_OFFSET = ZoneOffset.of("+03:00");
-    private final String MERGE_REQUEST_TEXT =
-            "Привет, ты добавил меня в груповой чат, теперь я буду отслеживать " +
-                    "транзакции всех пользователей в этом чате.\n\n" +
-                    "Хочешь перенести данные о своих финансах и использовать их совместно?";
-    private final String MERGE_REQUEST_COMPLETED_DEFAULT_TEXT =
-            "Удачного совместного использования!";
-    private final String MERGE_REQUEST_COMPLETED_TEXT =
-            "Данные аккаунта были перенесены.";
-    private final String REGISTRATION_INFO_TEXT =
-            "Для корректной регистрации аккаунта убедитесь, что на момент добавления в чат бота" +
-                    " в чате с ботом только вы. После переноса данных можете добавлять других пользователей";
-    private final String INVALID_TRANSACTION_TO_DELETE = "Некорректная транзакция для удаления";
-    private final String SUCCESSFUL_DELETION_TRANSACTION = "Эта запись успешно удалена!";
-    private final String COMMAND_TO_DELETE_TRANSACTION = "удалить";
-    private final String BLANK_MESSAGE = "";
     private final Boolean BOT = true;
-    private final String SUCCESSFUL_UPDATE_TRANSACTION_TEXT = "Запись успешно изменена.\n";
-    private final String INVALID_UPDATE_TRANSACTION_TEXT = "Некорректная транзакция для изменения.\n" +
-            "Возможно, Вы выбрали транзакцию, которая уже была изменена или сообщение бота";
 
     @Autowired
     public OverMoneyBot(List<OverMoneyCommand> allCommands) {
@@ -250,16 +233,6 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             }
         }
         switch (receivedMessageText) {
-            case "/start":
-                sendMessage(chatId, Command.START.getDescription() + orchestratorHost);
-                orchestratorRequestService.registerSingleAccount(new AccountDataDTO(chatId, userId));
-                break;
-            case "/money":
-                sendMessage(chatId, Command.MONEY.getDescription());
-                break;
-            case "/web":
-                sendMessage(chatId, orchestratorHost);
-                break;
             case COMMAND_TO_DELETE_TRANSACTION:
                 if (replyToMessage != null) {
                     deleteTransaction(replyToMessage, chatId);
@@ -333,7 +306,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
 
     private void processTransaction(Long chatId, Integer messageId, TransactionMessageDTO transactionMessageDTO) {
         try {
-            TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
+            TransactionResponseDTO transactionResponseDTO = requestService
                     .sendTransaction(transactionMessageDTO);
             telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
                     .messageId(messageId)
