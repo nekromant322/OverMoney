@@ -2,6 +2,8 @@ package com.override.orchestrator_service.repository;
 
 import com.override.dto.AnalyticsAnnualAndMonthlyExpenseForCategoryDTO;
 import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
+import com.override.dto.MonthSumTransactionByTypeCategoryDTO;
+import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -80,4 +82,15 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 
     @Query(value = "SELECT COUNT(t) FROM Transaction t WHERE t.date >= :date")
     int findCountTransactionsLastDays(@Param("date") LocalDateTime date);
+
+    @Query("select new com.override.dto.MonthSumTransactionByTypeCategoryDTO(c.id, c.name, SUM(t.amount)) " +
+            "from Transaction t join Category c on t.category.id = c.id " +
+            "where t.telegramUserId = :telegramUserId " +
+            "and c.type = :type " +
+            "and YEAR(t.date) = :year and MONTH(t.date) = :month " +
+            "group by c.id, c.name")
+    List<MonthSumTransactionByTypeCategoryDTO> findSumTransactionByTypeCategory(@Param("telegramUserId") Long accountId,
+                                                                                @Param("year") int year,
+                                                                                @Param("month") int month,
+                                                                                @Param("type") Type type);
 }
