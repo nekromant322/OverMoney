@@ -2,13 +2,13 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
+import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,13 +19,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import javax.management.InstanceNotFoundException;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -126,6 +125,97 @@ public class TransactionServiceTest {
         List<TransactionDTO> testListTransaction =
                 transactionService.findTransactionsByUserIdLimited(user.getId(), 50, 0);
         assertEquals(List.of(transactionDTO1, transactionDTO2), testListTransaction);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideFilters")
+    public void findTransactionsByUserIdLimitedAndFilteredTest(Long userId, TransactionFilter filter, List<TransactionDTO> expectedDTOs, Page<Transaction> page) throws InstanceNotFoundException {
+        OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
+        User user = TestFieldsUtil.generateTestUser();
+        user.setAccount(account);
+
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(transactionRepository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
+        for (int i = 0; i < page.getContent().size(); i++) {
+            when(transactionMapper.mapTransactionToDTO(page.getContent().get(i))).thenReturn(expectedDTOs.get(i));
+        }
+        List<TransactionDTO> result = transactionService.findTransactionsByUserIdLimitedAndFiltered(userId, filter);
+
+        assertNotNull(result);
+        assertEquals(expectedDTOs.size(), result.size());
+        for (int i = 0; i < expectedDTOs.size(); i++) {
+            assertEquals(expectedDTOs.get(i), result.get(i));
+        }
+        verify(transactionRepository).findAll(any(Specification.class), any(Pageable.class));
+    }
+
+    private static Stream<Arguments> provideFilters() {
+        Long userId = 1L;
+        TransactionFilter filter1 = new TransactionFilter();
+        filter1.setCategory(TestFieldsUtil.generateTestCategory());
+        filter1.setAmount(new AmountRangeDTO(1000, 5000));
+        filter1.setMessage("продукты");
+        LocalDateTime beginDate = LocalDateTime.of(2020, 1, 1, 0, 0);
+        LocalDateTime endDate = LocalDateTime.now();
+        filter1.setDate(new DateRangeDTO(beginDate, endDate));
+        filter1.setTelegramUserIdList(Arrays.asList(1L, 2L));
+        filter1.setPageSize(50);
+        filter1.setPageNumber(0);
+
+        TransactionFilter filter2 = new TransactionFilter();
+        filter2.setAmount(new AmountRangeDTO(100, 500));
+        filter2.setMessage("продукты");
+        filter2.setPageSize(50);
+        filter2.setPageNumber(0);
+
+        TransactionFilter filter3 = new TransactionFilter();
+        filter3.setPageSize(50);
+        filter3.setPageNumber(0);
+
+        Transaction transaction1 = Transaction.builder()
+                .id(UUID.randomUUID())
+                .message("пиво")
+                .amount(2000d)
+                .date(LocalDateTime.now())
+                .category(TestFieldsUtil.generateTestCategory())
+                .account(TestFieldsUtil.generateTestAccount())
+                .build();
+
+        Transaction transaction2 = Transaction.builder()
+                .id(UUID.randomUUID())
+                .message("продукты")
+                .amount(200d)
+                .date(LocalDateTime.now())
+                .category(TestFieldsUtil.generateTestCategory())
+                .account(TestFieldsUtil.generateTestAccount())
+                .build();
+        Page<Transaction> page1 = new PageImpl<>(List.of(transaction1));
+        Page<Transaction> page2 = new PageImpl<>(List.of(transaction2));
+        Page<Transaction> page3 = new PageImpl<>(List.of(transaction1, transaction2));
+
+        TransactionDTO transactionDTO1 = TransactionDTO.builder()
+                .message("пиво")
+                .amount(2000d)
+                .date(LocalDateTime.now())
+                .categoryName(TestFieldsUtil.generateTestCategory().getName())
+                .build();
+
+        TransactionDTO transactionDTO2 = TransactionDTO.builder()
+                .message("продукты")
+                .amount(200d)
+                .date(LocalDateTime.now())
+                .categoryName(TestFieldsUtil.generateTestCategory().getName())
+                .build();
+
+        List<TransactionDTO> expectedDTOList1 = List.of(transactionDTO1);
+        List<TransactionDTO> expectedDTOList2 = List.of(transactionDTO2);
+        List<TransactionDTO> expectedDTOList3 = List.of(transactionDTO1, transactionDTO2);
+
+        return Stream.of(
+                Arguments.of(userId, filter1, expectedDTOList1, page1),
+                Arguments.of(userId, filter2, expectedDTOList2, page2),
+                Arguments.of(userId, filter3, expectedDTOList3, page3)
+        );
     }
 
     @Test
