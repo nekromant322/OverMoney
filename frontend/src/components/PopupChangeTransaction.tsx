@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
-import { ITransaction } from '../../types/types';
-import Popup from '../Popup/Popup';
+import { ITransaction } from '../types/types';
+import Popup from './Popup';
 import { Form } from 'react-bootstrap';
-import { constlistItems } from '../../utils/utils';
+import { constlistItems } from '../utils/utils';
 
 interface PopupChangeTransactionProps {
     showModalChangeTransaction: boolean,

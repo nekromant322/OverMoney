@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Col, ListGroup, Row } from 'react-bootstrap';
-import { ICard, IListItem } from '../../types/types';
-import ItemCategory from '../ItemCategory/ItemCategory';
+import { ICard, IListItem } from '../types/types';
+import ItemCategory from './ItemCategory';
 
 interface ListGroupCategoriesProps {
     listItems: IListItem[], 

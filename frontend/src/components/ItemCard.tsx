@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { ICard } from '../../types/types';
+import { ICard } from '../types/types';
 import { Card } from 'react-bootstrap';
 
 

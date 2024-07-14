@@ -1,9 +1,9 @@
 import React, { FC, useCallback, useEffect, useState } from 'react'
 import { Button, Col, Container, Row, Toast } from 'react-bootstrap'
-import GridCards from '../GridCards/GridCards'
-import ListCategories from '../ListCategories/ListCategories'
-import { ICard, IListItem } from '../../types/types'
-import { constCards, constlistItems } from '../../utils/utils'
+import GridCards from '../components/GridCards'
+import ListCategories from '../components/ListCategories'
+import { ICard, IListItem } from '../types/types'
+import { constCards, constlistItems } from '../utils/utils'
 
 
 const Overmoney: FC = () => {

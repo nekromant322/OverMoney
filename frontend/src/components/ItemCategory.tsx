@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import { Badge, ListGroupItem } from 'react-bootstrap';
-import { ICard, IListItem } from '../../types/types';
+import { ICard, IListItem } from '../types/types';
 
 interface ItemCategoryProps {
     item: IListItem,

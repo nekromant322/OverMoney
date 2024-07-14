@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
-import { ICard, IListItem } from '../../types/types';
-import ListGroupCategories from '../ListGroupCategories/ListGroupCategories';
-import PopupAddCategory from '../PopupAddCategory/PopupAddCategory';
-import PopupChangeCategory from '../PopupChangeCategory/PopupChangeCategory';
+import { ICard, IListItem } from '../types/types';
+import ListGroupCategories from './ListGroupCategories';
+import PopupAddCategory from './PopupAddCategory';
+import PopupChangeCategory from './PopupChangeCategory';
 
 interface ListCategoriesProps {
     listItems: IListItem[],
