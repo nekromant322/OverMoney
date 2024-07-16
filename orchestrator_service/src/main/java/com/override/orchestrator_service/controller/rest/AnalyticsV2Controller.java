@@ -1,14 +1,17 @@
 package com.override.orchestrator_service.controller.rest;
 
+import com.override.dto.AnalyticsDataPerMonthDTO;
 import com.override.dto.TransactionSummaryDTO;
 import com.override.orchestrator_service.service.AnalyticV2Service;
 import com.override.orchestrator_service.util.TelegramUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 
 @RestController
@@ -23,5 +26,10 @@ public class AnalyticsV2Controller {
     @GetMapping("/general/amounts")
     public TransactionSummaryDTO getFinanceData(Principal principal) {
         return analyticV2Service.countFinanceData(telegramUtils.getTelegramId(principal));
+    }
+
+    @PostMapping("/months/amounts")
+    public AnalyticsDataPerMonthDTO getFinanceDataPerMonth(Principal principal, Long userId, int year) throws InstanceNotFoundException {
+        return analyticV2Service.countFinanceDataPerMonth(telegramUtils.getTelegramId(principal), userId, year);
     }
 }
