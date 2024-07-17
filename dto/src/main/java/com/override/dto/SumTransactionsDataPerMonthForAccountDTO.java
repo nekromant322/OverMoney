@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class TransactionsDataPerMonthForAccountDTO {
+public class SumTransactionsDataPerMonthForAccountDTO {
     private Type type;
     private int month;
     private Double sum;

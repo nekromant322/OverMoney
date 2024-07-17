@@ -3,7 +3,7 @@ package com.override.orchestrator_service.service;
 import com.override.dto.AnalyticsDataPerMonthDTO;
 import com.override.dto.MonthSumTransactionByTypeCategoryDTO;
 import com.override.dto.TransactionSummaryDTO;
-import com.override.dto.TransactionsDataPerMonthForAccountDTO;
+import com.override.dto.SumTransactionsDataPerMonthForAccountDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
@@ -52,13 +52,13 @@ public class AnalyticV2Service {
         double[] monthsIncome = new double[months];
         double[] monthsExpense = new double[months];
 
-        List<TransactionsDataPerMonthForAccountDTO> transactions = transactionRepository.findTransactionsPerMonthForAccount(userIds, year);
-        for (TransactionsDataPerMonthForAccountDTO data : transactions) {
+        List<SumTransactionsDataPerMonthForAccountDTO> sumTransactions = transactionRepository.findSumTransactionsPerMonthForAccount(userIds, year);
+        for (SumTransactionsDataPerMonthForAccountDTO data : sumTransactions) {
             int monthIndex = data.getMonth() - 1; // Преобразование месяца в индекс массива (0 - январь, 11 - декабрь)
             if (data.getType() == Type.INCOME) {
-                monthsIncome[monthIndex] += data.getSum();
+                monthsIncome[monthIndex] = data.getSum();
             } else if (data.getType() == Type.EXPENSE) {
-                monthsExpense[monthIndex] += data.getSum();
+                monthsExpense[monthIndex] = data.getSum();
             }
         }
         return new AnalyticsDataPerMonthDTO(monthsIncome, monthsExpense);
