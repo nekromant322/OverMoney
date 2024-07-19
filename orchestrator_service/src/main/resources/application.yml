@@ -52,12 +52,6 @@
   filters:
     authorization-header:
       header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
-# Используется для переключения получения транзакций через kafka или через http
-# Для выбора http необходимо установить значение processing: orchestrator
-# Значение необходимо устанвливать одинаковое в оркестраторе и телеграм-боте
-  service:
-    transaction:
-      processing: orchestrator
 
   jwt:
     secret:
