@@ -68,6 +68,9 @@
         ## для формирования error message, кт в дальнейшем будет отображена на фронт пользователю
         max-request-size: 10MB
     kafka:
+      topics:
+        request: transaction-request-events-topic
+        response: transaction-response-events-topic
       bootstrap-servers: kafka-service:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer

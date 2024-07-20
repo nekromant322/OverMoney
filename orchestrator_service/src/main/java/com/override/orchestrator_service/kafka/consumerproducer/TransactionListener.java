@@ -8,6 +8,7 @@ import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -17,7 +18,7 @@ import javax.transaction.Transactional;
 
 @Component
 @Slf4j
-@KafkaListener(topics = "transaction-request-events-topic")
+@KafkaListener(topics = "${spring.kafka.topics.request}")
 public class TransactionListener {
     @Autowired
     private TransactionProcessingService transactionProcessingService;
@@ -31,6 +32,9 @@ public class TransactionListener {
     @Autowired
     private KafkaTemplate<String, TransactionResponseDTO> kafkaTemplate;
 
+    @Value("${spring.kafka.topics.response}")
+    private String responseTopic;
+
     @KafkaHandler
     @Transactional
     public void processTransaction(TransactionMessageDTO transaction) {
@@ -40,13 +44,14 @@ public class TransactionListener {
             transactionService.saveTransaction(transactionResult);
             transactionProcessingService.suggestCategoryToProcessedTransaction(transaction, transactionResult.getId());
 
-            kafkaTemplate.send("transaction-response-events-topic", transactionMapper
+            kafkaTemplate.send(responseTopic, transactionMapper
                     .mapTransactionToTelegramResponse(transactionResult));
         } catch (Exception e) {
             TransactionResponseDTO errorResponse = new TransactionResponseDTO();
             errorResponse.setComment("error");
             errorResponse.setChatId(transaction.getChatId());
-            kafkaTemplate.send("transaction-response-events-topic", errorResponse);
+            log.error(e.getMessage());
+            kafkaTemplate.send(responseTopic, errorResponse);
         }
     }
 }

@@ -58,6 +58,9 @@
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
     kafka:
+      topics:
+        request: transaction-request-events-topic
+        response: transaction-response-events-topic
       bootstrap-servers: kafka-service:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer

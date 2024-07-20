@@ -4,6 +4,7 @@ import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ public class KafkaProducerService {
 
     private final Map<Long, CompletableFuture<TransactionResponseDTO>> responseFutures = new ConcurrentHashMap<>();
 
+    @Value("${spring.kafka.topics.request}")
+    private String requestTopic;
+
     @Transactional
     public CompletableFuture<TransactionResponseDTO> sendTransaction(
             Long chatId, TransactionMessageDTO transactionMessageDTO) {
@@ -30,7 +34,7 @@ public class KafkaProducerService {
         responseFutures.put(chatId, future);
 
         ListenableFuture<SendResult<String, TransactionMessageDTO>> kafkaResultFuture =
-                kafkaTemplate.send("transaction-request-events-topic", transactionMessageDTO);
+                kafkaTemplate.send(requestTopic, transactionMessageDTO);
 
         kafkaResultFuture.addCallback(new ListenableFutureCallback<>() {
             @Override
