@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.util.concurrent.SettableListenableFuture;
@@ -42,6 +43,9 @@ public class TransactionListenerTest {
 
     @InjectMocks
     private TransactionListener transactionTestReceiver;
+
+    @Value("${spring.kafka.topics.response}")
+    private String responseTopic;
 
     @Test
     public void testProcessTestTransaction() throws InstanceNotFoundException {
@@ -83,13 +87,13 @@ public class TransactionListenerTest {
 
         SettableListenableFuture<SendResult<String, TransactionResponseDTO>> future = new SettableListenableFuture<>();
         future.set(new SendResult<>(null, null));
-        when(kafkaTemplate.send(eq("transaction-response-events-topic"),
+        when(kafkaTemplate.send(eq(responseTopic),
                 any(TransactionResponseDTO.class))).thenReturn(future);
 
         transactionTestReceiver.processTransaction(transactionMessageDTO);
 
         ArgumentCaptor<TransactionResponseDTO> responseCaptor = ArgumentCaptor.forClass(TransactionResponseDTO.class);
-        verify(kafkaTemplate).send(eq("transaction-response-events-topic"), responseCaptor.capture());
+        verify(kafkaTemplate).send(eq(responseTopic), responseCaptor.capture());
         assertEquals(responseDTO, responseCaptor.getValue());
     }
     @Test
@@ -101,13 +105,13 @@ public class TransactionListenerTest {
 
         SettableListenableFuture<SendResult<String, TransactionResponseDTO>> future = new SettableListenableFuture<>();
         future.set(new SendResult<>(null, null));
-        when(kafkaTemplate.send(eq("transaction-response-events-topic"),
+        when(kafkaTemplate.send(eq(responseTopic),
                 any(TransactionResponseDTO.class))).thenReturn(future);
 
         transactionTestReceiver.processTransaction(transactionMessageDTO);
 
         ArgumentCaptor<TransactionResponseDTO> responseCaptor = ArgumentCaptor.forClass(TransactionResponseDTO.class);
-        verify(kafkaTemplate).send(eq("transaction-response-events-topic"), responseCaptor.capture());
+        verify(kafkaTemplate).send(eq(responseTopic), responseCaptor.capture());
         assertEquals("error", responseCaptor.getValue().getComment());
         assertEquals(transactionMessageDTO.getChatId(), responseCaptor.getValue().getChatId());
     }
