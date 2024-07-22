@@ -4,12 +4,13 @@ import com.override.dto.AnalyticsDataPerMonthDTO;
 import com.override.dto.TransactionSummaryDTO;
 import com.override.orchestrator_service.service.AnalyticV2Service;
 import com.override.orchestrator_service.util.TelegramUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
@@ -24,12 +25,29 @@ public class AnalyticsV2Controller {
     private TelegramUtils telegramUtils;
 
     @GetMapping("/general/amounts")
+    @Operation(summary = "Получить финансовые показатели месяца", description = "Получить сведения по конкретным доходам" +
+            " и расходам текущего месяца")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Получено успешно"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные"),
+            @ApiResponse(responseCode = "404", description = "Данные не найдены"),
+    })
     public TransactionSummaryDTO getFinanceData(Principal principal) {
         return analyticV2Service.countFinanceData(telegramUtils.getTelegramId(principal));
     }
 
     @PostMapping("/months/amounts")
-    public AnalyticsDataPerMonthDTO getFinanceDataPerMonth(Principal principal, Long userId, int year) throws InstanceNotFoundException {
+    @Operation(summary = "Получить месячные финансовые показатели", description = "Получить сумму доходов и расходов по " +
+            "каждому месяцу в рамках выбранного года")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Получено успешно"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные"),
+            @ApiResponse(responseCode = "404", description = "Данные не найдены"),
+    })
+    public AnalyticsDataPerMonthDTO getFinanceDataPerMonth(
+            Principal principal,
+            @Parameter(description = "ID пользователя") @RequestParam(required = false) Long userId,
+            @Parameter(description = "Выбранный год") @RequestParam int year) throws InstanceNotFoundException {
         return analyticV2Service.countFinanceDataPerMonth(telegramUtils.getTelegramId(principal), userId, year);
     }
 }
