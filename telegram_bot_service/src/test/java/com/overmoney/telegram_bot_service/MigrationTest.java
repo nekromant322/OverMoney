@@ -2,8 +2,7 @@ package com.overmoney.telegram_bot_service;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import com.overmoney.telegram_bot_service.kafka.config.KafkaConfig;
-import com.overmoney.telegram_bot_service.kafka.event.KafkaConsumerTransactionResponse;
-import com.overmoney.telegram_bot_service.kafka.service.KafkaRequestService;
+import com.overmoney.telegram_bot_service.kafka.consumer.KafkaTransactionConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -38,8 +37,8 @@ public class MigrationTest {
     @MockBean(KafkaConfig.class)
     private KafkaConfig kafkaConfig;
 
-    @MockBean(KafkaConsumerTransactionResponse.class)
-    private KafkaConsumerTransactionResponse transactionResponse;
+    @MockBean(KafkaTransactionConsumer.class)
+    private KafkaTransactionConsumer transactionResponse;
 
     @Test
     @DisplayName("Схема бд в миграции совпадает с моделями в коде")

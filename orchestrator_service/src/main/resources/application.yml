@@ -52,12 +52,6 @@
   filters:
     authorization-header:
       header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
-# Используется для переключения получения транзакций через kafka или через http
-# Для выбора http необходимо установить значение processing: orchestrator
-# Значение необходимо устанвливать одинаковое в оркестраторе и телеграм-боте
-  service:
-    transaction:
-      processing: orchestrator
 
   jwt:
     secret:
@@ -74,6 +68,9 @@
         ## для формирования error message, кт в дальнейшем будет отображена на фронт пользователю
         max-request-size: 10MB
     kafka:
+      topics:
+        request: transaction-request-events-topic
+        response: transaction-response-events-topic
       bootstrap-servers: kafka-service:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer

@@ -3,6 +3,7 @@ package com.overmoney.telegram_bot_service;
 import com.overmoney.telegram_bot_service.commands.OverMoneyCommand;
 import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
 import com.overmoney.telegram_bot_service.exception.VoiceProcessingException;
+import com.overmoney.telegram_bot_service.kafka.service.KafkaProducerService;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
 import com.overmoney.telegram_bot_service.model.TelegramMessage;
@@ -32,6 +33,7 @@ import java.time.ZoneOffset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static com.overmoney.telegram_bot_service.constants.MessageConstants.*;
@@ -43,12 +45,14 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     private String botName;
     @Value("${bot.token}")
     private String botToken;
+    @Value("${service.transaction.processing}")
+    private String switcher;
     @Value("${orchestrator.host}")
     private String orchestratorHost;
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
     @Autowired
-    private RequestService requestService;
+    private KafkaProducerService kafkaProducerService;
     @Autowired
     private TransactionMapper transactionMapper;
     @Autowired
@@ -305,18 +309,45 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     }
 
     private void processTransaction(Long chatId, Integer messageId, TransactionMessageDTO transactionMessageDTO) {
-        try {
-            TransactionResponseDTO transactionResponseDTO = requestService
-                    .sendTransaction(transactionMessageDTO);
-            telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
-                    .messageId(messageId)
-                    .chatId(chatId)
-                    .idTransaction(transactionResponseDTO.getId()).build());
-            sendMessage(chatId, transactionMapper
-                    .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
+
+        if (switcher.equals("orchestrator")) {
+            try {
+                TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
+                        .sendTransaction(transactionMessageDTO);
+                telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
+                        .messageId(messageId)
+                        .chatId(chatId)
+                        .idTransaction(transactionResponseDTO.getId()).build());
+                sendMessage(chatId, transactionMapper
+                        .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
+            }
+        } else if (switcher.equals("kafka")) {
+
+            CompletableFuture<TransactionResponseDTO> future = kafkaProducerService.sendTransaction(chatId, transactionMessageDTO);
+
+            future.thenAccept(transactionResponseDTO -> {
+                if (transactionResponseDTO.getComment().equals("error")) {
+                    throw new RuntimeException("Невалидное сообщение");
+                }
+                telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
+                        .messageId(messageId)
+                        .chatId(chatId)
+                        .idTransaction(transactionResponseDTO.getId()).build());
+                sendMessage(chatId, transactionMapper
+                        .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
+            }).exceptionally(e -> {
+                if (e.getCause() instanceof RuntimeException && "Невалидное сообщение".equals(e.getCause().getMessage())) {
+                    log.error(e.getMessage());
+                    sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
+                } else {
+                    log.error(e.getMessage());
+                    sendMessage(chatId, NETWORK_ERROR);
+                }
+                return null;
+            });
         }
     }
 }
