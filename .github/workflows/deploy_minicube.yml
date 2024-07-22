@@ -120,6 +120,8 @@ jobs:
             resource-manifest/service-frontend-lb.yaml
             resource-manifest/sa-zookeeper.yaml
             resource-manifest/sa-kafka-deployment.yaml
+            resource-manifest/sa-prometheus-deployment.yaml
+            resource-manifest/sa-grafana-deployment.yaml
           secrets: ${{ toJSON(secrets) }} # It would contain all your repository secrets in json
       - name: copy files via ssh private key
         uses: appleboy/scp-action@v0.1.7
