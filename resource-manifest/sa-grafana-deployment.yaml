@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sa-grafana
+  labels:
+    app: sa-grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sa-grafana
+  template:
+    metadata:
+      labels:
+        app: sa-grafana
+    spec:
+      containers:
+        - name: sa-grafana
+          image: grafana/grafana:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: GF_SECURITY_ADMIN_USER
+              value: "grafana"
+            - name: GF_SECURITY_ADMIN_PASSWORD
+              value: "{{ GRAFANA_PASSWORD }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sa-grafana-svc
+spec:
+  ports:
+    - port: 3000
+      targetPort: 3000
+      protocol: TCP
+  selector:
+    app: sa-grafana

@@ -21,3 +21,10 @@ spec:
                 name: frontend-svc
                 port:
                   number: 80
+          - path: /grafana
+            pathType: Prefix
+            backend:
+              service:
+                name: sa-grafana-svc
+                port:
+                  number: 3000

@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sa-prometheus
+  labels:
+    app: sa-prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sa-prometheus
+  template:
+    metadata:
+      labels:
+        app: sa-prometheus
+    spec:
+      containers:
+        - name: sa-prometheus
+          image: prom/prometheus:v2.33.5
+          ports:
+            - containerPort: 9090
+          volumeMounts:
+            - name: prometheus-config-volume
+              mountPath: /etc/prometheus
+      volumes:
+        - name: prometheus-config-volume
+          configMap:
+            name: prometheus-config
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  labels:
+    app: prometheus
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+      - job_name: 'orchestrator_overmoney_monitoring'
+        scrape_interval: 5s
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['sa-orchestrator-svc:80']
+            labels:
+              group: 'orchestrator'
+      - job_name: 'telegram_bot_overmoney_monitoring'
+        scrape_interval: 5s
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['sa-telegram-bot-svc:80']
+            labels:
+              group: 'telegram bot'
+      - job_name: 'recognizer_overmoney_monitoring'
+        scrape_interval: 5s
+        metrics_path: '/actuator/prometheus'
+        static_configs:
+          - targets: ['sa-recognizer-svc:80']
+            labels:
+              group: 'recognizer'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sa-prometheus-svc
+spec:
+  ports:
+    - port: 9090
+      targetPort: 9090
+      protocol: TCP
+  selector:
+    app: sa-prometheus
