@@ -152,6 +152,7 @@ jobs:
           script: |
             cd /home/github
             sudo kubectl apply -f resource-manifest
+            sudo sysctl fs.protected_regular=0
             
             if ${{ needs.detect-changes.outputs.orchestrator}}; then
               sudo kubectl rollout restart deployment sa-orchestrator

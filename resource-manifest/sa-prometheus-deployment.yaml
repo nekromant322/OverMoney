@@ -1,3 +1,31 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus-sa
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus-cluster-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/log", "services"]
+    verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus-cluster-role-binding
+subjects:
+  - kind: ServiceAccount
+    name: prometheus-sa
+    namespace: default
+roleRef:
+  kind: ClusterRole
+  name: prometheus-cluster-role
+  apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -14,6 +42,7 @@ spec:
       labels:
         app: sa-prometheus
     spec:
+      serviceAccountName: prometheus-sa
       containers:
         - name: sa-prometheus
           image: prom/prometheus:v2.33.5
@@ -40,28 +69,52 @@ data:
     scrape_configs:
       - job_name: 'prometheus'
         static_configs:
-          - targets: ['localhost:9090']
-      - job_name: 'orchestrator_overmoney_monitoring'
-        scrape_interval: 5s
-        metrics_path: '/actuator/prometheus'
-        static_configs:
-          - targets: ['sa-orchestrator-svc:80']
-            labels:
-              group: 'orchestrator'
-      - job_name: 'telegram_bot_overmoney_monitoring'
-        scrape_interval: 5s
-        metrics_path: '/actuator/prometheus'
-        static_configs:
-          - targets: ['sa-telegram-bot-svc:80']
-            labels:
-              group: 'telegram bot'
+          - targets: [ 'localhost:9090' ]
+            
       - job_name: 'recognizer_overmoney_monitoring'
         scrape_interval: 5s
         metrics_path: '/actuator/prometheus'
-        static_configs:
-          - targets: ['sa-recognizer-svc:80']
-            labels:
-              group: 'recognizer'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [ __meta_kubernetes_pod_label_app ]
+            action: keep
+            regex: sa-recognizer
+          - source_labels: [ __meta_kubernetes_pod_name ]
+            action: replace
+            target_label: instance
+            replacement: $1
+            regex: (.+)
+            
+      - job_name: 'orchestrator_overmoney_monitoring'
+        scrape_interval: 5s
+        metrics_path: '/actuator/prometheus'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [ __meta_kubernetes_pod_label_app ]
+            action: keep
+            regex: sa-orchestrator
+          - source_labels: [ __meta_kubernetes_pod_name ]
+            action: replace
+            target_label: instance
+            replacement: $1
+            regex: (.+)
+            
+      - job_name: 'telegram_bot_overmoney_monitoring'
+        scrape_interval: 5s
+        metrics_path: '/actuator/prometheus'
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            action: keep
+            regex: sa-telegram-bot
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: instance
+            replacement: $1
+            regex: (.+)
 ---
 apiVersion: v1
 kind: Service
