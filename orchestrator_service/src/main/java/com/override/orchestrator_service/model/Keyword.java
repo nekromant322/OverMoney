@@ -3,6 +3,7 @@ package com.override.orchestrator_service.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "keywords")
@@ -19,4 +20,12 @@ public class Keyword {
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
     private Category category;
+
+    @Column(name = "last_used")
+    private LocalDateTime lastUsed;
+
+    public Keyword(KeywordId keywordId, Category category) {
+        this.keywordId = keywordId;
+        this.category = category;
+    }
 }

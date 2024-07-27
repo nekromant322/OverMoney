@@ -49,6 +49,10 @@
       Denis_Shvartcer,
       NikoTiN_RnD
 
+  clean:
+    interval: 7 # Как часто выполняется очистка
+    max-days: 30 # Сколько дней ключевые слова могут быть не использованы
+
   filters:
     authorization-header:
       header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}

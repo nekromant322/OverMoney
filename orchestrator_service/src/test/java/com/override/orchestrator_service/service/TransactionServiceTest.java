@@ -54,11 +54,14 @@ public class TransactionServiceTest {
     private CategoryRepository categoryRepository;
     @Mock
     private TransactionProcessingService transactionProcessingService;
+    @Mock
+    private KeywordService keywordService;
 
     @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
+        transaction.setMessage("пиво 300");
         transactionService.saveTransaction(transaction);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }

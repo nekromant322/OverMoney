@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,4 +39,9 @@ public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
     @Modifying
     @Query("DELETE FROM Keyword k WHERE k.keywordId.name =:name AND k.keywordId.accountId = :id")
     void deleteByNameAndAccountIdWithJpqlQuery(@Param("name") String name, @Param("id") Long id);
+
+    @Modifying
+    @Transactional
+    @Query("DELETE FROM Keyword k WHERE k.lastUsed < :maxDate")
+    void deleteDepricatedKeywords(@Param("maxDate") LocalDateTime maxDate);
 }
