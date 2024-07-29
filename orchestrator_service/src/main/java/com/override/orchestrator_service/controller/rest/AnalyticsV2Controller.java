@@ -52,7 +52,7 @@ public class AnalyticsV2Controller {
         return analyticV2Service.countFinanceDataPerMonth(telegramUtils.getTelegramId(principal), userId, year);
     }
 
-    @PostMapping("/years/amounts")
+    @GetMapping("/years/amounts")
     @Operation(summary = "Получить финансовые показатели за все года", description = "Получить сумму доходов и " +
             "расходов по каждому году для каждой категории")
     @ApiResponses(value = {
