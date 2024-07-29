@@ -12,7 +12,6 @@ import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.repository.specification.TransactionSpecification;
 import com.override.orchestrator_service.util.NumericalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,8 +24,6 @@ import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,7 +47,6 @@ public class TransactionService {
     @Autowired
     private TransactionProcessingService transactionProcessingService;
     @Autowired
-    @Lazy
     private KeywordService keywordService;
 
     public int getTransactionsCount() {
@@ -68,20 +64,10 @@ public class TransactionService {
     }
 
     public void saveTransaction(Transaction transaction) {
-        String keywordText = extractKeywordFromTransaction(transaction.getMessage());
+        String keywordText = transaction.getMessage();
         Long accountId = transaction.getTelegramUserId();
         keywordService.updateLastUsed(keywordText, accountId);
         transactionRepository.save(transaction);
-    }
-
-    public String extractKeywordFromTransaction(String message) {
-        String regex = "\\b([a-zA-Zа-яА-Я]+)\\b";
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(message);
-        if (matcher.find()) {
-            return matcher.group(1);
-        }
-        return null;
     }
 
     public List<Transaction> findTransactionsListByUserIdWithoutCategories(Long id) throws InstanceNotFoundException {
