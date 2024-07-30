@@ -2,8 +2,8 @@ package com.override.invest_service.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.override.invest_service.config.MoexProperties;
-import com.override.invest_service.dto.IMOEXDataDTO.IMOEXData;
-import com.override.invest_service.dto.IMOEXDataDTO.IMOEXDataDTO;
+import com.override.invest_service.dto.moex.IMOEXData;
+import com.override.invest_service.dto.moex.IMOEXDataDTO;
 import com.override.invest_service.feign.MOEXFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

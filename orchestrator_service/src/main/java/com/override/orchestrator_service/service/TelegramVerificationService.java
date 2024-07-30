@@ -25,7 +25,8 @@ public class TelegramVerificationService {
     private final String HMAC_SHA256 = "HmacSHA256";
     private final String SHA_256 = "SHA-256";
 
-    public boolean verify(TelegramAuthRequest telegramAuthRequest) throws NoSuchAlgorithmException, InvalidKeyException {
+    public boolean verify(TelegramAuthRequest telegramAuthRequest)
+            throws NoSuchAlgorithmException, InvalidKeyException {
         String hash = telegramAuthRequest.getHash();
         return hash.equals(encodeHmacSha256(getHashableData(telegramAuthRequest)));
     }
@@ -48,7 +49,7 @@ public class TelegramVerificationService {
                 + "username=" + telegramAuthRequest.getUsername();
 
         if (Objects.isNull(telegramAuthRequest.getLast_name())) {
-             hashableData = hashableData.replaceAll(LAST_NAME_REGEX, "");
+            hashableData = hashableData.replaceAll(LAST_NAME_REGEX, "");
         }
         if (Objects.isNull(telegramAuthRequest.getPhoto_url())) {
             hashableData = hashableData.replaceAll(PHOTO_URL_REGEX, "");

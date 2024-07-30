@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.telegram.telegrambots.meta.api.objects.ApiResponse;
 import org.telegram.telegrambots.meta.api.objects.File;
 
-@FeignClient(name="TelegramBotApiFeign", url="${bot.api.url}")
+@FeignClient(name = "TelegramBotApiFeign", url = "${bot.api.url}")
 public interface TelegramBotApiFeign {
 
     @GetMapping("/bot${bot.token}/getFile?file_id={fileId}")

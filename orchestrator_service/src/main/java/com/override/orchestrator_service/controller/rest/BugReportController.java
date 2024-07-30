@@ -24,7 +24,7 @@ public class BugReportController {
     private BugReportService bugReportService;
 
     @PostMapping("/bugreport")
-    public ResponseEntity<HttpStatus> saveBugReport(@RequestBody BugReportDTO bugReportDTO, Principal principal){
+    public ResponseEntity<HttpStatus> saveBugReport(@RequestBody BugReportDTO bugReportDTO, Principal principal) {
         Long userId = telegramUtils.getTelegramId(principal);
         bugReportService.saveBugReport(bugReportDTO, userId);
         return ResponseEntity.ok(HttpStatus.CREATED);

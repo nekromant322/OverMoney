@@ -1,8 +1,8 @@
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.override.invest_service.config.MoexProperties;
-import com.override.invest_service.dto.IMOEXDataDTO.IMOEXData;
-import com.override.invest_service.dto.IMOEXDataDTO.IMOEXDataDTO;
+import com.override.invest_service.dto.moex.IMOEXData;
+import com.override.invest_service.dto.moex.IMOEXDataDTO;
 import com.override.invest_service.dto.MarketTQBRDataDTO;
 import com.override.invest_service.service.MOEXService;
 import com.override.invest_service.service.TinkoffService;
