@@ -9,6 +9,8 @@ import com.override.dto.SummaryUsersDataPerYearDTO;
 import com.override.dto.TransactionSummaryDTO;
 import com.override.dto.UserIncomeExpenseCategoriesPerYearDTO;
 import com.override.dto.constants.Type;
+import com.override.orchestrator_service.exception.InvalidDataException;
+import com.override.orchestrator_service.exception.UserNotFoundException;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.TransactionRepository;
@@ -71,18 +73,23 @@ public class AnalyticV2Service {
     }
 
     public AnalyticsMainDataPerYearsDTO countFinanceDataPerYear(Long id) throws InstanceNotFoundException {
-        List<SummaryUsersDataPerYearDTO> data = new ArrayList<>();
         User currentUser = userService.getUserById(id);
         OverMoneyAccount overMoneyAccount = currentUser.getAccount();
-        Set<User> users = overMoneyAccount.getUsers();
-
-        List<Integer> years = getSortedYearsForAccount(overMoneyAccount.getId());
-        for (int year : years) {
-            SummaryUsersDataPerYearDTO summaryUsersDataPerYearDTO = createSummaryDataForYear(users, year);
-            data.add(summaryUsersDataPerYearDTO);
+        if (overMoneyAccount == null) {
+            throw new UserNotFoundException("Пользователь не найден");
         }
 
-        return new AnalyticsMainDataPerYearsDTO(data);
+        try {
+            Set<User> users = overMoneyAccount.getUsers();
+            List<Integer> years = getSortedYearsForAccount(overMoneyAccount.getId());
+            List<SummaryUsersDataPerYearDTO> data = years.stream()
+                    .map(year -> createSummaryDataForYear(users, year))
+                    .collect(Collectors.toList());
+
+            return new AnalyticsMainDataPerYearsDTO(data);
+        } catch (Exception e) {
+            throw new InvalidDataException("Возникла ошибка при получении данных: " + e.getMessage());
+        }
     }
 
     public List<Integer> getSortedYearsForAccount(Long accountId) {
@@ -95,11 +102,9 @@ public class AnalyticV2Service {
         SummaryUsersDataPerYearDTO summaryUsersDataPerYearDTO = new SummaryUsersDataPerYearDTO();
         summaryUsersDataPerYearDTO.setYear(year);
 
-        List<UserIncomeExpenseCategoriesPerYearDTO> userIncomeExpenseCategoriesPerYearDTO = new ArrayList<>();
-        for (User user : users) {
-            UserIncomeExpenseCategoriesPerYearDTO userData = createUserIncomeExpenseDataForYear(user, year);
-            userIncomeExpenseCategoriesPerYearDTO.add(userData);
-        }
+        List<UserIncomeExpenseCategoriesPerYearDTO> userIncomeExpenseCategoriesPerYearDTO = users.stream()
+                .map(user -> createUserIncomeExpenseDataForYear(user, year))
+                .collect(Collectors.toList());
 
         summaryUsersDataPerYearDTO.setUsers(userIncomeExpenseCategoriesPerYearDTO);
         return summaryUsersDataPerYearDTO;
