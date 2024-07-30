@@ -1,4 +1,4 @@
-package com.override.invest_service.dto.IMOEXDataDTO;
+package com.override.invest_service.dto.moex;
 
 import com.override.invest_service.dto.constants.IMOEXDataIndeces;
 import lombok.Data;

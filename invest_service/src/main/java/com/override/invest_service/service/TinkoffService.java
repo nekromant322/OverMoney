@@ -42,7 +42,8 @@ public class TinkoffService {
 
             return positions.stream()
                     .map(position -> {
-                        Instrument instrument = api.getInstrumentsService().getInstrumentByFigiSync(position.getFigi()); //todo OV-236 тут надо подумать в какую сторону оптимизировать, пока нет однозначного решения
+                        Instrument instrument = api.getInstrumentsService().getInstrumentByFigiSync(
+                                position.getFigi()); //todo OV-236 тут надо подумать в какую сторону оптимизировать, пока нет однозначного решения
                         return TinkoffActiveDTO.builder()
                                 .name(instrument.getName())
                                 .ticker(instrument.getTicker())
@@ -50,7 +51,8 @@ public class TinkoffService {
                                 .quantity(position.getQuantity().intValue())
                                 .quantityLots(position.getQuantityLots().intValue())
                                 .currentPrice(position.getCurrentPrice().getValue().setScale(2, RoundingMode.HALF_UP))
-                                .averagePositionPrice(position.getAveragePositionPrice().getValue().setScale(2, RoundingMode.HALF_UP))
+                                .averagePositionPrice(
+                                        position.getAveragePositionPrice().getValue().setScale(2, RoundingMode.HALF_UP))
                                 .expectedYield(position.getExpectedYield().setScale(2, RoundingMode.HALF_UP))
                                 .build();
                     })
@@ -60,17 +62,20 @@ public class TinkoffService {
         }
     }
 
-    public List<TinkoffActiveMOEXDTO> getActivesWithMOEXWeight(String token, String tinkoffAccountId, Double userTargetInvestAmount) {
+    public List<TinkoffActiveMOEXDTO> getActivesWithMOEXWeight(String token, String tinkoffAccountId,
+                                                               Double userTargetInvestAmount) {
         InvestApi api = InvestApi.createReadonly(token);
 
         Map<String, MarketTQBRDataDTO> marketTQBRDataDTOMap = buildMarketTQBRDataDTO(token, tinkoffAccountId);
 
         try {
             Map<String, Double> tickerToWeight =
-                    rebalanceIndexByAmount(moexService.getTickerToWeight(), marketTQBRDataDTOMap, userTargetInvestAmount);
+                    rebalanceIndexByAmount(moexService.getTickerToWeight(), marketTQBRDataDTOMap,
+                            userTargetInvestAmount);
 
             Map<String, TinkoffActiveDTO> actives = getActives(token, tinkoffAccountId).stream()
-                    .collect(Collectors.toMap(TinkoffActiveDTO::getTicker, Function.identity(), (prev, next) -> next, HashMap::new));
+                    .collect(Collectors.toMap(TinkoffActiveDTO::getTicker, Function.identity(), (prev, next) -> next,
+                            HashMap::new));
 
             return tickerToWeight
                     .entrySet()
@@ -82,7 +87,8 @@ public class TinkoffService {
                         if (marketTQBRDataDTO == null) {
                             log.info("Рыночные данные для: " + tickerWeightPair.getKey() + " отсутствуют.");
                             return TinkoffActiveMOEXDTO.builder()
-                                    .tinkoffActiveDTO(TinkoffActiveDTO.builder().ticker(tickerWeightPair.getKey()).build())
+                                    .tinkoffActiveDTO(
+                                            TinkoffActiveDTO.builder().ticker(tickerWeightPair.getKey()).build())
                                     .moexWeight(tickerWeightPair.getValue())
                                     .currentWeight(0d)
                                     .percentFollowage(0d)
@@ -102,7 +108,8 @@ public class TinkoffService {
                                 correctQuantity = correctQuantity - (correctQuantity % lots);
                             }
                             return TinkoffActiveMOEXDTO.builder()
-                                    .tinkoffActiveDTO(TinkoffActiveDTO.builder().ticker(tickerWeightPair.getKey()).build())
+                                    .tinkoffActiveDTO(
+                                            TinkoffActiveDTO.builder().ticker(tickerWeightPair.getKey()).build())
                                     .moexWeight(tickerWeightPair.getValue())
                                     .currentWeight(0d)
                                     .percentFollowage(0d)
@@ -126,7 +133,8 @@ public class TinkoffService {
                                 .tinkoffActiveDTO(active)
                                 .moexWeight(roundToTwoPlaces(tickerWeightPair.getValue()))
                                 .currentWeight(roundToTwoPlaces(currentWeight))
-                                .percentFollowage(roundToTwoPlaces(TOTAL_WEIGHT * active.getQuantity() / correctQuantity))
+                                .percentFollowage(
+                                        roundToTwoPlaces(TOTAL_WEIGHT * active.getQuantity() / correctQuantity))
                                 .correctQuantity(correctQuantity)
                                 .quantityToBuy(correctQuantity - active.getQuantity())
                                 .lot(lots)
@@ -232,7 +240,7 @@ public class TinkoffService {
                                     .priceForOne(price.getUnits() + price.getNano() / 1_000_000_000d)
                                     .priceForLot((price.getUnits() + price.getNano() / 1_000_000_000d) * share.getLot())
                                     .build();
-                        }
+                }
                 ).collect(Collectors.toList());
     }
 
@@ -241,7 +249,8 @@ public class TinkoffService {
 
         try {
             return api.getUserService().getAccountsSync().stream()
-                    .filter(account -> account.getStatus() != ACCOUNT_STATUS_CLOSED && account.getStatus() != UNRECOGNIZED)
+                    .filter(account -> account.getStatus() != ACCOUNT_STATUS_CLOSED &&
+                            account.getStatus() != UNRECOGNIZED)
                     .map(account -> TinkoffAccountDTO.builder()
                             .investAccountId(account.getId())
                             .investAccountName(account.getName())

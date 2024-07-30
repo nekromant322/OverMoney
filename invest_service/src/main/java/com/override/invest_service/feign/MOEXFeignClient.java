@@ -1,6 +1,6 @@
 package com.override.invest_service.feign;
 
-import com.override.invest_service.dto.IMOEXDataDTO.IMOEXDataDTO;
+import com.override.invest_service.dto.moex.IMOEXDataDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

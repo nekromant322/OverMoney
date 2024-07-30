@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Objects;
-
 
 @RestController
 @RequestMapping("/tinkoff")
@@ -29,8 +27,10 @@ public class TinkoffRestController {
 
     @GetMapping("/moex")
     public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(@RequestParam("token") String token,
-                                                               @RequestParam("tinkoffAccountId") String tinkoffAccountId,
-                                                               @RequestParam("userTargetInvestAmount") Double userTargetInvestAmount) {
+                                                               @RequestParam("tinkoffAccountId")
+                                                               String tinkoffAccountId,
+                                                               @RequestParam("userTargetInvestAmount")
+                                                               Double userTargetInvestAmount) {
         return tinkoffService.getActivesWithMOEXWeight(token, tinkoffAccountId, userTargetInvestAmount);
     }
 

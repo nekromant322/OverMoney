@@ -2,7 +2,7 @@ package com.override.orchestrator_service.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class CategoryNameIsNotUniqueException extends BaseException{
+public class CategoryNameIsNotUniqueException extends BaseException {
     public CategoryNameIsNotUniqueException() {
         super();
     }

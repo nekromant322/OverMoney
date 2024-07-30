@@ -19,7 +19,6 @@ public class CategoryRecognizerService {
     @Autowired
     private OrchestratorFeign orchestratorFeign;
 
-
     private float calculateLevenshteinDistance(String strOne, String strTwo) {
         strOne = strOne.toLowerCase();
         strTwo = strTwo.toLowerCase();
