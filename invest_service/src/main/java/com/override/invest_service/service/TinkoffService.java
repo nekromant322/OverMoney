@@ -43,7 +43,8 @@ public class TinkoffService {
             return positions.stream()
                     .map(position -> {
                         Instrument instrument = api.getInstrumentsService().getInstrumentByFigiSync(
-                                position.getFigi()); //todo OV-236 тут надо подумать в какую сторону оптимизировать, пока нет однозначного решения
+                                position.getFigi()); //todo OV-236 тут надо подумать в какую сторону оптимизировать,
+                        // пока нет однозначного решения
                         return TinkoffActiveDTO.builder()
                                 .name(instrument.getName())
                                 .ticker(instrument.getTicker())
@@ -240,7 +241,7 @@ public class TinkoffService {
                                     .priceForOne(price.getUnits() + price.getNano() / 1_000_000_000d)
                                     .priceForLot((price.getUnits() + price.getNano() / 1_000_000_000d) * share.getLot())
                                     .build();
-                }
+                            }
                 ).collect(Collectors.toList());
     }
 

@@ -50,7 +50,8 @@ public class InvestTinkoffInfoService {
         return null;
     }
 
-    public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(String token, String tinkoffAccountId, Double userTargetInvestAmount) {
+    public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(String token, String tinkoffAccountId,
+                                                               Double userTargetInvestAmount) {
         Optional<String> optionalToken = Optional.ofNullable(token);
         Optional<String> optionalTinkoffAccountId = Optional.ofNullable(tinkoffAccountId);
         Optional<Double> optionalUserTargetInvestAmount = Optional.ofNullable(userTargetInvestAmount);
@@ -63,8 +64,10 @@ public class InvestTinkoffInfoService {
                                     optionalUserTargetInvestAmount.orElse(getUserTargetInvestAmountByToken(token)))
                             .stream()
                             .peek(active -> {
-                                active.getTinkoffActiveDTO().setCurrentPrice(NumericalUtils.roundAmount(active.getTinkoffActiveDTO().getCurrentPrice()));
-                                active.getTinkoffActiveDTO().setAveragePositionPrice(NumericalUtils.roundAmount(active.getTinkoffActiveDTO().getAveragePositionPrice()));
+                                active.getTinkoffActiveDTO().setCurrentPrice(
+                                        NumericalUtils.roundAmount(active.getTinkoffActiveDTO().getCurrentPrice()));
+                                active.getTinkoffActiveDTO().setAveragePositionPrice(NumericalUtils.roundAmount(
+                                        active.getTinkoffActiveDTO().getAveragePositionPrice()));
                                 active.setCurrentTotalPrice(NumericalUtils.roundAmount(active.getCurrentTotalPrice()));
                                 active.setMoexWeight(NumericalUtils.roundAmount(active.getMoexWeight()));
                                 active.setCurrentWeight(NumericalUtils.roundAmount(active.getCurrentWeight()));
@@ -72,7 +75,8 @@ public class InvestTinkoffInfoService {
                             })
                             .collect(Collectors.toList());
 
-            optionalUserTargetInvestAmount.ifPresent(aDouble -> updateUserTargetInvestAmount(optionalToken.get(), aDouble));
+            optionalUserTargetInvestAmount.ifPresent(
+                    aDouble -> updateUserTargetInvestAmount(optionalToken.get(), aDouble));
 
             return activesMoexPercentage;
         }
@@ -83,15 +87,17 @@ public class InvestTinkoffInfoService {
     public void saveTinkoffinfo(TinkoffInfoDTO tinkoffInfoDTO) {
         Optional<TinkoffInfoDTO> infoDTO = findTinkoffInfoDTO(tinkoffInfoDTO.getTinkoffAccountId());
         if (infoDTO.isEmpty() || !Objects.equals(infoDTO.get(), tinkoffInfoDTO)) {
-            OverMoneyAccount account = overMoneyAccountService.getOverMoneyAccountById(tinkoffInfoDTO.getTinkoffAccountId());
+            OverMoneyAccount account =
+                    overMoneyAccountService.getOverMoneyAccountById(tinkoffInfoDTO.getTinkoffAccountId());
             Optional<Long> favoriteAccountId = Optional.ofNullable(tinkoffInfoDTO.getFavoriteAccountId());
-            Double userTargetInvestAmount = Optional.ofNullable(tinkoffInfoDTO.getUserTargetInvestAmount()).orElseGet(() -> {
-                if (infoDTO.isEmpty()) {
-                    return null;
-                } else {
-                    return infoDTO.get().getUserTargetInvestAmount();
-                }
-            });
+            Double userTargetInvestAmount =
+                    Optional.ofNullable(tinkoffInfoDTO.getUserTargetInvestAmount()).orElseGet(() -> {
+                        if (infoDTO.isEmpty()) {
+                            return null;
+                        } else {
+                            return infoDTO.get().getUserTargetInvestAmount();
+                        }
+                    });
 
             TinkoffInfo tinkoffInfo = TinkoffInfo
                     .builder()

@@ -33,7 +33,8 @@ public class ExportUserDataService {
     private OverMoneyAccountService overMoneyAccountService;
     static final int EXCEL_CELL_WIDTH = 5837;
 
-    public ResponseEntity<InputStreamResource> downloadExelFile(Long telegramId) throws IOException, InstanceNotFoundException {
+    public ResponseEntity<InputStreamResource> downloadExelFile(Long telegramId)
+            throws IOException, InstanceNotFoundException {
         ByteArrayInputStream in = createExcelExport(telegramId);
 
         HttpHeaders headers = new HttpHeaders();
@@ -42,7 +43,8 @@ public class ExportUserDataService {
         return ResponseEntity
                 .ok()
                 .headers(headers)
-                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .contentType(
+                        MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
                 .body(new InputStreamResource(in));
     }
 

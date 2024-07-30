@@ -5,6 +5,9 @@
 <module name="Checker">
     <property name="charset" value="UTF-8"/>
 
+    <module name="LineLength">
+        <property name="max" value="120"/>
+    </module>
     <!-- Отсутствие пустых строк в конце любого блока -->
     <module name="RegexpMultiline">
         <property name="message" value="Blank line at end of block should be removed"/>

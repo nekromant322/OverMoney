@@ -35,7 +35,8 @@ public class AnalyticV2Service {
         return new TransactionSummaryDTO(sumIncome, sumExpense);
     }
 
-    public AnalyticsDataPerMonthDTO countFinanceDataPerMonth(Long userId, Long selectedUserId, int year) throws InstanceNotFoundException {
+    public AnalyticsDataPerMonthDTO countFinanceDataPerMonth(Long userId, Long selectedUserId, int year)
+            throws InstanceNotFoundException {
         List<Long> userIds = new ArrayList<>();
         if (selectedUserId == null) {
             User currentUser = userService.getUserById(userId);
@@ -52,7 +53,8 @@ public class AnalyticV2Service {
         double[] monthsIncome = new double[months];
         double[] monthsExpense = new double[months];
 
-        List<SumTransactionsDataPerMonthForAccountDTO> sumTransactions = transactionRepository.findSumTransactionsPerMonthForAccount(userIds, year);
+        List<SumTransactionsDataPerMonthForAccountDTO> sumTransactions =
+                transactionRepository.findSumTransactionsPerMonthForAccount(userIds, year);
         for (SumTransactionsDataPerMonthForAccountDTO data : sumTransactions) {
             int monthIndex = data.getMonth() - 1; // Преобразование месяца в индекс массива (0 - январь, 11 - декабрь)
             if (data.getType() == Type.INCOME) {
