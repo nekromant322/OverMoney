@@ -1,15 +1,18 @@
-import React, { FC, useCallback, useEffect, useState } from 'react'
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react'
 import { Button, Col, Container, Row, Toast } from 'react-bootstrap'
 import GridCards from '../components/GridCards'
 import ListCategories from '../components/ListCategories'
-import { ICard, IListItem } from '../types/types'
-import { constCards, constlistItems } from '../utils/utils'
+import { ICard, ICategory } from '../types/types'
+import { CategoriesContext } from '../context/CategoriesContext'
+import { TransactionsContext } from '../context/TransactionsContext'
+// import { constCards, constlistItems } from '../utils/utils'
 
 
 const Overmoney: FC = () => {
-
-    const [cards, setCards] = useState<ICard[]>(constCards)
-    const [listItems, setListItems] = useState<IListItem[]>(constlistItems)
+    const categories = useContext(CategoriesContext);
+    const transactions = useContext(TransactionsContext);
+    const [cards, setCards] = useState<ICard[]>(transactions)
+    const [listItems, setListItems] = useState<ICategory[]>(categories)
     const [isTwoCollumns, setIsTwoColumns] = useState<boolean>(false)
     const [lastDeletedCard, setLastDeletedCard] = useState<ICard>({} as ICard)
     //TODO удалить при рифакторинге добавления suggestedCategoryId к карточке транзакции
@@ -44,7 +47,7 @@ const Overmoney: FC = () => {
         setShowAddCardToast(true)
     }, [cards])
 
-    const handleSubmitAddCategory = useCallback((formData: IListItem) => {
+    const handleSubmitAddCategory = useCallback((formData: ICategory) => {
         //вызов API добавления категории 
         setListItems([
             ...listItems,
@@ -57,7 +60,7 @@ const Overmoney: FC = () => {
         ])
     }, [listItems])
 
-    const handleChangeCategory = (formData : IListItem) => {
+    const handleChangeCategory = (formData : ICategory) => {
         //вызов API изменения категории
         setListItems((listItems.map(item => item.id === formData.id ? formData : item)))
     }

@@ -1,19 +1,19 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Col, ListGroup, Row } from 'react-bootstrap';
-import { ICard, IListItem } from '../types/types';
+import { ICard, ICategory } from '../types/types';
 import ItemCategory from './ItemCategory';
 
 interface ListGroupCategoriesProps {
-    listItems: IListItem[], 
+    listItems: ICategory[], 
     isTwoCollumns: boolean,
-    handleClickCategory: (listItem: IListItem) => void,
+    handleClickCategory: (listItem: ICategory) => void,
     handleDeleteCard: (card: ICard, category: string) => void
 }
 
 const ListGroupCategories: FC<ListGroupCategoriesProps> = ({listItems, isTwoCollumns, handleClickCategory, handleDeleteCard}) => {
 
-    const [firstHalfItems, setFirstHalfItems] = useState<IListItem[]>([]);
-    const [secondHalfItems, setSecondHalfItems] = useState<IListItem[]>([]);
+    const [firstHalfItems, setFirstHalfItems] = useState<ICategory[]>([]);
+    const [secondHalfItems, setSecondHalfItems] = useState<ICategory[]>([]);
     
     useEffect(() => {
         if (isTwoCollumns) {
@@ -28,7 +28,7 @@ const ListGroupCategories: FC<ListGroupCategoriesProps> = ({listItems, isTwoColl
             {isTwoCollumns ? 
             <Row>
                 <Col className='p-0'>
-                    {firstHalfItems.map((item: IListItem) => (
+                    {firstHalfItems.map((item: ICategory) => (
                         <ItemCategory 
                         key={item.id} 
                         item={item} 
@@ -38,7 +38,7 @@ const ListGroupCategories: FC<ListGroupCategoriesProps> = ({listItems, isTwoColl
                     ))}
                 </Col>
                 <Col className='p-0'>
-                    {secondHalfItems.map((item: IListItem) => (
+                    {secondHalfItems.map((item: ICategory) => (
                         <ItemCategory 
                         key={item.id} 
                         item={item} 
@@ -50,12 +50,12 @@ const ListGroupCategories: FC<ListGroupCategoriesProps> = ({listItems, isTwoColl
             </Row>
             :
             <>
-                {listItems.map((item : IListItem) => (
+                {listItems.map((item : ICategory) => (
                     <ItemCategory 
                         key={item.id} 
                         item={item} 
                         handleDeleteCard={(card, category) => handleDeleteCard(card, category)} 
-                        handleClickCategory={(listItem: IListItem) => handleClickCategory(listItem)}    
+                        handleClickCategory={(listItem: ICategory) => handleClickCategory(listItem)}    
                     />
             ))}
             </>}

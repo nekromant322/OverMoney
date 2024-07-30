@@ -5,7 +5,7 @@ export interface ICard {
     size?: number;
 }
 
-export interface IListItem {
+export interface ICategory {
     id?: string;
     name: string;
     type: "INCOME" | "EXPENSE";
@@ -19,4 +19,13 @@ export interface ITransaction {
     date: string;
     message: string;
     telegramUserName: string;
+}
+
+export interface IUser {
+    id: number,
+    first_name: string,
+    username: string,
+    photo_url: string,
+    auth_date: number,
+    hash: string,
 }

@@ -1,18 +1,18 @@
 import React, { FC, useState } from 'react';
 import { Badge, CloseButton, Form } from 'react-bootstrap';
 import Popup from './Popup';
-import { IListItem } from '../types/types';
+import { ICategory } from '../types/types';
 
 interface PopupChangeCategoryProps {
-    item: IListItem,
+    item: ICategory,
     showModalChangeCategory: boolean,
     handleCloseModalChangeCategory: () => void,
-    handleButtonSave: (formData: IListItem) => void
+    handleButtonSave: (formData: ICategory) => void
 }
 const PopupChangeCategory: FC<PopupChangeCategoryProps>  = ({item, showModalChangeCategory, handleCloseModalChangeCategory, handleButtonSave}) => {
 
-    // const itemCategory : IListItem = {id: item.id, name: item.name, type: item.type, keywords: item.keywords};
-    const [formData, setFormData] = useState<IListItem>(item)
+    // const itemCategory : ICategory = {id: item.id, name: item.name, type: item.type, keywords: item.keywords};
+    const [formData, setFormData] = useState<ICategory>(item)
     const [keywords, setKeywords] = useState<string[]>(item.keywords)
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({

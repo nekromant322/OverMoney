@@ -1,18 +1,18 @@
 import React, { FC, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import Popup from './Popup';
-import { IListItem } from '../types/types';
+import { ICategory } from '../types/types';
 
 interface PopupAddCategoryProps {
     showModalAddCategory: boolean,
     handleCloseModalAddCategory: () => void,
-    handleButtonSubmit: (formData: IListItem) => void
+    handleButtonSubmit: (formData: ICategory) => void
 }
 const PopupAddCategory: FC<PopupAddCategoryProps>  = ({showModalAddCategory, handleCloseModalAddCategory, handleButtonSubmit}) => {
 
-    const defaultFormData : IListItem = {name: '', type: 'EXPENSE', keywords: []};
+    const defaultFormData : ICategory = {name: '', type: 'EXPENSE', keywords: []};
     
-    const [formData, setFormData] = useState<IListItem>(defaultFormData);
+    const [formData, setFormData] = useState<ICategory>(defaultFormData);
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({
             ...formData,

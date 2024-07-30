@@ -1,23 +1,23 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Button, Container } from 'react-bootstrap';
-import { ICard, IListItem } from '../types/types';
+import { ICard, ICategory } from '../types/types';
 import ListGroupCategories from './ListGroupCategories';
 import PopupAddCategory from './PopupAddCategory';
 import PopupChangeCategory from './PopupChangeCategory';
 
 interface ListCategoriesProps {
-    listItems: IListItem[],
+    listItems: ICategory[],
     isTwoCollumns: boolean,
     handleDropCard: (card: ICard, category: string) => void,
-    handleSubmitAddCategory: (formData: IListItem) => void,
-    handleChangeCategory: (formData: IListItem) => void
+    handleSubmitAddCategory: (formData: ICategory) => void,
+    handleChangeCategory: (formData: ICategory) => void
 }
 
 const ListCategories : FC<ListCategoriesProps> = ({listItems, isTwoCollumns, handleSubmitAddCategory, handleDropCard, handleChangeCategory}) => {
 
-    const [listItemsIncome, setListItemsIncome] = useState<IListItem[]>([]);
-    const [listItemsExpense, setListItemsExpense] = useState<IListItem[]>([]);
-    const [selectedItem, setSelectedItem] = useState<IListItem>({} as IListItem);
+    const [listItemsIncome, setListItemsIncome] = useState<ICategory[]>([]);
+    const [listItemsExpense, setListItemsExpense] = useState<ICategory[]>([]);
+    const [selectedItem, setSelectedItem] = useState<ICategory>({} as ICategory);
     const [showModalAddCategory, setShowModalAddCategory] = useState<boolean>(false);
     const handleCloseModalAddCategory = () => setShowModalAddCategory(false);
     const handleShowModalAddCategory = () => setShowModalAddCategory(true);
@@ -31,17 +31,15 @@ const ListCategories : FC<ListCategoriesProps> = ({listItems, isTwoCollumns, han
         setListItemsExpense(listItems.filter(item => item.type === "EXPENSE"));
     }, [listItems]);
 
-    const handleClickCategory = (item : IListItem) => {
+    const handleClickCategory = (item : ICategory) => {
         setShowModalChangeCategory(true)
         setSelectedItem(item)
     }
 
-    const handleButtonSave = (formData: IListItem) => {
+    const handleButtonSave = (formData: ICategory) => {
         //вызов API изменения категории 
         handleChangeCategory(formData)
     }
-
-
 
     return (
         <>
@@ -65,7 +63,7 @@ const ListCategories : FC<ListCategoriesProps> = ({listItems, isTwoCollumns, han
         <PopupAddCategory
             showModalAddCategory={showModalAddCategory} 
             handleCloseModalAddCategory={handleCloseModalAddCategory} 
-            handleButtonSubmit={(formData: IListItem) => {
+            handleButtonSubmit={(formData: ICategory) => {
                 handleSubmitAddCategory(formData)
                 // handleShowModalAddCategory();
                 handleCloseModalAddCategory()
@@ -76,7 +74,7 @@ const ListCategories : FC<ListCategoriesProps> = ({listItems, isTwoCollumns, han
             item={selectedItem}
             showModalChangeCategory={showModalChangeCategory}
             handleCloseModalChangeCategory={handleCloseModalChangeCategory}
-            handleButtonSave={(formData: IListItem) => {
+            handleButtonSave={(formData: ICategory) => {
                 handleButtonSave(formData)
                 handleCloseModalChangeCategory()
             }}
