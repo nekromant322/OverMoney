@@ -39,7 +39,8 @@ public class KafkaProducerService {
         kafkaResultFuture.addCallback(new ListenableFutureCallback<>() {
             @Override
             public void onSuccess(SendResult<String, TransactionMessageDTO> result) {
-                log.info(result.getRecordMetadata().topic());
+                log.info("Транзакция " + result.getProducerRecord().value().toString()
+                        + " была успешно обработана");
             }
 
             @Override
