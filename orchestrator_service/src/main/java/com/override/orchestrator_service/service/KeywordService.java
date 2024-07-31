@@ -28,7 +28,7 @@ public class KeywordService {
     @Autowired
     private CategoryService categoryService;
 
-    @Value("${clean.max-days}")
+    @Value("${clean-deprecated-keywords.max-days}")
     private int maxDays;
 
     public void saveKeyword(Keyword keyword) {
@@ -46,11 +46,22 @@ public class KeywordService {
     public void associateTransactionsKeywordWithCategory(UUID transactionId, Long categoryId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         Category category = categoryService.getCategoryById(categoryId);
-        Keyword keyword = new Keyword();
-        keyword.setKeywordId(new KeywordId(transaction.getMessage(), category.getAccount().getId()));
+        Long accountId = transaction.getTelegramUserId();
+
+        KeywordId keywordId = new KeywordId(transaction.getMessage(), accountId);
+        Optional<Keyword> optionalKeyword = keywordRepository.findByKeywordId(keywordId);
+
+        Keyword keyword;
+        if (optionalKeyword.isPresent()) {
+            keyword = optionalKeyword.get();
+        } else {
+            keyword = new Keyword();
+            keyword.setKeywordId(keywordId);
+            keyword.setLastUsed(LocalDateTime.now());
+        }
+
         keyword.setCategory(category);
-        keyword.setLastUsed(LocalDateTime.now());
-        saveKeyword(keyword);
+        keywordRepository.save(keyword);
     }
 
     public void removeCategoryFromKeywordByTransactionId(UUID transactionId) {
@@ -80,7 +91,7 @@ public class KeywordService {
         keywordRepository.saveAll(keywordList);
     }
 
-    @Scheduled(fixedRateString = "#{${clean.interval} * 24 * 60 * 60 * 1000}")
+    @Scheduled(fixedRateString = "#{${clean-deprecated-keywords.interval} * 24 * 60 * 60 * 1000}")
     @SchedulerLock(name = "cleanKeyword", lockAtLeastFor = "10m", lockAtMostFor = "15m")
     @Transactional
     public void cleanDepricatedKeywords() {

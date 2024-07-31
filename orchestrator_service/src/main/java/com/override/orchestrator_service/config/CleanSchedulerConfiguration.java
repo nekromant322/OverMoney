@@ -14,7 +14,7 @@ public class CleanSchedulerConfiguration {
     @Autowired
     private KeywordService keywordService;
 
-    @Scheduled(fixedRateString = "#{${clean.interval} * 24 * 60 * 60 * 1000}")
+    @Scheduled(fixedRateString = "#{${clean-deprecated-keywords.interval} * 24 * 60 * 60 * 1000}")
     @Transactional
     public void scheduleClean() {
         keywordService.cleanDepricatedKeywords();
