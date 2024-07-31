@@ -1,12 +1,14 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 import { AgGridReact } from '@ag-grid-community/react'; 
-import { transactions } from '../utils/utils';
+// import { transactions } from '../utils/utils';
+import { TransactionsContext } from '../context/TransactionsContext';
 import { Button, Container } from 'react-bootstrap';
 import { CellClickedEvent, ColDef } from '@ag-grid-community/core';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import PopupChangeTransaction from '../components/PopupChangeTransaction';
 import { ITransaction } from '../types/types';
+// import axios from 'axios';
 
 ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
 
@@ -14,6 +16,7 @@ ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
 const History: FC = () => {
 
     const gridRef = useRef<AgGridReact>(null);
+    const transactions = useContext(TransactionsContext)
 
     const [rowData, setRowData] = useState(transactions);
     const [showModalChangeTransaction, setShowModalChangeTransaction] = useState(false);
@@ -40,13 +43,20 @@ const History: FC = () => {
         },
     ])
 
-    useEffect(() => {
-        setRowData(rowData)
-    }, [rowData])
+    // useEffect(() => {
+    //     //вызов API получения списка транзакции
+    //     axios.get('/api/transactions')
+    //     .then(response => {
+    //         setRowData(response.data);
+    //     })
+    //     .catch(error => {
+    //         console.error(error);
+    //     });
+    // }, [rowData])
 
     const handleModalSaveButton = (formData: ITransaction) => {
         //вызов API изменения транзакции
-        setRowData(rowData.map(item => item.id === formData.id ? formData : item))
+        setRowData(rowData?.map(item => item.id === formData.id ? formData : item))
         setShowModalChangeTransaction(false)
     }
 
