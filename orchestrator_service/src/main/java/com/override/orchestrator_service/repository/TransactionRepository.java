@@ -1,9 +1,6 @@
 package com.override.orchestrator_service.repository;
 
-import com.override.dto.AnalyticsAnnualAndMonthlyExpenseForCategoryDTO;
-import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
-import com.override.dto.MonthSumTransactionByTypeCategoryDTO;
-import com.override.dto.SumTransactionsDataPerMonthForAccountDTO;
+import com.override.dto.*;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Transaction;
 import org.springframework.data.domain.Page;
@@ -117,4 +114,17 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     List<SumTransactionsDataPerMonthForAccountDTO> findSumTransactionsPerMonthForAccount(
             @Param("userIds") List<Long> userIds,
             @Param("year") int year);
+
+    @Query("SELECT new com.override.dto.SumTransactionPerYearForAccountDTO(c.id, c.name, SUM(t.amount)) " +
+            "FROM Category c " +
+            "LEFT JOIN c.transactions t " +
+            "ON t.category.id = c.id " +
+            "AND t.telegramUserId = :telegramUserId " +
+            "AND YEAR(t.date) = :year " +
+            "WHERE c.type = :type " +
+            "GROUP BY c.id, c.name")
+    List<SumTransactionPerYearForAccountDTO> findSumTransactionsPerYearForAccount(
+            @Param("telegramUserId") Long accountId,
+            @Param("year") int year,
+            @Param("type") Type type);
 }
