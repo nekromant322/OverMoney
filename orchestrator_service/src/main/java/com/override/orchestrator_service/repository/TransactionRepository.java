@@ -1,9 +1,6 @@
 package com.override.orchestrator_service.repository;
 
-import com.override.dto.AnalyticsAnnualAndMonthlyExpenseForCategoryDTO;
-import com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO;
-import com.override.dto.MonthSumTransactionByTypeCategoryDTO;
-import com.override.dto.SumTransactionsDataPerMonthForAccountDTO;
+import com.override.dto.*;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Transaction;
 import org.springframework.data.domain.Page;
@@ -65,21 +62,27 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     @Query("SELECT DISTINCT EXTRACT(year from t.date) from Transaction t WHERE t.account.id = :accountId")
     List<Integer> findAvailableYearsForAccountByAccountId(@Param("accountId") Long accountId);
 
-    @Query(value = "select new com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO(SUM(t.amount), c.name, cast(MONTH(t.date) as int)) " +
-            "from Transaction t join Category c on t.category.id = c.id " +
-            "where t.account.id = :accountId and YEAR(t.date) = :year and c.type = 0 " +
-            "group by c.id, MONTH(t.date), c.name")
-    List<AnalyticsMonthlyIncomeForCategoryDTO> findMonthlyIncomeStatisticsByYearAndAccountId(@Param("accountId") Long accountId,
-                                                                                             @Param("year") Integer year);
+    @Query(value =
+            "select new com.override.dto.AnalyticsMonthlyIncomeForCategoryDTO(SUM(t.amount), c.name, " +
+                    "cast(MONTH(t.date) as int)) " +
+                    "from Transaction t join Category c on t.category.id = c.id " +
+                    "where t.account.id = :accountId and YEAR(t.date) = :year and c.type = 0 " +
+                    "group by c.id, MONTH(t.date), c.name")
+    List<AnalyticsMonthlyIncomeForCategoryDTO> findMonthlyIncomeStatisticsByYearAndAccountId(
+            @Param("accountId") Long accountId,
+            @Param("year") Integer year);
 
     @Transactional
     void deleteAllByAccountId(Long accountId);
 
-    @Query(value = "SELECT new com.override.dto.AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(cast(t.amount as double), c.name, cast(t.category.id as int), cast(MONTH(t.date) as int)) " +
-            "FROM Transaction t JOIN Category c ON t.category.id = c.id " +
-            "WHERE t.account.id = :accountId AND YEAR(t.date) = :year AND c.type = 1 " +
-            "GROUP BY c.id, t.category.id, MONTH(t.date), c.name, t.amount")
-    List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long accountId, Integer year);
+    @Query(value =
+            "SELECT new com.override.dto.AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(cast(t.amount as double), " +
+                    "c.name, cast(t.category.id as int), cast(MONTH(t.date) as int)) " +
+                    "FROM Transaction t JOIN Category c ON t.category.id = c.id " +
+                    "WHERE t.account.id = :accountId AND YEAR(t.date) = :year AND c.type = 1 " +
+                    "GROUP BY c.id, t.category.id, MONTH(t.date), c.name, t.amount")
+    List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long accountId,
+                                                                                                        Integer year);
 
     @Query(value = "SELECT t FROM Transaction t WHERE MONTH(t.date) = :month AND YEAR(t.date) = :year " +
             "AND t.category.id = :categoryId ORDER BY t.date")
@@ -101,12 +104,27 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
                                                                                 @Param("month") int month,
                                                                                 @Param("type") Type type);
 
-    @Query("SELECT new com.override.dto.SumTransactionsDataPerMonthForAccountDTO(c.type, EXTRACT(MONTH FROM t.date), SUM(t.amount)) " +
+    @Query("SELECT new com.override.dto.SumTransactionsDataPerMonthForAccountDTO(c.type, " +
+            "EXTRACT(MONTH FROM t.date), SUM(t.amount)) " +
             "FROM Transaction t " +
             "JOIN Category c ON t.category.id = c.id " +
             "WHERE t.telegramUserId IN :userIds " +
             "AND YEAR(t.date) = :year " +
             "GROUP BY c.type, EXTRACT(MONTH FROM t.date)")
-    List<SumTransactionsDataPerMonthForAccountDTO> findSumTransactionsPerMonthForAccount(@Param("userIds") List<Long> userIds,
-                                                                                         @Param("year") int year);
+    List<SumTransactionsDataPerMonthForAccountDTO> findSumTransactionsPerMonthForAccount(
+            @Param("userIds") List<Long> userIds,
+            @Param("year") int year);
+
+    @Query("SELECT new com.override.dto.SumTransactionPerYearForAccountDTO(c.id, c.name, SUM(t.amount)) " +
+            "FROM Category c " +
+            "LEFT JOIN c.transactions t " +
+            "ON t.category.id = c.id " +
+            "AND t.telegramUserId = :telegramUserId " +
+            "AND YEAR(t.date) = :year " +
+            "WHERE c.type = :type " +
+            "GROUP BY c.id, c.name")
+    List<SumTransactionPerYearForAccountDTO> findSumTransactionsPerYearForAccount(
+            @Param("telegramUserId") Long accountId,
+            @Param("year") int year,
+            @Param("type") Type type);
 }

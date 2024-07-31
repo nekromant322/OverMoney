@@ -23,8 +23,10 @@ public class InlineKeyboardMarkupUtil {
         mergeWithCategoriesIKB.setCallbackData(InlineKeyboardCallback.MERGE_CATEGORIES.getData());
 
         InlineKeyboardButton mergeWithCategoriesAndTransactionsIKB = new InlineKeyboardButton();
-        mergeWithCategoriesAndTransactionsIKB.setText(InlineKeyboardCallback.MERGE_CATEGORIES_AND_TRANSACTIONS.getText());
-        mergeWithCategoriesAndTransactionsIKB.setCallbackData(InlineKeyboardCallback.MERGE_CATEGORIES_AND_TRANSACTIONS.getData());
+        mergeWithCategoriesAndTransactionsIKB.setText(
+                InlineKeyboardCallback.MERGE_CATEGORIES_AND_TRANSACTIONS.getText());
+        mergeWithCategoriesAndTransactionsIKB.setCallbackData(
+                InlineKeyboardCallback.MERGE_CATEGORIES_AND_TRANSACTIONS.getData());
 
         List<InlineKeyboardButton> row1 = new ArrayList<>();
         row1.add(defaultIKB);

@@ -25,7 +25,8 @@ public class AuthController {
     private CookieUtils cookieUtils;
 
     @PostMapping("/login")
-    public void login(@RequestBody TelegramAuthRequest telegramAuthRequest, final HttpServletResponse response) throws NoSuchAlgorithmException, InvalidKeyException, InstanceNotFoundException {
+    public void login(@RequestBody TelegramAuthRequest telegramAuthRequest, final HttpServletResponse response)
+            throws NoSuchAlgorithmException, InvalidKeyException, InstanceNotFoundException {
         final JwtResponse token = jwtAuthenticationService.login(telegramAuthRequest);
         cookieUtils.addAccessTokenCookie(token, response);
     }

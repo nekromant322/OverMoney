@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
 public class ExecutorServiceConfig {
 
     @Bean
-    public ExecutorService getNewSingleThread(){
+    public ExecutorService getNewSingleThread() {
         return Executors.newSingleThreadExecutor();
     }
 }

@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.AnalyticsDataPerMonthDTO;
+import com.override.dto.AnalyticsMainDataPerYearsDTO;
 import com.override.dto.TransactionSummaryDTO;
 import com.override.orchestrator_service.service.AnalyticV2Service;
 import com.override.orchestrator_service.util.TelegramUtils;
@@ -25,8 +26,9 @@ public class AnalyticsV2Controller {
     private TelegramUtils telegramUtils;
 
     @GetMapping("/general/amounts")
-    @Operation(summary = "Получить финансовые показатели месяца", description = "Получить сведения по конкретным доходам" +
-            " и расходам текущего месяца")
+    @Operation(summary = "Получить финансовые показатели месяца", description =
+            "Получить сведения по конкретным доходам" +
+                    " и расходам текущего месяца")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Получено успешно"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
@@ -37,8 +39,9 @@ public class AnalyticsV2Controller {
     }
 
     @PostMapping("/months/amounts")
-    @Operation(summary = "Получить месячные финансовые показатели", description = "Получить сумму доходов и расходов по " +
-            "каждому месяцу в рамках выбранного года")
+    @Operation(summary = "Получить месячные финансовые показатели", description =
+            "Получить сумму доходов и расходов по " +
+                    "каждому месяцу в рамках выбранного года")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Получено успешно"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
@@ -49,5 +52,17 @@ public class AnalyticsV2Controller {
             @Parameter(description = "ID пользователя") @RequestParam(required = false) Long userId,
             @Parameter(description = "Выбранный год") @RequestParam int year) throws InstanceNotFoundException {
         return analyticV2Service.countFinanceDataPerMonth(telegramUtils.getTelegramId(principal), userId, year);
+    }
+
+    @GetMapping("/years/amounts")
+    @Operation(summary = "Получить финансовые показатели за все года", description = "Получить сумму доходов и " +
+            "расходов по каждому году для каждой категории")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Получено успешно"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные"),
+            @ApiResponse(responseCode = "404", description = "Данные не найдены"),
+    })
+    public AnalyticsMainDataPerYearsDTO getFinancePerYear(Principal principal) throws InstanceNotFoundException {
+        return analyticV2Service.countFinanceDataPerYear(telegramUtils.getTelegramId(principal));
     }
 }

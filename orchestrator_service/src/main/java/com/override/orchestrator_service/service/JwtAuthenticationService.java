@@ -26,19 +26,22 @@ public class JwtAuthenticationService {
     private final JwtProvider jwtProvider;
     private final TelegramVerificationService telegramVerificationService;
 
-    public JwtResponse login(TelegramAuthRequest telegramAuthRequest) throws NoSuchAlgorithmException, InvalidKeyException, InstanceNotFoundException {
+    public JwtResponse login(TelegramAuthRequest telegramAuthRequest)
+            throws NoSuchAlgorithmException, InvalidKeyException, InstanceNotFoundException {
         if (telegramVerificationService.verify(telegramAuthRequest)) {
 
             userService.saveUser(telegramAuthRequest);
             final User user = userService.getUserById(telegramAuthRequest.getId());
             return new JwtResponse(jwtProvider.generateAccessToken(user), jwtProvider.generateRefreshToken(user));
         } else {
-            throw new TelegramAuthException("Telegram authentication failed for user " + telegramAuthRequest.getUsername() +
-                    ": encoded data does not match with the hash");
+            throw new TelegramAuthException(
+                    "Telegram authentication failed for user " + telegramAuthRequest.getUsername() +
+                            ": encoded data does not match with the hash");
         }
     }
 
-    public JwtResponse getAccessToken(@NonNull String refreshToken) throws AuthenticationException, InstanceNotFoundException {
+    public JwtResponse getAccessToken(@NonNull String refreshToken)
+            throws AuthenticationException, InstanceNotFoundException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String id = claims.getSubject();

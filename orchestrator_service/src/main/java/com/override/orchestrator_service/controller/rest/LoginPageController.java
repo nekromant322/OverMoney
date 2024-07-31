@@ -21,10 +21,11 @@ public class LoginPageController {
 
     /**
      * Метод GET-запроса (замаппен на /bot-login), предоставляющий юзернейм бота при вызове
+     *
      * @return возвращает botName из переменной окружения
      */
     @GetMapping("/bot-login")
-    public String getLogin(){
+    public String getLogin() {
         return botName;
     }
 }

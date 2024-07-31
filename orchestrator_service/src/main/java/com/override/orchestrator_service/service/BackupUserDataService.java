@@ -73,7 +73,8 @@ public class BackupUserDataService {
             transaction.setMessage(transactionDTO.getMessage());
             Optional<CategoryDTO> categoryDTO = categoryService.findCategoryDTOByNameFromList(categoryDTOList,
                     transactionDTO.getCategoryName());
-            Category category = transactionProcessingService.getMatchingCategory(categorySet, transactionDTO.getCategoryName());
+            Category category =
+                    transactionProcessingService.getMatchingCategory(categorySet, transactionDTO.getCategoryName());
             categoryDTO.ifPresent(dto -> keywordService.setKeywordsFromCategoryDTO(dto, category, accountId));
             transaction.setCategory(category);
             transaction.setAccount(overMoneyAccount);

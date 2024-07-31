@@ -30,7 +30,8 @@ public class AdminPageFilter extends OncePerRequestFilter {
     private final String USERNAME_CLAIM = "username";
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
         final String token = jwtFilter.getTokenFromRequest(request);
         final Claims claims = jwtProvider.getAccessClaims(token);
         final String username = claims.get(USERNAME_CLAIM, String.class);

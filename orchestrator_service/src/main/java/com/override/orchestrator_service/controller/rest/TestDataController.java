@@ -26,13 +26,14 @@ public class TestDataController {
 
     @GetMapping("/testData")
     public RedirectView getTransactionsHistory(Principal principal,
-                                               @RequestParam(defaultValue = "2500") Integer count) throws InstanceNotFoundException {
+                                               @RequestParam(defaultValue = "2500") Integer count)
+            throws InstanceNotFoundException {
         try {
             transactionUtils.generateRandomTransactionsByPortion(telegramUtils.getTelegramId(principal), count);
             return new RedirectView("/analytics");
         } catch (IllegalArgumentException ex) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Для генерации тестовых данных обязательно " +
-                    "наличие распознанных транзакций." + "\n" + "\nНесколько доходных + несколько расходных" );
+                    "наличие распознанных транзакций." + "\n" + "\nНесколько доходных + несколько расходных");
         }
     }
 

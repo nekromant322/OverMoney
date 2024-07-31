@@ -100,7 +100,8 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
                 if (!remoteUser.getIsBot()) {
                     String backupFileName = fileService.createBackupFileToRemoteInChatUser(chatId, remoteUser.getId());
                     sendBuckUpFile(remoteUser.getId().toString(), backupFileName);
-                    orchestratorRequestService.removeChatMemberFromAccount(chatMemberMapper.mapUserToChatMemberDTO(chatId, remoteUser));
+                    orchestratorRequestService.removeChatMemberFromAccount(
+                            chatMemberMapper.mapUserToChatMemberDTO(chatId, remoteUser));
                 }
             }
             if (!receivedMessage.getNewChatMembers().isEmpty()) {
@@ -138,7 +139,8 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
                 orchestratorRequestService.registerGroupAccountAndMergeWithCategoriesAndWithoutTransactions(
                         new AccountDataDTO(chatId, userId));
                 sendMessage(chatId, MERGE_REQUEST_COMPLETED_TEXT);
-            } else if (callbackQuery.getData().equals(InlineKeyboardCallback.MERGE_CATEGORIES_AND_TRANSACTIONS.getData())) {
+            } else if (callbackQuery.getData()
+                    .equals(InlineKeyboardCallback.MERGE_CATEGORIES_AND_TRANSACTIONS.getData())) {
                 orchestratorRequestService.registerGroupAccountAndWithCategoriesAndTransactions(
                         new AccountDataDTO(chatId, userId));
                 sendMessage(chatId, MERGE_REQUEST_COMPLETED_TEXT);
@@ -183,7 +185,8 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
         if (message.hasVoice()) {
             log.info("user with id " + userId + " and chatId " + chatId + " sending voice");
             receivedMessageText = voiceMessageProcessingService.processVoiceMessage(message.getVoice(), userId, chatId);
-            log.info("recognition result of user with id " + userId + " and chatId " + chatId + " is: " + receivedMessageText);
+            log.info("recognition result of user with id " + userId + " and chatId " + chatId + " is: " +
+                    receivedMessageText);
         } else if (message.hasText()) {
             receivedMessageText = message.getText();
         }
@@ -291,7 +294,8 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
         }
     }
 
-    private void updateTransaction(TransactionMessageDTO transactionMessageDTO, UUID idTransaction, Long chatId, Integer messageId) {
+    private void updateTransaction(TransactionMessageDTO transactionMessageDTO, UUID idTransaction, Long chatId,
+                                   Integer messageId) {
         try {
             TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
                     .submitTransactionForPatch(transactionMessageDTO, idTransaction);
@@ -301,7 +305,8 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
                     .idTransaction(transactionResponseDTO.getId())
                     .build());
             sendMessage(chatId,
-                    SUCCESSFUL_UPDATE_TRANSACTION_TEXT + transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
+                    SUCCESSFUL_UPDATE_TRANSACTION_TEXT +
+                            transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
         } catch (Exception e) {
             log.error(e.getMessage());
             sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
@@ -326,7 +331,8 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             }
         } else if (switcher.equals("kafka")) {
 
-            CompletableFuture<TransactionResponseDTO> future = kafkaProducerService.sendTransaction(chatId, transactionMessageDTO);
+            CompletableFuture<TransactionResponseDTO> future =
+                    kafkaProducerService.sendTransaction(chatId, transactionMessageDTO);
 
             future.thenAccept(transactionResponseDTO -> {
                 if (transactionResponseDTO.getComment().equals("error")) {
@@ -339,7 +345,8 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
                 sendMessage(chatId, transactionMapper
                         .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
             }).exceptionally(e -> {
-                if (e.getCause() instanceof RuntimeException && "Невалидное сообщение".equals(e.getCause().getMessage())) {
+                if (e.getCause() instanceof RuntimeException &&
+                        "Невалидное сообщение".equals(e.getCause().getMessage())) {
                     log.error(e.getMessage());
                     sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
                 } else {

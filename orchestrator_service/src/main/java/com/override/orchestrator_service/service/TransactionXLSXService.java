@@ -80,7 +80,8 @@ public class TransactionXLSXService {
 
     public Transaction createTransaction(TransactionDTO transactionDTO,
                                          OverMoneyAccount overMoneyAccount, Set<Category> categories) {
-        Category category = transactionProcessingService.getMatchingCategory(categories, transactionDTO.getCategoryName());
+        Category category =
+                transactionProcessingService.getMatchingCategory(categories, transactionDTO.getCategoryName());
         return Transaction.builder()
                 .message(transactionDTO.getMessage())
                 .category(category)

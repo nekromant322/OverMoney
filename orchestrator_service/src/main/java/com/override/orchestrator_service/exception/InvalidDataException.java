@@ -2,12 +2,13 @@ package com.override.orchestrator_service.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class TransactionProcessingException extends BaseException {
-    public TransactionProcessingException() {
+public class InvalidDataException extends BaseException {
+
+    public InvalidDataException() {
         super();
     }
 
-    public TransactionProcessingException(String message) {
+    public InvalidDataException(String message) {
         super(message);
     }
 
@@ -18,6 +19,6 @@ public class TransactionProcessingException extends BaseException {
 
     @Override
     public String getErrorCode() {
-        return "ORCHESTRA_TRANSACTION_PROCESSING_FAILED";
+        return "INVALID_DATA";
     }
 }

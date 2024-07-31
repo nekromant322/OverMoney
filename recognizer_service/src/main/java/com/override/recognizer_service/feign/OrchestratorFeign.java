@@ -7,7 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@FeignClient(value = "orchestrator", url = "${integration.internal.host.orchestrator}", configuration = FeignConfiguration.class)
+@FeignClient(value = "orchestrator", url = "${integration.internal.host.orchestrator}",
+        configuration = FeignConfiguration.class)
 public interface OrchestratorFeign {
 
     @PutMapping("/transaction")

@@ -79,6 +79,4 @@ public class VoiceDTORecognitionServiceImplGoAudioRecognizer implements VoiceDTO
         connection.setDoOutput(true);
         return connection;
     }
-
-
 }

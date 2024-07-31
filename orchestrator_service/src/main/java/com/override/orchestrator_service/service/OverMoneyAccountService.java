@@ -178,7 +178,8 @@ public class OverMoneyAccountService {
     }
 
     public OverMoneyAccount getOverMoneyAccountById(Long id) throws InstanceNotFoundException {
-        return overMoneyAccountRepository.findById(id).orElseThrow(() -> new InstanceNotFoundException("OverMoneyAccount with id " + id + " does not exist"));
+        return overMoneyAccountRepository.findById(id)
+                .orElseThrow(() -> new InstanceNotFoundException("OverMoneyAccount with id " + id + " does not exist"));
     }
 
     public void deleteOverMoneyAccountById(Long id) {

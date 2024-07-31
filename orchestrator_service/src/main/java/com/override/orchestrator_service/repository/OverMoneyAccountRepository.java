@@ -14,15 +14,18 @@ public interface OverMoneyAccountRepository extends CrudRepository<OverMoneyAcco
 
     OverMoneyAccount findByChatId(Long chatId);
 
-    @Query("SELECT DISTINCT chatId from OverMoneyAccount WHERE id IN (SELECT DISTINCT t.account.id FROM Transaction t WHERE t.date > :minimalDate)")
+    @Query("SELECT DISTINCT chatId from OverMoneyAccount WHERE id IN (SELECT DISTINCT t.account.id " +
+            "FROM Transaction t WHERE t.date > :minimalDate)")
     List<Long> findAllActivityUsersByAccId(@Param("minimalDate") LocalDateTime minimalDate);
 
     @Query("SELECT a FROM OverMoneyAccount a JOIN User u ON u.account.id = a.id WHERE u.id = :userId")
     OverMoneyAccount findNewAccountByUserId(@Param("userId") Long userId);
 
-    @Query(value = "SELECT count(*) FROM (SELECT account_id FROM users GROUP BY account_id HAVING count(account_id) > 1) as t", nativeQuery = true)
+    @Query(value = "SELECT count(*) FROM (SELECT account_id FROM users GROUP BY account_id " +
+            "HAVING count(account_id) > 1) as t", nativeQuery = true)
     int getGroupAccountsCount();
 
-    @Query("SELECT COUNT(DISTINCT a.id) FROM OverMoneyAccount a WHERE a.id IN (SELECT DISTINCT t.account.id FROM Transaction t WHERE t.date >= :date)")
+    @Query("SELECT COUNT(DISTINCT a.id) FROM OverMoneyAccount a WHERE a.id IN (SELECT DISTINCT t.account.id " +
+            "FROM Transaction t WHERE t.date >= :date)")
     int findActiveAccountCount(@Param("date") LocalDateTime date);
 }

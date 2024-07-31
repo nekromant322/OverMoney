@@ -30,12 +30,14 @@ public class AnalyticService {
     @PersistenceContext
     private EntityManager entityManager;
 
-    public List<AnalyticsDataDTO> getTotalCategorySumsForAnalytics(Long userId, Type type) throws InstanceNotFoundException {
+    public List<AnalyticsDataDTO> getTotalCategorySumsForAnalytics(Long userId, Type type)
+            throws InstanceNotFoundException {
         Long accId = accountService.getAccountByUserId(userId).getId();
         List<AnalyticsDataDTO> list = categoryRepository.findMediumAmountOfAllCategoriesByAccIdAndType(accId, type);
         return list.stream()
                 .filter(dto -> dto.getMediumAmountOfTransactions() != null)
-                .peek(dto -> dto.setMediumAmountOfTransactions(Math.round(dto.getMediumAmountOfTransactions().doubleValue())))
+                .peek(dto -> dto.setMediumAmountOfTransactions(
+                        Math.round(dto.getMediumAmountOfTransactions().doubleValue())))
                 .collect(Collectors.toList());
     }
 
@@ -44,12 +46,15 @@ public class AnalyticService {
         return transactionService.findAvailableYears(accountId);
     }
 
-    public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long telegramId, Integer year) throws InstanceNotFoundException {
+    public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long telegramId,
+                                                                                                Integer year)
+            throws InstanceNotFoundException {
         Long accountId = accountService.getAccountByUserId(telegramId).getId();
         return transactionService.findMonthlyIncomeStatisticsForYearByAccountId(accountId, year);
     }
 
-    public List<AnalyticsDataMonthDTO> getTotalIncomeOutcomePerMonth(Long telegramId, int year) throws InstanceNotFoundException {
+    public List<AnalyticsDataMonthDTO> getTotalIncomeOutcomePerMonth(Long telegramId, int year)
+            throws InstanceNotFoundException {
         Long accountId = userService.getUserById(telegramId).getAccount().getId();
         String sql = "SELECT to_char(t.date, 'Month') AS month, " +
                 "   SUM(CASE WHEN c.type = 0 THEN t.amount ELSE 0 END) AS totalIncome," +
@@ -78,7 +83,9 @@ public class AnalyticService {
         return analyticsDataMonthDTOS;
     }
 
-    public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long telegramId, Integer year) throws InstanceNotFoundException {
+    public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long telegramId,
+                                                                                                   Integer year)
+            throws InstanceNotFoundException {
         Long accountId = accountService.getAccountByUserId(telegramId).getId();
         return transactionService.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
     }

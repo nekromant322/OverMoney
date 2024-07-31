@@ -34,12 +34,14 @@ public class AnalyticsController {
     private OverMoneyAccountService overMoneyAccountService;
 
     @GetMapping("/totalCategorySums/{type}")
-    public List<AnalyticsDataDTO> getAnalyticsTotalCategorySums(Principal principal, @PathVariable("type") Type type) throws InstanceNotFoundException {
+    public List<AnalyticsDataDTO> getAnalyticsTotalCategorySums(Principal principal, @PathVariable("type") Type type)
+            throws InstanceNotFoundException {
         return analyticService.getTotalCategorySumsForAnalytics(telegramUtils.getTelegramId(principal), type);
     }
 
     @GetMapping("/totalIncomeOutcome/{year}")
-    public List<AnalyticsDataMonthDTO> getIncomeOutcomePerMonth(Principal principal, @PathVariable("year") int year) throws InstanceNotFoundException {
+    public List<AnalyticsDataMonthDTO> getIncomeOutcomePerMonth(Principal principal, @PathVariable("year") int year)
+            throws InstanceNotFoundException {
         return analyticService.getTotalIncomeOutcomePerMonth(telegramUtils.getTelegramId(principal), year);
     }
 
@@ -49,13 +51,18 @@ public class AnalyticsController {
     }
 
     @GetMapping("/income/{year}")
-    public List<AnalyticsMonthlyReportForYearDTO> getYearIncomeStatistics(Principal principal, @PathVariable("year") Integer year) throws InstanceNotFoundException {
+    public List<AnalyticsMonthlyReportForYearDTO> getYearIncomeStatistics(Principal principal,
+                                                                          @PathVariable("year") Integer year)
+            throws InstanceNotFoundException {
         return analyticService.findMonthlyIncomeStatisticsForYearByAccountId(telegramUtils.getTelegramId(principal),
                 year);
     }
 
     @GetMapping("/total/{year}")
-    public List<AnalyticsAnnualAndMonthlyReportDTO> getYearTotalStatistics(Principal principal, @PathVariable("year") Integer year) throws InstanceNotFoundException {
-        return analyticService.findAnnualAndMonthlyTotalStatisticsByAccountId(telegramUtils.getTelegramId(principal), year);
+    public List<AnalyticsAnnualAndMonthlyReportDTO> getYearTotalStatistics(Principal principal,
+                                                                           @PathVariable("year") Integer year)
+            throws InstanceNotFoundException {
+        return analyticService.findAnnualAndMonthlyTotalStatisticsByAccountId(telegramUtils.getTelegramId(principal),
+                year);
     }
 }

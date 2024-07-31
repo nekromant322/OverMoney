@@ -47,8 +47,11 @@ public class InvestTinkoffInfoController {
 
     @GetMapping("/moex")
     public List<TinkoffActiveMOEXDTO> getActivesMoexPercentage(@RequestParam("token") String token,
-                                                               @RequestParam("tinkoffAccountId") String tinkoffAccountId,
-                                                               @RequestParam(value = "userTargetInvestAmount", required = false) Double userTargetInvestAmount) {
+                                                               @RequestParam("tinkoffAccountId")
+                                                               String tinkoffAccountId,
+                                                               @RequestParam(value = "userTargetInvestAmount",
+                                                                       required = false)
+                                                               Double userTargetInvestAmount) {
         return investTinkoffInfoService.getActivesMoexPercentage(token, tinkoffAccountId, userTargetInvestAmount);
     }
 }

@@ -10,7 +10,6 @@ public class FeignConfiguration {
 
     private final String HEADER_NAME = "X-INTERNAL-KEY";
 
-
     @Value("${authorization-header.header-value}")
     private String headerValue;
 

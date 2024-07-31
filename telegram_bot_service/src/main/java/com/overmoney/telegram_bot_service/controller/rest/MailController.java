@@ -16,7 +16,7 @@ public class MailController {
 
     @GetMapping("/status")
     public List<MailDTO> getStatusOfMails() {
-       return mailService.getCountOfMailsStatusByAnnounceId();
+        return mailService.getCountOfMailsStatusByAnnounceId();
     }
 }
 
