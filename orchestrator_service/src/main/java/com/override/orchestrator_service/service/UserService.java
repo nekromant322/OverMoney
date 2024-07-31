@@ -69,7 +69,8 @@ public class UserService {
     }
 
     public User getUserById(Long id) throws InstanceNotFoundException {
-        return userRepository.findById(id).orElseThrow(() -> new InstanceNotFoundException("User with id " + id + " does not exist"));
+        return userRepository.findById(id)
+                .orElseThrow(() -> new InstanceNotFoundException("User with id " + id + " does not exist"));
     }
 
     public User getUserByUsername(String username) {

@@ -2,7 +2,7 @@ package com.override.orchestrator_service.exception;
 
 import org.springframework.http.HttpStatus;
 
-public class TransactionProcessingException extends BaseException{
+public class TransactionProcessingException extends BaseException {
     public TransactionProcessingException() {
         super();
     }

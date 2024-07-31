@@ -37,7 +37,8 @@ public class SettingsController {
     }
 
     @GetMapping("/export/excel")
-    public ResponseEntity<InputStreamResource> getUserBackupDataExcel(Principal principal) throws IOException, InstanceNotFoundException {
+    public ResponseEntity<InputStreamResource> getUserBackupDataExcel(Principal principal)
+            throws IOException, InstanceNotFoundException {
         return exportUserDataService.downloadExelFile(telegramUtils.getTelegramId(principal));
     }
 
@@ -48,7 +49,8 @@ public class SettingsController {
     }
 
     @PostMapping("/backup/read")
-    public ResponseEntity<HttpStatus> readBackupFile(@RequestBody BackupUserDataDTO backupUserDataDTO, Principal principal) {
+    public ResponseEntity<HttpStatus> readBackupFile(@RequestBody BackupUserDataDTO backupUserDataDTO,
+                                                     Principal principal) {
         backupUserDataService.writingDataFromBackupFile(backupUserDataDTO, telegramUtils.getTelegramId(principal));
         return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }

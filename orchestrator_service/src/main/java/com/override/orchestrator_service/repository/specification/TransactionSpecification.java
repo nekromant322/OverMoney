@@ -20,7 +20,8 @@ public class TransactionSpecification {
             }
 
             if (filters.getAmount() != null) {
-                predicates.add(criteriaBuilder.between(root.get("amount"), filters.getAmount().getBegin(), filters.getAmount().getEnd()));
+                predicates.add(criteriaBuilder.between(root.get("amount"), filters.getAmount().getBegin(),
+                        filters.getAmount().getEnd()));
             }
 
             if (filters.getMessage() != null) {
@@ -28,7 +29,8 @@ public class TransactionSpecification {
             }
 
             if (filters.getDate() != null) {
-                predicates.add(criteriaBuilder.between(root.get("date"), filters.getDate().getBegin(), filters.getDate().getEnd()));
+                predicates.add(criteriaBuilder.between(root.get("date"), filters.getDate().getBegin(),
+                        filters.getDate().getEnd()));
             }
 
             if (filters.getTelegramUserIdList() != null && !filters.getTelegramUserIdList().isEmpty()) {

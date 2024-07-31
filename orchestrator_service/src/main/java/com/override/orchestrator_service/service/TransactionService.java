@@ -88,17 +88,20 @@ public class TransactionService {
         transactionRepository.updateCategoryIdWhereCategoryIsNull(categoryId, transactionMessage, accId);
     }
 
-    public List<TransactionDTO> findTransactionsByUserIdLimited(Long id, Integer pageSize, Integer pageNumber) throws InstanceNotFoundException {
+    public List<TransactionDTO> findTransactionsByUserIdLimited(Long id, Integer pageSize, Integer pageNumber)
+            throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
         Pageable pageable = PageRequest.of(pageNumber, pageSize, Sort.by("date").descending());
 
-        List<TransactionDTO> transactionList = transactionRepository.findAllByAccountId(accID, pageable).getContent().stream()
-                .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
-                .collect(Collectors.toList());
+        List<TransactionDTO> transactionList =
+                transactionRepository.findAllByAccountId(accID, pageable).getContent().stream()
+                        .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
+                        .collect(Collectors.toList());
         return enrichTransactionsWithTgUsernames(transactionList);
     }
 
-    public List<TransactionDTO> findTransactionsByUserIdLimitedAndFiltered(Long id, TransactionFilter filter) throws InstanceNotFoundException {
+    public List<TransactionDTO> findTransactionsByUserIdLimitedAndFiltered(Long id, TransactionFilter filter)
+            throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by("date").descending());
 
@@ -149,12 +152,15 @@ public class TransactionService {
         return transactionRepository.findAvailableYearsForAccountByAccountId(accountId);
     }
 
-    public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long accountId, Integer year) {
-        List<AnalyticsMonthlyIncomeForCategoryDTO> list = transactionRepository.findMonthlyIncomeStatisticsByYearAndAccountId(accountId, year);
+    public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long accountId,
+                                                                                                Integer year) {
+        List<AnalyticsMonthlyIncomeForCategoryDTO> list =
+                transactionRepository.findMonthlyIncomeStatisticsByYearAndAccountId(accountId, year);
         return mapObjectToAnalyticsMonthIncomeDTO(list);
     }
 
-    private List<AnalyticsMonthlyReportForYearDTO> mapObjectToAnalyticsMonthIncomeDTO(List<AnalyticsMonthlyIncomeForCategoryDTO> objects) {
+    private List<AnalyticsMonthlyReportForYearDTO> mapObjectToAnalyticsMonthIncomeDTO(
+            List<AnalyticsMonthlyIncomeForCategoryDTO> objects) {
         Set<String> setOfCategoryNames = new HashSet<>();
         List<AnalyticsMonthlyReportForYearDTO> result = new ArrayList<>();
         objects.forEach(object -> {
@@ -230,12 +236,15 @@ public class TransactionService {
         return keywordRepository.findByKeywordId(keywordId);
     }
 
-    public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long accountId, Integer year) {
-        List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> list = transactionRepository.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
+    public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long accountId,
+                                                                                                   Integer year) {
+        List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> list =
+                transactionRepository.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
         return mapObjectToAnalyticsAnnualAndMonthlyReportDTO(list);
     }
 
-    private List<AnalyticsAnnualAndMonthlyReportDTO> mapObjectToAnalyticsAnnualAndMonthlyReportDTO(List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects) {
+    private List<AnalyticsAnnualAndMonthlyReportDTO> mapObjectToAnalyticsAnnualAndMonthlyReportDTO(
+            List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects) {
         Set<String> setOfCategoryNames = new HashSet<>();
         List<AnalyticsAnnualAndMonthlyReportDTO> result = new ArrayList<>();
 
@@ -251,9 +260,11 @@ public class TransactionService {
                     if (monthlyAnalytics.containsKey(object.getMonth()) &&
                             shareOfMonthlyExpenses.containsKey(object.getMonth())) {
                         monthlyAnalytics.replace(object.getMonth(),
-                                NumericalUtils.roundAmount(monthlyAnalytics.get(object.getMonth()) + object.getAmount()));
+                                NumericalUtils.roundAmount(
+                                        monthlyAnalytics.get(object.getMonth()) + object.getAmount()));
                         shareOfMonthlyExpenses.replace(object.getMonth(),
-                                NumericalUtils.roundAmount(shareOfMonthlyExpenses.get(object.getMonth()) + object.getAmount()));
+                                NumericalUtils.roundAmount(
+                                        shareOfMonthlyExpenses.get(object.getMonth()) + object.getAmount()));
                     } else {
                         monthlyAnalytics.put(object.getMonth(), NumericalUtils.roundAmount(object.getAmount()));
                         shareOfMonthlyExpenses.put(object.getMonth(), NumericalUtils.roundAmount(object.getAmount()));
@@ -266,13 +277,15 @@ public class TransactionService {
                     shareOfMonthlyExpenses.put(monthCounter, 0d);
                 }
             }
-            result.add(new AnalyticsAnnualAndMonthlyReportDTO(categoryName, categoryId[0], monthlyAnalytics, shareOfMonthlyExpenses));
+            result.add(new AnalyticsAnnualAndMonthlyReportDTO(categoryName, categoryId[0], monthlyAnalytics,
+                    shareOfMonthlyExpenses));
         });
         return replaceShareOfMonthlyExpenses(objects, result);
     }
 
-    private List<AnalyticsAnnualAndMonthlyReportDTO> replaceShareOfMonthlyExpenses(List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects,
-                                                                                   List<AnalyticsAnnualAndMonthlyReportDTO> result) {
+    private List<AnalyticsAnnualAndMonthlyReportDTO> replaceShareOfMonthlyExpenses(
+            List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects,
+            List<AnalyticsAnnualAndMonthlyReportDTO> result) {
         List<Integer> months = getListOfMonthNumbers(objects);
         Map<Integer, Double> total = getTotalExpenseByYearAndMonths(objects, result);
 
@@ -286,8 +299,9 @@ public class TransactionService {
         return result;
     }
 
-    private Map<Integer, Double> getTotalExpenseByYearAndMonths(List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects,
-                                                                List<AnalyticsAnnualAndMonthlyReportDTO> result) {
+    private Map<Integer, Double> getTotalExpenseByYearAndMonths(
+            List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> objects,
+            List<AnalyticsAnnualAndMonthlyReportDTO> result) {
         Map<Integer, Double> totalMonthlyAnalytics = new HashMap<>();
         List<Integer> monthNumberList = getListOfMonthNumbers(objects);
 

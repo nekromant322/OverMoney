@@ -32,7 +32,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "WHERE c.account.id = :accId\n" +
             "AND c.type = :type\n" +
             "GROUP BY c.id")
-    List<AnalyticsDataDTO> findMediumAmountOfAllCategoriesByAccIdAndType(@Param("accId") Long accId, @Param("type") Type type);
+    List<AnalyticsDataDTO> findMediumAmountOfAllCategoriesByAccIdAndType(@Param("accId") Long accId,
+                                                                         @Param("type") Type type);
 
     @Modifying
     @Query("UPDATE Category c SET c.account.id = :newAccountId WHERE c.account.id = :oldAccountId")

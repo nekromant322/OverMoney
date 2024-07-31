@@ -16,7 +16,8 @@ public class TransactionMapper {
     private final String EXPENSE = "Расходы";
     private final String CATEGORY_UNDEFINED = "Нераспознанное";
 
-    public TransactionResponseDTO mapTransactionToTelegramResponse(Transaction transaction) throws InstanceNotFoundException {
+    public TransactionResponseDTO mapTransactionToTelegramResponse(Transaction transaction)
+            throws InstanceNotFoundException {
         return TransactionResponseDTO.builder()
                 .id(transaction.getId())
                 .type(getTransactionType(transaction))

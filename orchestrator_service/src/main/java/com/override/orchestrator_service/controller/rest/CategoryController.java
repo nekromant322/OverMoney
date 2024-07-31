@@ -34,7 +34,8 @@ public class CategoryController {
     private TelegramUtils telegramUtils;
 
     @GetMapping("/")
-    @Operation(summary = "Получить список категорий", description = "Возвращает список категорий, связанных с ID пользователя")
+    @Operation(summary = "Получить список категорий", description = "Возвращает список категорий, связанных с " +
+            "ID пользователя")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Список категорий получен"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
@@ -61,7 +62,8 @@ public class CategoryController {
     })
     @Operation(summary = "Получить категории по типу", description = "Возвращает список категорий по указанному типу")
     public List<CategoryDTO> getCategoryByCategoryType(Principal principal,
-                                                       @Parameter(description = "Тип категории") @PathVariable("type") Type type) throws InstanceNotFoundException {
+                                                       @Parameter(description = "Тип категории") @PathVariable("type")
+                                                       Type type) throws InstanceNotFoundException {
         return categoryService.findCategoriesListByType(telegramUtils.getTelegramId(principal), type);
     }
 
@@ -83,7 +85,8 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     public ResponseEntity<HttpStatus> saveCategoryForAcc(Principal principal,
-                                                         @Parameter(description = "Данные категории") @RequestBody CategoryDTO category) throws InstanceNotFoundException {
+                                                         @Parameter(description = "Данные категории") @RequestBody
+                                                         CategoryDTO category) throws InstanceNotFoundException {
         categoryService.saveCategoryForAcc(telegramUtils.getTelegramId(principal), category);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
@@ -96,7 +99,8 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Пользователь или категория не найдены")
     })
     public ResponseEntity<HttpStatus> updateCategoryForAcc(Principal principal,
-                                                           @Parameter(description = "Данные категории") @RequestBody CategoryDTO category) throws InstanceNotFoundException {
+                                                           @Parameter(description = "Данные категории") @RequestBody
+                                                           CategoryDTO category) throws InstanceNotFoundException {
         categoryService.updateCategoryForAcc(telegramUtils.getTelegramId(principal), category);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }

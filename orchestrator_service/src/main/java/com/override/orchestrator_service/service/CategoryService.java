@@ -117,7 +117,8 @@ public class CategoryService {
         keywordRepository.deleteByKeywordId(keywordId);
     }
 
-    public Optional<CategoryDTO> findCategoryDTOByNameFromList(List<CategoryDTO> categoryDTOList, String categoryDTOName) {
+    public Optional<CategoryDTO> findCategoryDTOByNameFromList(List<CategoryDTO> categoryDTOList,
+                                                               String categoryDTOName) {
         return categoryDTOList.stream()
                 .filter(categoryDTO -> categoryDTOName.equals(categoryDTO.getName()))
                 .findFirst();

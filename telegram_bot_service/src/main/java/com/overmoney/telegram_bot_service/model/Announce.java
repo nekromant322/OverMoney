@@ -23,7 +23,7 @@ public class Announce {
     private String textAnnounce;
 
     @Column
-    @OneToMany(mappedBy="announce")
+    @OneToMany(mappedBy = "announce")
     private Set<Mail> mails;
 
     @Column(columnDefinition = "TIMESTAMP")

@@ -110,12 +110,14 @@ public class TransactionProcessingService {
      *                              веб-транзакциях.
      * @return Объект транзакции с заполненными необходимыми полями.
      */
-    public Transaction validateAndProcessTransaction(TransactionMessageDTO transactionMessageDTO, Principal principal) throws InstanceNotFoundException {
+    public Transaction validateAndProcessTransaction(TransactionMessageDTO transactionMessageDTO, Principal principal)
+            throws InstanceNotFoundException {
 
         LocalDateTime moscowTime = LocalDateTime.now(ZoneId.ofOffset("UTC", MOSCOW_OFFSET));
 
         if (principal != null) {
-            OverMoneyAccount overMoneyAccount = overMoneyAccountService.getAccountByUserId(telegramUtils.getTelegramId(principal));
+            OverMoneyAccount overMoneyAccount =
+                    overMoneyAccountService.getAccountByUserId(telegramUtils.getTelegramId(principal));
 
             transactionMessageDTO.setChatId(overMoneyAccount.getChatId());
             transactionMessageDTO.setUserId(telegramUtils.getTelegramId(principal));
@@ -125,7 +127,8 @@ public class TransactionProcessingService {
         return processTransaction(transactionMessageDTO);
     }
 
-    public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId) throws InstanceNotFoundException {
+    public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId)
+            throws InstanceNotFoundException {
         Transaction transaction = processTransaction(transactionMessageDTO);
         List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getUserId());
         executorService.execute(() -> {

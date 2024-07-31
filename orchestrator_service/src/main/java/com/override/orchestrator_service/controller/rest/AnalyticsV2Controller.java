@@ -26,8 +26,9 @@ public class AnalyticsV2Controller {
     private TelegramUtils telegramUtils;
 
     @GetMapping("/general/amounts")
-    @Operation(summary = "Получить финансовые показатели месяца", description = "Получить сведения по конкретным доходам" +
-            " и расходам текущего месяца")
+    @Operation(summary = "Получить финансовые показатели месяца", description =
+            "Получить сведения по конкретным доходам" +
+                    " и расходам текущего месяца")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Получено успешно"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
@@ -38,8 +39,9 @@ public class AnalyticsV2Controller {
     }
 
     @PostMapping("/months/amounts")
-    @Operation(summary = "Получить месячные финансовые показатели", description = "Получить сумму доходов и расходов по " +
-            "каждому месяцу в рамках выбранного года")
+    @Operation(summary = "Получить месячные финансовые показатели", description =
+            "Получить сумму доходов и расходов по " +
+                    "каждому месяцу в рамках выбранного года")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Получено успешно"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),

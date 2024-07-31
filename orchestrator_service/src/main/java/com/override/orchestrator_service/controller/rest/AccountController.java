@@ -29,8 +29,8 @@ public class AccountController {
     private UserService userService;
 
     @GetMapping("/register/single")
-    @Operation(summary = "Зарегистрировать телеграм-пользователя", description = "Регестрирует новый аккаунт в OverMoney " +
-            "используя профиль телеграма")
+    @Operation(summary = "Зарегистрировать телеграм-пользователя", description =
+            "Регестрирует новый аккаунт в OverMoney используя профиль телеграма")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Регистрация успешна"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
@@ -40,7 +40,8 @@ public class AccountController {
     }
 
     @PostMapping("/register/single")
-    @Operation(summary = "Зарегистрировать нового пользователя", description = "Регестрирует новый аккаунт в OverMoney")
+    @Operation(summary = "Зарегистрировать нового пользователя",
+            description = "Регестрирует новый аккаунт в OverMoney")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Регистрация успешна"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
@@ -48,13 +49,14 @@ public class AccountController {
             @ApiResponse(responseCode = "409", description = "Аккаунт уже зарегистрирован"),
     })
     public void registerSingleAccount(@Parameter(description = "данные аккаунта")
-                                          @RequestBody AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
+                                      @RequestBody AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
         userService.saveUser(accountDataDTO);
         accountService.registerSingleOverMoneyAccount(accountDataDTO);
     }
 
     @PostMapping("/register/group")
-    @Operation(summary = "Зарегистрировать групповой аккаунт", description = "Регистрирует групповой аккаунт в OverMoney")
+    @Operation(summary = "Зарегистрировать групповой аккаунт",
+            description = "Регистрирует групповой аккаунт в OverMoney")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Регистрация успешна"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
@@ -62,49 +64,57 @@ public class AccountController {
             @ApiResponse(responseCode = "409", description = "Аккаунт уже зарегистрирован"),
     })
     public void registerGroupAccount(@Parameter(description = "Данные аккаунта (предполагается, что туда можно будет " +
-            "добавить список юзеров или юзернеймов)") @RequestBody AccountDataDTO accountDataDTO) throws InstanceNotFoundException {
+            "добавить список юзеров или юзернеймов)") @RequestBody AccountDataDTO accountDataDTO)
+            throws InstanceNotFoundException {
         accountService.registerGroupOverMoneyAccount(accountDataDTO);
     }
 
     @PostMapping("/add/users")
-    @Operation(summary = "Добавить пользователей в групповой аккаунт", description = "Добавляет в групповой аккаунт в OverMoney" +
-            "пользователей")
+    @Operation(summary = "Добавить пользователей в групповой аккаунт", description =
+            "Добавляет в групповой аккаунт в OverMoney" +
+                    "пользователей")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Добавление успешно"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
     })
     public void addNewChatMembersToAccount(@Parameter(description = "список данных пользователей")
-                                               @RequestBody List<ChatMemberDTO> chatMemberDTOList) {
+                                           @RequestBody List<ChatMemberDTO> chatMemberDTOList) {
         accountService.addNewChatMembersToAccount(chatMemberDTOList);
     }
 
     @PostMapping("/add/user")
-    @Operation(summary = "Добавить пользователя в групповой аккаунт", description = "Добавляет в групповой аккаунт в OverMoney" +
-            "пользователя")
+    @Operation(summary = "Добавить пользователя в групповой аккаунт", description =
+            "Добавляет в групповой аккаунт в OverMoney" +
+                    "пользователя")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Добавление успешно"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
     })
-    public void addNewChatMemberToAccount(@Parameter(description = "данные пользователя") @RequestBody ChatMemberDTO chatMemberDTO) {
+    public void addNewChatMemberToAccount(
+            @Parameter(description = "данные пользователя") @RequestBody ChatMemberDTO chatMemberDTO) {
         accountService.addNewChatMemberToAccount(chatMemberDTO);
     }
 
     @PostMapping("/remove/user")
-    @Operation(summary = "Удалить пользователя из группового аккаунта", description = "Удаляет из группового аккаунта в OverMoney" +
-            "пользователя")
+    @Operation(summary = "Удалить пользователя из группового аккаунта", description =
+            "Удаляет из группового аккаунта в OverMoney" +
+                    "пользователя")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Удалено успешно"),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден"),
     })
-    public void removeChatMemberFromAccount(@Parameter(description = "данные пользователя") @RequestBody ChatMemberDTO chatMemberDTO) throws InstanceNotFoundException {
+    public void removeChatMemberFromAccount(
+            @Parameter(description = "данные пользователя") @RequestBody ChatMemberDTO chatMemberDTO)
+            throws InstanceNotFoundException {
         accountService.removeChatMemberFromAccount(chatMemberDTO);
     }
 
     @PostMapping("/merge/categories")
-    @Operation(summary = "Перенести категории в новый аккаунт", description = "Перенести только категории в новый аккаунт " +
-            "пользователя")
+    @Operation(summary = "Перенести категории в новый аккаунт", description =
+            "Перенести только категории в новый аккаунт " +
+                    "пользователя")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Перенесено успешно"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
@@ -114,8 +124,9 @@ public class AccountController {
     }
 
     @PostMapping("/merge/transactions")
-    @Operation(summary = "Перенести категории в новый аккаунт", description = "Перенести только категории в новый аккаунт " +
-            "пользователя")
+    @Operation(summary = "Перенести категории в новый аккаунт", description =
+            "Перенести только категории в новый аккаунт " +
+                    "пользователя")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Перенесено успешно"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные"),
@@ -142,7 +153,8 @@ public class AccountController {
             @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
             @ApiResponse(responseCode = "404", description = "Данные не найдены"),
     })
-    public Set<User> getUsersFromAccount(@Parameter(description = "ID пользователя") @RequestParam Long userId) throws InstanceNotFoundException {
+    public Set<User> getUsersFromAccount(@Parameter(description = "ID пользователя") @RequestParam Long userId)
+            throws InstanceNotFoundException {
         return accountService.getUsersFromGroupAccount(userId);
     }
 }

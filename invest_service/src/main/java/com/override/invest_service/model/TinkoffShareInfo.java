@@ -2,7 +2,6 @@ package com.override.invest_service.model;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.tinkoff.piapi.contract.v1.Quotation;
 
 @Builder
 @Data

@@ -31,7 +31,8 @@ public class TransactionFromXLSXController {
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     public ResponseEntity<String> loadingTransactionsFromXLSX(Principal principal,
-                                                              @Parameter(description = "XLSX файл с транзакциями") @RequestPart("data") MultipartFile file) {
+                                                              @Parameter(description = "XLSX файл с транзакциями")
+                                                              @RequestPart("data") MultipartFile file) {
         return transactionXLSXService.loadingTransactionsFromXLSX(principal, file);
     }
 }

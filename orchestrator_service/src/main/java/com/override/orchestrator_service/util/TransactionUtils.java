@@ -30,15 +30,16 @@ public class TransactionUtils {
     @Autowired
     TransactionProcessingService transactionProcessingService;
 
-    private  final int MAX_TRANSACTION_RANDOM_AMOUNT = 10000;
-    private  final int MIN_TRANSACTION_RANDOM_AMOUNT = 100;
-    private  final int MAX_TRANSACTION_SECOND_RANDOM_AMOUNT = 1000;
-    private  final int MIN_TRANSACTION_SECOND_RANDOM_AMOUNT = 500;
-    private  final int YEARS_NUMBER = 3;
-    private  final double SMALLER_TRANSACTION_PORTION = 0.25d;
-    private  final double LARGER_TRANSACTION_PORTION = 0.75d;
+    private final int MAX_TRANSACTION_RANDOM_AMOUNT = 10000;
+    private final int MIN_TRANSACTION_RANDOM_AMOUNT = 100;
+    private final int MAX_TRANSACTION_SECOND_RANDOM_AMOUNT = 1000;
+    private final int MIN_TRANSACTION_SECOND_RANDOM_AMOUNT = 500;
+    private final int YEARS_NUMBER = 3;
+    private final double SMALLER_TRANSACTION_PORTION = 0.25d;
+    private final double LARGER_TRANSACTION_PORTION = 0.75d;
 
-    public void generateRandomTransactionsByPortion(long telegramId, int totalTransactionsCount) throws InstanceNotFoundException {
+    public void generateRandomTransactionsByPortion(long telegramId, int totalTransactionsCount)
+            throws InstanceNotFoundException {
         generateRandomTransactions(SMALLER_TRANSACTION_PORTION, MIN_TRANSACTION_RANDOM_AMOUNT,
                 MAX_TRANSACTION_RANDOM_AMOUNT, telegramId, totalTransactionsCount);
         generateRandomTransactions(LARGER_TRANSACTION_PORTION, MIN_TRANSACTION_SECOND_RANDOM_AMOUNT,

@@ -1,4 +1,4 @@
- package com.override.invest_service;
+package com.override.invest_service;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -9,7 +9,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableFeignClients
 @EnableDiscoveryClient
 public class InvestServiceApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(InvestServiceApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(InvestServiceApplication.class, args);
+    }
 }
