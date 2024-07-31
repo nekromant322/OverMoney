@@ -116,8 +116,10 @@ public class AnalyticV2Service {
         UserIncomeExpenseCategoriesPerYearDTO userData = new UserIncomeExpenseCategoriesPerYearDTO();
         userData.setId(user.getId());
 
-        List<SumTransactionPerYearForAccountDTO> incomeTransactions = getTransactionsForYear(user.getId(), year, Type.INCOME);
-        List<SumTransactionPerYearForAccountDTO> expenseTransactions = getTransactionsForYear(user.getId(), year, Type.EXPENSE);
+        List<SumTransactionPerYearForAccountDTO> incomeTransactions =
+                getTransactionsForYear(user.getId(), year, Type.INCOME);
+        List<SumTransactionPerYearForAccountDTO> expenseTransactions =
+                getTransactionsForYear(user.getId(), year, Type.EXPENSE);
 
         userData.setCategoryIncome(incomeTransactions);
         userData.setCategoryExpense(expenseTransactions);
@@ -125,7 +127,8 @@ public class AnalyticV2Service {
     }
 
     public List<SumTransactionPerYearForAccountDTO> getTransactionsForYear(Long userId, int year, Type type) {
-        List<SumTransactionPerYearForAccountDTO> transactions = transactionRepository.findSumTransactionsPerYearForAccount(userId, year, type);
+        List<SumTransactionPerYearForAccountDTO> transactions =
+                transactionRepository.findSumTransactionsPerYearForAccount(userId, year, type);
         return transactions.stream()
                 .map(t -> {
                     if (t.getSum() == null) {
