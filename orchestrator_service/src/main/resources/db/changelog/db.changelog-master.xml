@@ -16,4 +16,7 @@
     <include file="v1.0.0/009-db.changelog-addCheckConstraintForTransactions.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/010-db.changelog-updateAmountType.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/011-db.changelog-add_investAmount_column.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/012-db.changelog-add_lastUsed_column.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/013-db.changelog-add-table-for-scheduler.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/014-db.changelog-set_last_used_column.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
