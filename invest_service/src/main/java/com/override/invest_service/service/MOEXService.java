@@ -14,7 +14,7 @@ import org.springframework.util.ResourceUtils;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,9 +22,10 @@ import java.util.stream.Collectors;
 @Service
 public class MOEXService {
     private final int DATA_AGE_LIMIT = 1;
+    private final Object lock = new Object();
 
     private Optional<IMOEXDataDTO> cachedImoexDataDTO = Optional.empty();
-    private Map<String, Double> tickerToWeight = new HashMap<>();
+    private Map<String, Double> tickerToWeight = new ConcurrentHashMap<>();
 
     @Autowired
     private MOEXFeignClient MOEXFeignClient;
@@ -40,33 +41,35 @@ public class MOEXService {
     private void updateIMOEXData() {
         Optional<IMOEXDataDTO> imoexDataDTO;
 
-        if (cachedImoexDataDTO.isPresent() && checkCachedDataByFreshness()) {
-            imoexDataDTO = cachedImoexDataDTO;
-        } else {
-            ResponseEntity<IMOEXDataDTO> response = MOEXFeignClient.getIndexIMOEX();
-
-            if (response.getStatusCode() == HttpStatus.OK) {
-                imoexDataDTO = Optional.ofNullable(response.getBody());
+        synchronized (lock) {
+            if (cachedImoexDataDTO.isPresent() && checkCachedDataByFreshness()) {
+                imoexDataDTO = cachedImoexDataDTO;
             } else {
-                imoexDataDTO = Optional.ofNullable(getReserveData());
+                ResponseEntity<IMOEXDataDTO> response = MOEXFeignClient.getIndexIMOEX();
+
+                if (response.getStatusCode() == HttpStatus.OK) {
+                    imoexDataDTO = Optional.ofNullable(response.getBody());
+                } else {
+                    imoexDataDTO = Optional.ofNullable(getReserveData());
+                }
+
+                cachedImoexDataDTO = imoexDataDTO;
             }
 
-            cachedImoexDataDTO = imoexDataDTO;
+            tickerToWeight = imoexDataDTO
+                    .orElseThrow()
+                    .getAnalytics()
+                    .getImoexData()
+                    .stream()
+                    .collect(Collectors.toMap(
+                            IMOEXData::getSecIds,
+                            IMOEXData::getWeight));
         }
-
-        tickerToWeight = imoexDataDTO
-                .orElseThrow()
-                .getAnalytics()
-                .getImoexData()
-                .stream()
-                .collect(Collectors.toMap(
-                        IMOEXData::getSecIds,
-                        IMOEXData::getWeight));
     }
 
     public Map<String, Double> getTickerToWeight() {
         updateIMOEXData();
-        return tickerToWeight;
+        return new ConcurrentHashMap<>(tickerToWeight);
     }
 
     private IMOEXDataDTO getReserveData() {
