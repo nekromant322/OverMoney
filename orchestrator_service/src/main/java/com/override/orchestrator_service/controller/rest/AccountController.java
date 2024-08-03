@@ -5,6 +5,7 @@ import com.override.dto.ChatMemberDTO;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.service.OverMoneyAccountService;
 import com.override.orchestrator_service.service.UserService;
+import com.override.orchestrator_service.util.TelegramUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -27,6 +28,9 @@ public class AccountController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private TelegramUtils telegramUtils;
 
     @GetMapping("/register/single")
     @Operation(summary = "Зарегистрировать телеграм-пользователя", description =
@@ -150,11 +154,9 @@ public class AccountController {
             "аккаунта")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Список пользователей получен"),
-            @ApiResponse(responseCode = "400", description = "Некорректный запрос"),
             @ApiResponse(responseCode = "404", description = "Данные не найдены"),
     })
-    public Set<User> getUsersFromAccount(@Parameter(description = "ID пользователя") @RequestParam Long userId)
-            throws InstanceNotFoundException {
-        return accountService.getUsersFromGroupAccount(userId);
+    public Set<User> getUsersFromAccount(Principal principal) throws InstanceNotFoundException {
+        return accountService.getUsersFromGroupAccount(telegramUtils.getTelegramId(principal));
     }
 }

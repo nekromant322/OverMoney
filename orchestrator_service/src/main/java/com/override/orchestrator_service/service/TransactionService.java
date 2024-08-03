@@ -46,6 +46,8 @@ public class TransactionService {
     private TelegramBotFeign telegramBotFeign;
     @Autowired
     private TransactionProcessingService transactionProcessingService;
+    @Autowired
+    private KeywordService keywordService;
 
     public int getTransactionsCount() {
         return transactionRepository.getTransactionsCount();
@@ -62,6 +64,9 @@ public class TransactionService {
     }
 
     public void saveTransaction(Transaction transaction) {
+        String keywordText = transaction.getMessage();
+        Long accountId = transaction.getTelegramUserId();
+        keywordService.updateLastUsed(keywordText, accountId);
         transactionRepository.save(transaction);
     }
 
