@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -32,5 +33,6 @@ public class User {
     private String authDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonBackReference
     private OverMoneyAccount account;
 }
