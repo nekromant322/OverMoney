@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: prometheus-sa
-  namespace: default
+  namespace: monitoring
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -17,10 +17,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: prometheus-cluster-role-binding
+  namespace: monitoring
 subjects:
   - kind: ServiceAccount
     name: prometheus-sa
-    namespace: default
+    namespace: monitoring
 roleRef:
   kind: ClusterRole
   name: prometheus-cluster-role
@@ -30,6 +31,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sa-prometheus
+  namespace: monitoring
   labels:
     app: sa-prometheus
 spec:
@@ -60,6 +62,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: prometheus-config
+  namespace: monitoring
   labels:
     app: prometheus
 data:
@@ -76,6 +79,9 @@ data:
         metrics_path: '/actuator/prometheus'
         kubernetes_sd_configs:
           - role: pod
+            namespaces:                      
+              names:                        
+                - default                                  
         relabel_configs:
           - source_labels: [ __meta_kubernetes_pod_label_app ]
             action: keep
@@ -91,6 +97,9 @@ data:
         metrics_path: '/actuator/prometheus'
         kubernetes_sd_configs:
           - role: pod
+            namespaces:
+              names:
+                - default
         relabel_configs:
           - source_labels: [ __meta_kubernetes_pod_label_app ]
             action: keep
@@ -106,6 +115,9 @@ data:
         metrics_path: '/actuator/prometheus'
         kubernetes_sd_configs:
           - role: pod
+            namespaces:
+              names:
+                - default
         relabel_configs:
           - source_labels: [__meta_kubernetes_pod_label_app]
             action: keep
@@ -115,11 +127,24 @@ data:
             target_label: instance
             replacement: $1
             regex: (.+)
+      - job_name: 'orchestrator_db_monitoring'
+        scrape_interval: 15s
+        static_configs:
+          - targets: ['postgres-exporter-orchestrator-svc:9187']
+            labels:
+              group: 'orchestrator-db'
+      - job_name: 'telegram_db_monitoring'
+        scrape_interval: 15s
+        static_configs:
+          - targets: ['postgres-exporter-telegram-svc:9187']
+            labels:
+              group: 'telegram-bot-db'
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: sa-prometheus-svc
+  namespace: monitoring
 spec:
   ports:
     - port: 9090
