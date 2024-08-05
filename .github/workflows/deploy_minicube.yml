@@ -153,6 +153,7 @@ jobs:
           port: 22
           script: |
             cd /home/github
+            sudo sysctl fs.protected_regular=0
             sudo iptables -P FORWARD ACCEPT
             sudo kubectl apply -f resource-manifest
             
