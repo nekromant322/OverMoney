@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-exporter-orchestrator
+  namespace: monitoring
+  labels:
+    app: postgres-exporter-orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-exporter-orchestrator
+  template:
+    metadata:
+      labels:
+        app: postgres-exporter-orchestrator
+    spec:
+      containers:
+        - name: postgres-exporter
+          image: prometheuscommunity/postgres-exporter
+          ports:
+            - containerPort: 9187
+          env:
+            - name: DATA_SOURCE_URI
+              value: "194.87.235.171:5433/orchestrator-db?sslmode=disable"
+            - name: DATA_SOURCE_USER
+              value: "{{ ORCHESTRATOR_DB_USER }}"
+            - name: DATA_SOURCE_PASS
+              value: "{{ ORCHESTRATOR_DB_PASSWORD }}"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-exporter-orchestrator-svc
+  namespace: monitoring
+spec:
+  ports:
+    - port: 9187
+      targetPort: 9187
+      protocol: TCP
+  selector:
+    app: postgres-exporter-orchestrator
