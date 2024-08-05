@@ -28,3 +28,10 @@ spec:
                 name: sa-grafana-svc
                 port:
                   number: 3000
+          - path: /prometheus
+            pathType: Prefix
+            backend:
+              service:
+                name: sa-prometheus-svc
+                port:
+                  number: 9090
