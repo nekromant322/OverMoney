@@ -14,6 +14,10 @@ services:
       POSTGRES_PASSWORD: ${ORCHESTRATOR_DB_PASSWORD:-postgres}
       POSTGRES_DB: orchestrator-db
     restart: always
+    command:
+      - "postgres"
+      - "-c"
+      - "idle_in_transaction_session_timeout=5s"
     logging:
       driver: "json-file"
       options:
