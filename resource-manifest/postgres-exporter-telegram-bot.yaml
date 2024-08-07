@@ -23,9 +23,9 @@ spec:
           env:
             - name: DATA_SOURCE_URI
               value: "194.87.235.171:5435/telegram-bot-db?sslmode=disable"
-            - name: TELEGRAM_BOT_DB_USER
+            - name: DATA_SOURCE_USER
               value: "{{ TELEGRAM_BOT_DB_USER }}"
-            - name: TELEGRAM_BOT_DB_PASSWORD
+            - name: DATA_SOURCE_PASS
               value: "{{ TELEGRAM_BOT_DB_PASSWORD }}"
 
 ---
