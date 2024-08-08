@@ -77,10 +77,10 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 
     @Query(value =
             "SELECT new com.override.dto.AnalyticsAnnualAndMonthlyExpenseForCategoryDTO(SUM(cast(t.amount as double)), "
-                    + "c.name, cast(t.category.id as int), cast(MONTH(t.date) as int)) " +
+                    + "c.name, cast(c.id as int), cast(MONTH(t.date) as int)) " +
                     "FROM Transaction t JOIN Category c ON t.category.id = c.id " +
                     "WHERE t.account.id = :accountId AND YEAR(t.date) = :year AND c.type = 1 " +
-                    "GROUP BY c.id, t.category.id, MONTH(t.date), c.name")
+                    "GROUP BY c.id, MONTH(t.date)")
     List<AnalyticsAnnualAndMonthlyExpenseForCategoryDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long accountId,
                                                                                                         Integer year);
 
