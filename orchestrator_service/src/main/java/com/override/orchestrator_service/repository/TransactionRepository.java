@@ -119,13 +119,14 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             "FROM Category c " +
             "LEFT JOIN c.transactions t " +
             "ON t.category.id = c.id " +
-            "AND t.telegramUserId = :telegramUserId " +
+            "AND t.telegramUserId = :userId " +
             "AND YEAR(t.date) = :year " +
             "WHERE c.type = :type " +
-            "AND c.account.id IN (SELECT u.account.id FROM User u WHERE u.id = :telegramUserId) " +
+            "AND c.account.id = :overMoneyAccountId " +
             "GROUP BY c.id, c.name")
     List<SumTransactionPerYearForAccountDTO> findSumTransactionsPerYearForAccount(
-            @Param("telegramUserId") Long accountId,
+            @Param("overMoneyAccountId") Long overMoneyAccountId,
+            @Param("userId") Long userId,
             @Param("year") int year,
             @Param("type") Type type);
 }

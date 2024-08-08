@@ -85,7 +85,7 @@ public class AnalyticV2Service {
             Set<User> users = overMoneyAccount.getUsers();
             List<Integer> years = getSortedYearsForAccount(overMoneyAccount.getId());
             List<SummaryUsersDataPerYearDTO> data = years.stream()
-                    .map(year -> createSummaryDataForYear(users, year))
+                    .map(year -> createSummaryDataForYear(overMoneyAccount.getId(), users, year))
                     .collect(Collectors.toList());
 
             return new AnalyticsMainDataPerYearsDTO(data);
@@ -94,41 +94,43 @@ public class AnalyticV2Service {
         }
     }
 
-    public List<Integer> getSortedYearsForAccount(Long accountId) {
-        List<Integer> years = transactionRepository.findAvailableYearsForAccountByAccountId(accountId);
+    public List<Integer> getSortedYearsForAccount(Long overMoneyAccountId) {
+        List<Integer> years = transactionRepository.findAvailableYearsForAccountByAccountId(overMoneyAccountId);
         Collections.sort(years);
         return years;
     }
 
-    public SummaryUsersDataPerYearDTO createSummaryDataForYear(Set<User> users, int year) {
+    public SummaryUsersDataPerYearDTO createSummaryDataForYear(Long overMoneyAccountId, Set<User> users, int year) {
         SummaryUsersDataPerYearDTO summaryUsersDataPerYearDTO = new SummaryUsersDataPerYearDTO();
         summaryUsersDataPerYearDTO.setYear(year);
 
         List<UserIncomeExpenseCategoriesPerYearDTO> userIncomeExpenseCategoriesPerYearDTO = users.stream()
-                .map(user -> createUserIncomeExpenseDataForYear(user, year))
+                .map(user -> createUserIncomeExpenseDataForYear(overMoneyAccountId, user, year))
                 .collect(Collectors.toList());
 
         summaryUsersDataPerYearDTO.setUsers(userIncomeExpenseCategoriesPerYearDTO);
         return summaryUsersDataPerYearDTO;
     }
 
-    public UserIncomeExpenseCategoriesPerYearDTO createUserIncomeExpenseDataForYear(User user, int year) {
+    public UserIncomeExpenseCategoriesPerYearDTO createUserIncomeExpenseDataForYear(
+            Long overMoneyAccountId, User user, int year) {
         UserIncomeExpenseCategoriesPerYearDTO userData = new UserIncomeExpenseCategoriesPerYearDTO();
         userData.setId(user.getId());
 
         List<SumTransactionPerYearForAccountDTO> incomeTransactions =
-                getTransactionsForYear(user.getId(), year, Type.INCOME);
+                getTransactionsForYear(overMoneyAccountId, user.getId(), year, Type.INCOME);
         List<SumTransactionPerYearForAccountDTO> expenseTransactions =
-                getTransactionsForYear(user.getId(), year, Type.EXPENSE);
+                getTransactionsForYear(overMoneyAccountId, user.getId(), year, Type.EXPENSE);
 
         userData.setCategoryIncome(incomeTransactions);
         userData.setCategoryExpense(expenseTransactions);
         return userData;
     }
 
-    public List<SumTransactionPerYearForAccountDTO> getTransactionsForYear(Long userId, int year, Type type) {
+    public List<SumTransactionPerYearForAccountDTO> getTransactionsForYear(
+            Long overMoneyAccountId, Long userId, int year, Type type) {
         List<SumTransactionPerYearForAccountDTO> transactions =
-                transactionRepository.findSumTransactionsPerYearForAccount(userId, year, type);
+                transactionRepository.findSumTransactionsPerYearForAccount(overMoneyAccountId, userId, year, type);
         return transactions.stream()
                 .map(t -> {
                     if (t.getSum() == null) {
