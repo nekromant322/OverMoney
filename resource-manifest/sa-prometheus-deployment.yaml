@@ -48,6 +48,8 @@ spec:
           image: prom/prometheus:v2.33.5
           ports:
             - containerPort: 9090
+          args:
+            - "--storage.tsdb.retention.time=14d"
           volumeMounts:
             - name: prometheus-config-volume
               mountPath: /etc/prometheus
