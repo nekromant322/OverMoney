@@ -14,6 +14,7 @@ import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.StatusMailing;
+import feign.FeignException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -325,6 +326,9 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
                         .idTransaction(transactionResponseDTO.getId()).build());
                 sendMessage(chatId, transactionMapper
                         .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
+            } catch (FeignException.InternalServerError e) {
+                log.error(e.getMessage());
+                sendMessage(chatId, MESSAGE_NOT_REGISTERED);
             } catch (Exception e) {
                 log.error(e.getMessage());
                 sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
