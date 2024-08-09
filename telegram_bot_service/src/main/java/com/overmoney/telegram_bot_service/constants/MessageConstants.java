@@ -23,4 +23,6 @@ public class MessageConstants {
     public static final String INVALID_UPDATE_TRANSACTION_TEXT = "Некорректная транзакция для изменения.\n" +
             "Возможно, Вы выбрали транзакцию, которая уже была изменена или сообщение бота";
     public static final String NETWORK_ERROR = "сетевая ошибка, функционал временно не доступен";
+    public static final String MESSAGE_NOT_REGISTERED = "Возможно, вы не ввели команду /start. " +
+            "Пожалуйста, введите /start и повторите вашу попытку :)";
 }
