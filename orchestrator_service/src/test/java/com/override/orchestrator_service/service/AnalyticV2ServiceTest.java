@@ -24,6 +24,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,62 +41,87 @@ public class AnalyticV2ServiceTest {
 
     private User user;
     private OverMoneyAccount overMoneyAccount;
+    private final Long userId = 1L;
+    private final Long accountId = 2L;
+
+    private final int year2022 = 2022;
+    private final int year2023 = 2023;
+
+    private final Long salaryId = 3L;
+    private final Long rentId = 4L;
+    private final Long bonusId = 5L;
+    private final Long groceriesId = 6L;
+
+    private final String salaryCategory = "Зарплата";
+    private final String rentCategory = "Аренда";
+    private final String bonusCategory = "Бонус";
+    private final String groceriesCategory = "Продукты";
+
+    private final Double salaryAmount = 50000.0;
+    private final Double rentAmount = 20000.0;
+    private final Double bonusAmount = 30000.0;
+    private final Double groceriesAmount = 10000.0;
 
     @BeforeEach
     public void setUp() {
         user = new User();
-        user.setId(1L);
+        user.setId(userId);
         overMoneyAccount = new OverMoneyAccount();
-        overMoneyAccount.setId(1L);
+        overMoneyAccount.setId(accountId);
         user.setAccount(overMoneyAccount);
         overMoneyAccount.setUsers(Set.of(user));
     }
 
     @Test
     public void testCountFinanceDataPerYear() throws InstanceNotFoundException {
-        when(userService.getUserById(1L)).thenReturn(user);
-        when(transactionRepository.findAvailableYearsForAccountByAccountId(1L)).thenReturn(Arrays.asList(2022, 2023));
+        when(userService.getUserById(userId)).thenReturn(user);
+        when(transactionRepository.findAvailableYearsForAccountByAccountId(accountId)).thenReturn(Arrays.asList(year2022, year2023));
 
-        List<SumTransactionPerYearForAccountDTO> incomeTransactions2022 = Collections.singletonList(new SumTransactionPerYearForAccountDTO(1L,"Зарплата", 50000.0));
-        List<SumTransactionPerYearForAccountDTO> expenseTransactions2022 = Collections.singletonList(new SumTransactionPerYearForAccountDTO(2L, "Аренда", 20000.0));
+        List<SumTransactionPerYearForAccountDTO> incomeTransactions2022 = Collections.singletonList(new SumTransactionPerYearForAccountDTO(salaryId, salaryCategory, salaryAmount));
+        List<SumTransactionPerYearForAccountDTO> expenseTransactions2022 = Collections.singletonList(new SumTransactionPerYearForAccountDTO(rentId, rentCategory, rentAmount));
+        List<SumTransactionPerYearForAccountDTO> incomeTransactions2023 = Collections.singletonList(new SumTransactionPerYearForAccountDTO(bonusId, bonusCategory, bonusAmount));
+        List<SumTransactionPerYearForAccountDTO> expenseTransactions2023 = Collections.singletonList(new SumTransactionPerYearForAccountDTO(groceriesId, groceriesCategory, groceriesAmount));
 
-        List<SumTransactionPerYearForAccountDTO> incomeTransactions2023 = Collections.singletonList(new SumTransactionPerYearForAccountDTO(3L, "Бонус", 30000.0));
-        List<SumTransactionPerYearForAccountDTO> expenseTransactions2023 = Collections.singletonList(new SumTransactionPerYearForAccountDTO(4L, "Продукты", 10000.0));
+        when(transactionRepository.findSumTransactionsPerYearForAccount(accountId, userId, year2022, Type.INCOME)).thenReturn(incomeTransactions2022);
+        when(transactionRepository.findSumTransactionsPerYearForAccount(accountId, userId, year2022, Type.EXPENSE)).thenReturn(expenseTransactions2022);
+        when(transactionRepository.findSumTransactionsPerYearForAccount(accountId, userId, year2023, Type.INCOME)).thenReturn(incomeTransactions2023);
+        when(transactionRepository.findSumTransactionsPerYearForAccount(accountId, userId, year2023, Type.EXPENSE)).thenReturn(expenseTransactions2023);
 
-        when(transactionRepository.findSumTransactionsPerYearForAccount(1L, 2022, Type.INCOME)).thenReturn(incomeTransactions2022);
-        when(transactionRepository.findSumTransactionsPerYearForAccount(1L, 2022, Type.EXPENSE)).thenReturn(expenseTransactions2022);
-        when(transactionRepository.findSumTransactionsPerYearForAccount(1L, 2023, Type.INCOME)).thenReturn(incomeTransactions2023);
-        when(transactionRepository.findSumTransactionsPerYearForAccount(1L, 2023, Type.EXPENSE)).thenReturn(expenseTransactions2023);
-
-        AnalyticsMainDataPerYearsDTO result = analyticV2Service.countFinanceDataPerYear(1L);
+        AnalyticsMainDataPerYearsDTO result = analyticV2Service.countFinanceDataPerYear(userId);
 
         assertNotNull(result);
         assertEquals(2, result.getData().size());
 
-        SummaryUsersDataPerYearDTO year2022 = result.getData().get(0);
-        assertEquals(2022, year2022.getYear());
-        assertEquals(1, year2022.getUsers().size());
+        SummaryUsersDataPerYearDTO year2022Data = result.getData().get(0);
+        assertEquals(year2022, year2022Data.getYear());
+        assertEquals(1, year2022Data.getUsers().size());
 
-        UserIncomeExpenseCategoriesPerYearDTO userData2022 = year2022.getUsers().get(0);
-        assertEquals(1L, userData2022.getId());
+        UserIncomeExpenseCategoriesPerYearDTO userData2022 = year2022Data.getUsers().get(0);
+        assertEquals(userId, userData2022.getId());
         assertEquals(1, userData2022.getCategoryIncome().size());
-        assertEquals("Зарплата", userData2022.getCategoryIncome().get(0).getName());
-        assertEquals(50000.0, userData2022.getCategoryIncome().get(0).getSum());
+        assertEquals(salaryCategory, userData2022.getCategoryIncome().get(0).getName());
+        assertEquals(salaryAmount, userData2022.getCategoryIncome().get(0).getSum());
         assertEquals(1, userData2022.getCategoryExpense().size());
-        assertEquals("Аренда", userData2022.getCategoryExpense().get(0).getName());
-        assertEquals(20000.0, userData2022.getCategoryExpense().get(0).getSum());
+        assertEquals(rentCategory, userData2022.getCategoryExpense().get(0).getName());
+        assertEquals(rentAmount, userData2022.getCategoryExpense().get(0).getSum());
 
-        SummaryUsersDataPerYearDTO year2023 = result.getData().get(1);
-        assertEquals(2023, year2023.getYear());
-        assertEquals(1, year2023.getUsers().size());
+        SummaryUsersDataPerYearDTO year2023Data = result.getData().get(1);
+        assertEquals(year2023, year2023Data.getYear());
+        assertEquals(1, year2023Data.getUsers().size());
 
-        UserIncomeExpenseCategoriesPerYearDTO userData2023 = year2023.getUsers().get(0);
-        assertEquals(1L, userData2023.getId());
+        UserIncomeExpenseCategoriesPerYearDTO userData2023 = year2023Data.getUsers().get(0);
+        assertEquals(userId, userData2023.getId());
         assertEquals(1, userData2023.getCategoryIncome().size());
-        assertEquals("Бонус", userData2023.getCategoryIncome().get(0).getName());
-        assertEquals(30000.0, userData2023.getCategoryIncome().get(0).getSum());
+        assertEquals(bonusCategory, userData2023.getCategoryIncome().get(0).getName());
+        assertEquals(bonusAmount, userData2023.getCategoryIncome().get(0).getSum());
         assertEquals(1, userData2023.getCategoryExpense().size());
-        assertEquals("Продукты", userData2023.getCategoryExpense().get(0).getName());
-        assertEquals(10000.0, userData2023.getCategoryExpense().get(0).getSum());
+        assertEquals(groceriesCategory, userData2023.getCategoryExpense().get(0).getName());
+        assertEquals(groceriesAmount, userData2023.getCategoryExpense().get(0).getSum());
+
+        // Верификация psql вызовов методов репозитория
+        verify(transactionRepository).findSumTransactionsPerYearForAccount(accountId, userId, year2022, Type.INCOME);
+        verify(transactionRepository).findSumTransactionsPerYearForAccount(accountId, userId, year2022, Type.EXPENSE);
+        verify(transactionRepository).findSumTransactionsPerYearForAccount(accountId, userId, year2023, Type.INCOME);
+        verify(transactionRepository).findSumTransactionsPerYearForAccount(accountId, userId, year2023, Type.EXPENSE);
     }
 }
