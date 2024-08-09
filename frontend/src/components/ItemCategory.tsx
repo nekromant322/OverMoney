@@ -1,18 +1,18 @@
 import React, { FC, useState } from 'react';
 import { Badge, ListGroupItem } from 'react-bootstrap';
-import { ICard, IListItem } from '../../types/types';
+import { ICard, ICategory } from '../types/types';
 
 interface ItemCategoryProps {
-    item: IListItem,
+    item: ICategory,
     handleDeleteCard: (card: ICard, category: string) => void,
-    handleClickCategory: (listItem: IListItem) => void
+    handleClickCategory: (listItem: ICategory) => void
 }
 
 const ItemCategory: FC<ItemCategoryProps> = ({item, handleDeleteCard, handleClickCategory}) => {
 
     const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
-    const dropHandler = (e: React.DragEvent<HTMLDivElement>, item: IListItem) => {
+    const dropHandler = (e: React.DragEvent<HTMLDivElement>, item: ICategory) => {
         e.preventDefault()
         setIsDragOver(false)
         const data = e.dataTransfer.getData("ICard");
@@ -48,7 +48,7 @@ const ItemCategory: FC<ItemCategoryProps> = ({item, handleDeleteCard, handleClic
             onClick={onClickHandler}
             style={{backgroundColor: isDragOver ? 'blue' : 'inherit'}}
         >
-            <span className="listgroup__text-item mt-2 mb-2 ms-2 me-auto">
+            <span className="listgroup__text-item mt-1 mb-1 ms-1 me-auto">
                 {item.name}
             </span>
             <Badge bg={item.type === "INCOME" ? "success" : "danger"} pill>
