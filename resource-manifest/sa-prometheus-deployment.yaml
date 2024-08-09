@@ -46,10 +46,11 @@ spec:
       containers:
         - name: sa-prometheus
           image: prom/prometheus:v2.33.5
+          args:
+            - "--config.file=/etc/prometheus/prometheus.yml"
+            - "--storage.tsdb.retention.time=14d"
           ports:
             - containerPort: 9090
-          args:
-            - "--storage.tsdb.retention.time=14d"
           volumeMounts:
             - name: prometheus-config-volume
               mountPath: /etc/prometheus
@@ -71,38 +72,38 @@ data:
     scrape_configs:
       - job_name: 'prometheus'
         static_configs:
-          - targets: [ 'localhost:9090' ]
-            
+          - targets: ['localhost:9090']
+      
       - job_name: 'recognizer_overmoney_monitoring'
         scrape_interval: 5s
         metrics_path: '/actuator/prometheus'
         kubernetes_sd_configs:
           - role: pod
         relabel_configs:
-          - source_labels: [ __meta_kubernetes_pod_label_app ]
+          - source_labels: [__meta_kubernetes_pod_label_app]
             action: keep
             regex: sa-recognizer
-          - source_labels: [ __meta_kubernetes_pod_name ]
+          - source_labels: [__meta_kubernetes_pod_name]
             action: replace
             target_label: instance
             replacement: $1
             regex: (.+)
-            
+      
       - job_name: 'orchestrator_overmoney_monitoring'
         scrape_interval: 5s
         metrics_path: '/actuator/prometheus'
         kubernetes_sd_configs:
           - role: pod
         relabel_configs:
-          - source_labels: [ __meta_kubernetes_pod_label_app ]
+          - source_labels: [__meta_kubernetes_pod_label_app]
             action: keep
             regex: sa-orchestrator
-          - source_labels: [ __meta_kubernetes_pod_name ]
+          - source_labels: [__meta_kubernetes_pod_name]
             action: replace
             target_label: instance
             replacement: $1
             regex: (.+)
-            
+      
       - job_name: 'telegram_bot_overmoney_monitoring'
         scrape_interval: 5s
         metrics_path: '/actuator/prometheus'
@@ -117,12 +118,14 @@ data:
             target_label: instance
             replacement: $1
             regex: (.+)
+      
       - job_name: 'orchestrator_db_monitoring'
         scrape_interval: 15s
         static_configs:
           - targets: ['postgres-exporter-orchestrator-svc.monitoring:9187']
             labels:
               group: 'orchestrator-db'
+      
       - job_name: 'telegram_db_monitoring'
         scrape_interval: 15s
         static_configs:
