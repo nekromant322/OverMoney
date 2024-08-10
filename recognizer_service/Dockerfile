@@ -1,4 +1,5 @@
 FROM maven:3.6.3-openjdk-11-slim AS build
+
 RUN mkdir -p /dto
 WORKDIR /dto
 COPY /dto/pom.xml /dto
@@ -17,10 +18,8 @@ COPY /recognizer_service/pom.xml /recognizer
 COPY /recognizer_service/src /recognizer/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
-FROM openjdk:11-bullseye
-RUN apt-get -y update \
-    && apt-get -y upgrade \
-    && apt-get install -y --no-install-recommends ffmpeg
+FROM openjdk:11-jdk-alpine
+RUN apk add --no-cache ffmpeg
 EXPOSE 8080
 COPY --from=build /recognizer/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
