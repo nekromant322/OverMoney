@@ -1,12 +1,13 @@
 import React, { FC } from 'react';
 import './App.scss';
 import { BrowserRouter, Navigate,  Route, Routes } from 'react-router-dom';
-import Overmoney from '../Overmoney/Overmoney';
-import History from '../History/History';
-import Analytics from '../Analytics/Analytics';
-import Micromanagement from '../Micromanagement/Micromanagement';
-import Settings from '../Settings/Settings';
-import Header from '../Header/Header';
+import Overmoney from './pages/Overmoney';
+import History from './pages/History';
+import Analytics from './pages/Analytics';
+import Micromanagement from './pages/Micromanagement';
+import Settings from './pages/Settings';
+import Header from './components/Header';
+import LoginPage from './pages/LoginPage';
 
 const App: FC = () => {
   const url = process.env.REACT_APP_PATH_TO_HOST || '/front';
@@ -14,6 +15,7 @@ const App: FC = () => {
     <BrowserRouter>
       <Header />
       <Routes>
+        <Route path={`${url}/login`} Component={LoginPage} />
         <Route path={`${url}/overmoney`} Component={Overmoney} />
         <Route path={`${url}/history`} Component={History} />
         <Route path={`${url}/analytics`} Component={Analytics} />

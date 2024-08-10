@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
-import { ICard } from '../../types/types';
-import Popup from '../Popup/Popup';
+import { ICard } from '../types/types';
+import Popup from './Popup';
 import { Form } from 'react-bootstrap';
 
 interface PopupAddCardProps {

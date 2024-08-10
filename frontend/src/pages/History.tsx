@@ -1,12 +1,12 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { AgGridReact } from '@ag-grid-community/react'; 
-import { transactions } from '../../utils/utils';
+import { transactions } from '../utils/utils';
 import { Button, Container } from 'react-bootstrap';
 import { CellClickedEvent, ColDef } from '@ag-grid-community/core';
 import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import PopupChangeTransaction from '../PopupChangeTransaction/PopupChangeTransaction';
-import { ITransaction } from '../../types/types';
+import PopupChangeTransaction from '../components/PopupChangeTransaction';
+import { ITransaction } from '../types/types';
 
 ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
 

@@ -1,10 +1,27 @@
-@import "~bootstrap/scss/bootstrap.scss";
+@import "~bootstrap/scss/_functions.scss";
+@import "~bootstrap/scss/_variables.scss";
 @import "@ag-grid-community/styles/ag-grid.css"; // Core CSS
 @import "@ag-grid-community/styles/ag-theme-material.css"; // Theme
 @import 'bootstrap-icons/font/bootstrap-icons.css';
 
-
-
+$grid-breakpoints: (
+    xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1600px
+    );
+    
+$container-max-widths: (
+    sm: 540px,
+    md: 720px,
+    lg: 960px,
+    xl: 1140px,
+    xxl: 1520px
+);
+        
+@import "~bootstrap/scss/bootstrap.scss";
 
 :root {
     width: 100%;
@@ -98,7 +115,7 @@ header {
     
     &__items {
         overflow-y: auto; 
-        max-height: 60vh;
+        // max-height: 60vh;
         scrollbar-color: var(--bs-border-color) var(--bs-dark-rgb);
     }
 
