@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
-import javax.transaction.Transactional;
 import java.util.Map;
 import java.util.concurrent.*;
 
@@ -27,7 +26,6 @@ public class KafkaProducerService {
     @Value("${spring.kafka.topics.request}")
     private String requestTopic;
 
-    @Transactional
     public CompletableFuture<TransactionResponseDTO> sendTransaction(
             Long chatId, TransactionMessageDTO transactionMessageDTO) {
         CompletableFuture<TransactionResponseDTO> future = new CompletableFuture<>();
