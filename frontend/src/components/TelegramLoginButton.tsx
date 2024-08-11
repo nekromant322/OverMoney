@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react';
+import { IUser } from '../types/types';
 
 interface TelegramLoginButtonProps {
     botName: string; // Имя вашего бота в Telegram
-    dataOnauth: (user: any) => void; // Функция обратного вызова для обработки данных пользователя после аутентификации
+    dataOnauth: (user: IUser) => void; // Функция обратного вызова для обработки данных пользователя после аутентификации
 }
 
 const TelegramLoginButton: React.FC<TelegramLoginButtonProps> = ({ botName, dataOnauth }) => {
@@ -21,7 +22,7 @@ const TelegramLoginButton: React.FC<TelegramLoginButtonProps> = ({ botName, data
 
         document.querySelector('#telegram-button')?.appendChild(script);
 
-        (window as any).handleTelegramAuth = (user: any) => {
+        (window as any).handleTelegramAuth = (user: IUser) => {
         dataOnauth(user);
         };
 

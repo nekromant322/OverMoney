@@ -1,18 +1,18 @@
 import React, { FC, useState } from 'react';
 import { Badge, ListGroupItem } from 'react-bootstrap';
-import { ICard, IListItem } from '../types/types';
+import { ICard, ICategory } from '../types/types';
 
 interface ItemCategoryProps {
-    item: IListItem,
+    item: ICategory,
     handleDeleteCard: (card: ICard, category: string) => void,
-    handleClickCategory: (listItem: IListItem) => void
+    handleClickCategory: (listItem: ICategory) => void
 }
 
 const ItemCategory: FC<ItemCategoryProps> = ({item, handleDeleteCard, handleClickCategory}) => {
 
     const [isDragOver, setIsDragOver] = useState<boolean>(false);
 
-    const dropHandler = (e: React.DragEvent<HTMLDivElement>, item: IListItem) => {
+    const dropHandler = (e: React.DragEvent<HTMLDivElement>, item: ICategory) => {
         e.preventDefault()
         setIsDragOver(false)
         const data = e.dataTransfer.getData("ICard");

@@ -1,8 +1,9 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import { ITransaction } from '../types/types';
 import Popup from './Popup';
 import { Form } from 'react-bootstrap';
-import { constlistItems } from '../utils/utils';
+// import { constlistItems } from '../utils/utils';
+import { CategoriesContext } from '../context/CategoriesContext';
 
 interface PopupChangeTransactionProps {
     showModalChangeTransaction: boolean,
@@ -14,6 +15,7 @@ interface PopupChangeTransactionProps {
 
 const PopupChangeTransaction: FC<PopupChangeTransactionProps> = ({showModalChangeTransaction, handleCloseModalChangeTransaction, item, handleButtonSave}) => {
 
+    const categories = useContext(CategoriesContext)
     const [formData, setFormData] = useState<ITransaction>({} as ITransaction);
 
     useEffect(() => {
@@ -52,7 +54,7 @@ const PopupChangeTransaction: FC<PopupChangeTransactionProps> = ({showModalChang
                 <Form.Group className="mb-3" controlId="category">
                     <Form.Label>Категория:</Form.Label>
                     <Form.Select aria-label="Категория" defaultValue={formData.categoryName}>
-                        {constlistItems.map((el) => (
+                        {categories.map((el) => (
                             <option key={el.id} value={el.id} >{el.name}</option>
                         ))}
                     </Form.Select>
