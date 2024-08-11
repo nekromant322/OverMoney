@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Form } from 'react-bootstrap';
-import Popup from '../Popup/Popup';
-import { IListItem } from '../../types/types';
+import Popup from './Popup';
+import { IListItem } from '../types/types';
 
 interface PopupAddCategoryProps {
     showModalAddCategory: boolean,

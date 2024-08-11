@@ -1,8 +1,8 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { ICard } from '../../types/types';
+import { ICard } from '../types/types';
 import { Button, Col, Container, Row } from 'react-bootstrap';
-import ItemCard from '../ItemCard/ItemCard';
-import PopupAddCard from '../PopupAddCard/PopupAddCard';
+import ItemCard from './ItemCard';
+import PopupAddCard from './PopupAddCard';
 
 
 interface GridCardsProps {
