@@ -18,8 +18,10 @@ COPY /recognizer_service/pom.xml /recognizer
 COPY /recognizer_service/src /recognizer/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
-FROM openjdk:11-jdk-alpine
-RUN apk add --no-cache ffmpeg
+FROM openjdk:11-bullseye
+RUN apt-get -y update \
+    && apt-get -y upgrade \
+    && apt-get install -y --no-install-recommends ffmpeg
 EXPOSE 8080
 COPY --from=build /recognizer/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
