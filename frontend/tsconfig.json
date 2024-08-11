@@ -1,11 +1,7 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
+        "target": "es6",
+        "lib": ["dom", "dom.iterable", "esnext"],
         "allowJs": true,
         "skipLibCheck": true,
         "esModuleInterop": true,
@@ -20,6 +16,13 @@
         "jsx": "react"
     },
     "include": [
-        "src/components"
-, "src/App.tsx", "src/pages/Settings.tsx", "src/pages/Overmoney.tsx", "src/pages/Micromanagement.tsx", "src/pages/LoginPage.tsx", "src/pages/Analytics.tsx"    ]
+        "src/**/*.ts",
+        "src/**/*.tsx",
+        "src/App.tsx",
+        "src/pages/Settings.tsx",
+        "src/pages/Overmoney.tsx",
+        "src/pages/Micromanagement.tsx",
+        "src/pages/LoginPage.tsx",
+        "src/pages/Analytics.tsx"
+    ]
 }
