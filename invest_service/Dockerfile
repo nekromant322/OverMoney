@@ -18,7 +18,7 @@ COPY /invest_service/pom.xml /invest
 COPY /invest_service/src /invest/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
-FROM openjdk:11-jdk-alpine
+FROM amazoncorretto:11-alpine
 COPY --from=build /invest/target/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","app.jar"]

@@ -18,7 +18,7 @@ COPY /orchestrator_service/pom.xml /orchestrator
 COPY /orchestrator_service/src /orchestrator/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
-FROM openjdk:11-jdk-alpine
+FROM amazoncorretto:11-alpine
 COPY --from=build /orchestrator/target/*.jar app.jar
 EXPOSE 8081
 ENTRYPOINT ["java","-jar","app.jar"]
