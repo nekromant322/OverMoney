@@ -26,9 +26,9 @@ spec:
           name: sa-invest
           resources:
             requests:
-              memory: "256Mi"
+              memory: "128Mi"
             limits:
-              memory: "512Mi"
+              memory: "256Mi"
           env:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
