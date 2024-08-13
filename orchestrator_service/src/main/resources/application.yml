@@ -47,7 +47,8 @@
       Kulpinov_Evgeny,
       Ubeev_Valerii,
       Denis_Shvartcer,
-      NikoTiN_RnD
+      NikoTiN_RnD,
+      annov4
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
