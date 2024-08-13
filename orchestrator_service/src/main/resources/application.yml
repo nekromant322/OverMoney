@@ -4,6 +4,13 @@
       encoding:
         charset: UTF-8
         force-response: true
+  # Используется для переключения получения транзакций через kafka или через http
+  # Необходимо поменять и в orchestrator_service и в telegram_bot_service
+  # Для выбора http необходимо установить значение processing: orchestrator
+  # Для выбора kafka необходимо установить значение processing: kafka
+  service:
+    transaction:
+      processing: kafka
 
   integration:
     internal:
