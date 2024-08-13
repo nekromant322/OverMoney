@@ -24,6 +24,11 @@ spec:
         - image: nekromant322/overmoney-orchestrator:latest
           imagePullPolicy: Always
           name: sa-orchestrator
+          resources:
+            requests:
+              memory: "256Mi"
+            limits:
+              memory: "512Mi"
           env:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
