@@ -55,7 +55,8 @@
       Ubeev_Valerii,
       Denis_Shvartcer,
       NikoTiN_RnD,
-      annov4
+      annov4,
+      Alego22
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
