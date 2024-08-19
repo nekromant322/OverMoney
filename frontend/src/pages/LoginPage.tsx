@@ -31,7 +31,7 @@ const LoginPage: FC = () => {
             {process.env.NODE_ENV === "development" ? <Button variant="primary" onClick={() => handleUserAuth({id: 1,
                                                                                                             first_name: "overmoney",
                                                                                                             username: "overmoney",
-                                                                                                            photo_url: "https://overmoney.tech",
+                                                                                                            photo_url: "https://overmoney.tech/photo",
                                                                                                             auth_date: 1000,
                                                                                                             hash: "qwerty",})}>Войти</Button> 
     : <TelegramLoginButton dataOnauth={handleUserAuth}/> }

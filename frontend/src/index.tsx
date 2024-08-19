@@ -8,7 +8,7 @@ async function enableMocking() {
         return
     }
     const { worker } = await import('./mocks/browser')
-    return worker.start()
+    return worker.start({serviceWorker: {url: '/front/mockServiceWorker.js'}})
 }
 
 const container = document.getElementById('root');
