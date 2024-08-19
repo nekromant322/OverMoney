@@ -46,7 +46,7 @@ public class ExportUserDataServiceTest {
         testAccount.setChatId(testChatId);
         when(overMoneyAccountService.getAccountByUserId(testTelegramId)).thenReturn(testAccount);
         when(categoryService.findCategoriesListByChatId(testChatId)).thenReturn(categoryDTOList);
-        when(transactionService.findAllTransactionDTOForAccountByChatId(testChatId)).thenReturn(transactionDTOList);
+        when(transactionService.findAlltransactionDTOForAcountByChatId(testChatId)).thenReturn(transactionDTOList);
 
         ResponseEntity<InputStreamResource> response = exportUserDataService.downloadExelFile(testTelegramId);
 

@@ -47,7 +47,7 @@ public class BackupUserDataServiceTest {
         TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
         transactionDTOList.add(transactionDTO);
 
-        when(transactionService.findAllTransactionDTOForAccountByChatId(any())).thenReturn(transactionDTOList);
+        when(transactionService.findAlltransactionDTOForAcountByChatId(any())).thenReturn(transactionDTOList);
         backupUserDataService.createBackup(any());
 
         Assertions.assertEquals(backupUserDataDTO.getTransactionDTOList().size(), transactionDTOList.size());
@@ -66,7 +66,7 @@ public class BackupUserDataServiceTest {
         TransactionDTO transactionDTO = TestFieldsUtil.generateTestTransactionDTO();
         transactionDTOList.add(transactionDTO);
 
-        when(transactionService.findAllTransactionDTOForAccountByChatId(any())).thenReturn(transactionDTOList);
+        when(transactionService.findAlltransactionDTOForAcountByChatId(any())).thenReturn(transactionDTOList);
         backupUserDataService.createBackupRemovedUserData(any());
 
 
@@ -87,7 +87,7 @@ public class BackupUserDataServiceTest {
         transactionDTOList.add(transactionDTO);
         OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
 
-        when(transactionService.findAllTransactionDTOForAccountByChatId(any())).thenReturn(transactionDTOList);
+        when(transactionService.findAlltransactionDTOForAcountByChatId(any())).thenReturn(transactionDTOList);
         when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(account);
         backupUserDataService.createBackupUserData(any());
 
