@@ -16,6 +16,16 @@ const postsResolver = () => {
     ]);
 };
 
-const postsHandler = http.get("/api/posts", postsResolver);
+const getBotName = () => {
+    return HttpResponse.text("overmoney-bot");
+}
 
-export const handlers = [postsHandler];
+const auth = () => {
+    return HttpResponse.text("login success");
+}
+
+const postsHandler = http.get("/api/posts", postsResolver);
+const botNameHandler = http.get("/login/bot-login", getBotName);
+const loginHandler = http.post("/auth/login", auth);
+
+export const handlers = [postsHandler, botNameHandler, loginHandler];

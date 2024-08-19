@@ -10,11 +10,11 @@ const TelegramLoginButton: React.FC<TelegramLoginButtonProps> = ({ dataOnauth })
     // Подготовка ссылки для Telegram Login Widget
     const versionWidget = process.env.REACT_APP_VERSION_WIDGET || '22';
     const scriptSrc = `https://telegram.org/js/telegram-widget.js?${versionWidget}`;
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'https://overmoney.tech'
+    // const baseUrl = process.env.REACT_APP_BASE_URL || 'https://overmoney.tech'
 
     useEffect(() => {
 
-        axios.get(`${baseUrl}/login/bot-login`)
+        axios.get(`/login/bot-login`)
             .then(response => {
                 console.log(response.data)
                 const script = document.createElement('script');
