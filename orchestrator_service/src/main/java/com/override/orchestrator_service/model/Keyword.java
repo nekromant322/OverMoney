@@ -32,6 +32,7 @@ public class Keyword {
         this.category = category;
         this.usageCount = 0;
     }
+
     public void incrementUsageCount() {
         this.usageCount++;
     }
