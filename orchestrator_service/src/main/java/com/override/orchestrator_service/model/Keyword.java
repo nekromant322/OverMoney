@@ -24,16 +24,8 @@ public class Keyword {
     @Column(name = "last_used")
     private LocalDateTime lastUsed;
 
-    @Column(name = "usage_count")
-    private int usageCount;
-
     public Keyword(KeywordId keywordId, Category category) {
         this.keywordId = keywordId;
         this.category = category;
-        this.usageCount = 0;
-    }
-
-    public void incrementUsageCount() {
-        this.usageCount++;
     }
 }
