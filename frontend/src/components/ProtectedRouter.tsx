@@ -29,7 +29,7 @@ const AuthRoute = () => {
 
 const ProtectedRouter = (props : Props) => {
     const url = process.env.REACT_APP_PATH_TO_HOST || '/front'
-    const baseUrl = process.env.REACT_APP_BASE_URL || 'https://overmoney.tech'
+    // const baseUrl = process.env.REACT_APP_BASE_URL || 'https://overmoney.tech'
 
     const { authenticated } = useContext(AuthContext)
     const [categories, setCategories] = useState([]);
@@ -37,14 +37,14 @@ const ProtectedRouter = (props : Props) => {
     useEffect(() => {
         if (authenticated) {
             //вызов API получения списка транзакции
-            axios.get(`${baseUrl}/categories`)
+            axios.get(`/categories`)
             .then(response => {
                 setCategories(response.data);
             })
             .catch(error => {
                 console.error(error);
             });
-            axios.get(`${baseUrl}/transactions`)
+            axios.get(`/transactions`)
             .then(response => {
                 setTransactions(response.data);
             })

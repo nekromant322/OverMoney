@@ -8,6 +8,7 @@ import { ModuleRegistry } from '@ag-grid-community/core';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import PopupChangeTransaction from '../components/PopupChangeTransaction';
 import { ITransaction } from '../types/types';
+import axios from 'axios';
 // import axios from 'axios';
 
 ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
@@ -43,16 +44,16 @@ const History: FC = () => {
         },
     ])
 
-    // useEffect(() => {
-    //     //вызов API получения списка транзакции
-    //     axios.get('/api/transactions')
-    //     .then(response => {
-    //         setRowData(response.data);
-    //     })
-    //     .catch(error => {
-    //         console.error(error);
-    //     });
-    // }, [rowData])
+    useEffect(() => {
+        //вызов API получения списка транзакции
+        axios.get('/transactions/history?pageSize=50&pageNumber=0')
+        .then(response => {
+            setRowData(response.data);
+        })
+        .catch(error => {
+            console.error(error);
+        });
+    }, [])
 
     const handleModalSaveButton = (formData: ITransaction) => {
         //вызов API изменения транзакции
