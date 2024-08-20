@@ -42,6 +42,6 @@ public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM Keyword k WHERE k.lastUsed < :maxDate")
-    void deleteDepricatedKeywords(@Param("maxDate") LocalDateTime maxDate);
+    @Query("DELETE FROM Keyword k WHERE k.lastUsed < :maxDate AND k.usageCount <= :minUsageCount")
+    void deleteDeprecatedKeywords(@Param("maxDate") LocalDateTime maxDate, @Param("minUsageCount") int minUsageCount);
 }
