@@ -25,7 +25,7 @@ public class Keyword {
     private LocalDateTime lastUsed;
 
     @Column(name = "usage_count")
-    private int usageCount;
+    private Integer usageCount = 0;
 
     public Keyword(KeywordId keywordId, Category category) {
         this.keywordId = keywordId;
@@ -34,6 +34,9 @@ public class Keyword {
     }
 
     public void incrementUsageCount() {
+        if (this.usageCount == null) {
+            this.usageCount = 0;
+        }
         this.usageCount++;
     }
 }
