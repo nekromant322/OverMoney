@@ -1,7 +1,7 @@
 import React, { FC, useContext, useEffect, useRef, useState } from 'react';
 import { AgGridReact } from '@ag-grid-community/react'; 
 // import { transactions } from '../utils/utils';
-import { TransactionsContext } from '../context/TransactionsContext';
+// import { TransactionsContext } from '../context/TransactionsContext';
 import { Button, Container } from 'react-bootstrap';
 import { CellClickedEvent, ColDef } from '@ag-grid-community/core';
 import { ModuleRegistry } from '@ag-grid-community/core';
@@ -17,9 +17,9 @@ ModuleRegistry.registerModules([ ClientSideRowModelModule ]);
 const History: FC = () => {
 
     const gridRef = useRef<AgGridReact>(null);
-    const transactions = useContext(TransactionsContext)
+    // const transactions = useContext(TransactionsContext)
 
-    const [rowData, setRowData] = useState(transactions);
+    const [rowData, setRowData] = useState([] as ITransaction[]);
     const [showModalChangeTransaction, setShowModalChangeTransaction] = useState(false);
     const handleCloseModalChangeTransaction = () => setShowModalChangeTransaction(false);
     const [selectedRowEdit, setSelectedRowEdit] = useState<ITransaction>({} as ITransaction);
@@ -46,7 +46,7 @@ const History: FC = () => {
 
     useEffect(() => {
         //вызов API получения списка транзакции
-        axios.get('/transactions/history?pageSize=50&pageNumber=0')
+        axios.get('/transactions/history?pageSize=50&pageNumber=0', { withCredentials: true })
         .then(response => {
             setRowData(response.data);
         })

@@ -5,6 +5,7 @@ import ListCategories from '../components/ListCategories'
 import { ICard, ICategory } from '../types/types'
 import { CategoriesContext } from '../context/CategoriesContext'
 import { TransactionsContext } from '../context/TransactionsContext'
+import axios from 'axios'
 // import { constCards, constlistItems } from '../utils/utils'
 
 
@@ -29,14 +30,18 @@ const Overmoney: FC = () => {
 
     const handleSubmitAddCard = useCallback((formData: ICard) => {
         //вызов API добавления категории 
-        setCards([
-            ...cards,
-            {
-                id: `${cards.length + 1}`,
-                message: formData.message,
-                amount: formData.amount,
-            }
-        ])
+        axios.post('/transactions', formData)
+            .then(respons => {
+                setCards(respons.data)
+            })
+        //     setCards([
+        //     ...cards,
+        //     {
+        //         id: `${cards.length + 1}`,
+        //         message: formData.message,
+        //         amount: formData.amount,
+        //     }
+        // ])
     }, [cards])
 
     const handleDeleteCard = useCallback((card: ICard, category: string) => {

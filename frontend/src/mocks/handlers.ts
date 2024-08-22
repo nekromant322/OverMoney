@@ -1,20 +1,8 @@
-import { http, HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw'
+import { ICard, ICategory, ITransaction } from '../types/types'
 
-const getBotName = () => {
-    return HttpResponse.text("overmoney-bot");
-}
-
-const auth = () => {
-    return new HttpResponse('login success', {
-        status: 200,
-        headers: {
-            'Set-Cookie': 'accessToken=qwerty123'
-        }
-    });
-}
-
-const getCategories = () => {
-    return HttpResponse.json([
+const state = {
+    categories: [
         {
             id: '1',
             name: 'Категория 1',
@@ -57,11 +45,8 @@ const getCategories = () => {
             type: "EXPENSE",
             keywords: ['Ключевое слово 71', 'Ключевое слово 72', 'Ключевое слово 73'],
         },
-    ])
-}
-
-const getTransactions = () => {
-    return HttpResponse.json([
+    ] as ICategory[],
+    transactions: [
         {
             id: '1',
             message: 'Карта 1sddsagagsgdsads',
@@ -92,11 +77,8 @@ const getTransactions = () => {
             message: 'Карта 6',
             amount: 100,
         }
-    ])
-}
-
-const getHistory = () => {
-    return HttpResponse.json([
+    ] as ICard[],
+    history: [
         {
             id: "1",
             categoryName: "Нераспознаное",
@@ -277,35 +259,117 @@ const getHistory = () => {
             // "telegramUserId": 307935244,
             telegramUserName: "NikoTiN_RnD"
         }
-    ])
+    ] as ITransaction[]
 }
 
+const botNameHandler = http.get("/login/bot-login", () => {
+    return HttpResponse.text("overmoney-bot")
+})
 
-const botNameHandler = http.get("/login/bot-login", getBotName);
-const loginHandler = http.post("/auth/login", auth);
+const loginHandler = http.post("/auth/login", () => {
+    return new HttpResponse('login success', {
+        status: 200,
+        headers: {
+            'Set-Cookie': 'accessToken=qwerty123'
+        }
+    })
+})
+
 const getCategoriesHandler = http.get("/categories", ({ cookies }) => {
     if (cookies.accessToken === 'qwerty123') {
-        return getCategories();
+        return HttpResponse.json(state.categories)
     }
     return HttpResponse.text('login failed', {
         status: 401
-    });
-} );
+    })
+} )
+
+const addCategoryHandler = http.post("/categories", async ({ request, cookies }) => {
+    if (cookies == null || cookies.accessToken !== 'qwerty123') {
+        return HttpResponse.text('login failed', {
+            status: 401
+        })
+    }
+
+    const body = await request.json();
+    if (body == null || typeof body !== 'object') {
+        return HttpResponse.text('invalid request', {
+            status: 400
+        })
+    }
+
+    const newCategory = body as ICategory;
+    if (newCategory == null || newCategory.name == null || newCategory.id == null) {
+        return HttpResponse.text('invalid request', {
+            status: 400
+        })
+    }
+
+    state.categories = [...state.categories, newCategory]
+    return HttpResponse.json(state.categories)
+})
+
 const getTransactionsHandler = http.get("/transactions", ({ cookies}) => {
     if (cookies.accessToken === 'qwerty123') {
-        return getTransactions();
+        return HttpResponse.json(state.transactions)
     }
     return HttpResponse.text('login failed', {
         status: 401
-    });
-} );
-const getHistoryHandler = http.get("/transactions/history?pageSize=50&pageNumber=0", ({ cookies }) => {
-    if (cookies.accessToken === 'qwerty123') {
-        return getHistory();
-    }
-    return HttpResponse.text('login failed', {
-        status: 401
-    });
-} );
+    })
+})
 
-export const handlers = [botNameHandler, loginHandler, getCategoriesHandler, getTransactionsHandler, getHistoryHandler];
+const addTransactionHandler = http.post("/transactions", async ({ request, cookies }) => {
+    if (cookies == null || cookies.accessToken !== 'qwerty123') {
+        return HttpResponse.text('login failed', {
+            status: 401
+        })
+    }
+
+    const body = await request.json();
+    if (body == null || typeof body !== 'object') {
+        return HttpResponse.text('invalid request', {
+            status: 400
+        })
+    }
+
+    const newTransaction = body as ICard;
+    if (newTransaction == null || newTransaction.message == null || newTransaction.amount == null) {
+        return HttpResponse.text('invalid request', {
+            status: 400
+        })
+    }
+
+    state.transactions = [...state.transactions, {
+        id: String(state.transactions.length + 1) , 
+        amount: newTransaction.amount, 
+        message: newTransaction.message, 
+    }] as ICard[]
+    return HttpResponse.json(state.transactions)
+})
+
+const getHistoryHandler = http.get("/transactions/history", ({ request, cookies }) => {
+    if (cookies.accessToken === 'qwerty123') {
+        // const url = new URL(request.url)
+
+        // const pageSize = Number.parseInt(url.searchParams.get('pageSize') || "0")
+        // const pageNumber = Number.parseInt(url.searchParams.get('pageNumber') || "0")
+        // if (pageSize && pageNumber) {
+            // return HttpResponse.json(state.history.slice((pageNumber - 1) * pageSize, pageNumber * pageSize))
+            return HttpResponse.json(state.history)
+        // }
+    }
+    return HttpResponse.text('login failed', {
+        status: 401
+    })
+})
+
+
+
+export const handlers = [ 
+    botNameHandler, 
+    loginHandler, 
+    getCategoriesHandler, 
+    addCategoryHandler, 
+    getTransactionsHandler,
+    addTransactionHandler,
+    getHistoryHandler]
