@@ -31,9 +31,6 @@ public class KeywordService {
     @Value("${clean-deprecated-keywords.max-days}")
     private int maxDays;
 
-    @Value("${clean-deprecated-keywords.min-usage}")
-    private int minUsageCount;
-
     public void saveKeyword(Keyword keyword) {
         keywordRepository.save(keyword);
     }
@@ -97,9 +94,9 @@ public class KeywordService {
     @Scheduled(fixedRateString = "#{${clean-deprecated-keywords.interval} * 24 * 60 * 60 * 1000}")
     @SchedulerLock(name = "cleanKeyword", lockAtLeastFor = "10m", lockAtMostFor = "15m")
     @Transactional
-    public void cleanDeprecatedKeywords() {
+    public void cleanDepricatedKeywords() {
         LocalDateTime maxDate = LocalDateTime.now().minusDays(maxDays);
-        keywordRepository.deleteDeprecatedKeywords(maxDate, minUsageCount);
+        keywordRepository.deleteDepricatedKeywords(maxDate);
     }
 
     public void updateLastUsed(String keywordText, Long accountId) {
@@ -109,12 +106,10 @@ public class KeywordService {
         if (optionalKeyword.isPresent()) {
             keyword = optionalKeyword.get();
             keyword.setLastUsed(LocalDateTime.now());
-            keyword.incrementUsageCount();
         } else {
             keyword = new Keyword();
             keyword.setKeywordId(keywordId);
             keyword.setLastUsed(LocalDateTime.now());
-            keyword.setUsageCount(1);
         }
         keywordRepository.save(keyword);
     }
