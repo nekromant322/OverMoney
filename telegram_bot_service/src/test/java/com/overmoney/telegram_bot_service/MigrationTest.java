@@ -43,5 +43,6 @@ public class MigrationTest {
     @Test
     @DisplayName("Схема бд в миграции совпадает с моделями в коде")
     void checkLiquibase() {
+
     }
 }
