@@ -5,12 +5,10 @@ import com.override.dto.MergeCategoryDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.config.DefaultCategoryProperties;
 import com.override.orchestrator_service.exception.CategoryNotFoundException;
-import com.override.orchestrator_service.mapper.AccountMapper;
 import com.override.orchestrator_service.mapper.CategoryMapper;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.KeywordId;
 import com.override.orchestrator_service.model.OverMoneyAccount;
-import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
@@ -27,7 +25,6 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
