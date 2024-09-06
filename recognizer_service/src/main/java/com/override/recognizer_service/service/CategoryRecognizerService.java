@@ -58,6 +58,9 @@ public class CategoryRecognizerService {
 
     public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
         CategoryDTO suggestedCategory = recognizeCategory(message, categories);
+        Long suggestedCategoryId = suggestedCategory != null &&
+            calculateAccuracy(suggestedCategory, message) >= minAccuracy ?
+            suggestedCategory.getId() : null;
         float accuracy = suggestedCategory != null ? calculateAccuracy(suggestedCategory, message) : 0.0f;
         TransactionDTO transactionDTO = TransactionDTO.builder()
             .accuracy(accuracy)
