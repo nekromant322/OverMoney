@@ -322,6 +322,7 @@ public class TransactionServiceTest {
                 .amount(188926.54D)
                 .date(LocalDateTime.now())
                 .categoryName("продукты")
+                .accuracy(0.9F)
                 .build();
 
         Transaction transaction = TestFieldsUtil.generateTestTransaction();
@@ -345,6 +346,7 @@ public class TransactionServiceTest {
                 .amount(250d)
                 .date(LocalDateTime.now())
                 .categoryName("Тест")
+                .accuracy(0.9F)
                 .build();
 
         Transaction transaction = TestFieldsUtil.generateTestTransaction();
@@ -367,6 +369,7 @@ public class TransactionServiceTest {
                 .amount(250d)
                 .date(LocalDateTime.now())
                 .categoryName("Тест")
+                .accuracy(0.9F)
                 .build();
 
         Transaction transaction = TestFieldsUtil.generateTestTransaction();
