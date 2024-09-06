@@ -41,8 +41,8 @@ public class CategoryRecognizerService {
         categories.forEach(c -> {
             c.getKeywords().add(
                 KeywordIdDTO.builder()
-                    .name(c.getName())
-                    .build());
+                            .name(c.getName())
+                            .build());
         });
         categories.forEach(c -> {
             c.getKeywords().forEach(k -> {
@@ -58,22 +58,20 @@ public class CategoryRecognizerService {
 
     public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
         CategoryDTO suggestedCategory = recognizeCategory(message, categories);
-        Long suggestedCategoryId = suggestedCategory != null &&
-            calculateAccuracy(suggestedCategory, message) >= minAccuracy ?
-            suggestedCategory.getId() : null;
+        Long suggestedCategoryId = suggestedCategory != null && calculateAccuracy(suggestedCategory, message) >= minAccuracy ? suggestedCategory.getId() : null;
         float accuracy = suggestedCategory != null ? calculateAccuracy(suggestedCategory, message) : 0.0f;
         TransactionDTO transactionDTO = TransactionDTO.builder()
-            .accuracy(accuracy)
-            .id(transactionId)
-            .suggestedCategoryId(suggestedCategoryId)
-            .build();
+                            .accuracy(accuracy)
+                            .id(transactionId)
+                            .suggestedCategoryId(suggestedCategoryId)
+                            .build();
         orchestratorFeign.editTransaction(transactionDTO);
     }
 
     private float calculateAccuracy(CategoryDTO category, String message) {
         return category.getKeywords().stream()
-            .map(k -> calculateLevenshteinDistance(message, k.getName()))
-            .max(Float::compare)
-            .orElse(0.0f);
+                            .map(k -> calculateLevenshteinDistance(message, k.getName()))
+                            .max(Float::compare)
+                            .orElse(0.0f);
     }
 }
