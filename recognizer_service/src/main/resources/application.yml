@@ -1,40 +1,44 @@
-  server:
-    port: 8080
+server:
+  port: 8080
 
-  integration:
-    internal:
-      host:
-        orchestrator: http://sa-orchestrator-svc
-        wit-ai-proxy: http://wit-ai-go-proxy-svc
+integration:
+  internal:
+    host:
+      orchestrator: http://sa-orchestrator-svc
+      wit-ai-proxy: http://wit-ai-go-proxy-svc
 
-  spring:
-    application:
-      name: recognizer-service
+spring:
+  application:
+    name: recognizer-service
 
-    profiles:
-      active: ${SPRING_APPLICATION_PROFILE:dev}
+  profiles:
+    active: ${SPRING_APPLICATION_PROFILE:dev}
 
-  logging:
-    level:
-      org.zalando.logbook: TRACE
+logging:
+  level:
+    org.zalando.logbook: TRACE
 
-  management:
-    endpoints:
-      web:
-        exposure:
-          include: health,prometheus
-    metrics:
-      export:
-        prometheus:
-          enabled: true
-      distribution:
-        percentiles-histogram:
-          "[http.server.requests]": true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
 
-  authorization-header:
-    header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+authorization-header:
+  header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
 
-  mask-log-spring-boot-starter:
-    maskedFields:
-      - x-internal-key
-      - voiceMessageBytes
+mask-log-spring-boot-starter:
+  maskedFields:
+    - x-internal-key
+    - voiceMessageBytes
+
+# Валидность подсказки
+recognizer:
+  min-accuracy: 0.7 # Минимальная точность подсказки

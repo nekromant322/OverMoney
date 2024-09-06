@@ -35,6 +35,9 @@ public class TransactionDTO {
     @Schema(description = "Предполагаемый ID категории")
     private Long suggestedCategoryId;
 
+    @Schema(description = "Точность подсказки")
+    private Float accuracy;
+
     @Schema(description = "Телеграмм ID пользователя")
     private Long telegramUserId;
 
