@@ -17,36 +17,36 @@ import java.util.UUID;
 @NoArgsConstructor
 public class Transaction {
 
-  @Id
-  @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-  @GeneratedValue(generator = "UUID")
-  @Column(unique = true, columnDefinition = "UUID")
-  private UUID id;
+    @Id
+    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(generator = "UUID")
+    @Column(unique = true, columnDefinition = "UUID")
+    private UUID id;
 
-  @Column
-  private String message;
+    @Column
+    private String message;
 
-  @ManyToOne
-  @Nullable
-  private Category category;
+    @ManyToOne
+    @Nullable
+    private Category category;
 
-  @Column
-  private Double amount;
+    @Column
+    private Double amount;
 
-  @Column(columnDefinition = "TIMESTAMP")
-  private LocalDateTime date;
+    @Column(columnDefinition = "TIMESTAMP")
+    private LocalDateTime date;
 
-  @Column(name = "suggested_category_id")
-  @Nullable
-  private Long suggestedCategoryId;
+    @Column(name = "suggested_category_id")
+    @Nullable
+    private Long suggestedCategoryId;
 
-  @Column(name = "accuracy")
-  private float accuracy;
+    @Column(name = "accuracy")
+    private float accuracy;
 
-  @ManyToOne(fetch = FetchType.LAZY)
-  private OverMoneyAccount account;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private OverMoneyAccount account;
 
-  @Column(name = "telegram_user_id")
-  @Nullable
-  private Long telegramUserId;
+    @Column(name = "telegram_user_id")
+    @Nullable
+    private Long telegramUserId;
 }
