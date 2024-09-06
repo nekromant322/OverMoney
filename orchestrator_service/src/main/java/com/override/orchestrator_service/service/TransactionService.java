@@ -18,6 +18,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.management.InstanceNotFoundException;
 import java.time.DateTimeException;
@@ -48,6 +49,9 @@ public class TransactionService {
     private TransactionProcessingService transactionProcessingService;
     @Autowired
     private KeywordService keywordService;
+
+    @Value("${recognizer.min-accuracy}")
+    private float minAccuracy;
 
     public int getTransactionsCount() {
         return transactionRepository.getTransactionsCount();
@@ -149,8 +153,11 @@ public class TransactionService {
 
     public Transaction enrichTransactionWithSuggestedCategory(TransactionDTO transactionDTO) {
         Transaction transaction = getTransactionById(transactionDTO.getId());
-        transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
         transaction.setAccuracy(transactionDTO.getAccuracy());
+        if (transactionDTO.getAccuracy() >= minAccuracy) {
+            transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
+        }
+        transactionRepository.save(transaction);
         return transaction;
     }
 
