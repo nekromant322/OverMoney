@@ -1,13 +1,13 @@
 package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
-
 import com.override.dto.KeywordIdDTO;
 import com.override.dto.TransactionDTO;
 import com.override.recognizer_service.feign.OrchestratorFeign;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,7 +19,10 @@ public class CategoryRecognizerService {
     @Autowired
     private OrchestratorFeign orchestratorFeign;
 
-    private float calculateLevenshteinDistance(String strOne, String strTwo) {
+    @Value("${recognizer.min-accuracy}")
+    private float minAccuracy;
+
+    protected float calculateLevenshteinDistance(String strOne, String strTwo) {
         strOne = strOne.toLowerCase();
         strTwo = strTwo.toLowerCase();
         float maxLength = Integer.max(strOne.length(), strTwo.length());
@@ -37,9 +40,9 @@ public class CategoryRecognizerService {
         float[] maxLevenshteinDistance = {0};
         categories.forEach(c -> {
             c.getKeywords().add(
-                    KeywordIdDTO.builder()
-                            .name(c.getName())
-                            .build());
+                KeywordIdDTO.builder()
+                    .name(c.getName())
+                    .build());
         });
         categories.forEach(c -> {
             c.getKeywords().forEach(k -> {
@@ -54,10 +57,23 @@ public class CategoryRecognizerService {
     }
 
     public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
-        Long suggestedCategoryId = recognizeCategory(message, categories).getId();
+        CategoryDTO suggestedCategory = recognizeCategory(message, categories);
+        Long suggestedCategoryId = suggestedCategory != null &&
+            calculateAccuracy(suggestedCategory, message) >= minAccuracy ?
+            suggestedCategory.getId() : null;
+        float accuracy = suggestedCategory != null ? calculateAccuracy(suggestedCategory, message) : 0.0f;
         TransactionDTO transactionDTO = TransactionDTO.builder()
-                .suggestedCategoryId(suggestedCategoryId)
-                .id(transactionId).build();
+            .accuracy(accuracy)
+            .id(transactionId)
+            .suggestedCategoryId(suggestedCategoryId)
+            .build();
         orchestratorFeign.editTransaction(transactionDTO);
+    }
+
+    private float calculateAccuracy(CategoryDTO category, String message) {
+        return category.getKeywords().stream()
+            .map(k -> calculateLevenshteinDistance(message, k.getName()))
+            .max(Float::compare)
+            .orElse(0.0f);
     }
 }

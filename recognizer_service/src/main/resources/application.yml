@@ -38,3 +38,7 @@
     maskedFields:
       - x-internal-key
       - voiceMessageBytes
+
+  # Валидность подсказки
+  recognizer:
+    min-accuracy: 0.7 # Минимальная точность подсказки

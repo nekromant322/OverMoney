@@ -150,6 +150,7 @@ public class TransactionService {
     public Transaction enrichTransactionWithSuggestedCategory(TransactionDTO transactionDTO) {
         Transaction transaction = getTransactionById(transactionDTO.getId());
         transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
+        transaction.setAccuracy(transactionDTO.getAccuracy());
         return transaction;
     }
 
@@ -217,6 +218,7 @@ public class TransactionService {
             }
             transactionUpdate.setCategory(category);
         }
+        transactionUpdate.setAccuracy(transactionDTO.getAccuracy());
         transactionRepository.save(transactionUpdate);
     }
 
