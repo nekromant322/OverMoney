@@ -132,7 +132,7 @@ public class AnalyticV2Service {
                 }).collect(Collectors.toList());
     }
 
-    public AnalyticsDataMonthDiffDTO getMonthDiff (Long overMoneyAccountId) {
+    public AnalyticsDataMonthDiffDTO getMonthDiff(Long overMoneyAccountId) {
         LocalDate currentDate = LocalDate.now();
         int currentMonth = currentDate.getMonthValue();
         int previousMonth = currentMonth - 1;
