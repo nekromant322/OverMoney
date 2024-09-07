@@ -129,4 +129,17 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             @Param("userId") Long userId,
             @Param("year") int year,
             @Param("type") Type type);
+
+    @Query("select new com.override.dto.SumTransactionsDataPerMonthForAccountDTO(c.type, " +
+            "EXTRACT(MONTH FROM t.date), sum(t.amount)) " +
+            "FROM Transaction t " +
+            "JOIN Category c ON t.category.id = c.id " +
+            "WHERE t.telegramUserId = :userId " +
+            "AND YEAR(t.date) = :year " +
+            "AND MONTH(t.date) = :month " +
+            "GROUP BY c.type, EXTRACT(MONTH FROM t.date)")
+    List<SumTransactionsDataPerMonthForAccountDTO> findSumTransactionsPerSpecificMonthForAccount(
+            @Param("userId") Long userId,
+            @Param("year") int year,
+            @Param("month") int month);
 }

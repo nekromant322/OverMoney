@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.controller.rest;
 
+import com.override.dto.AnalyticsDataMonthDiffDTO;
 import com.override.dto.AnalyticsDataPerMonthDTO;
 import com.override.dto.AnalyticsMainDataPerYearsDTO;
 import com.override.dto.TransactionSummaryDTO;
@@ -64,5 +65,10 @@ public class AnalyticsV2Controller {
     })
     public AnalyticsMainDataPerYearsDTO getFinancePerYear(Principal principal) throws InstanceNotFoundException {
         return analyticV2Service.countFinanceDataPerYear(telegramUtils.getTelegramId(principal));
+    }
+
+    @GetMapping("/delta")
+    public AnalyticsDataMonthDiffDTO getThisMonthDelta(Principal principal) {
+        return analyticV2Service.getMonthDiff(telegramUtils.getTelegramId(principal));
     }
 }
