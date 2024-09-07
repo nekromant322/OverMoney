@@ -1,13 +1,6 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.AnalyticsDataPerMonthDTO;
-import com.override.dto.AnalyticsMainDataPerYearsDTO;
-import com.override.dto.MonthSumTransactionByTypeCategoryDTO;
-import com.override.dto.SumTransactionPerYearForAccountDTO;
-import com.override.dto.SumTransactionsDataPerMonthForAccountDTO;
-import com.override.dto.SummaryUsersDataPerYearDTO;
-import com.override.dto.TransactionSummaryDTO;
-import com.override.dto.UserIncomeExpenseCategoriesPerYearDTO;
+import com.override.dto.*;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.exception.InvalidDataException;
 import com.override.orchestrator_service.exception.UserNotFoundException;
@@ -18,11 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.management.InstanceNotFoundException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -138,5 +130,47 @@ public class AnalyticV2Service {
                     }
                     return t;
                 }).collect(Collectors.toList());
+    }
+
+    public AnalyticsDataMonthDiffDTO getMonthDiff (Long overMoneyAccountId) {
+        LocalDate currentDate = LocalDate.now();
+        int currentMonth = currentDate.getMonthValue();
+        int previousMonth = currentMonth - 1;
+        int currentYear = currentDate.getYear();
+        int previousYear = currentDate.getYear() - 1;
+        String currentMonthName = currentDate.getMonth()
+                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
+        String previousMonthName = currentDate.minusMonths(1).getMonth()
+                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
+
+        List<SumTransactionsDataPerMonthForAccountDTO> currentMonthData = transactionRepository
+                .findSumTransactionsPerSpecificMonthForAccount(overMoneyAccountId, currentYear, currentMonth);
+        List<SumTransactionsDataPerMonthForAccountDTO> prevMonthData = transactionRepository
+                .findSumTransactionsPerSpecificMonthForAccount(overMoneyAccountId, currentYear, previousMonth);
+        List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData = transactionRepository
+                .findSumTransactionsPerSpecificMonthForAccount(overMoneyAccountId, previousYear, currentMonth);
+
+        double currentMonthIncome = calculateMonthSumByType(currentMonthData, Type.INCOME);
+        double currentMonthExpense = calculateMonthSumByType(currentMonthData, Type.EXPENSE);
+        double prevMonthIncome = calculateMonthSumByType(prevMonthData, Type.INCOME);
+        double prevMonthExpense = calculateMonthSumByType(prevMonthData, Type.EXPENSE);
+        double prevYearSameMonthIncome = calculateMonthSumByType(prevYearSameMonthData, Type.INCOME);
+        double prevYearSameMonthExpense = calculateMonthSumByType(prevYearSameMonthData, Type.EXPENSE);
+
+        return new AnalyticsDataMonthDiffDTO(calculatePercentageDiff(currentMonthIncome, prevMonthIncome),
+                calculatePercentageDiff(currentMonthExpense, prevMonthExpense),
+                calculatePercentageDiff(currentMonthIncome, prevYearSameMonthIncome),
+                calculatePercentageDiff(currentMonthExpense, prevYearSameMonthExpense),
+                currentMonthName, previousMonthName);
+    }
+
+    private double calculateMonthSumByType(List<SumTransactionsDataPerMonthForAccountDTO> data, Type type) {
+        return data.stream().filter(t -> t.getType().equals(type)).
+                mapToDouble(SumTransactionsDataPerMonthForAccountDTO::getSum).sum();
+    }
+
+    private Integer calculatePercentageDiff(double currentData, double previousData) {
+        return previousData == 0.0 ? null : BigDecimal
+                .valueOf(((currentData - previousData) / previousData) * 100).intValue();
     }
 }
