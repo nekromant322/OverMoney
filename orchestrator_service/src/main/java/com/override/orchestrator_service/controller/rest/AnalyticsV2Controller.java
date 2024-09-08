@@ -68,6 +68,14 @@ public class AnalyticsV2Controller {
     }
 
     @GetMapping("/delta")
+    @Operation(summary = "Получить разницу в процентах относительно текущего месяца",
+            description = "Получить разницу доходов и расходов в процентах относительно предыдущего месяца и " +
+                    "относительно одноименного месяца предыдущего года")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Получено успешно"),
+            @ApiResponse(responseCode = "400", description = "Некорректные данные"),
+            @ApiResponse(responseCode = "404", description = "Данные не найдены"),
+    })
     public AnalyticsDataMonthDiffDTO getThisMonthDelta(Principal principal) {
         return analyticV2Service.getMonthDiff(telegramUtils.getTelegramId(principal));
     }
