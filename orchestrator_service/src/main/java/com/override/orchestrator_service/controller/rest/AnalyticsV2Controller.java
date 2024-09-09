@@ -5,6 +5,7 @@ import com.override.dto.AnalyticsDataPerMonthDTO;
 import com.override.dto.AnalyticsMainDataPerYearsDTO;
 import com.override.dto.TransactionSummaryDTO;
 import com.override.orchestrator_service.service.AnalyticV2Service;
+import com.override.orchestrator_service.service.DiffWidgetService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -23,6 +24,8 @@ import java.security.Principal;
 public class AnalyticsV2Controller {
     @Autowired
     private AnalyticV2Service analyticV2Service;
+    @Autowired
+    private DiffWidgetService deltaWidgetService;
     @Autowired
     private TelegramUtils telegramUtils;
 
@@ -70,13 +73,11 @@ public class AnalyticsV2Controller {
     @GetMapping("/delta")
     @Operation(summary = "Получить разницу в процентах относительно текущего месяца",
             description = "Получить разницу доходов и расходов в процентах относительно предыдущего месяца и " +
-                    "относительно одноименного месяца предыдущего года")
+                    "относительно одноименного месяца предыдущего года для авторизованного пользователя")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Получено успешно"),
-            @ApiResponse(responseCode = "400", description = "Некорректные данные"),
-            @ApiResponse(responseCode = "404", description = "Данные не найдены"),
     })
     public AnalyticsDataMonthDiffDTO getThisMonthDelta(Principal principal) {
-        return analyticV2Service.getMonthDiff(telegramUtils.getTelegramId(principal));
+        return deltaWidgetService.getMonthDiff(telegramUtils.getTelegramId(principal));
     }
 }

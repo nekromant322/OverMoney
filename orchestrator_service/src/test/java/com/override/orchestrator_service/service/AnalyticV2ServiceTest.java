@@ -1,6 +1,9 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.*;
+import com.override.dto.AnalyticsMainDataPerYearsDTO;
+import com.override.dto.SumTransactionPerYearForAccountDTO;
+import com.override.dto.SummaryUsersDataPerYearDTO;
+import com.override.dto.UserIncomeExpenseCategoriesPerYearDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.OverMoneyAccount;
 import com.override.orchestrator_service.model.User;
@@ -14,9 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
 
-import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -119,45 +123,5 @@ public class AnalyticV2ServiceTest {
         verify(transactionRepository).findSumTransactionsPerYearForAccount(accountId, userId, year2022, Type.EXPENSE);
         verify(transactionRepository).findSumTransactionsPerYearForAccount(accountId, userId, year2023, Type.INCOME);
         verify(transactionRepository).findSumTransactionsPerYearForAccount(accountId, userId, year2023, Type.EXPENSE);
-    }
-
-    @Test
-    public void testGetMonthDiff() {
-        LocalDate currentDate = LocalDate.of(2024, 9, 6);
-        int currentMonth = currentDate.getMonthValue();
-        int previousMonth = currentMonth - 1;
-        int currentYear = currentDate.getYear();
-        int previousYear = currentDate.getYear() - 1;
-        String currentMonthName = currentDate.getMonth()
-                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
-        String previousMonthName = currentDate.minusMonths(1).getMonth()
-                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
-
-        List<SumTransactionsDataPerMonthForAccountDTO> currentMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 10000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 10000.0));
-        List<SumTransactionsDataPerMonthForAccountDTO> previousMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 9000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 8000.0));
-        List<SumTransactionsDataPerMonthForAccountDTO> previousYearSameMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 11000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 11000.0));
-
-        when(transactionRepository.findSumTransactionsPerSpecificMonthForAccount(
-                accountId, currentYear, currentMonth)).thenReturn(currentMonthData);
-        when(transactionRepository.findSumTransactionsPerSpecificMonthForAccount(
-                accountId, currentYear, previousMonth)).thenReturn(previousMonthData);
-        when(transactionRepository.findSumTransactionsPerSpecificMonthForAccount(
-                accountId, previousYear, currentMonth)).thenReturn(previousYearSameMonthData);
-
-        AnalyticsDataMonthDiffDTO result = analyticV2Service.getMonthDiff(accountId);
-
-        assertNotNull(result);
-        assertEquals(11, result.getCurrentMonthIncomeToPrevMonthDiff());
-        assertEquals(25, result.getCurrentMonthExpenseToPrevMonthDiff());
-        assertEquals(-9, result.getCurrentMonthIncomeToPrevYearDiff());
-        assertEquals(-9, result.getCurrentMonthExpenseToPrevYearDiff());
-        assertEquals(currentMonthName, result.getCurrentMonthName());
-        assertEquals(previousMonthName, result.getPreviousMonthName());
     }
 }
