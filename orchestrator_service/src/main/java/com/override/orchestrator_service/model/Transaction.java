@@ -40,6 +40,9 @@ public class Transaction {
     @Nullable
     private Long suggestedCategoryId;
 
+    @Column(name = "accuracy")
+    private float accuracy;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private OverMoneyAccount account;
 

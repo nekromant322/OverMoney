@@ -1,7 +1,6 @@
 package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
-
 import com.override.dto.KeywordIdDTO;
 import com.override.dto.TransactionDTO;
 import com.override.recognizer_service.feign.OrchestratorFeign;
@@ -19,7 +18,7 @@ public class CategoryRecognizerService {
     @Autowired
     private OrchestratorFeign orchestratorFeign;
 
-    private float calculateLevenshteinDistance(String strOne, String strTwo) {
+    protected float calculateLevenshteinDistance(String strOne, String strTwo) {
         strOne = strOne.toLowerCase();
         strTwo = strTwo.toLowerCase();
         float maxLength = Integer.max(strOne.length(), strTwo.length());
@@ -54,10 +53,20 @@ public class CategoryRecognizerService {
     }
 
     public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
-        Long suggestedCategoryId = recognizeCategory(message, categories).getId();
+        CategoryDTO suggestedCategory = recognizeCategory(message, categories);
+        float accuracy = calculateAccuracy(suggestedCategory, message);
         TransactionDTO transactionDTO = TransactionDTO.builder()
-                .suggestedCategoryId(suggestedCategoryId)
-                .id(transactionId).build();
+                            .accuracy(accuracy)
+                            .id(transactionId)
+                            .suggestedCategoryId(suggestedCategory.getId())
+                            .build();
         orchestratorFeign.editTransaction(transactionDTO);
+    }
+
+    private float calculateAccuracy(CategoryDTO category, String message) {
+        return category.getKeywords().stream()
+                            .map(k -> calculateLevenshteinDistance(message, k.getName()))
+                            .max(Float::compare)
+                            .orElse(0.0f);
     }
 }

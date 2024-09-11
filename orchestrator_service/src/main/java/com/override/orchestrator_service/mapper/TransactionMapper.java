@@ -6,6 +6,7 @@ import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.util.NumericalUtils;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.management.InstanceNotFoundException;
 import java.util.Objects;
@@ -15,6 +16,9 @@ public class TransactionMapper {
     private final String INCOME = "Доходы";
     private final String EXPENSE = "Расходы";
     private final String CATEGORY_UNDEFINED = "Нераспознанное";
+
+    @Value("${recognizer.min-accuracy}")
+    private double minAccuracy;
 
     public TransactionResponseDTO mapTransactionToTelegramResponse(Transaction transaction)
             throws InstanceNotFoundException {
@@ -34,8 +38,11 @@ public class TransactionMapper {
                 .amount(NumericalUtils.roundAmount(transaction.getAmount()))
                 .message(transaction.getMessage())
                 .date(transaction.getDate())
-                .suggestedCategoryId(transaction.getSuggestedCategoryId())
+                .accuracy(transaction.getAccuracy())
                 .telegramUserId(transaction.getTelegramUserId());
+        if (transaction.getAccuracy() >= minAccuracy) {
+            builder.suggestedCategoryId(transaction.getSuggestedCategoryId());
+        }
         if (transaction.getCategory() != null) {
             builder.categoryName(transaction.getCategory().getName());
             builder.type(transaction.getCategory().getType());
