@@ -15,25 +15,23 @@ import com.override.recognizer_service.feign.OrchestratorFeign;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import org.springframework.test.context.TestPropertySource;
 
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-@TestPropertySource("classpath:application-test.yml")
 public class CategoryRecognizerServiceTests {
     @InjectMocks
     private CategoryRecognizerService categoryRecognizerService;
 
     private float minAccuracy;
 
+    @Mock
+    private OrchestratorFeign orchestratorFeign;
+
     @BeforeEach
     public void setup() {
         minAccuracy = 0.7f;
     }
-
-    @Mock
-    private OrchestratorFeign orchestratorFeign;
 
     @Test
     public void returnCorrectCategoryWhenKeywordMatched() {
@@ -112,35 +110,42 @@ public class CategoryRecognizerServiceTests {
     }
     @Test
     public void doNotSuggestCategoryWhenAccuracyIsLow() {
+
         final KeywordIdDTO keywordAnalgin = KeywordIdDTO.builder()
             .accountId(1L)
             .name("анальгин")
             .build();
         List<KeywordIdDTO> listOfKeywords = new ArrayList<>();
         listOfKeywords.add(keywordAnalgin);
+
         final CategoryDTO categoryWithAnalgin = CategoryDTO.builder()
             .keywords(listOfKeywords)
             .name("Категория с анальгином")
             .build();
         final String message = "апельсин";
+
         CategoryDTO recognizedCategory = categoryRecognizerService.recognizeCategory(message, List.of(categoryWithAnalgin));
         float accuracy = categoryRecognizerService.calculateLevenshteinDistance(message, keywordAnalgin.getName());
+
         Assertions.assertNull(recognizedCategory == null ? null : (accuracy < minAccuracy ? null : recognizedCategory));
     }
 
     @Test
     public void suggestCategoryWhenAccuracyIsHigh() {
+
         final KeywordIdDTO keywordApple = KeywordIdDTO.builder()
             .accountId(1L)
             .name("яблоко")
             .build();
         List<KeywordIdDTO> listOfKeywords = new ArrayList<>();
         listOfKeywords.add(keywordApple);
+
         final CategoryDTO categoryWithApple = CategoryDTO.builder()
             .keywords(listOfKeywords)
             .name("Категория с яблоком")
             .build();
         String message = "яблоки";
+
         UUID transactionId = UUID.randomUUID();
         float accuracy = categoryRecognizerService.calculateLevenshteinDistance(message,
             keywordApple.getName());

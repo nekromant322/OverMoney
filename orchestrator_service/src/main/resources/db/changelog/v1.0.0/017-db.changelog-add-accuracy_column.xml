@@ -3,7 +3,12 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-  <changeSet author="annov4" id="23.07.2024-addLastUsedColumn">
+  <changeSet author="annov4" id="10.09.2024-addAccuracyColumn">
+    <preConditions  onFail="WARN">
+      <not>
+        <tableExists tableName="transactions" />
+      </not>
+    </preConditions>
     <addColumn tableName="transactions">
       <column name="accuracy" type="FLOAT">
       </column>

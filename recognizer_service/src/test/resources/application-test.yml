@@ -25,7 +25,3 @@ spring:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
   liquibase:
     change-log: classpath:db/changelog/db.changelog-1.0.xml
-
-# Валидность подсказки
-recognizer:
-    min-accuracy: 0.7 # Минимальная точность подсказки

@@ -149,8 +149,9 @@ public class TransactionService {
 
     public Transaction enrichTransactionWithSuggestedCategory(TransactionDTO transactionDTO) {
         Transaction transaction = getTransactionById(transactionDTO.getId());
-        transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
         transaction.setAccuracy(transactionDTO.getAccuracy());
+        transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
+        transactionRepository.save(transaction);
         return transaction;
     }
 
