@@ -40,7 +40,7 @@ public class TransactionMapper {
                 .date(transaction.getDate())
                 .accuracy(transaction.getAccuracy())
                 .telegramUserId(transaction.getTelegramUserId());
-        if (transaction.getAccuracy() >= minAccuracy) {
+        if (transaction.getAccuracy() != null && transaction.getAccuracy() >= minAccuracy) {
             builder.suggestedCategoryId(transaction.getSuggestedCategoryId());
         }
         if (transaction.getCategory() != null) {
