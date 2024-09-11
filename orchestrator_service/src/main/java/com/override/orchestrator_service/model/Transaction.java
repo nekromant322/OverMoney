@@ -41,7 +41,7 @@ public class Transaction {
     private Long suggestedCategoryId;
 
     @Column(name = "accuracy")
-    private float accuracy;
+    private Float accuracy;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private OverMoneyAccount account;
