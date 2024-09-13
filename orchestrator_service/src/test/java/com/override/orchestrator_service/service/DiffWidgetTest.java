@@ -3,11 +3,12 @@ package com.override.orchestrator_service.service;
 import com.override.dto.AnalyticsDataMonthDiffDTO;
 import com.override.dto.SumTransactionsDataPerMonthForAccountDTO;
 import com.override.dto.constants.Type;
-import com.override.orchestrator_service.repository.TransactionRepository;
+import org.apache.commons.lang3.concurrent.ConcurrentUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
@@ -15,50 +16,48 @@ import java.time.format.TextStyle;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class DiffWidgetTest {
     @Mock
-    private TransactionRepository transactionRepository;
+    private ExecutorService executorService = Mockito.mock(ExecutorService.class);
     @InjectMocks
     private DiffWidgetService diffWidgetService;
 
-    private final Long accountId = 2L;
+    private final Long overMoneyAccountId = 2L;
+    private final LocalDate currentDate = LocalDate.of(2024, 9, 6);
+    private final String currentMonthName = currentDate.getMonth()
+                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
+    private final String previousMonthName = currentDate.minusMonths(1).getMonth()
+                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
 
     @Test
-    public void testGetMonthDiff() {
-        LocalDate currentDate = LocalDate.of(2024, 9, 6);
-        int currentMonth = currentDate.getMonthValue();
-        int previousMonth = currentMonth - 1;
-        int currentYear = currentDate.getYear();
-        int previousYear = currentDate.getYear() - 1;
-        String currentMonthName = currentDate.getMonth()
-                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
-        String previousMonthName = currentDate.minusMonths(1).getMonth()
-                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
-
+    public void getMonthDiff() {
         List<SumTransactionsDataPerMonthForAccountDTO> currentMonthData =
                 Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 10000.0),
                         new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 10000.0));
-        List<SumTransactionsDataPerMonthForAccountDTO> previousMonthData =
+
+        List<SumTransactionsDataPerMonthForAccountDTO> prevMonthData =
                 Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 9000.0),
                         new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 8000.0));
-        List<SumTransactionsDataPerMonthForAccountDTO> previousYearSameMonthData =
+
+        List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData =
                 Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 11000.0),
                         new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 11000.0));
 
-        when(transactionRepository.findSumTransactionsPerSpecificMonthForAccount(
-                accountId, currentYear, currentMonth)).thenReturn(currentMonthData);
-        when(transactionRepository.findSumTransactionsPerSpecificMonthForAccount(
-                accountId, currentYear, previousMonth)).thenReturn(previousMonthData);
-        when(transactionRepository.findSumTransactionsPerSpecificMonthForAccount(
-                accountId, previousYear, currentMonth)).thenReturn(previousYearSameMonthData);
+        when(executorService.submit(any(Callable.class)))
+                .thenReturn(ConcurrentUtils.constantFuture(currentMonthData),
+                        ConcurrentUtils.constantFuture(prevMonthData),
+                        ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
-        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(accountId);
+        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
 
         assertNotNull(result);
         assertEquals(11, result.getCurrentMonthIncomeToPrevMonthDiff());
@@ -70,31 +69,25 @@ public class DiffWidgetTest {
     }
 
     @Test
-    public void testNullgetMonthDiff() {
-        LocalDate currentDate = LocalDate.of(2024, 9, 6);
-        int currentMonth = currentDate.getMonthValue();
-        int previousMonth = currentMonth - 1;
-        int currentYear = currentDate.getYear();
-        int previousYear = currentDate.getYear() - 1;
-
+    public void getMonthDiffNoTransactions() {
         List<SumTransactionsDataPerMonthForAccountDTO> currentMonthData =
                 Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 0.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 0.0));
-        List<SumTransactionsDataPerMonthForAccountDTO> previousMonthData =
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 10000.0));
+
+        List<SumTransactionsDataPerMonthForAccountDTO> prevMonthData =
                 Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 0.0),
                         new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 0.0));
-        List<SumTransactionsDataPerMonthForAccountDTO> previousYearSameMonthData =
+
+        List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData =
                 Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 0.0),
                         new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 0.0));
 
-        when(transactionRepository.findSumTransactionsPerSpecificMonthForAccount(
-                accountId, currentYear, currentMonth)).thenReturn(currentMonthData);
-        when(transactionRepository.findSumTransactionsPerSpecificMonthForAccount(
-                accountId, currentYear, previousMonth)).thenReturn(previousMonthData);
-        when(transactionRepository.findSumTransactionsPerSpecificMonthForAccount(
-                accountId, previousYear, currentMonth)).thenReturn(previousYearSameMonthData);
+        when(executorService.submit(any(Callable.class)))
+                .thenReturn(ConcurrentUtils.constantFuture(currentMonthData),
+                        ConcurrentUtils.constantFuture(prevMonthData),
+                        ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
-        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(accountId);
+        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
 
         assertNotNull(result);
         assertNull(result.getCurrentMonthIncomeToPrevMonthDiff());
