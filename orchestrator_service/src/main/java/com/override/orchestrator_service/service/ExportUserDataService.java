@@ -51,7 +51,7 @@ public class ExportUserDataService {
     private ByteArrayInputStream createExcelExport(Long telegramId) throws IOException, InstanceNotFoundException {
         Long chatId = overMoneyAccountService.getAccountByUserId(telegramId).getChatId();
         List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByChatId(chatId);
-        List<TransactionDTO> transactionDTOList = transactionService.findAlltransactionDTOForAcountByChatId(chatId);
+        List<TransactionDTO> transactionDTOList = transactionService.findAllTransactionDTOForAccountByChatId(chatId);
 
         try (Workbook workbook = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             Sheet sheetCategories = workbook.createSheet("Категории");

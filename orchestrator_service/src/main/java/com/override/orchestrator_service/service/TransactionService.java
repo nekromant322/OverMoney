@@ -53,7 +53,7 @@ public class TransactionService {
         return transactionRepository.getTransactionsCount();
     }
 
-    public List<TransactionDTO> findAlltransactionDTOForAcountByChatId(Long telegramId) {
+    public List<TransactionDTO> findAllTransactionDTOForAccountByChatId(Long telegramId) {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService.getOverMoneyAccountByChatId(telegramId);
         List<Transaction> transactionList = transactionRepository.findAllByAccountId(overMoneyAccount.getId());
         List<TransactionDTO> transactionDTOS = new ArrayList<>();

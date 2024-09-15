@@ -39,7 +39,7 @@ public class BackupUserDataService {
 
     public BackupUserDataDTO createBackup(Long id) {
         List<CategoryDTO> categoryDTOList = categoryService.findCategoriesListByChatId(id);
-        List<TransactionDTO> transactionDTOList = transactionService.findAlltransactionDTOForAcountByChatId(id);
+        List<TransactionDTO> transactionDTOList = transactionService.findAllTransactionDTOForAccountByChatId(id);
 
         return BackupUserDataDTO.builder()
                 .categoryDTOList(categoryDTOList)
