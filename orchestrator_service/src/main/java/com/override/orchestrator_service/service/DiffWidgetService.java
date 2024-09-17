@@ -29,46 +29,46 @@ public class DiffWidgetService {
     @SneakyThrows
     public AnalyticsDataMonthDiffDTO getMonthDiff(Long overMoneyAccountId) {
         LocalDate currentDate = LocalDate.now();
-        int currentMonth = currentDate.getMonthValue();
-        int previousMonth = currentMonth - 1;
+        int baseMonth = currentDate.getMonthValue() - 1;
+        int previousMonth = baseMonth - 1;
         int currentYear = currentDate.getYear();
         int previousYear = currentDate.getYear() - 1;
-        String currentMonthName = currentDate.getMonth()
-                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
-        String previousMonthName = currentDate.minusMonths(1).getMonth()
+        String baseMonthName = currentDate.minusMonths(1)
+                .getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
+        String previousMonthName = currentDate.minusMonths(2).getMonth()
                 .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
 
-        Future<List<SumTransactionsDataPerMonthForAccountDTO>> completableFutureCurrMth =
-                getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, currentYear, currentMonth);
-        Future<List<SumTransactionsDataPerMonthForAccountDTO>> completableFuturePrevMth =
+        Future<List<SumTransactionsDataPerMonthForAccountDTO>> futureBaseMth =
+                getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, currentYear, baseMonth);
+        Future<List<SumTransactionsDataPerMonthForAccountDTO>> futurePrevMth =
                 getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, currentYear, previousMonth);
-        Future<List<SumTransactionsDataPerMonthForAccountDTO>> completableFuturePrevYrSameMth =
-                getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, previousYear, currentMonth);
+        Future<List<SumTransactionsDataPerMonthForAccountDTO>> futurePrevYrSameMth =
+                getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, previousYear, baseMonth);
 
-        List<SumTransactionsDataPerMonthForAccountDTO> currentMonthData = completableFutureCurrMth.get();
-        double currentMonthIncome = calculateMonthSumByType(currentMonthData, Type.INCOME);
-        double currentMonthExpense = calculateMonthSumByType(currentMonthData, Type.EXPENSE);
+        List<SumTransactionsDataPerMonthForAccountDTO> baseMonthData = futureBaseMth.get();
+        double baseMonthIncome = calculateMonthSumByType(baseMonthData, Type.INCOME);
+        double baseMonthExpense = calculateMonthSumByType(baseMonthData, Type.EXPENSE);
 
-        List<SumTransactionsDataPerMonthForAccountDTO> prevMonthData = completableFuturePrevMth.get();
+        List<SumTransactionsDataPerMonthForAccountDTO> prevMonthData = futurePrevMth.get();
         double prevMonthIncome = calculateMonthSumByType(prevMonthData, Type.INCOME);
         double prevMonthExpense = calculateMonthSumByType(prevMonthData, Type.EXPENSE);
 
-        List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData = completableFuturePrevYrSameMth.get();
+        List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData = futurePrevYrSameMth.get();
         double prevYearSameMonthIncome = calculateMonthSumByType(prevYearSameMonthData, Type.INCOME);
         double prevYearSameMonthExpense = calculateMonthSumByType(prevYearSameMonthData, Type.EXPENSE);
 
-        return new AnalyticsDataMonthDiffDTO(calculatePercentageDiff(currentMonthIncome, prevMonthIncome),
-                calculatePercentageDiff(currentMonthExpense, prevMonthExpense),
-                calculatePercentageDiff(currentMonthIncome, prevYearSameMonthIncome),
-                calculatePercentageDiff(currentMonthExpense, prevYearSameMonthExpense),
-                currentMonthName, previousMonthName);
+        return new AnalyticsDataMonthDiffDTO(calculatePercentageDiff(baseMonthIncome, prevMonthIncome),
+                calculatePercentageDiff(baseMonthExpense, prevMonthExpense),
+                calculatePercentageDiff(baseMonthIncome, prevYearSameMonthIncome),
+                calculatePercentageDiff(baseMonthExpense, prevYearSameMonthExpense),
+                baseMonthName, previousMonthName);
     }
 
     public Future<List<SumTransactionsDataPerMonthForAccountDTO>> getTransactionsForSpecifiedMonthAsync(
-            Long overMoneyAccountId, int currentYear, int currentMonth) {
+            Long overMoneyAccountId, int currentYear, int requiredMonth) {
         return executorService.submit(() -> transactionRepository.
                 findSumTransactionsPerSpecificMonthForAccount(overMoneyAccountId,
-                        currentYear, currentMonth));
+                        currentYear, requiredMonth));
     }
 
     private double calculateMonthSumByType(List<SumTransactionsDataPerMonthForAccountDTO> data, Type type) {
@@ -76,8 +76,8 @@ public class DiffWidgetService {
                 mapToDouble(SumTransactionsDataPerMonthForAccountDTO::getSum).sum();
     }
 
-    protected Integer calculatePercentageDiff(double currentData, double previousData) {
+    protected Integer calculatePercentageDiff(double baseData, double previousData) {
         return previousData == 0.0 ? null : BigDecimal
-                .valueOf(((currentData - previousData) / previousData) * 100).intValue();
+                .valueOf(((baseData - previousData) / previousData) * 100).intValue();
     }
 }
