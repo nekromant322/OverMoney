@@ -32,127 +32,127 @@ public class DiffWidgetTest {
     private DiffWidgetService diffWidgetService;
 
     private final Long overMoneyAccountId = 2L;
-    private final LocalDate currentDate = LocalDate.of(2024, 9, 6);
-    private final String currentMonthName = currentDate.getMonth()
-                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
-    private final String previousMonthName = currentDate.minusMonths(1).getMonth()
+    private final LocalDate requestDate = LocalDate.of(2024, 9, 6);
+    private final String baseMonthName = requestDate.minusMonths(1).getMonth()
+            .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
+    private final String previousMonthName = requestDate.minusMonths(2).getMonth()
                 .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
 
     @Test
     public void getMonthDiff() {
-        List<SumTransactionsDataPerMonthForAccountDTO> currentMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 10000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 10000.0));
+        List<SumTransactionsDataPerMonthForAccountDTO> baseMonthData =
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 10000.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 10000.0));
 
         List<SumTransactionsDataPerMonthForAccountDTO> prevMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 9000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 8000.0));
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 7, 9000.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 7, 8000.0));
 
         List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 11000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 11000.0));
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 11000.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 11000.0));
 
         when(executorService.submit(any(Callable.class)))
-                .thenReturn(ConcurrentUtils.constantFuture(currentMonthData),
+                .thenReturn(ConcurrentUtils.constantFuture(baseMonthData),
                         ConcurrentUtils.constantFuture(prevMonthData),
                         ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
         AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
 
         assertNotNull(result);
-        assertEquals(11, result.getCurrentMonthIncomeToPrevMonthDiff());
-        assertEquals(25, result.getCurrentMonthExpenseToPrevMonthDiff());
-        assertEquals(-9, result.getCurrentMonthIncomeToPrevYearDiff());
-        assertEquals(-9, result.getCurrentMonthExpenseToPrevYearDiff());
-        assertEquals(currentMonthName, result.getCurrentMonthName());
+        assertEquals(11, result.getBaseMonthIncomeToPrevMonthDiff());
+        assertEquals(25, result.getBaseMonthExpenseToPrevMonthDiff());
+        assertEquals(-9, result.getBaseMonthIncomeToPrevYearDiff());
+        assertEquals(-9, result.getBaseMonthExpenseToPrevYearDiff());
+        assertEquals(baseMonthName, result.getBaseMonthName());
         assertEquals(previousMonthName, result.getPreviousMonthName());
     }
 
     @Test
     public void getMonthDiffNoPreviousYear() {
-        List<SumTransactionsDataPerMonthForAccountDTO> currentMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 10000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 10000.0));
+        List<SumTransactionsDataPerMonthForAccountDTO> baseMonthData =
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 10000.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 10000.0));
 
         List<SumTransactionsDataPerMonthForAccountDTO> prevMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 0.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 0.0));
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 7, 0.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 7, 0.0));
 
         List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 11000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 11000.0));
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 11000.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 11000.0));
 
         when(executorService.submit(any(Callable.class)))
-                .thenReturn(ConcurrentUtils.constantFuture(currentMonthData),
+                .thenReturn(ConcurrentUtils.constantFuture(baseMonthData),
                         ConcurrentUtils.constantFuture(prevMonthData),
                         ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
         AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
 
         assertNotNull(result);
-        assertNull(result.getCurrentMonthIncomeToPrevMonthDiff());
-        assertNull(result.getCurrentMonthExpenseToPrevMonthDiff());
-        assertEquals(-9, result.getCurrentMonthIncomeToPrevYearDiff());
-        assertEquals(-9, result.getCurrentMonthExpenseToPrevYearDiff());
-        assertEquals(currentMonthName, result.getCurrentMonthName());
+        assertNull(result.getBaseMonthIncomeToPrevMonthDiff());
+        assertNull(result.getBaseMonthExpenseToPrevMonthDiff());
+        assertEquals(-9, result.getBaseMonthIncomeToPrevYearDiff());
+        assertEquals(-9, result.getBaseMonthExpenseToPrevYearDiff());
+        assertEquals(baseMonthName, result.getBaseMonthName());
         assertEquals(previousMonthName, result.getPreviousMonthName());
     }
 
     @Test
     public void getMonthDiffNoPreviousMonthTransactions() {
-        List<SumTransactionsDataPerMonthForAccountDTO> currentMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 10000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 10000.0));
+        List<SumTransactionsDataPerMonthForAccountDTO> baseMonthData =
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 10000.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 10000.0));
 
         List<SumTransactionsDataPerMonthForAccountDTO> prevMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 9000.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 8000.0));
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 7, 9000.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 7, 8000.0));
 
         List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 0.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 0.0));
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 0.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 0.0));
 
         when(executorService.submit(any(Callable.class)))
-                .thenReturn(ConcurrentUtils.constantFuture(currentMonthData),
+                .thenReturn(ConcurrentUtils.constantFuture(baseMonthData),
                         ConcurrentUtils.constantFuture(prevMonthData),
                         ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
         AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
 
         assertNotNull(result);
-        assertEquals(11, result.getCurrentMonthIncomeToPrevMonthDiff());
-        assertEquals(25, result.getCurrentMonthExpenseToPrevMonthDiff());
-        assertNull(result.getCurrentMonthIncomeToPrevYearDiff());
-        assertNull(result.getCurrentMonthExpenseToPrevYearDiff());
-        assertEquals(currentMonthName, result.getCurrentMonthName());
+        assertEquals(11, result.getBaseMonthIncomeToPrevMonthDiff());
+        assertEquals(25, result.getBaseMonthExpenseToPrevMonthDiff());
+        assertNull(result.getBaseMonthIncomeToPrevYearDiff());
+        assertNull(result.getBaseMonthExpenseToPrevYearDiff());
+        assertEquals(baseMonthName, result.getBaseMonthName());
         assertEquals(previousMonthName, result.getPreviousMonthName());
     }
 
     @Test
     public void getMonthDiffNoTransactions() {
-        List<SumTransactionsDataPerMonthForAccountDTO> currentMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 0.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 10000.0));
+        List<SumTransactionsDataPerMonthForAccountDTO> baseMonthData =
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 0.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 10000.0));
 
         List<SumTransactionsDataPerMonthForAccountDTO> prevMonthData =
+                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 7, 0.0),
+                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 7, 0.0));
+
+        List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData =
                 Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 8, 0.0),
                         new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 8, 0.0));
 
-        List<SumTransactionsDataPerMonthForAccountDTO> prevYearSameMonthData =
-                Arrays.asList(new SumTransactionsDataPerMonthForAccountDTO(Type.INCOME, 9, 0.0),
-                        new SumTransactionsDataPerMonthForAccountDTO(Type.EXPENSE, 9, 0.0));
-
         when(executorService.submit(any(Callable.class)))
-                .thenReturn(ConcurrentUtils.constantFuture(currentMonthData),
+                .thenReturn(ConcurrentUtils.constantFuture(baseMonthData),
                         ConcurrentUtils.constantFuture(prevMonthData),
                         ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
         AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
 
         assertNotNull(result);
-        assertNull(result.getCurrentMonthIncomeToPrevMonthDiff());
-        assertNull(result.getCurrentMonthExpenseToPrevMonthDiff());
-        assertNull(result.getCurrentMonthIncomeToPrevYearDiff());
-        assertNull(result.getCurrentMonthExpenseToPrevYearDiff());
+        assertNull(result.getBaseMonthIncomeToPrevMonthDiff());
+        assertNull(result.getBaseMonthExpenseToPrevMonthDiff());
+        assertNull(result.getBaseMonthIncomeToPrevYearDiff());
+        assertNull(result.getBaseMonthExpenseToPrevYearDiff());
     }
 }
