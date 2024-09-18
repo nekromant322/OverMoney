@@ -28,20 +28,20 @@ public class DiffWidgetService {
 
     @SneakyThrows
     public AnalyticsDataMonthDiffDTO getMonthDiff(Long overMoneyAccountId) {
-        LocalDate currentDate = LocalDate.now();
-        int baseMonth = currentDate.getMonthValue() - 1;
-        int previousMonth = baseMonth - 1;
-        int currentYear = currentDate.getYear();
-        int previousYear = currentDate.getYear() - 1;
-        String baseMonthName = currentDate.minusMonths(1)
+        LocalDate baseDate = LocalDate.now().minusMonths(1);
+
+        int baseMonth = baseDate.getMonthValue();
+        int previousMonth = baseDate.minusMonths(1).getMonthValue();
+        int baseYear = baseDate.getYear();
+        int previousYear = baseDate.minusYears(1).getYear();
+        String baseMonthName = baseDate.getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
+        String previousMonthName = baseDate.minusMonths(1)
                 .getMonth().getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
-        String previousMonthName = currentDate.minusMonths(2).getMonth()
-                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
 
         Future<List<SumTransactionsDataPerMonthForAccountDTO>> futureBaseMth =
-                getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, currentYear, baseMonth);
+                getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, baseYear, baseMonth);
         Future<List<SumTransactionsDataPerMonthForAccountDTO>> futurePrevMth =
-                getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, currentYear, previousMonth);
+                getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, baseYear, previousMonth);
         Future<List<SumTransactionsDataPerMonthForAccountDTO>> futurePrevYrSameMth =
                 getTransactionsForSpecifiedMonthAsync(overMoneyAccountId, previousYear, baseMonth);
 
