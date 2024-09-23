@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="create-suggestions-table" author="Katz_Soviet">
+        <createTable tableName="suggestions">
+            <column name="id" type="uuid" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="transaction_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="suggested_category_id" type="bigint">
+            </column>
+            <column name="accuracy" type="float">
+            </column>
+            <column name="is_correct" type="boolean">
+            </column>
+            <column name="algorithm" type="varchar(255)">
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="suggestions"
+                                 baseColumnNames="transaction_id"
+                                 constraintName="fk_suggestions_transactions"
+                                 referencedTableName="transactions"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

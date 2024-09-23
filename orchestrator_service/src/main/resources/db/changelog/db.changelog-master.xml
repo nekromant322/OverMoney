@@ -23,4 +23,5 @@
     <include file="v1.0.0/016-db.changelog-usage_count_column_new_parameter.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/017-db.changelog-add-accuracy_column.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/018-db.changelog-add-accuracy_default_value.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/019-db.changelog-create-suggestions-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

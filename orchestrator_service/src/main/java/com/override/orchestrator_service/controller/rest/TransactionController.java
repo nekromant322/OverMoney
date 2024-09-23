@@ -8,6 +8,7 @@ import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.service.DefineService;
+import com.override.orchestrator_service.service.SuggestionService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import com.override.orchestrator_service.util.TelegramUtils;
@@ -46,6 +47,9 @@ public class TransactionController {
 
     @Autowired
     private DefineService defineService;
+
+    @Autowired
+    private SuggestionService suggestionService;
 
     @GetMapping("/transactions/count")
     @Operation(summary = "Получить количество транзакций", description = "Возвращает общее количество транзакций")
@@ -151,6 +155,8 @@ public class TransactionController {
             @Parameter(description = "Данные для определения категории транзакции") @RequestBody
             TransactionDefineDTO transactionDefineDTO) {
         defineService.defineTransactionCategoryByTransactionIdAndCategoryId(transactionDefineDTO.getTransactionId(),
+                transactionDefineDTO.getCategoryId());
+        suggestionService.assessAndSaveSuggestion(transactionDefineDTO.getTransactionId(),
                 transactionDefineDTO.getCategoryId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
