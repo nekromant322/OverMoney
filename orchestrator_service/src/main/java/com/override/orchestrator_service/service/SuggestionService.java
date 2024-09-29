@@ -16,16 +16,24 @@ public class SuggestionService {
     @Autowired
     private SuggestionRepository suggestionRepository;
 
-    public void assessAndSaveSuggestion(UUID transactionId, Long categoryId) {
+    public void assessAndSaveSuggestion(UUID transactionId, Long suggestedCategoryId, Float accuracy) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
 
         Suggestion suggestion = Suggestion.builder()
-                .suggestedCategoryId(transaction.getSuggestedCategoryId())
+                .suggestedCategoryId(suggestedCategoryId)
                 .transaction(transaction)
-                .accuracy(transaction.getAccuracy())
+                .accuracy(accuracy)
                 .algorithm("LEVENSHTEIN")
-                .isCorrect(categoryId.equals(transaction.getSuggestedCategoryId()))
+                .isCorrect(null)
                 .build();
+        suggestionRepository.save(suggestion);
+    }
+
+    public void editSuggestion(UUID transactionId, Long categoryId) {
+        Transaction transaction = transactionService.getTransactionById(transactionId);
+        Suggestion suggestion = suggestionRepository.findSuggestionByTransaction(transaction);
+
+        suggestion.setIsCorrect(suggestion.getSuggestedCategoryId().equals(categoryId));
         suggestionRepository.save(suggestion);
     }
 }

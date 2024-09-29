@@ -31,7 +31,7 @@ public class Suggestion {
     private Float accuracy;
 
     @Column
-    private boolean isCorrect;
+    private Boolean isCorrect;
 
     @Column
     private String algorithm;

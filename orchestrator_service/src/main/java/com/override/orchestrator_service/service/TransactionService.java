@@ -147,14 +147,6 @@ public class TransactionService {
         transactionRepository.removeCategoryIdFromTransactionsWithSameMessage(transactionMessage, accountId);
     }
 
-    public Transaction enrichTransactionWithSuggestedCategory(TransactionDTO transactionDTO) {
-        Transaction transaction = getTransactionById(transactionDTO.getId());
-        transaction.setAccuracy(transactionDTO.getAccuracy());
-        transaction.setSuggestedCategoryId(transactionDTO.getSuggestedCategoryId());
-        transactionRepository.save(transaction);
-        return transaction;
-    }
-
     public List<Integer> findAvailableYears(Long accountId) {
         return transactionRepository.findAvailableYearsForAccountByAccountId(accountId);
     }
@@ -219,7 +211,6 @@ public class TransactionService {
             }
             transactionUpdate.setCategory(category);
         }
-        transactionUpdate.setAccuracy(transactionDTO.getAccuracy());
         transactionRepository.save(transactionUpdate);
     }
 

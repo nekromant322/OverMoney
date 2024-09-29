@@ -156,8 +156,7 @@ public class TransactionController {
             TransactionDefineDTO transactionDefineDTO) {
         defineService.defineTransactionCategoryByTransactionIdAndCategoryId(transactionDefineDTO.getTransactionId(),
                 transactionDefineDTO.getCategoryId());
-        suggestionService.assessAndSaveSuggestion(transactionDefineDTO.getTransactionId(),
-                transactionDefineDTO.getCategoryId());
+        suggestionService.editSuggestion(transactionDefineDTO.getTransactionId(), transactionDefineDTO.getCategoryId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -182,7 +181,9 @@ public class TransactionController {
     })
     public ResponseEntity<String> editTransaction(
             @Parameter(description = "Данные транзакции") @RequestBody TransactionDTO transactionDTO) {
-        transactionService.saveTransaction(transactionService.enrichTransactionWithSuggestedCategory(transactionDTO));
+        suggestionService.assessAndSaveSuggestion(transactionDTO.getId(),
+                transactionDTO.getSuggestedCategoryId(),
+                transactionDTO.getAccuracy());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -36,13 +36,6 @@ public class Transaction {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
 
-    @Column(name = "suggested_category_id")
-    @Nullable
-    private Long suggestedCategoryId;
-
-    @Column(name = "accuracy")
-    private Float accuracy;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private OverMoneyAccount account;
 

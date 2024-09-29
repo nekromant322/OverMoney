@@ -12,10 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class SuggestionServiceTest {
@@ -30,64 +27,60 @@ class SuggestionServiceTest {
     private SuggestionService suggestionService;
 
     @Test
-    void assessAndSaveSuggestionCategoryMatch() {
+    void assessAndEditSuggestionCategoryMatch() {
         UUID transactionId = UUID.randomUUID();
-        Long userSelectedCategoryId = 1L;
+        Long categoryId = 1L;
         Long suggestedCategoryId = 1L;
         Float accuracy = 0.8f;
 
         Transaction transaction = Transaction.builder()
                 .id(transactionId)
+                .build();
+
+        Suggestion suggestion = Suggestion.builder()
                 .suggestedCategoryId(suggestedCategoryId)
+                .transaction(transaction)
                 .accuracy(accuracy)
+                .algorithm("LEVENSHTEIN")
+                .isCorrect(null)
                 .build();
 
         when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
+        when(suggestionRepository.findSuggestionByTransaction(transaction)).thenReturn(suggestion);
 
-        Suggestion suggestion = Suggestion.builder()
-                .suggestedCategoryId(transaction.getSuggestedCategoryId())
-                .transaction(transaction)
-                .accuracy(transaction.getAccuracy())
-                .isCorrect(true)
-                .algorithm("LEVENSHTEIN")
-                .build();
+        suggestionService.assessAndSaveSuggestion(transactionId, suggestedCategoryId, accuracy);
+        suggestionService.editSuggestion(transactionId, categoryId);
 
-        suggestionService.assessAndSaveSuggestion(transactionId, userSelectedCategoryId);
-
-        assertTrue(suggestion.isCorrect());
-        assertEquals(suggestion.getAccuracy(), transaction.getAccuracy());
-        verify(suggestionRepository).save(any(Suggestion.class));
-        verify(suggestionRepository).save(argThat(s -> s.isCorrect()));
+        assert(suggestionRepository.findSuggestionByTransaction(transaction).getIsCorrect());
     }
 
     @Test
     void assessAndSaveSuggestionCategoryMismatch() {
         UUID transactionId = UUID.randomUUID();
-        Long userSelectedCategoryId = 2L;
+        Long categoryId = 2L;
         Long suggestedCategoryId = 1L;
         Float accuracy = 0.8f;
 
         Transaction transaction = Transaction.builder()
                 .id(transactionId)
-                .suggestedCategoryId(suggestedCategoryId)
-                .accuracy(accuracy)
                 .build();
 
         when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
 
         Suggestion suggestion = Suggestion.builder()
-                .suggestedCategoryId(transaction.getSuggestedCategoryId())
+                .suggestedCategoryId(suggestedCategoryId)
                 .transaction(transaction)
-                .accuracy(transaction.getAccuracy())
+                .accuracy(accuracy)
                 .isCorrect(false)
                 .algorithm("LEVENSHTEIN")
                 .build();
 
-        suggestionService.assessAndSaveSuggestion(transactionId, userSelectedCategoryId);
+        when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
+        when(suggestionRepository.findSuggestionByTransaction(transaction)).thenReturn(suggestion);
 
-        assertFalse(suggestion.isCorrect());
-        assertEquals(suggestion.getAccuracy(), transaction.getAccuracy());
-        verify(suggestionRepository).save(any(Suggestion.class));
-        verify(suggestionRepository).save(argThat(s -> !s.isCorrect()));
+        suggestionService.assessAndSaveSuggestion(transactionId, suggestedCategoryId, accuracy);
+        suggestionService.editSuggestion(transactionId, categoryId);
+
+        assertFalse(suggestionRepository.findSuggestionByTransaction(transaction).getIsCorrect());
     }
 }
