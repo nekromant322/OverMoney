@@ -5,9 +5,7 @@ import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.model.Transaction;
-import com.override.orchestrator_service.repository.SuggestionRepository;
 import com.override.orchestrator_service.util.NumericalUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -19,9 +17,6 @@ public class TransactionMapper {
     private final String INCOME = "Доходы";
     private final String EXPENSE = "Расходы";
     private final String CATEGORY_UNDEFINED = "Нераспознанное";
-
-    @Autowired
-    private SuggestionRepository suggestionRepository;
 
     @Value("${recognizer.min-accuracy}")
     private double minAccuracy;
@@ -39,26 +34,34 @@ public class TransactionMapper {
     }
 
     public TransactionDTO mapTransactionToDTO(Transaction transaction) {
-        Suggestion suggestion = suggestionRepository.findSuggestionByTransaction(transaction);
-
         TransactionDTO.TransactionDTOBuilder builder = TransactionDTO.builder()
                 .id(transaction.getId())
                 .amount(NumericalUtils.roundAmount(transaction.getAmount()))
                 .message(transaction.getMessage())
                 .date(transaction.getDate())
                 .telegramUserId(transaction.getTelegramUserId());
-        if (suggestion != null && suggestion.getAccuracy() != null) {
-            builder.accuracy(suggestion.getAccuracy());
-        }
-        if (suggestion != null && suggestion.getAccuracy() != null && suggestion.getAccuracy() >= minAccuracy) {
-            builder.suggestedCategoryId(suggestion.getSuggestedCategoryId());
-        }
         if (transaction.getCategory() != null) {
             builder.categoryName(transaction.getCategory().getName());
             builder.type(transaction.getCategory().getType());
         }
 
         return builder.build();
+    }
+
+    public TransactionDTO mapTransactionToDTO(Transaction transaction, Suggestion suggestion) {
+        TransactionDTO transactionDTO = mapTransactionToDTO(transaction);
+        if (suggestion != null && suggestion.getAccuracy() != null) {
+            transactionDTO.setAccuracy(suggestion.getAccuracy());
+        }
+        if (suggestion != null && suggestion.getAccuracy() != null && suggestion.getAccuracy() >= minAccuracy) {
+            transactionDTO.setSuggestedCategoryId(suggestion.getSuggestedCategoryId());
+        }
+        if (transaction.getCategory() != null) {
+            transactionDTO.setCategoryName(transaction.getCategory().getName());
+            transactionDTO.setType(transaction.getCategory().getType());
+        }
+
+        return transactionDTO;
     }
 
     private String getTransactionType(Transaction transaction) throws InstanceNotFoundException {

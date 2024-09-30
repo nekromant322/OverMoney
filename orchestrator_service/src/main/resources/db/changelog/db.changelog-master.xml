@@ -24,6 +24,4 @@
     <include file="v1.0.0/017-db.changelog-add-accuracy_column.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/018-db.changelog-add-accuracy_default_value.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/019-db.changelog-create-suggestions-table.xml" relativeToChangelogFile="true"/>
-    <include file="v1.0.0/020.db-changelog-extract-suggested-category-id-from-transactions.xml" relativeToChangelogFile="true"/>
-    <include file="v1.0.0/021.db-changelog-transactions-drop-suggested-category-and-accuracy.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
