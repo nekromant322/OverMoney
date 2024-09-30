@@ -10,7 +10,7 @@
   # Для выбора kafka необходимо установить значение processing: kafka
   service:
     transaction:
-      processing: kafka
+      processing: orchestrator
 
   integration:
     internal:
@@ -57,7 +57,7 @@
       NikoTiN_RnD,
       annov4,
       Alego22,
-      Katz_Soviet
+      Katz_Soviet,
       developing_warrior
 
   # Для удаления кейвордов по которым давно не было транзакций
