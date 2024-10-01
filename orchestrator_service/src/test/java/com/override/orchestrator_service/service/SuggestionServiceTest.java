@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.constants.SuggestionAlgorithm;
 import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.SuggestionRepository;
@@ -27,9 +28,8 @@ class SuggestionServiceTest {
     private SuggestionService suggestionService;
 
     @Test
-    void assessAndEditSuggestionCategoryMatch() {
+    void createSuggestionTest() {
         UUID transactionId = UUID.randomUUID();
-        Long categoryId = 1L;
         Long suggestedCategoryId = 1L;
         Float accuracy = 0.8f;
 
@@ -41,46 +41,40 @@ class SuggestionServiceTest {
                 .suggestedCategoryId(suggestedCategoryId)
                 .transaction(transaction)
                 .accuracy(accuracy)
-                .algorithm("LEVENSHTEIN")
+                .algorithm(SuggestionAlgorithm.LEVENSHTEIN.getName())
                 .isCorrect(null)
                 .build();
 
         when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
         when(suggestionRepository.findSuggestionByTransaction(transaction)).thenReturn(suggestion);
 
-        suggestionService.assessAndSaveSuggestion(transactionId, suggestedCategoryId, accuracy);
-        suggestionService.editSuggestion(transactionId, categoryId);
+        suggestionService.createSuggestion(transactionId, suggestedCategoryId, accuracy);
 
-        assert(suggestionRepository.findSuggestionByTransaction(transaction).getIsCorrect());
+        assertEquals(suggestionRepository.findSuggestionByTransaction(transaction), suggestion);
     }
 
     @Test
-    void assessAndSaveSuggestionCategoryMismatch() {
+    void estimateSuggestionCorrectnessTest() {
         UUID transactionId = UUID.randomUUID();
-        Long categoryId = 2L;
         Long suggestedCategoryId = 1L;
+        Long categoryId = 2L;
         Float accuracy = 0.8f;
 
-        Transaction transaction = Transaction.builder()
-                .id(transactionId)
-                .build();
-
-        when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
+        Transaction transaction = mock(Transaction.class);
 
         Suggestion suggestion = Suggestion.builder()
                 .suggestedCategoryId(suggestedCategoryId)
                 .transaction(transaction)
                 .accuracy(accuracy)
-                .isCorrect(false)
-                .algorithm("LEVENSHTEIN")
+                .algorithm(SuggestionAlgorithm.LEVENSHTEIN.getName())
+                .isCorrect(null)
                 .build();
 
         when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
-        when(suggestionRepository.findSuggestionByTransaction(transaction)).thenReturn(suggestion);
+        when(transaction.getSuggestion()).thenReturn(suggestion);
 
-        suggestionService.assessAndSaveSuggestion(transactionId, suggestedCategoryId, accuracy);
-        suggestionService.editSuggestion(transactionId, categoryId);
+        suggestionService.estimateSuggestionCorrectness(transactionId, categoryId);
 
-        assertFalse(suggestionRepository.findSuggestionByTransaction(transaction).getIsCorrect());
+        assertFalse(suggestion.getIsCorrect());
     }
 }

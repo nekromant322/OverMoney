@@ -44,6 +44,7 @@ public class TransactionMapperTest {
         Assertions.assertEquals(transactionDTO.getCategoryName(), transaction.getCategory().getName());
         Assertions.assertEquals(transactionDTO.getTelegramUserId(), transaction.getTelegramUserId());
         Assertions.assertEquals(transactionDTO.getSuggestedCategoryId(), suggestion.getSuggestedCategoryId());
+        Assertions.assertEquals(transactionDTO.getAccuracy(), suggestion.getAccuracy());
         Assertions.assertEquals(transactionDTO.getAmount(), transaction.getAmount());
     }
 

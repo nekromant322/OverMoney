@@ -3,12 +3,12 @@ package com.override.dto.constants;
 import lombok.Getter;
 
 @Getter
-public enum Algorithm {
+public enum SuggestionAlgorithm {
     LEVENSHTEIN("LEVENSHTEIN");
 
     private final String name;
 
-    Algorithm(String value) {
+    SuggestionAlgorithm(String value) {
         this.name = value;
     }
 }

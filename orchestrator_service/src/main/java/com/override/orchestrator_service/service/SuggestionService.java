@@ -1,6 +1,6 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.constants.Algorithm;
+import com.override.dto.constants.SuggestionAlgorithm;
 import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.SuggestionRepository;
@@ -17,28 +17,25 @@ public class SuggestionService {
     @Autowired
     private SuggestionRepository suggestionRepository;
 
-    public void assessAndSaveSuggestion(UUID transactionId, Long suggestedCategoryId, Float accuracy) {
+    public void createSuggestion(UUID transactionId, Long suggestedCategoryId, Float accuracy) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
 
         Suggestion suggestion = Suggestion.builder()
                 .suggestedCategoryId(suggestedCategoryId)
                 .transaction(transaction)
                 .accuracy(accuracy)
-                .algorithm(Algorithm.LEVENSHTEIN.getName())
+                .algorithm(SuggestionAlgorithm.LEVENSHTEIN.getName())
                 .isCorrect(null)
                 .build();
         suggestionRepository.save(suggestion);
     }
 
-    public void editSuggestion(UUID transactionId, Long categoryId) {
+    public void estimateSuggestionCorrectness(UUID transactionId, Long categoryId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
-        Suggestion suggestion = suggestionRepository.findSuggestionByTransaction(transaction);
+        //Suggestion suggestion = suggestionRepository.findSuggestionByTransaction(transaction);
+        Suggestion suggestion = transaction.getSuggestion();
 
         suggestion.setIsCorrect(suggestion.getSuggestedCategoryId().equals(categoryId));
         suggestionRepository.save(suggestion);
-    }
-
-    public Suggestion getSuggestionByTransaction(Transaction transaction) {
-        return suggestionRepository.findSuggestionByTransaction(transaction);
     }
 }

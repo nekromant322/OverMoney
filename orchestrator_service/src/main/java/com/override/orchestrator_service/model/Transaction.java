@@ -42,4 +42,7 @@ public class Transaction {
     @Column(name = "telegram_user_id")
     @Nullable
     private Long telegramUserId;
+
+    @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY)
+    private Suggestion suggestion;
 }

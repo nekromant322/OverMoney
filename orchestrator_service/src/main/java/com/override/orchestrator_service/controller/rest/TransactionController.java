@@ -93,7 +93,7 @@ public class TransactionController {
 
         return transactions.stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction,
-                        suggestionService.getSuggestionByTransaction(transaction)))
+                        transaction.getSuggestion()))
                 .collect(Collectors.toList());
     }
 
@@ -157,7 +157,6 @@ public class TransactionController {
             TransactionDefineDTO transactionDefineDTO) {
         defineService.defineTransactionCategoryByTransactionIdAndCategoryId(transactionDefineDTO.getTransactionId(),
                 transactionDefineDTO.getCategoryId());
-        suggestionService.editSuggestion(transactionDefineDTO.getTransactionId(), transactionDefineDTO.getCategoryId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -182,7 +181,7 @@ public class TransactionController {
     })
     public ResponseEntity<String> editTransaction(
             @Parameter(description = "Данные транзакции") @RequestBody TransactionDTO transactionDTO) {
-        suggestionService.assessAndSaveSuggestion(transactionDTO.getId(),
+        suggestionService.createSuggestion(transactionDTO.getId(),
                 transactionDTO.getSuggestedCategoryId(),
                 transactionDTO.getAccuracy());
         return new ResponseEntity<>(HttpStatus.OK);

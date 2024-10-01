@@ -14,10 +14,14 @@ public class DefineService {
     @Autowired
     private TransactionService transactionService;
 
+    @Autowired
+    private SuggestionService suggestionService;
+
     @Transactional
     public void defineTransactionCategoryByTransactionIdAndCategoryId(UUID transactionId, Long categoryId) {
         transactionService.setCategoryForAllUndefinedTransactionsWithSameKeywords(transactionId, categoryId);
         keywordService.associateTransactionsKeywordWithCategory(transactionId, categoryId);
+        suggestionService.estimateSuggestionCorrectness(transactionId, categoryId);
     }
 
     @Transactional
