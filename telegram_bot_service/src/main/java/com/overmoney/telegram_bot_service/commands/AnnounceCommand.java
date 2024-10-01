@@ -72,11 +72,6 @@ public class AnnounceCommand extends OverMoneyCommand {
 
     private void sendAnnounceForUsersInPending(String announceText, Announce announce, AbsSender absSender) {
         executorService.execute(() -> {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
             List<Mail> mailsInPending = mailService.findAllMailsByStatusAndAnnounce(StatusMailing.PENDING, announce);
             long countMessage = 0;
             for (Mail mail : mailsInPending) {
