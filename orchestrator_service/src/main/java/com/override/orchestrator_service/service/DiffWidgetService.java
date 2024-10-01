@@ -27,8 +27,8 @@ public class DiffWidgetService {
     private ExecutorService executorService;
 
     @SneakyThrows
-    public AnalyticsDataMonthDiffDTO getMonthDiff(Long overMoneyAccountId) {
-        LocalDate baseDate = LocalDate.now().minusMonths(1);
+    public AnalyticsDataMonthDiffDTO getMonthDiff(Long overMoneyAccountId, LocalDate localDate) {
+        LocalDate baseDate = localDate.minusMonths(1);
 
         int baseMonth = baseDate.getMonthValue();
         int previousMonth = baseDate.minusMonths(1).getMonthValue();
