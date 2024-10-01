@@ -38,3 +38,8 @@
     maskedFields:
       - x-internal-key
       - voiceMessageBytes
+  recognizer:
+    api:
+      url: "http://127.0.0.1:11434/api/chat"
+    algorithm:
+     type: levenshtein  # или api
