@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/analytics/v2")
@@ -78,6 +79,6 @@ public class AnalyticsV2Controller {
             @ApiResponse(responseCode = "200", description = "Получено успешно"),
     })
     public AnalyticsDataMonthDiffDTO getThisMonthDelta(Principal principal) {
-        return deltaWidgetService.getMonthDiff(telegramUtils.getTelegramId(principal));
+        return deltaWidgetService.getMonthDiff(telegramUtils.getTelegramId(principal), LocalDate.now());
     }
 }

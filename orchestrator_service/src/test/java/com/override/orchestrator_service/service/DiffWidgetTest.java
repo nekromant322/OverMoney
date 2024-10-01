@@ -36,7 +36,7 @@ public class DiffWidgetTest {
     private final String baseMonthName = requestDate.minusMonths(1).getMonth()
             .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
     private final String previousMonthName = requestDate.minusMonths(2).getMonth()
-                .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
+            .getDisplayName(TextStyle.FULL_STANDALONE, Locale.getDefault());
 
     @Test
     public void getMonthDiff() {
@@ -57,7 +57,7 @@ public class DiffWidgetTest {
                         ConcurrentUtils.constantFuture(prevMonthData),
                         ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
-        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
+        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId, requestDate);
 
         assertNotNull(result);
         assertEquals(11, result.getBaseMonthIncomeToPrevMonthDiff());
@@ -87,7 +87,7 @@ public class DiffWidgetTest {
                         ConcurrentUtils.constantFuture(prevMonthData),
                         ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
-        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
+        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId, requestDate);
 
         assertNotNull(result);
         assertNull(result.getBaseMonthIncomeToPrevMonthDiff());
@@ -117,7 +117,7 @@ public class DiffWidgetTest {
                         ConcurrentUtils.constantFuture(prevMonthData),
                         ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
-        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
+        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId, requestDate);
 
         assertNotNull(result);
         assertEquals(11, result.getBaseMonthIncomeToPrevMonthDiff());
@@ -147,7 +147,7 @@ public class DiffWidgetTest {
                         ConcurrentUtils.constantFuture(prevMonthData),
                         ConcurrentUtils.constantFuture(prevYearSameMonthData));
 
-        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId);
+        AnalyticsDataMonthDiffDTO result = diffWidgetService.getMonthDiff(overMoneyAccountId, requestDate);
 
         assertNotNull(result);
         assertNull(result.getBaseMonthIncomeToPrevMonthDiff());
