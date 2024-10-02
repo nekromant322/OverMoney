@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="30.09.2024-create-suggestions-table" author="Katz_Soviet">
+        <createTable tableName="suggestions">
+            <column name="id" type="uuid" defaultValueComputed="uuid_generate_v4()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="transaction_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="suggested_category_id" type="bigint">
+            </column>
+            <column name="accuracy" type="float">
+            </column>
+            <column name="is_correct" type="boolean">
+            </column>
+            <column name="algorithm" type="varchar(255)">
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="suggestions"
+                                 baseColumnNames="transaction_id"
+                                 constraintName="fk_suggestions_transactions"
+                                 referencedTableName="transactions"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="30.09.2024-extract-levenshtein-suggestions-from-transactions" author="Katz_Soviet">
+        <sql>
+            INSERT INTO suggestions(transaction_id, suggested_category_id, accuracy, is_correct, algorithm)
+            SELECT t.id AS transaction_id,
+                   t.suggested_category_id,
+                   t.accuracy,
+                   CASE
+                       WHEN t.category_id = t.suggested_category_id THEN TRUE
+                       ELSE FALSE
+                       END AS is_correct,
+                   'LEVENSHTEIN' AS algorithm
+            FROM transactions t
+            WHERE t.suggested_category_id IS NOT NULL
+              AND t.accuracy != 0
+        </sql>
+    </changeSet>
+
+    <changeSet id="30.09.2024-drop-suggested-category_id-and-accuracy-columns" author="Katz_Soviet">
+        <dropColumn tableName="transactions" columnName="suggested_category_id"/>
+        <dropColumn tableName="transactions" columnName="accuracy"/>
+    </changeSet>
+</databaseChangeLog>

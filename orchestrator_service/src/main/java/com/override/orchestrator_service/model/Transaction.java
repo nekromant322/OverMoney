@@ -36,17 +36,13 @@ public class Transaction {
     @Column(columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
 
-    @Column(name = "suggested_category_id")
-    @Nullable
-    private Long suggestedCategoryId;
-
-    @Column(name = "accuracy")
-    private Float accuracy;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private OverMoneyAccount account;
 
     @Column(name = "telegram_user_id")
     @Nullable
     private Long telegramUserId;
+
+    @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY)
+    private Suggestion suggestion;
 }

@@ -23,6 +23,9 @@ public class DefineServiceTest {
     @Mock
     private TransactionService transactionService;
 
+    @Mock
+    private SuggestionService suggestionService;
+
     @Test
     public void defineTransactionByTransactionIdAndCategoryIdSetAndAssociate() {
         UUID transactionId = UUID.randomUUID();
@@ -34,6 +37,8 @@ public class DefineServiceTest {
                 .setCategoryForAllUndefinedTransactionsWithSameKeywords(transactionId, categoryId);
         verify(keywordService, times(1))
                 .associateTransactionsKeywordWithCategory(transactionId, categoryId);
+        verify(suggestionService, times(1))
+                .estimateSuggestionCorrectness(transactionId, categoryId);
     }
 
     @Test

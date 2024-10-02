@@ -3,6 +3,7 @@ package com.override.orchestrator_service.mapper;
 import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.Type;
+import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.util.NumericalUtils;
 import org.springframework.stereotype.Component;
@@ -38,10 +39,17 @@ public class TransactionMapper {
                 .amount(NumericalUtils.roundAmount(transaction.getAmount()))
                 .message(transaction.getMessage())
                 .date(transaction.getDate())
-                .accuracy(transaction.getAccuracy())
                 .telegramUserId(transaction.getTelegramUserId());
-        if (transaction.getAccuracy() != null && transaction.getAccuracy() >= minAccuracy) {
-            builder.suggestedCategoryId(transaction.getSuggestedCategoryId());
+        if (transaction.getCategory() != null) {
+            builder.categoryName(transaction.getCategory().getName());
+            builder.type(transaction.getCategory().getType());
+        }
+        Suggestion suggestion = transaction.getSuggestion();
+        if (suggestion != null && suggestion.getAccuracy() != null) {
+            builder.accuracy(suggestion.getAccuracy());
+        }
+        if (suggestion != null && suggestion.getAccuracy() != null && suggestion.getAccuracy() >= minAccuracy) {
+            builder.suggestedCategoryId(suggestion.getSuggestedCategoryId());
         }
         if (transaction.getCategory() != null) {
             builder.categoryName(transaction.getCategory().getName());

@@ -4,6 +4,7 @@ import com.override.dto.TransactionDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.mapper.TransactionMapper;
+import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +17,7 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,13 +29,23 @@ public class TransactionMapperTest {
     @Test
     public void mapTransactionToDTOTest() {
         Transaction transaction = TestFieldsUtil.generateTestTransaction();
+
+        Suggestion suggestion = Suggestion.builder()
+                .id(UUID.randomUUID())
+                .transaction(transaction)
+                .suggestedCategoryId(1L)
+                .accuracy(0.9f)
+                .build();
+        transaction.setSuggestion(suggestion);
+
         TransactionDTO transactionDTO = transactionMapper.mapTransactionToDTO(transaction);
         Assertions.assertEquals(transactionDTO.getId(), transaction.getId());
         Assertions.assertEquals(transactionDTO.getMessage(), transaction.getMessage());
         Assertions.assertEquals(transactionDTO.getDate(), transaction.getDate());
         Assertions.assertEquals(transactionDTO.getCategoryName(), transaction.getCategory().getName());
         Assertions.assertEquals(transactionDTO.getTelegramUserId(), transaction.getTelegramUserId());
-        Assertions.assertEquals(transactionDTO.getSuggestedCategoryId(), transaction.getSuggestedCategoryId());
+        Assertions.assertEquals(transactionDTO.getSuggestedCategoryId(), suggestion.getSuggestedCategoryId());
+        Assertions.assertEquals(transactionDTO.getAccuracy(), suggestion.getAccuracy());
         Assertions.assertEquals(transactionDTO.getAmount(), transaction.getAmount());
     }
 
