@@ -80,7 +80,7 @@ public class TransactionListenerTest {
         when(transactionProcessingService.processTransaction(transactionMessageDTO)).thenReturn(transaction);
         doNothing().when(transactionService).saveTransaction(transaction);
         doNothing().when(transactionProcessingService)
-                .suggestCategoryToProcessedTransaction(transactionMessageDTO, transaction.getId());
+                .suggestCategoryToProcessedTransaction(transaction);
 
 
         when(transactionMapper.mapTransactionToTelegramResponse(transaction)).thenReturn(responseDTO);

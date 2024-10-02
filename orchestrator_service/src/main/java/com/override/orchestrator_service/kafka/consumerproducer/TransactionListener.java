@@ -42,12 +42,12 @@ public class TransactionListener {
     public void processTransaction(TransactionMessageDTO transaction) {
 
         try {
-            Transaction transactionResult = transactionProcessingService.processTransaction(transaction);
-            transactionService.saveTransaction(transactionResult);
-            transactionProcessingService.suggestCategoryToProcessedTransaction(transaction, transactionResult.getId());
+            Transaction currentTransactional = transactionProcessingService.processTransaction(transaction);
+            transactionService.saveTransaction(currentTransactional);
+            transactionProcessingService.suggestCategoryToProcessedTransaction(currentTransactional);
 
             kafkaTemplate.send(responseTopic, transactionMapper
-                    .mapTransactionToTelegramResponse(transactionResult));
+                    .mapTransactionToTelegramResponse(currentTransactional));
         } catch (Exception e) {
             TransactionResponseDTO errorResponse = new TransactionResponseDTO();
             errorResponse.setComment("error");
