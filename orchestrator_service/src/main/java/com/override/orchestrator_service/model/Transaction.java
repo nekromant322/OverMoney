@@ -43,6 +43,6 @@ public class Transaction {
     @Nullable
     private Long telegramUserId;
 
-    @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "transaction", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Suggestion suggestion;
 }
