@@ -92,8 +92,7 @@ public class TransactionController {
         transactions.sort(Comparator.comparing(Transaction::getDate));
 
         return transactions.stream()
-                .map(transaction -> transactionMapper.mapTransactionToDTO(transaction,
-                        transaction.getSuggestion()))
+                .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                 .collect(Collectors.toList());
     }
 

@@ -24,7 +24,7 @@ public class SuggestionService {
                 .suggestedCategoryId(suggestedCategoryId)
                 .transaction(transaction)
                 .accuracy(accuracy)
-                .algorithm(SuggestionAlgorithm.LEVENSHTEIN.getName())
+                .algorithm(SuggestionAlgorithm.LEVENSHTEIN.getName()) // TODO: реализовать получение имени алгоритма
                 .isCorrect(null)
                 .build();
         suggestionRepository.save(suggestion);
@@ -32,7 +32,6 @@ public class SuggestionService {
 
     public void estimateSuggestionCorrectness(UUID transactionId, Long categoryId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
-        //Suggestion suggestion = suggestionRepository.findSuggestionByTransaction(transaction);
         Suggestion suggestion = transaction.getSuggestion();
 
         suggestion.setIsCorrect(suggestion.getSuggestedCategoryId().equals(categoryId));

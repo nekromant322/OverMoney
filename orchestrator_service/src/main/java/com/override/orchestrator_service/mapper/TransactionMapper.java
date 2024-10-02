@@ -44,24 +44,19 @@ public class TransactionMapper {
             builder.categoryName(transaction.getCategory().getName());
             builder.type(transaction.getCategory().getType());
         }
-
-        return builder.build();
-    }
-
-    public TransactionDTO mapTransactionToDTO(Transaction transaction, Suggestion suggestion) {
-        TransactionDTO transactionDTO = mapTransactionToDTO(transaction);
+        Suggestion suggestion = transaction.getSuggestion();
         if (suggestion != null && suggestion.getAccuracy() != null) {
-            transactionDTO.setAccuracy(suggestion.getAccuracy());
+            builder.accuracy(suggestion.getAccuracy());
         }
         if (suggestion != null && suggestion.getAccuracy() != null && suggestion.getAccuracy() >= minAccuracy) {
-            transactionDTO.setSuggestedCategoryId(suggestion.getSuggestedCategoryId());
+            builder.suggestedCategoryId(suggestion.getSuggestedCategoryId());
         }
         if (transaction.getCategory() != null) {
-            transactionDTO.setCategoryName(transaction.getCategory().getName());
-            transactionDTO.setType(transaction.getCategory().getType());
+            builder.categoryName(transaction.getCategory().getName());
+            builder.type(transaction.getCategory().getType());
         }
 
-        return transactionDTO;
+        return builder.build();
     }
 
     private String getTransactionType(Transaction transaction) throws InstanceNotFoundException {

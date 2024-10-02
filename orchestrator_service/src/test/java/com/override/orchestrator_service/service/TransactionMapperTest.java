@@ -36,8 +36,9 @@ public class TransactionMapperTest {
                 .suggestedCategoryId(1L)
                 .accuracy(0.9f)
                 .build();
+        transaction.setSuggestion(suggestion);
 
-        TransactionDTO transactionDTO = transactionMapper.mapTransactionToDTO(transaction, suggestion);
+        TransactionDTO transactionDTO = transactionMapper.mapTransactionToDTO(transaction);
         Assertions.assertEquals(transactionDTO.getId(), transaction.getId());
         Assertions.assertEquals(transactionDTO.getMessage(), transaction.getMessage());
         Assertions.assertEquals(transactionDTO.getDate(), transaction.getDate());
