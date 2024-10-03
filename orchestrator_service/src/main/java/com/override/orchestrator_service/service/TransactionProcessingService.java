@@ -127,13 +127,12 @@ public class TransactionProcessingService {
         return processTransaction(transactionMessageDTO);
     }
 
-    public void suggestCategoryToProcessedTransaction(TransactionMessageDTO transactionMessageDTO, UUID transactionId)
+    public void suggestCategoryToProcessedTransaction(Transaction transaction)
             throws InstanceNotFoundException {
-        Transaction transaction = processTransaction(transactionMessageDTO);
-        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transactionMessageDTO.getUserId());
+        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transaction.getTelegramUserId());
         executorService.execute(() -> {
             if (!categories.isEmpty()) {
-                recognizerFeign.recognizeCategory(transaction.getMessage(), transactionId, categories);
+                recognizerFeign.recognizeCategory(transaction.getMessage(), transaction.getId(), categories);
             }
         });
     }
