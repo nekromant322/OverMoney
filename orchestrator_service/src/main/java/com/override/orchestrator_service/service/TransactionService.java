@@ -211,6 +211,11 @@ public class TransactionService {
             }
             transactionUpdate.setCategory(category);
         }
+
+        if (transactionDTO.getDate() != null && !transactionDTO.getDate().equals(transactionUpdate.getDate())) {
+            transactionUpdate.setDate(transactionDTO.getDate());
+        }
+
         transactionRepository.save(transactionUpdate);
     }
 

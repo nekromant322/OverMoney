@@ -20,6 +20,10 @@
     <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
     <link href="/css/history.css" rel="stylesheet" type="text/css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Подключаем стили SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <!-- Подключаем скрипт SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
 <
@@ -94,6 +98,19 @@
                                            class="form-control form-control-sm"
                                            id="messageEdit">
                                 </div>
+
+                                <div class="form-group text-center">
+                                    <label for="dateEdit"><b>Дата и время</b></label>
+                                    <input
+                                            name="date"
+                                            type="datetime-local"
+                                            class="form-control form-control-sm"
+                                            id="dateEdit"
+                                            min="1900-01-01T00:00"
+                                            max="2099-12-31T23:59"
+                                    >
+                                </div>
+
 
                             </form>
                         </div>
