@@ -15,6 +15,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.management.InstanceNotFoundException;
 import javax.transaction.Transactional;
 
 @Component
@@ -38,13 +39,10 @@ public class TransactionListener {
     private String responseTopic;
 
     @KafkaHandler
-    @Transactional
     public void processTransaction(TransactionMessageDTO transaction) {
 
         try {
-            Transaction currentTransactional = transactionProcessingService.processTransaction(transaction);
-            transactionService.saveTransaction(currentTransactional);
-            transactionProcessingService.suggestCategoryToProcessedTransaction(currentTransactional);
+            Transaction currentTransactional = this.preProcessTransaction(transaction);
 
             kafkaTemplate.send(responseTopic, transactionMapper
                     .mapTransactionToTelegramResponse(currentTransactional));
@@ -55,5 +53,13 @@ public class TransactionListener {
             log.error(e.getMessage());
             kafkaTemplate.send(responseTopic, errorResponse);
         }
+    }
+
+    @Transactional
+    public Transaction preProcessTransaction(TransactionMessageDTO transaction) throws InstanceNotFoundException {
+        Transaction currentTransactional = transactionProcessingService.processTransaction(transaction);
+        transactionService.saveTransaction(currentTransactional);
+        transactionProcessingService.suggestCategoryToProcessedTransaction(currentTransactional);
+        return currentTransactional;
     }
 }

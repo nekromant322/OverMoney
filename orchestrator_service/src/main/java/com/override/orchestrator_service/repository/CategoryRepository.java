@@ -3,6 +3,7 @@ package com.override.orchestrator_service.repository;
 import com.override.dto.AnalyticsDataDTO;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.OverMoneyAccount;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,13 @@ import java.util.Set;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
+
+    @Query("SELECT c FROM Category c JOIN FETCH c.account a WHERE a = :account")
+    Set<Category> findCategoriesByOverMoneyAccount(@Param("account") OverMoneyAccount overMoneyAccount);
+
+    @Query("SELECT a FROM OverMoneyAccount a JOIN FETCH a.categories JOIN FETCH  a.users u " +
+            "WHERE u.id = :telegramAccountId")
+    OverMoneyAccount findOverMoneyAccountByTelegramId(@Param("telegramAccountId") Long telegramAccountId);
 
     Set<Category> findAllByAccount_Id(Long id);
 

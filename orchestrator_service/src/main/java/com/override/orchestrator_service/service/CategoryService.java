@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -44,8 +45,9 @@ public class CategoryService {
     private UserService userService;
 
     public List<CategoryDTO> findCategoriesListByUserId(Long id) throws InstanceNotFoundException {
-        OverMoneyAccount account = accountService.getAccountByUserId(id);
-        return categoryMapper.mapCategoriesListToJsonResponse(accountMapper.mapAccountToCategoryList(account));
+        OverMoneyAccount account = categoryRepository.findOverMoneyAccountByTelegramId(id);
+        return categoryMapper.mapCategoriesListToJsonResponse(new ArrayList<>(categoryRepository
+                .findCategoriesByOverMoneyAccount(account)));
     }
 
     public List<CategoryDTO> findCategoriesListByChatId(Long id) {
