@@ -9,6 +9,7 @@ import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.override.dto.TransactionMessageDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.management.InstanceNotFoundException;
@@ -74,6 +75,7 @@ public class TransactionProcessingService {
      * @see com.override.orchestrator_service.service.calc.TransactionHandler
      * @see com.override.orchestrator_service.service.calc.TransactionHandlerImplInvalidTransaction
      */
+    @Transactional
     public Transaction processTransaction(TransactionMessageDTO transactionMessageDTO) {
         OverMoneyAccount overMoneyAccount = overMoneyAccountService
                 .getOverMoneyAccountByChatId(transactionMessageDTO.getChatId());
@@ -127,6 +129,7 @@ public class TransactionProcessingService {
         return processTransaction(transactionMessageDTO);
     }
 
+    @Transactional
     public void suggestCategoryToProcessedTransaction(Transaction transaction)
             throws InstanceNotFoundException {
         List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transaction.getTelegramUserId());
