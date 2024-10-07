@@ -43,7 +43,7 @@ public class TransactionListener {
 
         try {
             Transaction currentTransactional = this.preProcessTransaction(transaction);
-
+            transactionProcessingService.suggestCategoryToProcessedTransaction(currentTransactional);
             kafkaTemplate.send(responseTopic, transactionMapper
                     .mapTransactionToTelegramResponse(currentTransactional));
         } catch (Exception e) {
@@ -59,7 +59,6 @@ public class TransactionListener {
     public Transaction preProcessTransaction(TransactionMessageDTO transaction) throws InstanceNotFoundException {
         Transaction currentTransactional = transactionProcessingService.processTransaction(transaction);
         transactionService.saveTransaction(currentTransactional);
-        transactionProcessingService.suggestCategoryToProcessedTransaction(currentTransactional);
         return currentTransactional;
     }
 }
