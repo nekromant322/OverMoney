@@ -180,9 +180,11 @@ public class TransactionController {
     })
     public ResponseEntity<String> editTransaction(
             @Parameter(description = "Данные транзакции") @RequestBody TransactionDTO transactionDTO) {
-        suggestionService.createSuggestion(transactionDTO.getId(),
+        suggestionService.createSuggestion(
+                transactionDTO.getId(),
                 transactionDTO.getSuggestedCategoryId(),
-                transactionDTO.getAccuracy());
+                transactionDTO.getAccuracy(),
+                transactionDTO.getSuggestionAlgorithm());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

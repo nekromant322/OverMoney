@@ -39,7 +39,10 @@
       - x-internal-key
       - voiceMessageBytes
   recognizer:
-    api:
-      url: "http://127.0.0.1:11434/api/chat"
     algorithm:
-     type: levenshtein  # или api
+      type: LLM
+     #type: LEVENSHTEIN
+  llm:
+    model: "llama3.1"
+    url: "http://194.87.237.176:11434/api/chat"
+
