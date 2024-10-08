@@ -6,6 +6,20 @@ let categoryNow;
 
 $(document).ready(function () {
     getTransactions();
+    $('#dateEdit').on('input', function (event) {
+        const input = event.target;
+        const year = input.value.split('-')[0];
+
+        if (year.length > 4 || year < 1900 || year > 2099) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Некорректный год',
+                text: 'Год должен быть в пределах от 1900 до 2099 и содержать 4 цифры.',
+                confirmButtonText: 'Ок'
+            });
+            input.value = '';
+        }
+    });
 })
 
 $(window).scroll(function () {
@@ -129,6 +143,7 @@ function fillModalWindow(response) {
     $("#idTransactionInForm").val(response.id);
     $("#amountEdit").val(response.amount);
     $("#messageEdit").val(response.message);
+    $("#dateEdit").val(response.message);
     response.categoryName == null ? categoryNow = "Нераспознанное" : categoryNow = response.categoryName;
     writeAllCategoryInModal();
     $("#nameCategoryEdit").html(options);
@@ -167,6 +182,7 @@ $(function editButtonClick() {
             categoryName: $('#nameCategoryEdit').val(),
             amount: $('#amountEdit').val(),
             message: $('#messageEdit').val(),
+            date: $('#dateEdit').val()
         }
         $.ajax({
             method: "PUT",
