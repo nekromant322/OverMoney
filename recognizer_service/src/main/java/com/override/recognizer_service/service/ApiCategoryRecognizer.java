@@ -32,21 +32,17 @@ public class ApiCategoryRecognizer implements CategoryRecognizer {
     }
 
     @Override
-    public CategoryDTO getSuggestedCategory(String message, List<CategoryDTO> categories) {
+    public RecognizerResult recognizeCategoryAndAccuracy(String message, List<CategoryDTO> categories) {
         LLMResponseDTO responseDTO = recognizeCategoryUsingAPI(message, categories);
         if (responseDTO != null) {
             String categoryFromAPI = responseDTO.getCategoryName();
-            return categories.stream()
-                .filter(category -> category.getName().equalsIgnoreCase(categoryFromAPI))
-                .findFirst()
-                .orElse(null);
+            CategoryDTO matchedCategory = categories.stream()
+                    .filter(category -> category.getName().equalsIgnoreCase(categoryFromAPI))
+                    .findFirst()
+                    .orElse(null);
+            float accuracy = responseDTO.getAccuracy();
+            return new RecognizerResult(matchedCategory, accuracy);
         }
-        return null;
-    }
-
-    @Override
-    public float getAccuracy(String message, List<CategoryDTO> categories) {
-        LLMResponseDTO responseDTO = recognizeCategoryUsingAPI(message, categories);
-        return responseDTO != null ? responseDTO.getAccuracy() : 0.0f;
+        return new RecognizerResult(null, 0.0f);
     }
 }

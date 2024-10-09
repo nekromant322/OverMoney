@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
-import org.mockito.Spy;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
@@ -21,8 +21,11 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CategoryRecognizerServiceTests {
 
-    @Spy
+    @InjectMocks
     private LevenshteinCategoryRecognizer levenshteinRecognizer;
+
+    @Mock
+    private ApiCategoryRecognizer apiCategoryRecognizer;
 
     private float minAccuracy;
 
@@ -44,13 +47,11 @@ public class CategoryRecognizerServiceTests {
             .name("Категория с пивом")
             .build();
         final String message = "пиво";
-        when(
-            levenshteinRecognizer.getSuggestedCategory(message, List.of(categoryWithBeer))).thenReturn(
-            categoryWithBeer);
+        List<CategoryDTO> categories = List.of(categoryWithBeer);
 
-        Assertions.assertEquals(
-            levenshteinRecognizer.getSuggestedCategory(message, List.of(categoryWithBeer)).getName(),
-            categoryWithBeer.getName());
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
+
+        Assertions.assertEquals(categoryWithBeer.getName(), result.getCategory().getName());
     }
 
     @Test
@@ -78,14 +79,11 @@ public class CategoryRecognizerServiceTests {
             .name("Категория без ключевых слов")
             .build();
         final String message = "молоко";
-        when(levenshteinRecognizer.getSuggestedCategory(message,
-            List.of(categoryWithBeer, categoryWithBlank)))
-            .thenReturn(categoryWithBeer);
+        List<CategoryDTO> categories = List.of(categoryWithBeer, categoryWithBlank);
 
-        Assertions.assertEquals(categoryWithBeer.getName(),
-            levenshteinRecognizer
-                .getSuggestedCategory(message, List.of(categoryWithBeer, categoryWithBlank))
-                .getName());
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
+
+        Assertions.assertEquals(categoryWithBeer.getName(), result.getCategory().getName());
     }
 
     @Test
@@ -112,13 +110,13 @@ public class CategoryRecognizerServiceTests {
             .name("Категория с Пупой")
             .build();
         final String message = "пупв";
-        when(levenshteinRecognizer.getSuggestedCategory(message,
-            List.of(categoryWithLupa, categoryWithPupa))).thenReturn(categoryWithPupa);
+        List<CategoryDTO> categories = List.of(categoryWithLupa, categoryWithPupa);
 
-        Assertions.assertEquals(levenshteinRecognizer
-                .getSuggestedCategory(message, List.of(categoryWithLupa, categoryWithPupa)).getName(),
-            categoryWithPupa.getName());
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
+
+        Assertions.assertEquals(categoryWithPupa.getName(), result.getCategory().getName());
     }
+
 
     @Test
     public void doNotSuggestCategoryWhenAccuracyIsLow() {
@@ -135,13 +133,13 @@ public class CategoryRecognizerServiceTests {
             .name("Категория с анальгином")
             .build();
         final String message = "апельсин";
+        List<CategoryDTO> categories = List.of(categoryWithAnalgin);
 
-        CategoryDTO recognizedCategory = levenshteinRecognizer.getSuggestedCategory(message,
-            List.of(categoryWithAnalgin));
-        float accuracy = levenshteinRecognizer.getAccuracy(message, List.of(categoryWithAnalgin));
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
+        float accuracy = result.getAccuracy();
+        CategoryDTO recognizedCategory = result.getCategory();
 
-        Assertions.assertNull(recognizedCategory == null ? null
-            : (accuracy < minAccuracy ? null : recognizedCategory));
+        Assertions.assertNull(recognizedCategory == null ? null : (accuracy < minAccuracy ? null : recognizedCategory));
     }
 
     @Test
@@ -159,16 +157,12 @@ public class CategoryRecognizerServiceTests {
             .name("Категория с яблоком")
             .build();
         String message = "яблоки";
+        List<CategoryDTO> categories = List.of(categoryWithApple);
 
-        float accuracy = levenshteinRecognizer.getAccuracy(message, List.of(categoryWithApple));
-        Assertions.assertTrue(accuracy > minAccuracy);
-        CategoryDTO recognizedCategory = levenshteinRecognizer.getSuggestedCategory(message,
-            List.of(categoryWithApple));
-        if (accuracy > minAccuracy) {
-            Assertions.assertNotNull(recognizedCategory);
-        } else {
-            Assertions.assertNull(recognizedCategory);
-        }
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
+
+        Assertions.assertTrue(result.getAccuracy() > minAccuracy);
+        Assertions.assertEquals(categoryWithApple.getName(), result.getCategory().getName());
     }
 
     @Test
@@ -178,17 +172,12 @@ public class CategoryRecognizerServiceTests {
         float accuracy = minAccuracy;
 
         String mockContent = categoryName + ", " + accuracy;
-
         Message mockMessage = new Message();
         mockMessage.setContent(mockContent);
-
         LLMResponseDTO mockResponse = new LLMResponseDTO();
         mockResponse.setMessage(mockMessage);
-
         List<CategoryDTO> categories = new ArrayList<>();
         categories.add(CategoryDTO.builder().name(categoryName).build());
-
-        ApiCategoryRecognizer apiCategoryRecognizer = Mockito.mock(ApiCategoryRecognizer.class);
 
         when(apiCategoryRecognizer.recognizeCategoryUsingAPI(message, categories)).thenReturn(
             mockResponse);

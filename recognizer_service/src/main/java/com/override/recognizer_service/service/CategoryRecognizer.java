@@ -4,7 +4,5 @@ import com.override.dto.CategoryDTO;
 import java.util.List;
 
 public interface CategoryRecognizer {
-    CategoryDTO getSuggestedCategory(String message, List<CategoryDTO> categories);
-
-    float getAccuracy(String message, List<CategoryDTO> categories);
+    RecognizerResult recognizeCategoryAndAccuracy(String message, List<CategoryDTO> categories);
 }

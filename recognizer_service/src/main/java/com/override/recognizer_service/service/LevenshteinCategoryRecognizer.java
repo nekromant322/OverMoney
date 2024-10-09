@@ -23,36 +23,28 @@ public class LevenshteinCategoryRecognizer implements CategoryRecognizer {
     }
 
     @Override
-    public CategoryDTO getSuggestedCategory(String message, List<CategoryDTO> categories) {
+    public RecognizerResult recognizeCategoryAndAccuracy(String message, List<CategoryDTO> categories) {
         if (categories.isEmpty()) {
             return null;
         }
-        CategoryDTO[] mostSuitableCategory = {categories.get(0)};
-        float[] maxLevenshteinDistance = {0};
-        categories.forEach(c -> {
-            c.getKeywords().add(
-                    KeywordIdDTO.builder()
-                            .name(c.getName())
-                            .build());
-        });
-        categories.forEach(c -> {
-            c.getKeywords().forEach(k -> {
-                float currentValue = calculateLevenshteinDistance(message, k.getName());
-                if (currentValue > maxLevenshteinDistance[0]) {
-                    mostSuitableCategory[0] = c;
-                    maxLevenshteinDistance[0] = currentValue;
-                }
-            });
-        });
-        return mostSuitableCategory[0];
-    }
+        CategoryDTO mostSuitableCategory = null;
+        float maxLevenshteinDistance = 0.0f;
 
-    @Override
-    public float getAccuracy(String message, List<CategoryDTO> categories) {
-        return categories.stream()
-                            .flatMap(category -> category.getKeywords().stream())
-                            .map(k -> calculateLevenshteinDistance(message, k.getName()))
-                            .max(Float::compare)
-                            .orElse(0.0f);
+        for (CategoryDTO category : categories) {
+            category.getKeywords().add(
+                     KeywordIdDTO.builder()
+                    .name(category.getName())
+                    .build());
+
+            for (KeywordIdDTO keywordId : category.getKeywords()) {
+                float currentValue = calculateLevenshteinDistance(message, keywordId.getName());
+                if (currentValue > maxLevenshteinDistance) {
+                    mostSuitableCategory = category;
+                    maxLevenshteinDistance = currentValue;
+                }
+            }
+        }
+
+        return new RecognizerResult(mostSuitableCategory, maxLevenshteinDistance);
     }
 }

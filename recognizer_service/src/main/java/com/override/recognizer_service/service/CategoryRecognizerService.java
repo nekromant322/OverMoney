@@ -16,38 +16,36 @@ import java.util.UUID;
 @Slf4j
 public class CategoryRecognizerService {
 
-    @Autowired
-    private OrchestratorFeign orchestratorFeign;
-
-    @Autowired(required = false)
-    public LevenshteinCategoryRecognizer levenshteinRecognizer;
+    private final OrchestratorFeign orchestratorFeign;
+    private final CategoryRecognizer categoryRecognizer;
+    private final SuggestionAlgorithm algorithmType;
 
     @Autowired
-    public ApiCategoryRecognizer apiRecognizer;
-
-    @Value("${recognizer.algorithm.type}")
-    private String recognizerAlgorithmType;
-
-    public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
-        CategoryDTO suggestedCategory = null;
-        float accuracy = 0.0f;
-        SuggestionAlgorithm algorithmType = null;
+    public CategoryRecognizerService(OrchestratorFeign orchestratorFeign,
+            LevenshteinCategoryRecognizer levenshteinRecognizer,
+            ApiCategoryRecognizer apiRecognizer,
+            @Value("${recognizer.algorithm.type}") String recognizerAlgorithmType) {
+        this.orchestratorFeign = orchestratorFeign;
 
         if ("LLM".equalsIgnoreCase(recognizerAlgorithmType)) {
-            algorithmType = SuggestionAlgorithm.LLM;
-            suggestedCategory = apiRecognizer.getSuggestedCategory(message, categories);
-            accuracy = apiRecognizer.getAccuracy(message, categories);
+            this.categoryRecognizer = apiRecognizer;
+            this.algorithmType = SuggestionAlgorithm.LLM;
         } else if ("LEVENSHTEIN".equalsIgnoreCase(recognizerAlgorithmType)) {
-            algorithmType = SuggestionAlgorithm.LEVENSHTEIN;
-            suggestedCategory = levenshteinRecognizer.getSuggestedCategory(message, categories);
-            accuracy = levenshteinRecognizer.getAccuracy(message, categories);
+            this.categoryRecognizer = levenshteinRecognizer;
+            this.algorithmType = SuggestionAlgorithm.LEVENSHTEIN;
+        } else {
+            throw new IllegalArgumentException("Unrecognized algorithm type: " + recognizerAlgorithmType);
         }
+    }
 
-        if (suggestedCategory != null) {
+    public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
+        RecognizerResult recognizerResult = categoryRecognizer.recognizeCategoryAndAccuracy(message, categories);
+
+        if (recognizerResult != null && recognizerResult.getCategory() != null) {
             TransactionDTO transactionDTO = TransactionDTO.builder()
-                    .accuracy(accuracy)
+                    .accuracy(recognizerResult.getAccuracy())
                     .id(transactionId)
-                    .suggestedCategoryId(suggestedCategory.getId())
+                    .suggestedCategoryId(recognizerResult.getCategory().getId())
                     .suggestionAlgorithm(algorithmType)
                     .build();
             orchestratorFeign.editTransaction(transactionDTO);
@@ -56,4 +54,3 @@ public class CategoryRecognizerService {
         }
     }
 }
-
