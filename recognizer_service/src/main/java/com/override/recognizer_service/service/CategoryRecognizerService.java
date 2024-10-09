@@ -1,72 +1,56 @@
 package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
-import com.override.dto.KeywordIdDTO;
 import com.override.dto.TransactionDTO;
 import com.override.recognizer_service.feign.OrchestratorFeign;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import com.override.dto.constants.SuggestionAlgorithm;
 
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 
 @Service
 @Slf4j
 public class CategoryRecognizerService {
 
+    private final OrchestratorFeign orchestratorFeign;
+    private final CategoryRecognizer categoryRecognizer;
+    private final SuggestionAlgorithm algorithmType;
+
     @Autowired
-    private OrchestratorFeign orchestratorFeign;
+    public CategoryRecognizerService(OrchestratorFeign orchestratorFeign,
+            LevenshteinCategoryRecognizer levenshteinRecognizer,
+            ApiCategoryRecognizer apiRecognizer,
+            @Value("${recognizer.algorithm.type}") String recognizerAlgorithmType) {
+        this.orchestratorFeign = orchestratorFeign;
 
-    protected float calculateLevenshteinDistance(String strOne, String strTwo) {
-        strOne = strOne.toLowerCase();
-        strTwo = strTwo.toLowerCase();
-        float maxLength = Integer.max(strOne.length(), strTwo.length());
-        if (maxLength > 0) {
-            return (maxLength - LevenshteinDistance.getDefaultInstance().apply(strOne, strTwo)) / maxLength;
+        if ("LLM".equalsIgnoreCase(recognizerAlgorithmType)) {
+            this.categoryRecognizer = apiRecognizer;
+            this.algorithmType = SuggestionAlgorithm.LLM;
+        } else if ("LEVENSHTEIN".equalsIgnoreCase(recognizerAlgorithmType)) {
+            this.categoryRecognizer = levenshteinRecognizer;
+            this.algorithmType = SuggestionAlgorithm.LEVENSHTEIN;
+        } else {
+            throw new IllegalArgumentException("Unrecognized algorithm type: " + recognizerAlgorithmType);
         }
-        return 0.0f;
-    }
-
-    public CategoryDTO recognizeCategory(String message, List<CategoryDTO> categories) {
-        if (categories.isEmpty()) {
-            return null;
-        }
-        CategoryDTO[] mostSuitableCategory = {categories.get(0)};
-        float[] maxLevenshteinDistance = {0};
-        categories.forEach(c -> {
-            c.getKeywords().add(
-                    KeywordIdDTO.builder()
-                            .name(c.getName())
-                            .build());
-        });
-        categories.forEach(c -> {
-            c.getKeywords().forEach(k -> {
-                float currentValue = calculateLevenshteinDistance(message, k.getName());
-                if (currentValue > maxLevenshteinDistance[0]) {
-                    mostSuitableCategory[0] = c;
-                    maxLevenshteinDistance[0] = currentValue;
-                }
-            });
-        });
-        return mostSuitableCategory[0];
     }
 
     public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
-        CategoryDTO suggestedCategory = recognizeCategory(message, categories);
-        float accuracy = calculateAccuracy(suggestedCategory, message);
-        TransactionDTO transactionDTO = TransactionDTO.builder()
-                            .accuracy(accuracy)
-                            .id(transactionId)
-                            .suggestedCategoryId(suggestedCategory.getId())
-                            .build();
-        orchestratorFeign.editTransaction(transactionDTO);
-    }
+        RecognizerResult recognizerResult = categoryRecognizer.recognizeCategoryAndAccuracy(message, categories);
 
-    private float calculateAccuracy(CategoryDTO category, String message) {
-        return category.getKeywords().stream()
-                            .map(k -> calculateLevenshteinDistance(message, k.getName()))
-                            .max(Float::compare)
-                            .orElse(0.0f);
+        if (recognizerResult != null && recognizerResult.getCategory() != null) {
+            TransactionDTO transactionDTO = TransactionDTO.builder()
+                    .accuracy(recognizerResult.getAccuracy())
+                    .id(transactionId)
+                    .suggestedCategoryId(recognizerResult.getCategory().getId())
+                    .suggestionAlgorithm(algorithmType)
+                    .build();
+            orchestratorFeign.editTransaction(transactionDTO);
+        } else {
+            log.warn("No suggested category for message: {}", message);
+        }
     }
 }

@@ -32,6 +32,7 @@ class SuggestionServiceTest {
         UUID transactionId = UUID.randomUUID();
         Long suggestedCategoryId = 1L;
         Float accuracy = 0.8f;
+        SuggestionAlgorithm algorithm = SuggestionAlgorithm.LEVENSHTEIN;
 
         Transaction transaction = Transaction.builder()
                 .id(transactionId)
@@ -41,14 +42,14 @@ class SuggestionServiceTest {
                 .suggestedCategoryId(suggestedCategoryId)
                 .transaction(transaction)
                 .accuracy(accuracy)
-                .algorithm(SuggestionAlgorithm.LEVENSHTEIN.getName())
+                .algorithm(algorithm.getName())
                 .isCorrect(null)
                 .build();
 
         when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
         when(suggestionRepository.findSuggestionByTransaction(transaction)).thenReturn(suggestion);
 
-        suggestionService.createSuggestion(transactionId, suggestedCategoryId, accuracy);
+        suggestionService.createSuggestion(transactionId, suggestedCategoryId, accuracy, algorithm);
 
         assertEquals(suggestionRepository.findSuggestionByTransaction(transaction), suggestion);
     }

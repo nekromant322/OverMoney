@@ -17,14 +17,15 @@ public class SuggestionService {
     @Autowired
     private SuggestionRepository suggestionRepository;
 
-    public void createSuggestion(UUID transactionId, Long suggestedCategoryId, Float accuracy) {
+    public void createSuggestion(UUID transactionId, Long suggestedCategoryId,
+            Float accuracy, SuggestionAlgorithm algorithm) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
 
         Suggestion suggestion = Suggestion.builder()
                 .suggestedCategoryId(suggestedCategoryId)
                 .transaction(transaction)
                 .accuracy(accuracy)
-                .algorithm(SuggestionAlgorithm.LEVENSHTEIN.getName()) // TODO: реализовать получение имени алгоритма
+                .algorithm(algorithm.getName())
                 .isCorrect(null)
                 .build();
         suggestionRepository.save(suggestion);

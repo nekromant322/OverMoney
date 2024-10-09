@@ -1,5 +1,6 @@
 package com.override.dto;
 
+import com.override.dto.constants.SuggestionAlgorithm;
 import com.override.dto.constants.Type;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -46,4 +47,7 @@ public class TransactionDTO {
 
     @Schema(description = "Тип транзакции", example = "INCOME")
     private Type type;
+
+    @Schema(description = "Тип алгоритма")
+    private SuggestionAlgorithm suggestionAlgorithm;
 }

@@ -2,6 +2,8 @@ package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.KeywordIdDTO;
+import com.override.recognizer_service.llm.Message;
+import com.override.recognizer_service.llm.LLMResponseDTO;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,24 +11,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import com.override.dto.TransactionDTO;
-import com.override.recognizer_service.feign.OrchestratorFeign;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryRecognizerServiceTests {
-    @InjectMocks
-    private CategoryRecognizerService categoryRecognizerService;
 
-    private float minAccuracy;
+    @InjectMocks
+    private LevenshteinCategoryRecognizer levenshteinRecognizer;
 
     @Mock
-    private OrchestratorFeign orchestratorFeign;
+    private ApiCategoryRecognizer apiCategoryRecognizer;
+
+    private float minAccuracy;
 
     @BeforeEach
     public void setup() {
@@ -36,30 +37,33 @@ public class CategoryRecognizerServiceTests {
     @Test
     public void returnCorrectCategoryWhenKeywordMatched() {
         final KeywordIdDTO keywordBeer = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("пиво")
-                .build();
+            .accountId(1L)
+            .name("пиво")
+            .build();
         List<KeywordIdDTO> listOfKeywords = new ArrayList<>();
         listOfKeywords.add(keywordBeer);
         final CategoryDTO categoryWithBeer = CategoryDTO.builder()
-                .keywords(listOfKeywords)
-                .name("Категория с пивом")
-                .build();
+            .keywords(listOfKeywords)
+            .name("Категория с пивом")
+            .build();
         final String message = "пиво";
-        Assertions.assertEquals(categoryRecognizerService.recognizeCategory(message, List.of(categoryWithBeer)).getName(),
-                categoryWithBeer.getName());
+        List<CategoryDTO> categories = List.of(categoryWithBeer);
+
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
+
+        Assertions.assertEquals(categoryWithBeer.getName(), result.getCategory().getName());
     }
 
     @Test
     public void returnAnotherWhenOneIsBlank() {
         final KeywordIdDTO keywordBeer = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("пиво")
-                .build();
+            .accountId(1L)
+            .name("пиво")
+            .build();
         final KeywordIdDTO keywordBlank = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("")
-                .build();
+            .accountId(1L)
+            .name("")
+            .build();
 
         List<KeywordIdDTO> listOfKeywordBeer = new ArrayList<>();
         listOfKeywordBeer.add(keywordBeer);
@@ -67,47 +71,53 @@ public class CategoryRecognizerServiceTests {
         listOfKeywordBlank.add(keywordBlank);
 
         final CategoryDTO categoryWithBeer = CategoryDTO.builder()
-                .keywords(listOfKeywordBeer)
-                .name("Категория с пивом")
-                .build();
+            .keywords(listOfKeywordBeer)
+            .name("Категория с пивом")
+            .build();
         final CategoryDTO categoryWithBlank = CategoryDTO.builder()
-                .keywords(listOfKeywordBlank)
-                .name("Категория без ключевых слов")
-                .build();
+            .keywords(listOfKeywordBlank)
+            .name("Категория без ключевых слов")
+            .build();
         final String message = "молоко";
-        Assertions.assertEquals(categoryRecognizerService
-                        .recognizeCategory(message, List.of(categoryWithBeer, categoryWithBlank)).getName(),
-                categoryWithBeer.getName());
+        List<CategoryDTO> categories = List.of(categoryWithBeer, categoryWithBlank);
+
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
+
+        Assertions.assertEquals(categoryWithBeer.getName(), result.getCategory().getName());
     }
 
     @Test
     public void returnCorrectCategoryWhenMisspell() {
         final KeywordIdDTO keywordLupa = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("лупа")
-                .build();
+            .accountId(1L)
+            .name("лупа")
+            .build();
         final KeywordIdDTO keywordPupa = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("пупа")
-                .build();
+            .accountId(1L)
+            .name("пупа")
+            .build();
         List<KeywordIdDTO> listOfKeywordPupa = new ArrayList<>();
         listOfKeywordPupa.add(keywordPupa);
         List<KeywordIdDTO> listOfKeywordLupa = new ArrayList<>();
         listOfKeywordLupa.add(keywordLupa);
 
         final CategoryDTO categoryWithLupa = CategoryDTO.builder()
-                .keywords(listOfKeywordLupa)
-                .name("Категория с Лупой")
-                .build();
+            .keywords(listOfKeywordLupa)
+            .name("Категория с Лупой")
+            .build();
         final CategoryDTO categoryWithPupa = CategoryDTO.builder()
-                .keywords(listOfKeywordPupa)
-                .name("Категория с Пупой")
-                .build();
+            .keywords(listOfKeywordPupa)
+            .name("Категория с Пупой")
+            .build();
         final String message = "пупв";
-        Assertions.assertEquals(categoryRecognizerService
-                        .recognizeCategory(message, List.of(categoryWithLupa, categoryWithPupa)).getName(),
-                categoryWithPupa.getName());
+        List<CategoryDTO> categories = List.of(categoryWithLupa, categoryWithPupa);
+
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
+
+        Assertions.assertEquals(categoryWithPupa.getName(), result.getCategory().getName());
     }
+
+
     @Test
     public void doNotSuggestCategoryWhenAccuracyIsLow() {
 
@@ -123,9 +133,11 @@ public class CategoryRecognizerServiceTests {
             .name("Категория с анальгином")
             .build();
         final String message = "апельсин";
+        List<CategoryDTO> categories = List.of(categoryWithAnalgin);
 
-        CategoryDTO recognizedCategory = categoryRecognizerService.recognizeCategory(message, List.of(categoryWithAnalgin));
-        float accuracy = categoryRecognizerService.calculateLevenshteinDistance(message, keywordAnalgin.getName());
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
+        float accuracy = result.getAccuracy();
+        CategoryDTO recognizedCategory = result.getCategory();
 
         Assertions.assertNull(recognizedCategory == null ? null : (accuracy < minAccuracy ? null : recognizedCategory));
     }
@@ -145,18 +157,36 @@ public class CategoryRecognizerServiceTests {
             .name("Категория с яблоком")
             .build();
         String message = "яблоки";
+        List<CategoryDTO> categories = List.of(categoryWithApple);
 
-        UUID transactionId = UUID.randomUUID();
-        float accuracy = categoryRecognizerService.calculateLevenshteinDistance(message,
-            keywordApple.getName());
-        Assertions.assertTrue(accuracy > minAccuracy);
+        RecognizerResult result = levenshteinRecognizer.recognizeCategoryAndAccuracy(message, categories);
 
-      categoryRecognizerService.sendTransactionWithSuggestedCategory(message,
-          List.of(categoryWithApple), transactionId);
+        Assertions.assertTrue(result.getAccuracy() > minAccuracy);
+        Assertions.assertEquals(categoryWithApple.getName(), result.getCategory().getName());
+    }
 
-      verify(orchestratorFeign).editTransaction(TransactionDTO.builder()
-          .suggestedCategoryId(categoryWithApple.getId())
-          .accuracy(accuracy)
-          .id(transactionId).build());
+    @Test
+    public void testLLM() {
+        String message = "банка пива 300";
+        String categoryName = "продукты";
+        float accuracy = minAccuracy;
+
+        String mockContent = categoryName + ", " + accuracy;
+        Message mockMessage = new Message();
+        mockMessage.setContent(mockContent);
+        LLMResponseDTO mockResponse = new LLMResponseDTO();
+        mockResponse.setMessage(mockMessage);
+        List<CategoryDTO> categories = new ArrayList<>();
+        categories.add(CategoryDTO.builder().name(categoryName).build());
+
+        when(apiCategoryRecognizer.recognizeCategoryUsingAPI(message, categories)).thenReturn(
+            mockResponse);
+
+        LLMResponseDTO response = apiCategoryRecognizer.recognizeCategoryUsingAPI(message,
+            categories);
+
+        Assertions.assertEquals(categoryName, response.getCategoryName());
+        Assertions.assertEquals(accuracy, response.getAccuracy(),
+            0.001);
     }
 }
