@@ -13,7 +13,7 @@ import java.util.UUID;
 public interface RecognizerFeign {
 
     @PostMapping("/recognizer/category/suggested")
-    CategoryDTO recognizeCategory(@RequestParam String message,
+    void recognizeCategory(@RequestParam String message,
                                                   @RequestParam UUID transactionId,
                                                   @RequestBody List<CategoryDTO> categories);
 }

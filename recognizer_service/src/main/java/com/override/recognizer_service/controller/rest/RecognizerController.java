@@ -4,10 +4,12 @@ import com.override.dto.CategoryDTO;
 import com.override.recognizer_service.service.CategoryRecognizerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
 
 @RestController
 @Slf4j
@@ -16,10 +18,18 @@ public class RecognizerController {
     @Autowired
     private CategoryRecognizerService categoryRecognizerService;
 
+    @Autowired
+    private ExecutorService executorService;
+
     @PostMapping("/recognizer/category/suggested")
-    public void recognizeCategory(@RequestParam(name = "message") String message,
-                                  @RequestParam(name = "transactionId") UUID transactionId,
-                                  @RequestBody List<CategoryDTO> categories) {
-        categoryRecognizerService.sendTransactionWithSuggestedCategory(message, categories, transactionId);
+    public ResponseEntity<Object> recognizeCategory(@RequestParam(name = "message") String message,
+                                                    @RequestParam(name = "transactionId") UUID transactionId,
+                                                    @RequestBody List<CategoryDTO> categories) {
+
+        executorService.submit(() -> {
+                    categoryRecognizerService.sendTransactionWithSuggestedCategory(message, categories, transactionId);
+                }
+        );
+        return ResponseEntity.ok().build();
     }
 }
