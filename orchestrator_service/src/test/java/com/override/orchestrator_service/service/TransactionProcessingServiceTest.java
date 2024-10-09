@@ -23,12 +23,12 @@ import org.mockito.quality.Strictness;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -59,10 +59,8 @@ public class TransactionProcessingServiceTest {
                 .build();
         OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
         List<CategoryDTO> categories = List.of(TestFieldsUtil.generateTestCategoryDTO());
-        when(recognizerFeign.recognizeCategory(any(), any(), any())).thenReturn(TestFieldsUtil.generateTestCategoryDTO());
         when(categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId())).thenReturn(categories);
         when(overMoneyAccountService.getOverMoneyAccountByChatId(transactionMessageDTO.getChatId())).thenReturn(account);
-
         assertThrows(TransactionProcessingException.class, () ->
                 transactionProcessingService.processTransaction(transactionMessageDTO));
 
@@ -113,7 +111,6 @@ public class TransactionProcessingServiceTest {
                 .build();
         OverMoneyAccount account = TestFieldsUtil.generateTestAccount();
         List<CategoryDTO> categories = List.of(TestFieldsUtil.generateTestCategoryDTO());
-        when(recognizerFeign.recognizeCategory(any(), any(), any())).thenReturn(TestFieldsUtil.generateTestCategoryDTO());
         when(categoryService.findCategoriesListByUserId(transactionMessageDTO.getChatId())).thenReturn(categories);
         when(overMoneyAccountService.getOverMoneyAccountByChatId(transactionMessageDTO.getChatId())).thenReturn(account);
         Transaction transactionTest = transactionProcessingService.processTransaction(transactionMessageDTO);
@@ -204,7 +201,6 @@ public class TransactionProcessingServiceTest {
         when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(TestFieldsUtil.generateTestAccount());
 
         List<CategoryDTO> categories = List.of(TestFieldsUtil.generateTestCategoryDTO());
-        when(recognizerFeign.recognizeCategory(any(), any(), any())).thenReturn(TestFieldsUtil.generateTestCategoryDTO());
         when(categoryService.findCategoriesListByUserId(any())).thenReturn(categories);
         when(overMoneyAccountService.getOverMoneyAccountByChatId(any())).thenReturn(TestFieldsUtil.generateTestAccount());
         Principal principal = new JwtAuthentication();
