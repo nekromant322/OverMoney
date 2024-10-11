@@ -21,12 +21,12 @@ public class SuggestionService {
         Transaction transaction = transactionService.getTransactionById(transactionDTO.getId());
 
         Suggestion suggestion = Suggestion.builder()
-            .suggestedCategoryId(transactionDTO.getSuggestedCategoryId())
-            .transaction(transaction)
-            .accuracy(transactionDTO.getAccuracy())
-            .algorithm(transactionDTO.getSuggestionAlgorithm().getName())
-            .isCorrect(null)
-            .build();
+                .suggestedCategoryId(transactionDTO.getSuggestedCategoryId())
+                .transaction(transaction)
+                .accuracy(transactionDTO.getAccuracy())
+                .algorithm(transactionDTO.getSuggestionAlgorithm().getName())
+                .isCorrect(null)
+                .build();
         suggestionRepository.save(suggestion);
     }
 

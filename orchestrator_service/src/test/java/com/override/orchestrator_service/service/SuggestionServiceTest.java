@@ -45,19 +45,17 @@ class SuggestionServiceTest {
         transactionDTO.setAccuracy(accuracy);
         transactionDTO.setSuggestionAlgorithm(algorithm);
 
-        Suggestion suggestion = Suggestion.builder()
-            .suggestedCategoryId(suggestedCategoryId)
-            .transaction(transaction)
-            .accuracy(accuracy)
-            .algorithm(algorithm.getName())
-            .isCorrect(null)
-            .build();
-
         when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
 
         suggestionService.createSuggestion(transactionDTO);
 
-        verify(suggestionRepository).save(suggestion);
+        verify(suggestionRepository).save(argThat(suggestion ->
+            suggestion.getSuggestedCategoryId().equals(suggestedCategoryId) &&
+                suggestion.getTransaction().equals(transaction) &&
+                suggestion.getAccuracy().equals(accuracy) &&
+                suggestion.getAlgorithm().equals(algorithm.getName()) &&
+                suggestion.getIsCorrect() == null
+        ));
     }
 
     @Test
