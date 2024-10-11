@@ -1,5 +1,6 @@
 package com.override.orchestrator_service.service;
 
+import com.override.dto.TransactionDTO;
 import com.override.dto.constants.SuggestionAlgorithm;
 import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.model.Transaction;
@@ -38,20 +39,25 @@ class SuggestionServiceTest {
                 .id(transactionId)
                 .build();
 
+        TransactionDTO transactionDTO = new TransactionDTO();
+        transactionDTO.setId(transactionId);
+        transactionDTO.setSuggestedCategoryId(suggestedCategoryId);
+        transactionDTO.setAccuracy(accuracy);
+        transactionDTO.setSuggestionAlgorithm(algorithm);
+
         Suggestion suggestion = Suggestion.builder()
-                .suggestedCategoryId(suggestedCategoryId)
-                .transaction(transaction)
-                .accuracy(accuracy)
-                .algorithm(algorithm.getName())
-                .isCorrect(null)
-                .build();
+            .suggestedCategoryId(suggestedCategoryId)
+            .transaction(transaction)
+            .accuracy(accuracy)
+            .algorithm(algorithm.getName())
+            .isCorrect(null)
+            .build();
 
         when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
-        when(suggestionRepository.findSuggestionByTransaction(transaction)).thenReturn(suggestion);
 
-        suggestionService.createSuggestion(transactionId, suggestedCategoryId, accuracy, algorithm);
+        suggestionService.createSuggestion(transactionDTO);
 
-        assertEquals(suggestionRepository.findSuggestionByTransaction(transaction), suggestion);
+        verify(suggestionRepository).save(suggestion);
     }
 
     @Test
