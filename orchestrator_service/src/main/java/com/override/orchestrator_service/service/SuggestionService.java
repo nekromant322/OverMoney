@@ -1,6 +1,6 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.constants.SuggestionAlgorithm;
+import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.SuggestionRepository;
@@ -17,15 +17,14 @@ public class SuggestionService {
     @Autowired
     private SuggestionRepository suggestionRepository;
 
-    public void createSuggestion(UUID transactionId, Long suggestedCategoryId,
-            Float accuracy, SuggestionAlgorithm algorithm) {
-        Transaction transaction = transactionService.getTransactionById(transactionId);
+    public void createSuggestion(TransactionDTO transactionDTO) {
+        Transaction transaction = transactionService.getTransactionById(transactionDTO.getId());
 
         Suggestion suggestion = Suggestion.builder()
-                .suggestedCategoryId(suggestedCategoryId)
+                .suggestedCategoryId(transactionDTO.getSuggestedCategoryId())
                 .transaction(transaction)
-                .accuracy(accuracy)
-                .algorithm(algorithm.getName())
+                .accuracy(transactionDTO.getAccuracy())
+                .algorithm(transactionDTO.getSuggestionAlgorithm().getName())
                 .isCorrect(null)
                 .build();
         suggestionRepository.save(suggestion);
