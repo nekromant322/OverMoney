@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,9 +34,6 @@ public class TransactionProcessingService {
 
     @Autowired
     private RecognizerFeign recognizerFeign;
-
-    @Autowired
-    private ExecutorService executorService;
 
     @Autowired
     private TelegramUtils telegramUtils;
@@ -133,11 +129,9 @@ public class TransactionProcessingService {
     public void suggestCategoryToProcessedTransaction(Transaction transaction)
             throws InstanceNotFoundException {
         List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transaction.getTelegramUserId());
-        executorService.execute(() -> {
-            if (!categories.isEmpty()) {
-                recognizerFeign.recognizeCategory(transaction.getMessage(), transaction.getId(), categories);
-            }
-        });
+        if (!categories.isEmpty()) {
+            recognizerFeign.recognizeCategory(transaction.getMessage(), transaction.getId(), categories);
+        }
     }
 
     private Category getTransactionCategory(String transactionMessage,
