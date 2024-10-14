@@ -5,12 +5,12 @@ import org.jetbrains.annotations.NotNull;
 import org.zalando.logbook.*;
 import org.zalando.logbook.Sink;
 
-public class CustomSink implements Sink {
+public class LoggableExcludingHtml implements Sink {
 
     private final HttpLogFormatter formatter;
     private final HttpLogWriter writer;
 
-    public CustomSink(HttpLogFormatter formatter, HttpLogWriter writer) {
+    public LoggableExcludingHtml(HttpLogFormatter formatter, HttpLogWriter writer) {
         this.formatter = formatter;
         this.writer = writer;
     }
@@ -39,6 +39,6 @@ public class CustomSink implements Sink {
     }
 
     private boolean shouldLog(String body) {
-        return (body.contains("\"type\":\"request\"") || body.contains("\"type\":\"response\""));
+        return !body.contains("<!DOCTYPE html>");
     }
 }

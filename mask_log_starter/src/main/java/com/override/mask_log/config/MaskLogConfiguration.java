@@ -1,7 +1,7 @@
 package com.override.mask_log.config;
 
 import com.override.mask_log.impl.formatter.MaskLogFormatter;
-import com.override.mask_log.impl.http.CustomSink;
+import com.override.mask_log.impl.http.LoggableExcludingHtml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +25,7 @@ public class MaskLogConfiguration {
                         requestTo("/actuator/**"),
                         requestTo("/scripts/**"),
                         requestTo("/css/**")))
-                .sink(new CustomSink(maskLogFormatter, new DefaultHttpLogWriter()))
+                .sink(new LoggableExcludingHtml(maskLogFormatter, new DefaultHttpLogWriter()))
                 .build();
     }
 }
