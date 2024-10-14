@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.overmoney</groupId>
     <artifactId>mask_log_starter</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2-SNAPSHOT</version>
     <name>mask_log_starter</name>
     <description>Mask Log Spring Boot Starter</description>
     <packaging>jar</packaging>
