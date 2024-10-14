@@ -1,6 +1,7 @@
 package com.override.mask_log.config;
 
 import com.override.mask_log.impl.formatter.MaskLogFormatter;
+import com.override.mask_log.impl.http.LoggableExcludingHtml;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,12 +24,8 @@ public class MaskLogConfiguration {
                 .condition(exclude(
                         requestTo("/actuator/**"),
                         requestTo("/scripts/**"),
-                        requestTo("/css/**"),
-                        contentType("text/html;charset=UTF-8")))
-//                ниже вариация вместо полного отсечения логов по html
-//                .responseFilter(ResponseFilters.replaceBody(message -> contentType("text/html;charset=UTF-8")
-//                .test(message) ? "some HTML code" : null))
-                .sink(new DefaultSink(maskLogFormatter, new DefaultHttpLogWriter()))
+                        requestTo("/css/**")))
+                .sink(new LoggableExcludingHtml(maskLogFormatter, new DefaultHttpLogWriter()))
                 .build();
     }
 }
