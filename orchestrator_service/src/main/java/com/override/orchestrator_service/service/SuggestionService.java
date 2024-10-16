@@ -4,12 +4,14 @@ import com.override.dto.TransactionDTO;
 import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.SuggestionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
 @Service
+@Slf4j
 public class SuggestionService {
 
     @Autowired
@@ -33,8 +35,9 @@ public class SuggestionService {
     public void estimateSuggestionCorrectness(UUID transactionId, Long categoryId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         Suggestion suggestion = transaction.getSuggestion();
-
-        suggestion.setIsCorrect(suggestion.getSuggestedCategoryId().equals(categoryId));
-        suggestionRepository.save(suggestion);
+        if (suggestion != null) {
+            suggestion.setIsCorrect(categoryId.equals(suggestion.getSuggestedCategoryId()));
+            suggestionRepository.save(suggestion);
+        }
     }
 }
