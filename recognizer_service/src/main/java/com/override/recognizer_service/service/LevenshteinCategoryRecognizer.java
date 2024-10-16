@@ -2,6 +2,7 @@ package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.KeywordIdDTO;
+import com.override.dto.constants.SuggestionAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 import org.springframework.stereotype.Component;
@@ -46,5 +47,10 @@ public class LevenshteinCategoryRecognizer implements CategoryRecognizer {
         }
 
         return new RecognizerResult(mostSuitableCategory, maxLevenshteinDistance);
+    }
+
+    @Override
+    public boolean supportsAlgorithm(SuggestionAlgorithm algorithm) {
+        return SuggestionAlgorithm.LEVENSHTEIN.equals(algorithm);
     }
 }
