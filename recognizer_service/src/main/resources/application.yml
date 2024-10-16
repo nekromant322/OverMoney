@@ -44,7 +44,8 @@
     url: "http://194.87.237.176:11434/api/chat"
 
   recognizer:
-    algorithms:
-      LLM, LEVENSHTEIN
+    llm-algo: ACTIVE
+    levenshtein-algo: ACTIVE
+
 
 
