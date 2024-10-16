@@ -1,6 +1,7 @@
 package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
+import com.override.dto.constants.SuggestionAlgorithm;
 import com.override.recognizer_service.feign.LLMFeignClient;
 import com.override.recognizer_service.llm.LLMRequestDTO;
 import com.override.recognizer_service.llm.LLMResponseDTO;
@@ -44,5 +45,10 @@ public class ApiCategoryRecognizer implements CategoryRecognizer {
             return new RecognizerResult(matchedCategory, accuracy);
         }
         return new RecognizerResult(null, 0.0f);
+    }
+
+    @Override
+    public boolean supportsAlgorithm(SuggestionAlgorithm algorithm) {
+        return SuggestionAlgorithm.LLM.equals(algorithm);
     }
 }

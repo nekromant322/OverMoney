@@ -38,11 +38,13 @@
     maskedFields:
       - x-internal-key
       - voiceMessageBytes
-  recognizer:
-    algorithm:
-      type: LLM
-      #type: LEVENSHTEIN
+
   llm:
     model: "llama3.1"
     url: "http://194.87.237.176:11434/api/chat"
+
+  recognizer:
+    algorithms:
+      LLM, LEVENSHTEIN
+
 
