@@ -35,8 +35,9 @@ public class SuggestionService {
     public void estimateSuggestionCorrectness(UUID transactionId, Long categoryId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         Suggestion suggestion = transaction.getSuggestion();
-        log.info("estimateSuggestionCorrectness: transaction id=" + transactionId + " suggestion= " + suggestion.toString());
-        suggestion.setIsCorrect(categoryId.equals(suggestion.getSuggestedCategoryId()));
-        suggestionRepository.save(suggestion);
+        if(suggestion != null) {
+            suggestion.setIsCorrect(categoryId.equals(suggestion.getSuggestedCategoryId()));
+            suggestionRepository.save(suggestion);
+        }
     }
 }
