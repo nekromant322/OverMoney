@@ -34,7 +34,7 @@ public class SuggestionService {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         Suggestion suggestion = transaction.getSuggestion();
 
-        suggestion.setIsCorrect(suggestion.getSuggestedCategoryId().equals(categoryId));
+        suggestion.setIsCorrect(categoryId.equals(suggestion.getSuggestedCategoryId()));
         suggestionRepository.save(suggestion);
     }
 }

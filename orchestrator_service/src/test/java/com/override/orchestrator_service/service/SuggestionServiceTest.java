@@ -82,4 +82,29 @@ class SuggestionServiceTest {
 
         assertFalse(suggestion.getIsCorrect());
     }
+
+    @Test
+    void estimateSuggestionCorrectnessWhenSuggestedIdIsNullTest() {
+        UUID transactionId = UUID.randomUUID();
+        Long suggestedCategoryId = null;
+        Long categoryId = 2L;
+        Float accuracy = 0.8f;
+
+        Transaction transaction = mock(Transaction.class);
+
+        Suggestion suggestion = Suggestion.builder()
+                .suggestedCategoryId(suggestedCategoryId)
+                .transaction(transaction)
+                .accuracy(accuracy)
+                .algorithm(SuggestionAlgorithm.LEVENSHTEIN.getName())
+                .isCorrect(null)
+                .build();
+
+        when(transactionService.getTransactionById(transactionId)).thenReturn(transaction);
+        when(transaction.getSuggestion()).thenReturn(suggestion);
+
+        suggestionService.estimateSuggestionCorrectness(transactionId, categoryId);
+
+        assertFalse(suggestion.getIsCorrect());
+    }
 }
