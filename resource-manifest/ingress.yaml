@@ -28,3 +28,10 @@ spec:
                 name: sa-grafana-svc
                 port:
                   number: 3000
+          - path: /kafka-ui
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: kafka-ui-svc
+                port:
+                  number: 80
