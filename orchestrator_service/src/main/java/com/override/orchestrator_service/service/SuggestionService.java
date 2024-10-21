@@ -35,7 +35,7 @@ public class SuggestionService {
     public void estimateSuggestionCorrectness(UUID transactionId, Long categoryId) {
         Transaction transaction = transactionService.getTransactionById(transactionId);
         Suggestion suggestion = transaction.getSuggestion();
-        if(suggestion != null) {
+        if (suggestion != null) {
             suggestion.setIsCorrect(categoryId.equals(suggestion.getSuggestedCategoryId()));
             suggestionRepository.save(suggestion);
         }
