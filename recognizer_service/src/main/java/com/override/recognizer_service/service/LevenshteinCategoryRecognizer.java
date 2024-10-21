@@ -2,14 +2,19 @@ package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.KeywordIdDTO;
+import com.override.dto.constants.SuggestionAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.similarity.LevenshteinDistance;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
 @Slf4j
+@Order(2)
+@ConditionalOnProperty(name = "recognizer.levenshtein-algo", havingValue = "ACTIVE")
 public class LevenshteinCategoryRecognizer implements CategoryRecognizer {
 
     protected float calculateLevenshteinDistance(String strOne, String strTwo) {
@@ -46,5 +51,10 @@ public class LevenshteinCategoryRecognizer implements CategoryRecognizer {
         }
 
         return new RecognizerResult(mostSuitableCategory, maxLevenshteinDistance);
+    }
+
+    @Override
+    public SuggestionAlgorithm getAlgorithm() {
+        return SuggestionAlgorithm.LEVENSHTEIN;
     }
 }
