@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import java.time.Instant;
+import java.util.Arrays;
 
 @ControllerAdvice
 @Slf4j
@@ -22,13 +23,13 @@ public class CommonExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<?> test(MaxUploadSizeExceededException e) {
-        log.error("log from advice", e.getMessage(), e);
+        log.error(Arrays.toString(e.getStackTrace()));
         return handleException(new RequestSizeException("Размер файла не должен превышать " + maxSizeRequest));
     }
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<?> handleException(Exception e) {
-        log.error("log from advice", e.getMessage(), e);
+        log.error(Arrays.toString(e.getStackTrace()));
         String errorCode = getErrorCode(e);
         int statusCode = getHttpStatusCode(e);
         return ResponseEntity.status(statusCode).body(createDto(errorCode, e.getMessage()));
