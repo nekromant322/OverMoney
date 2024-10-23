@@ -22,12 +22,13 @@ public class CommonExceptionHandler {
 
     @ExceptionHandler(MaxUploadSizeExceededException.class)
     public ResponseEntity<?> test(MaxUploadSizeExceededException e) {
+        log.error("log from advice", e.getMessage(), e);
         return handleException(new RequestSizeException("Размер файла не должен превышать " + maxSizeRequest));
     }
 
     @ExceptionHandler(Throwable.class)
     public ResponseEntity<?> handleException(Exception e) {
-        log.error(e.getMessage(), e);
+        log.error("log from advice", e.getMessage(), e);
         String errorCode = getErrorCode(e);
         int statusCode = getHttpStatusCode(e);
         return ResponseEntity.status(statusCode).body(createDto(errorCode, e.getMessage()));
