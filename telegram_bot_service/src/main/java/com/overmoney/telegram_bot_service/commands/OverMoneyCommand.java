@@ -20,7 +20,7 @@ public abstract class OverMoneyCommand extends BotCommand {
             log.info("сообщение отправлено " + chatId);
             return StatusMailing.SUCCESS;
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             return StatusMailing.ERROR;
         }
     }

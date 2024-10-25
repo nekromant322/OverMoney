@@ -202,7 +202,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
         try {
             receivedMessageText = getReceivedMessage(receivedMessage).toLowerCase();
         } catch (VoiceProcessingException e) {
-            log.error("При обработке голосового сообщения произошла: " + e.getMessage(), e);
+            log.error("An error occurred while processing the voice message: " + e.getMessage(), e);
             String errorMessage = "При обработке голосового сообщения произошла: " + e.getMessage();
             sendMessage(chatId, errorMessage);
             return;
@@ -258,7 +258,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             execute(message);
             return StatusMailing.SUCCESS;
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             return StatusMailing.ERROR;
         }
     }
@@ -281,7 +281,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             execute(sendDocument);
             file.delete();
         } catch (TelegramApiException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 
@@ -290,7 +290,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             telegramMessageService.deleteTransactionById(replyToMessage.getMessageId(), chatId);
             sendMessage(chatId, SUCCESSFUL_DELETION_TRANSACTION);
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             sendMessage(chatId, INVALID_TRANSACTION_TO_DELETE);
         }
     }
@@ -309,7 +309,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
                     SUCCESSFUL_UPDATE_TRANSACTION_TEXT +
                             transactionMapper.mapTransactionResponseToTelegramMessage(transactionResponseDTO));
         } catch (Exception e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
             sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
         }
     }
@@ -327,11 +327,11 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
                 sendMessage(chatId, transactionMapper
                         .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
             } catch (FeignException.InternalServerError e) {
-                log.error(e.getMessage());
+                log.error(e.getMessage(), e);
                 sendMessage(chatId, MESSAGE_NOT_REGISTERED);
             } catch (Exception e) {
-                log.error(e.getMessage());
-                sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
+                log.error(e.getMessage(), e);
+                sendMessage(chatId, TRANSACTION_MESSAGE_INVALID); // todo возможно тут 1
             }
         } else if (switcher.equals("kafka")) {
 
@@ -351,10 +351,10 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             }).exceptionally(e -> {
                 if (e.getCause() instanceof RuntimeException &&
                         "Невалидное сообщение".equals(e.getCause().getMessage())) {
-                    log.error(e.getMessage());
+                    log.error(e.getMessage(), e);
                     sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
                 } else {
-                    log.error(e.getMessage());
+                    log.error(e.getMessage(), e);
                     sendMessage(chatId, NETWORK_ERROR);
                 }
                 return null;

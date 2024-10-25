@@ -21,7 +21,7 @@ public class RecognizerRequestService {
         try {
             return recognizerFeign.sendVoiceMessage(voiceMessage);
         } catch (FeignException e) {
-            log.error("Сетевая ошибка: " + e.status(), e);
+            log.error("Network error: " + e.status(), e);
             throw new VoiceProcessingException(NETWORK_ERROR, e);
         }
     }

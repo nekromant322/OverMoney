@@ -11,16 +11,13 @@
                     <logLevel/>
                     <loggerName/>
                     <pattern>
-                        <pattern>
-                            {
-                            "app": "invest"
-                            }
-                        </pattern>
+                        {
+                        "app": "invest",
+                        "message": "%message%n%ex{full}"
+                        }
                     </pattern>
                     <threadName/>
-                    <message/>
                     <logstashMarkers/>
-                    <stackTrace/>
                 </providers>
             </encoder>
         </appender>

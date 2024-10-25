@@ -17,6 +17,6 @@ public class BaseException extends RuntimeException {
     }
 
     public String getErrorCode() {
-        return "ORCHESTRA_UNEXPECTED";
+        return "ORCHESTRA_SERVICE_UNEXPECTED";
     }
 }
