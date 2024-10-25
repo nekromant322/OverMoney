@@ -13,14 +13,13 @@
                     <pattern>
                         <pattern>
                             {
-                            "app": "telegram-bot"
+                            "app": "telegram-bot",
+                            "message": "%message%n%ex{full}"
                             }
                         </pattern>
                     </pattern>
                     <threadName/>
-                    <message/>
                     <logstashMarkers/>
-                    <stackTrace/>
                 </providers>
             </encoder>
         </appender>

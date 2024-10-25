@@ -26,7 +26,7 @@ public class OrchestratorRequestService {
             orchestratorFeign.registerSingleAccount(accountData);
             return true;
         } catch (FeignException e) {
-            log.error("Ошибка при регистрации аккаунта: " + e.getMessage());
+            log.error("Account registration error: " + e.getMessage(), e);
             return false;
         }
     }

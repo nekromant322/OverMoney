@@ -43,7 +43,7 @@ public class KafkaProducerService {
 
             @Override
             public void onFailure(Throwable ex) {
-                log.error(ex.getMessage());
+                log.error(ex.getMessage(), ex);
                 future.completeExceptionally(ex);
             }
         });
