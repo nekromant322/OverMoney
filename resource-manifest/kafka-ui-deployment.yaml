@@ -29,9 +29,9 @@ spec:
             - name: AUTH_TYPE
               value: "LOGIN_FORM"
             - name: SPRING_SECURITY_USER_NAME
-              value: "{{ KAFKA_UI_USER }}"
+              value: "test_user"
             - name: SPRING_SECURITY_USER_PASSWORD
-              value: "{{ KAFKA_UI_PASSWORD }}"
+              value: "test"
 
 ---
 apiVersion: v1

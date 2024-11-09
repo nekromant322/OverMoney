@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-orchestrator-deployment
+  labels:
+    app: postgres-orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-orchestrator
+  template:
+    metadata:
+      labels:
+        app: postgres-orchestrator
+    spec:
+      containers:
+        - name: postgres-orchestrator
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "orchestrator-db"  # Имя базы данных для оркестратора
+            - name: POSTGRES_USER
+              value: "postgres"  # Пользователь базы данных
+            - name: POSTGRES_PASSWORD
+              value: "postgres"  # Пароль базы данных
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-orchestrator-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: postgres-orchestrator

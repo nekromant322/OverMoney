@@ -33,22 +33,22 @@ spec:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
             - name: TELEGRAM_BOT_TOKEN
-              value: "{{ TELEGRAM_BOT_TOKEN }}"
+              value: "7842052634:AAFMbmCMzbA2mmymNPQIW_wyZ44dxEdQd60"
             - name: TELEGRAM_BOT_NAME
-              value: "OverMoneyBot"
+              value: "OverrideTestBot"
             - name: INTERNAL_KEY_HEADER
-              value: "{{ INTERNAL_KEY_HEADER }}"
+              value: "X-INTERNAL-KEY"
             - name: JWT_ACCESS_KEY
-              value: "{{ JWT_ACCESS_KEY }}"
+              value: "qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w"
             - name: JWT_REFRESH_KEY
-              value: "{{ JWT_REFRESH_KEY }}"
+              value: "zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg=="
             - name: ORCHESTRATOR_DB_HOST
-              value: "194.87.235.171"
+              value: "postgres-orchestrator-service"
             - name: ORCHESTRATOR_DB_PORT
-              value: "{{ ORCHESTRATOR_DB_PORT }}"
+              value: "5432"
             - name: ORCHESTRATOR_DB_USER
-              value: "{{ ORCHESTRATOR_DB_USER }}"
+              value: "postgres"
             - name: ORCHESTRATOR_DB_PASSWORD
-              value: "{{ ORCHESTRATOR_DB_PASSWORD }}"
+              value: "postgres"
           ports:
             - containerPort: 8080

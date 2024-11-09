@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-telegram-bot-deployment
+  labels:
+    app: postgres-telegram-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-telegram-bot
+  template:
+    metadata:
+      labels:
+        app: postgres-telegram-bot
+    spec:
+      containers:
+        - name: postgres-telegram-bot
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: "telegram-bot-db"  # Имя базы данных для sa-telegram-bot
+            - name: POSTGRES_USER
+              value: "postgres"  # Ваш пользователь
+            - name: POSTGRES_PASSWORD
+              value: "postgres"  # Ваш пароль
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-telegram-bot-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: postgres-telegram-bot

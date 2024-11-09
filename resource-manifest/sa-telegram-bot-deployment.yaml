@@ -26,27 +26,27 @@ spec:
           name: sa-telegram-bot
           resources:
             requests:
-              memory: "128Mi"
+              memory: "512Mi"
             limits:
-              memory: "256Mi"
+              memory: "1Gi"
           env:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
             - name: ORCHESTRATOR_HOST
-              value: "https://overmoney.tech/overmoney"
+              value: "https://overmoney.online/overmoney" # но это неточно
             - name: INTERNAL_KEY_HEADER
-              value: "{{ INTERNAL_KEY_HEADER }}"
+              value: "X-INTERNAL-KEY"
             - name: TELEGRAM_BOT_NAME
-              value: "OverMoneyBot"
+              value: "OverrideTestBot"
             - name: TELEGRAM_BOT_TOKEN
-              value: "{{ TELEGRAM_BOT_TOKEN }}"
+              value: "7842052634:AAFMbmCMzbA2mmymNPQIW_wyZ44dxEdQd60"
             - name: TELEGRAM_BOT_DB_HOST
-              value: "194.87.235.171"
+              value: "postgres-telegram-bot-service"
             - name: TELEGRAM_BOT_DB_PORT
-              value: "5435"
+              value: "5432"
             - name: TELEGRAM_BOT_DB_USER
-              value: "{{ TELEGRAM_BOT_DB_USER }}"
+              value: "postgres"
             - name: TELEGRAM_BOT_DB_PASSWORD
-              value: "{{ TELEGRAM_BOT_DB_PASSWORD }}"
+              value: "postgres"
           ports:
             - containerPort: 8080
