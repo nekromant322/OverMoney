@@ -26,20 +26,20 @@ spec:
           name: sa-telegram-bot
           resources:
             requests:
-              memory: "128Mi"
-            limits:
               memory: "256Mi"
+            limits:
+              memory: "512Mi"
           env:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
             - name: ORCHESTRATOR_HOST
-              value: "https://overmoney.tech/overmoney"
+              value: "https://overmoney.online/overmoney"
             - name: INTERNAL_KEY_HEADER
               value: "{{ INTERNAL_KEY_HEADER }}"
             - name: TELEGRAM_BOT_NAME
-              value: "OverMoneyBot"
+              value: "OverrideTestBot"
             - name: TELEGRAM_BOT_TOKEN
-              value: "{{ TELEGRAM_BOT_TOKEN }}"
+              value: "{{ TEST_BOT_TOKEN }}"
             - name: TELEGRAM_BOT_DB_HOST
               value: "194.87.235.171"
             - name: TELEGRAM_BOT_DB_PORT

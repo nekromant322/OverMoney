@@ -1,11 +1,14 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: orchestrator-ingress
+  name: overmoney-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-http01-nginx-issuer
 spec:
   ingressClassName: nginx
   rules:
-    - http:
+    - host: overmoney.online
+      http:
         paths:
           - path: /
             pathType: Prefix
@@ -35,3 +38,8 @@ spec:
                 name: kafka-ui-svc
                 port:
                   number: 80
+
+  tls:
+    - hosts:
+        - overmoney.online
+      secretName: overmoney.online-tls
