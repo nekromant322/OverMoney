@@ -35,7 +35,3 @@ spec:
                 name: kafka-ui-svc
                 port:
                   number: 80
-  tls:
-    - hosts:
-        - overmoney.tech
-      secretName: ingress-nginx/nginx-tls
