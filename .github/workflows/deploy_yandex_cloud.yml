@@ -147,7 +147,7 @@ jobs:
           if [ "${{ needs.detect-changes.outputs.recognizer }}" == "true" ]; then
             kubectl rollout restart deployment sa-recognizer
           fi
-          
+          kubectl apply -f sa-telegram-bot-deployment.yaml
           if [ "${{ needs.detect-changes.outputs.telegram-bot }}" == "true" ]; then
             kubectl rollout restart deployment sa-telegram-bot
           fi
