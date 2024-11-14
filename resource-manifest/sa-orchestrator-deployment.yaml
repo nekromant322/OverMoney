@@ -33,9 +33,9 @@ spec:
             - name: SPRING_APPLICATION_PROFILE
               value: "prod"
             - name: TELEGRAM_BOT_TOKEN
-              value: "{{ TEST_BOT_TOKEN }}"
+              value: "{{ TELEGRAM_BOT_TOKEN }}"
             - name: TELEGRAM_BOT_NAME
-              value: "OverrideTestBot"
+              value: "OverMoneyBot"
             - name: INTERNAL_KEY_HEADER
               value: "{{ INTERNAL_KEY_HEADER }}"
             - name: JWT_ACCESS_KEY
