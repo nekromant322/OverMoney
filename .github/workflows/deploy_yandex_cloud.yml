@@ -140,6 +140,7 @@ jobs:
 
       - name: Conditional Rollout Restarts
         run: |
+          kubectl apply -f frontend-deployment.yaml
           if [ "${{ needs.detect-changes.outputs.orchestrator }}" == "true" ]; then
             kubectl rollout restart deployment sa-orchestrator
           fi
