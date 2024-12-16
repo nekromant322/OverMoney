@@ -127,6 +127,7 @@ jobs:
             resource-manifest/postgres-exporter-orchestrator.yaml
             resource-manifest/postgres-exporter-telegram-bot.yaml
             resource-manifest/kafka-ui-deployment.yaml
+            resource-manifest/frontend-deployment.yaml
           secrets: ${{ toJSON(secrets) }}
 
       - name: Configure kubectl
