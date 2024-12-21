@@ -12,3 +12,11 @@ public interface LLMFeignClient {
     @PostMapping(consumes = "application/json", produces = "application/json")
     LLMResponseDTO recognizeCategory(@RequestBody LLMRequestDTO requestJson);
 }
+
+/*
+Чтобы запустить в любом рандомном месте LLM, которая суммет отвечать на эти запросы надо
+- docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+И установить туда модель (пример для llama3.1)
+- docker exec -it ollama ollama run llama3.1
+И подождать минут 15
+ */

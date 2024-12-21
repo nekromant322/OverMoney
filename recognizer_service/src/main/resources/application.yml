@@ -41,7 +41,7 @@
 
   llm:
     model: "llama3.1"
-    url: "http://194.87.237.176:11434/api/chat"
+    url: "http://195.133.49.108:11434/api/chat"
 
   recognizer:
     llm-algo: ACTIVE
