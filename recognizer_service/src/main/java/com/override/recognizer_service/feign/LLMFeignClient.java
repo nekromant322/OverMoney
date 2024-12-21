@@ -18,5 +18,6 @@ public interface LLMFeignClient {
 - docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 И установить туда модель (пример для llama3.1)
 - docker exec -it ollama ollama run llama3.1
-И подождать минут 15
+И подождать пару минут (или много минут если модель большая)
+на порту 11434 должен появится текст "Ollama is running"
  */
