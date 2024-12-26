@@ -124,7 +124,8 @@ jobs:
           token: ${{ github.token }}
           secrets: ${{ toJSON(secrets) }}
           atomic: true
-          env: ${{ secrets.KUBER_STATIC_CONFIG }}
+        env:
+          KUBECONFIG_FILE: ${{ secrets.KUBER_STATIC_CONFIG }}
 
       - name: Conditional Rollout Restarts
         run: |          
