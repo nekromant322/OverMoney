@@ -148,8 +148,6 @@ jobs:
             deployment.replicas: 1
           token: ${{ github.token }}
           atomic: true
-        env:
-          KUBECONFIG_FILE: "${{ secrets.KUBER_STATIC_CONFIG }}"
 
 #      - name: Conditional Rollout Restarts
 #        run: |
