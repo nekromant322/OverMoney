@@ -114,7 +114,8 @@ jobs:
         run: kubectl cluster-info
 
       - name: Helm Dry Run Recognizer Service
-        run: helm upgrade --install --atomic --dry-run=server recognizer ./charts/recognizer
+        run: |
+          helm upgrade --install --atomic --dry-run=server recognizer ./charts/recognizer
 
       - name: Helm Deploy Recognizer Service
         uses: vimeda/helm@v1.7.0
