@@ -149,7 +149,7 @@ jobs:
           token: ${{ github.token }}
           atomic: true
         env:
-          KUBECONFIG_FILE: $HOME/.kube/config | base64
+          KUBECONFIG_FILE: '${{ secrets.KUBER_STATIC_CONFIG }}'
 
 #      - name: Conditional Rollout Restarts
 #        run: |
