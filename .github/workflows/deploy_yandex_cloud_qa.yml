@@ -108,6 +108,7 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBER_STATIC_CONFIG }}" | base64 --decode > $HOME/.kube/config
+          kubectl config get-contexts
           kubectl config use-context qa
 
       - name: Test Kubernetes Connection
@@ -126,3 +127,29 @@ jobs:
           atomic: true
         env:
           KUBECONFIG_FILE: ${{ secrets.KUBER_STATIC_CONFIG }}
+
+#      - name: Conditional Rollout Restarts
+#        run: |
+#          if [ "${{ needs.detect-changes.outputs.orchestrator }}" == "true" ]; then
+#            kubectl rollout restart deployment sa-orchestrator
+#          fi
+#
+#          if [ "${{ needs.detect-changes.outputs.recognizer }}" == "true" ]; then
+#            kubectl rollout restart deployment sa-recognizer
+#          fi
+#
+#          if [ "${{ needs.detect-changes.outputs.telegram-bot }}" == "true" ]; then
+#            kubectl rollout restart deployment sa-telegram-bot
+#          fi
+#
+#          if [ "${{ needs.detect-changes.outputs.invest }}" == "true" ]; then
+#            kubectl rollout restart deployment sa-invest
+#          fi
+#
+#          if [ "${{ needs.detect-changes.outputs.wit-ai-go-proxy }}" == "true" ]; then
+#            kubectl rollout restart deployment sa-wit-ai-go-proxy
+#          fi
+#
+#          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
+#            kubectl rollout restart deployment frontend
+#          fi
