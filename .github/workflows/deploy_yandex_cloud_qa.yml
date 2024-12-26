@@ -108,6 +108,7 @@ jobs:
         uses: none0nfg/yaml-secrets-injector@v0.0.1
         with:
           inject_files: |-
+            charts/recognizer/values.yaml
 #            charts/admin-user/values.yaml
 #            charts/frontend/values.yaml
 #            charts/grafana/values.yaml
@@ -119,7 +120,6 @@ jobs:
 #            charts/postgres-exporter-orchestrator/values.yaml
 #            charts/postgres-exporter-telegram/values.yaml
 #            charts/prometheus/values.yaml
-            charts/recognizer/values.yaml
 #            charts/telegram-bot/values.yaml
 #            charts/wit-ai-go-proxy/values.yaml
 #            charts/zookeeper/values.yaml
