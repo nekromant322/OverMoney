@@ -108,8 +108,8 @@ jobs:
         run: |
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBER_STATIC_CONFIG }}" | base64 --decode > $HOME/.kube/config
-          kubectl config get-contexts
-          kubectl config use-context qa
+          kubectl config view
+          kubectl config use-context default
 
       - name: Test Kubernetes Connection
         run: kubectl cluster-info
