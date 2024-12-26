@@ -104,6 +104,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Inject secrets in resource manifests
+        uses: none0nfg/yaml-secrets-injector@v0.0.1
+        with:
+          inject_files: |-
+#            charts/admin-user/values.yaml
+#            charts/frontend/values.yaml
+#            charts/grafana/values.yaml
+#            charts/ingress/values.yaml
+#            charts/invest/values.yaml
+#            charts/kafka/values.yaml
+#            charts/kafka-ui/values.yaml
+#            charts/orchestrator/values.yaml
+#            charts/postgres-exporter-orchestrator/values.yaml
+#            charts/postgres-exporter-telegram/values.yaml
+#            charts/prometheus/values.yaml
+            charts/recognizer/values.yaml
+#            charts/telegram-bot/values.yaml
+#            charts/wit-ai-go-proxy/values.yaml
+#            charts/zookeeper/values.yaml
+          secrets: ${{ toJSON(secrets) }}
+
       - name: Configure kubectl
         run: |
           mkdir -p $HOME/.kube
@@ -125,7 +146,6 @@ jobs:
           values: |
             deployment.replicas: 1
           token: ${{ github.token }}
-          secrets: ${{ toJSON(secrets) }}
           atomic: true
 
 #      - name: Conditional Rollout Restarts
