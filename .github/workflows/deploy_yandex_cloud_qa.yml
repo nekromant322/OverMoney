@@ -109,10 +109,10 @@ jobs:
         with:
           inject_files: |-
             charts/recognizer/values.yaml
+#            charts/ingress/values.yaml
 #            charts/admin-user/values.yaml
 #            charts/frontend/values.yaml
 #            charts/grafana/values.yaml
-#            charts/ingress/values.yaml
 #            charts/invest/values.yaml
 #            charts/kafka/values.yaml
 #            charts/kafka-ui/values.yaml
@@ -136,25 +136,27 @@ jobs:
 
       - name: Helm Dry Run Recognizer Service
         run: |-
-          helm upgrade --install --atomic --dry-run=server -n "qa" recognizer ./charts/recognizer
+          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
+#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
+#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
+#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
+#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
+#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/wit-ai-go-proxy/values-qa.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
+#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
+#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
+#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
 
       - name: Helm Deploy Recognizer Service
         run: |-
-          helm upgrade --install --atomic --dry-run=server -n "qa" recognizer ./charts/recognizer
-
-#      - name: Helm Deploy Recognizer Service
-#        uses: vimeda/helm@v1.7.0
-#        with:
-#          release: recognizer
-#          namespace: qa
-#          chart: charts/recognizer
-#          secrets: ${{ toJSON(secrets) }}
-#          values: |
-#            deployment.replicas: 1
-#          token: ${{ github.token }}
-#          atomic: true
-#        env:
-#          KUBECONFIG_FILE: '${{ secrets.KUBER_STATIC_CONFIG }}'
+          helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
+#          helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress ./charts/ingress
+#          helm upgrade --install --atomic -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
+#          helm upgrade --install --atomic -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
+#          helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
+#          helm upgrade --install --atomic -n qa -f ./charts/wit-ai-go-proxy/values-qa.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
+#          helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
+#          helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
+#          helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
 
 #      - name: Conditional Rollout Restarts
 #        run: |
