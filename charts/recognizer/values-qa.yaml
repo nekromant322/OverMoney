@@ -1,0 +1,24 @@
+service:
+  port: 80
+  targetPort: 8080
+
+deployment:
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  containers:
+    image: nekromant322/overmoney-recognizer
+    imageTag: latest
+    pullPolicy: Always
+    requestsMemory: "256Mi"
+    limitsMemory: "512Mi"
+    containerPort: 8080
+    env:
+      - name: SPRING_APPLICATION_PROFILE
+        value: "prod"
+      - name: INTERNAL_KEY_HEADER
+        value: "{{ INTERNAL_KEY_HEADER }}"
