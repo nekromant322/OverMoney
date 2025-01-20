@@ -136,7 +136,7 @@ jobs:
 
       - name: Helm Dry Run Recognizer Service
         run: |-
-          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
+          helm upgrade --install --atomic --dry-run=server -n qa recognizer ./charts/recognizer
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
