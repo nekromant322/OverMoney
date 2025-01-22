@@ -22,7 +22,7 @@ spec:
           env:
             {{- range .Values.deployment.containers.env }}
             - name: {{ .name }}
-              value: {{ .value }}
+              value: {{ .value | quote }}
             {{- end }}
 ---
 apiVersion: v1
