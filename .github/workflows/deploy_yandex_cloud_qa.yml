@@ -110,19 +110,18 @@ jobs:
           inject_files: |-
             charts/recognizer/values-qa.yaml
             charts/ingress/values-qa.yaml
-#            charts/admin-user/values-qa.yaml
-#            charts/frontend/values-qa.yaml
-#            charts/grafana/values-qa.yaml
-#            charts/invest/values-qa.yaml
+            charts/zookeeper/values-qa.yaml
 #            charts/kafka/values-qa.yaml
-#            charts/kafka-ui/values-qa.yaml
-#            charts/orchestrator/values-qa.yaml
 #            charts/postgres-exporter-orchestrator/values-qa.yaml
 #            charts/postgres-exporter-telegram/values-qa.yaml
-#            charts/prometheus/values-qa.yaml
+#            charts/orchestrator/values-qa.yaml
 #            charts/telegram-bot/values-qa.yaml
+#            charts/admin-user/values-qa.yaml
+#            charts/invest/values-qa.yaml
 #            charts/wit-ai-go-proxy/values-qa.yaml
-#            charts/zookeeper/values-qa.yaml
+#            charts/kafka-ui/values-qa.yaml
+#            charts/frontend/values-qa.yaml
+#            charts/prometheus/values-qa.yaml
           secrets: ${{ toJSON(secrets) }}
 
       - name: Configure kubectl
@@ -138,7 +137,7 @@ jobs:
         run: |-
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
-#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
+          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
@@ -151,7 +150,7 @@ jobs:
         run: |-
           helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
           helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
-#          helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
+          helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
 #          helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
 #          helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
 #          helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
@@ -162,25 +161,25 @@ jobs:
 #      - name: Conditional Rollout Restarts
 #        run: |
 #          if [ "${{ needs.detect-changes.outputs.orchestrator }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-orchestrator
+#            kubectl rollout restart deployment sa-orchestrator -n qa
 #          fi
 #
 #          if [ "${{ needs.detect-changes.outputs.recognizer }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-recognizer
+#            kubectl rollout restart deployment sa-recognizer -n qa
 #          fi
 #
 #          if [ "${{ needs.detect-changes.outputs.telegram-bot }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-telegram-bot
+#            kubectl rollout restart deployment sa-telegram-bot -n qa
 #          fi
 #
 #          if [ "${{ needs.detect-changes.outputs.invest }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-invest
+#            kubectl rollout restart deployment sa-invest -n qa
 #          fi
 #
 #          if [ "${{ needs.detect-changes.outputs.wit-ai-go-proxy }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-wit-ai-go-proxy
+#            kubectl rollout restart deployment sa-wit-ai-go-proxy -n qa
 #          fi
 #
 #          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
-#            kubectl rollout restart deployment frontend
+#            kubectl rollout restart deployment frontend -n qa
 #          fi
