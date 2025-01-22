@@ -1,0 +1,18 @@
+namespace: qa
+rules:
+  - host: overmoneytest.online
+    paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: sa-orchestrator-svc
+            port:
+              number: 80
+      - path: /front
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-svc
+            port:
+              number: 80
