@@ -111,7 +111,7 @@ jobs:
             charts/recognizer/values-qa.yaml
             charts/ingress/values-qa.yaml
             charts/zookeeper/values-qa.yaml
-#            charts/kafka/values-qa.yaml
+            charts/kafka/values-qa.yaml
 #            charts/postgres-exporter-orchestrator/values-qa.yaml
 #            charts/postgres-exporter-telegram/values-qa.yaml
 #            charts/orchestrator/values-qa.yaml
@@ -138,7 +138,7 @@ jobs:
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
-#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
+          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend

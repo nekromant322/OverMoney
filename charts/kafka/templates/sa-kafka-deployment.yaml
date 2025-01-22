@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-deployment
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      containers:
+        - name: broker
+          image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
+          ports:
+            - containerPort: {{ .Values.deployment.containers.containerPort }}
+          env:
+            {{- range .Values.deployment.containers.env }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+          volumeMounts:
+            - name: {{ .Chart.Name }}-logs
+              mountPath: {{ .Values.deployment.containers.volumeMountPath }}
+      volumes:
+        - name: {{ .Chart.Name }}-logs
+          persistentVolumeClaim:
+            claimName: {{ .Chart.Name }}-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-service
+spec:
+  selector:
+    app: {{ .Chart.Name }}
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Chart.Name }}-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeClaim.requestsStorage }}
