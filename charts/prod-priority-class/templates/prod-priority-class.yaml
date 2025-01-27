@@ -4,4 +4,4 @@ metadata:
   name: {{ .Chart.Name }}
 value: {{ .Values.priority }}
 globalDefault: false
-description: "This priority class should be used for qa pods."
+description: "This priority class should be used for prod pods."
