@@ -13,3 +13,4 @@ deployment:
         value: "2181"
       - name: ZOOKEEPER_TICK_TIME
         value: "2000"
+  priorityClassName: qa-priority-class

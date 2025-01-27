@@ -36,3 +36,4 @@ spec:
             {{- end }}
           ports:
             - containerPort: {{ .Values.deployment.containers.containerPort }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}

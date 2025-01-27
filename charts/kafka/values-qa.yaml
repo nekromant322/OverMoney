@@ -27,3 +27,4 @@ deployment:
       - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
         value: "1"
     volumeMountPath: /var/lib/kafka/logs
+  priorityClassName: qa-priority-class

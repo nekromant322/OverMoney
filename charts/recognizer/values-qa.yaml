@@ -22,3 +22,4 @@ deployment:
         value: "prod"
       - name: INTERNAL_KEY_HEADER
         value: "{{ INTERNAL_KEY_HEADER }}"
+  priorityClassName: qa-priority-class

@@ -1,0 +1,7 @@
+apiVersion: networking.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ .Chart.Name }}
+value: {{ .Values.priority }}
+globalDefault: false
+description: "This priority class should be used for qa pods."
