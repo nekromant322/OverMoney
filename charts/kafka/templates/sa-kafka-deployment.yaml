@@ -5,6 +5,8 @@ metadata:
   labels:
     app: {{ .Chart.Name }}
 spec:
+  strategy:
+    type: Recreate
   replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
