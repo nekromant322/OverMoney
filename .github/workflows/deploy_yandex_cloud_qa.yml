@@ -155,7 +155,9 @@ jobs:
           helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
           helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
           helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
+          kubectl scale deployment kafka-deployment --replicas=0 -n qa
           helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
+          kubectl scale deployment kafka-deployment --replicas=1 -n qa
 #          helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
 #          helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
 #          helm upgrade --install --atomic -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
