@@ -135,6 +135,8 @@ jobs:
 
       - name: Helm Dry Run Recognizer Service
         run: |-
+          helm upgrade --install --atomic --dry-run=server -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
+          helm upgrade --install --atomic --dry-run=server -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
@@ -148,6 +150,8 @@ jobs:
 
       - name: Helm Deploy Recognizer Service
         run: |-
+          helm upgrade --install --atomic -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
+          helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
           helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
           helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
           helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
