@@ -59,7 +59,8 @@
       Alego22,
       Katz_Soviet,
       developing_warrior,
-      Kovaaf
+      Kovaaf,
+      VladLushkov
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
