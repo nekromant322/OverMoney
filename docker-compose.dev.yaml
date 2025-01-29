@@ -41,6 +41,12 @@ services:
       JWT_ACCESS_KEY: 4LKiGdX0aJhBdx5wFH5cs8v6HnGIUyhDn7BeoLqJ4UEixTGOT3CYKg6YrzS32K5hMlVdstATeliyxhRH0eaU6A==
       JWT_REFRESH_KEY: 5LKiGdX0aJhBdx5wFH5cs8v6HnGIUyhDn7BeoLqJ4UEixTGOT3CYKg6YrzS32K5hMlVdstATeliyxhRH0eaU6A==
       INTERNAL_KEY_HEADER: X-INTERNAL-KEY
+      #      такого рода приседания нужны чтобы спокойно запускать для тестов и в контейнерах и без
+      SPRING_INTEGRATION_INTERNAL_HOST_RECOGNIZER: http://recognizer:8080
+      SPRING_INTEGRATION_INTERNAL_HOST_TELEGRAM_BOT: http://telegram-bot:8082
+      SPRING_INTEGRATION_INTERNAL_HOST_INVEST: http://invest:8087
+#      закоменти следующую строку если охота пулять транзакции через кафку
+      SPRING_SERVICE_TRANSACTION_PROCESSING: orchestrator
     depends_on:
       - orchestrator-db
 
@@ -55,6 +61,7 @@ services:
       _JAVA_OPTIONS: -Xmx256m
       WIT_AI_TOKEN: ${WIT_AI_TOKEN}
       INTERNAL_KEY_HEADER: X-INTERNAL-KEY
+      SPRING_INTEGRATION_INTERNAL_HOST_ORCHESTRATOR: http://orchestrator:8081
 
   telegram-bot:
     container_name: telegram-bot
@@ -73,6 +80,10 @@ services:
       TELEGRAM_BOT_NAME: ${TELEGRAM_BOT_NAME}
       ORCHESTRATOR_HOST: ${ORCHESTRATOR_HOST}
       INTERNAL_KEY_HEADER: X-INTERNAL-KEY
+      SPRING_INTEGRATION_INTERNAL_HOST_ORCHESTRATOR: http://orchestrator:8081
+      SPRING_INTEGRATION_INTERNAL_HOST_RECOGNIZER: http://recognizer:8080
+      #      закоменти следующую строку если охота пулять транзакции через кафку
+      SPRING_SERVICE_TRANSACTION_PROCESSING: orchestrator
     depends_on:
       - telegram-bot-db
   invest:
