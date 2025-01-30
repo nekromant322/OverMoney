@@ -114,13 +114,11 @@ jobs:
             charts/kafka/values-qa.yaml
             charts/postgres-exporter-orchestrator/values-qa.yaml
             charts/orchestrator/values-qa.yaml
-#            charts/postgres-exporter-telegram/values-qa.yaml
-#            charts/telegram-bot/values-qa.yaml
-#            charts/admin-user/values-qa.yaml
+            charts/postgres-exporter-telegram/values-qa.yaml
+            charts/telegram-bot/values-qa.yaml
 #            charts/invest/values-qa.yaml
 #            charts/wit-ai-go-proxy/values-qa.yaml
 #            charts/frontend/values-qa.yaml
-#            charts/prometheus/values-qa.yaml
           secrets: ${{ toJSON(secrets) }}
 
       - name: Configure kubectl
@@ -141,7 +139,7 @@ jobs:
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
           helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
-#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
+          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
 #          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/wit-ai-go-proxy/values-qa.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
@@ -156,7 +154,7 @@ jobs:
           helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
           helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
           helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
-#          helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
+          helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
 #          helm upgrade --install --atomic -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
 #          helm upgrade --install --atomic -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
 #          helm upgrade --install --atomic -n qa -f ./charts/wit-ai-go-proxy/values-qa.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy

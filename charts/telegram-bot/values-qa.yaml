@@ -1,0 +1,38 @@
+service:
+  port: 80
+  targetPort: 8080
+
+deployment:
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  containers:
+    image: nekromant322/overmoney-telegram-bot
+    imageTag: latest
+    pullPolicy: Always
+    requestsMemory: "256Mi"
+    limitsMemory: "512Mi"
+    env:
+      - name: SPRING_APPLICATION_PROFILE
+        value: "prod"
+      - name: ORCHESTRATOR_HOST
+        value: "https://testmoney.tech/overmoney"
+      - name: INTERNAL_KEY_HEADER
+        value: "{{ INTERNAL_KEY_HEADER }}"
+      - name: TELEGRAM_BOT_NAME
+        value: "test_OT_overmoney_bot"
+      - name: TELEGRAM_BOT_TOKEN
+        value: "7471988015:AAGgymuTAAfUpcwQUsgi_H-PQjq6NOPMUjI"
+      - name: TELEGRAM_BOT_DB_HOST
+        value: "194.87.237.197"
+      - name: TELEGRAM_BOT_DB_PORT
+        value: "5435"
+      - name: TELEGRAM_BOT_DB_USER
+        value: "testmoney"
+      - name: TELEGRAM_BOT_DB_PASSWORD
+        value: "testmoney"
+    containerPort: 8080
