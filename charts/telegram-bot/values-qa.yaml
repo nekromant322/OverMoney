@@ -24,9 +24,9 @@ deployment:
       - name: INTERNAL_KEY_HEADER
         value: "{{ INTERNAL_KEY_HEADER }}"
       - name: TELEGRAM_BOT_NAME
-        value: "test_OT_overmoney_bot"
+        value: "TestOvermoneyBot"
       - name: TELEGRAM_BOT_TOKEN
-        value: "7471988015:AAGgymuTAAfUpcwQUsgi_H-PQjq6NOPMUjI"
+        value: "8094666153:AAFei9psVilLDocwJlmxFoeZzMLXJq1QRa8"
       - name: TELEGRAM_BOT_DB_HOST
         value: "194.87.237.197"
       - name: TELEGRAM_BOT_DB_PORT
