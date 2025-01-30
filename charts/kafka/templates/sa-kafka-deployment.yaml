@@ -6,7 +6,7 @@ metadata:
     app: {{ .Chart.Name }}
 spec:
   strategy:
-    type: Recreate
+    type: Recreate # Нужно из-за привязки PVC OneToOne - нет возможности законнектить одновременно две кафки, поэтому будет даунтайм
   replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:

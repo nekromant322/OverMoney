@@ -1,0 +1,18 @@
+service:
+  port: 9187
+  targetPort: 9187
+  namespace: monitoring
+
+deployment:
+  namespace: monitoring
+  replicas: 1
+  containers:
+    image: prometheuscommunity/postgres-exporter
+    containerPort: 9187
+    env:
+      - name: DATA_SOURCE_URI
+        value: "194.87.237.197:5433/orchestrator-db?sslmode=disable"
+      - name: DATA_SOURCE_USER
+        value: "testmoney"
+      - name: DATA_SOURCE_PASS
+        value: "testmoney"
