@@ -1,17 +1,13 @@
 package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
-import com.override.dto.AccountDataDTO;
-import com.override.dto.ChatMemberDTO;
-import com.override.dto.TransactionMessageDTO;
+import com.override.dto.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
-import java.util.UUID;
+import java.util.*;
 
 import static com.overmoney.telegram_bot_service.utils.TestFieldsUtil.generateTransactionDTO;
 import static org.mockito.Mockito.times;
