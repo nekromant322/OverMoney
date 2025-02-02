@@ -31,7 +31,10 @@ import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -370,23 +373,15 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     }
 
     private List<TransactionMessageDTO> splitToTransactionDtoList(TransactionMessageDTO transactionMessageDTO) {
-        List<TransactionMessageDTO> messageDTOList;
-        List<String> messageList = Arrays.asList(transactionMessageDTO.getMessage().split("\n"));
-        if (messageList.size() > 1) {
-            messageDTOList = new ArrayList<>();
-            for (String message : messageList) {
-                TransactionMessageDTO dto = new TransactionMessageDTO();
-                dto.setUserId(transactionMessageDTO.getUserId());
-                dto.setChatId(transactionMessageDTO.getChatId());
-                dto.setMessage(message);
-                dto.setDate(transactionMessageDTO.getDate());
-                dto.setBindingUuid(UUID.randomUUID());
-                messageDTOList.add(dto);
-            }
-        } else {
-            transactionMessageDTO.setBindingUuid(UUID.randomUUID());
-            messageDTOList = Collections.singletonList(transactionMessageDTO);
-        }
-        return messageDTOList;
+        return Arrays.stream(transactionMessageDTO.getMessage().split("\n"))
+                .map(message -> {
+                    TransactionMessageDTO dto = new TransactionMessageDTO();
+                    dto.setUserId(transactionMessageDTO.getUserId());
+                    dto.setChatId(transactionMessageDTO.getChatId());
+                    dto.setMessage(message);
+                    dto.setDate(transactionMessageDTO.getDate());
+                    dto.setBindingUuid(UUID.randomUUID());
+                    return dto;
+                }).collect(Collectors.toList());
     }
 }
