@@ -6,11 +6,12 @@ import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.util.NumericalUtils;
-import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.management.InstanceNotFoundException;
 import java.util.Objects;
+import java.util.UUID;
 
 @Component
 public class TransactionMapper {
@@ -31,6 +32,13 @@ public class TransactionMapper {
                 .chatId(transaction.getAccount().getChatId())
                 .comment(transaction.getMessage())
                 .build();
+    }
+
+    public TransactionResponseDTO mapTransactionToTelegramResponse(Transaction transaction, UUID bindingUUID)
+            throws InstanceNotFoundException {
+        TransactionResponseDTO dto = mapTransactionToTelegramResponse(transaction);
+        dto.setBindingUuid(bindingUUID);
+        return dto;
     }
 
     public TransactionDTO mapTransactionToDTO(Transaction transaction) {

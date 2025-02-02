@@ -7,6 +7,7 @@ import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
+import com.override.orchestrator_service.repository.SuggestionRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,8 @@ public class TransactionServiceTest {
     private TransactionProcessingService transactionProcessingService;
     @Mock
     private KeywordService keywordService;
+    @Mock
+    private SuggestionRepository suggestionRepository;
 
     @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
@@ -287,10 +290,11 @@ public class TransactionServiceTest {
     public void deleteTransactionByIdTest() {
         Transaction transaction = TestFieldsUtil.generateTestTransaction();
         UUID id = transaction.getId();
-        when(transactionRepository.findById(id)).thenReturn(Optional.of(transaction));
-        transactionService.deleteTransactionById(id);
-        verify(transactionRepository, times(1)).findById(id);
-        verify(transactionRepository, times(1)).deleteById(id);
+        when(transactionRepository.findAllByIds(Collections.singletonList(id))).thenReturn(Collections.singletonList(transaction));
+        transactionService.deleteTransactionByIds(Collections.singletonList(id));
+        verify(suggestionRepository, times(1)).deleteByTransactionIds(Collections.singletonList(id));
+        verify(transactionRepository, times(1)).findAllByIds(Collections.singletonList(id));
+        verify(transactionRepository, times(1)).deleteByIds(Collections.singletonList(id));
     }
 
     @ParameterizedTest

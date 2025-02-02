@@ -83,7 +83,7 @@ public class TransactionListenerTest {
                 .suggestCategoryToProcessedTransaction(transaction);
 
 
-        when(transactionMapper.mapTransactionToTelegramResponse(transaction)).thenReturn(responseDTO);
+        when(transactionMapper.mapTransactionToTelegramResponse(transaction, null)).thenReturn(responseDTO);
 
         SettableListenableFuture<SendResult<String, TransactionResponseDTO>> future = new SettableListenableFuture<>();
         future.set(new SendResult<>(null, null));
