@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -26,4 +27,7 @@ public class TransactionMessageDTO {
 
     @Schema(description = "Дата транзакции")
     private LocalDateTime date;
+
+    @Schema(description = "Айди для связки сообщений из тг бота")
+    private UUID bindingUuid;
 }

@@ -45,7 +45,7 @@ public class TransactionListener {
             Transaction currentTransactional = this.preProcessTransaction(transaction);
             transactionProcessingService.suggestCategoryToProcessedTransaction(currentTransactional);
             kafkaTemplate.send(responseTopic, transactionMapper
-                    .mapTransactionToTelegramResponse(currentTransactional));
+                    .mapTransactionToTelegramResponse(currentTransactional, transaction.getBindingUuid()));
         } catch (Exception e) {
             TransactionResponseDTO errorResponse = new TransactionResponseDTO();
             errorResponse.setComment("error");

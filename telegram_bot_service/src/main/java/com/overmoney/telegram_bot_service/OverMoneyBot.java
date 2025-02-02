@@ -31,9 +31,7 @@ import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -73,6 +71,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     private final Integer MILLISECONDS_CONVERSION = 1000;
     private final ZoneOffset MOSCOW_OFFSET = ZoneOffset.of("+03:00");
     private final Boolean BOT = true;
+    private final Integer EDIT_COUNT_MESSAGES = 1;
 
     @Autowired
     public OverMoneyBot(List<OverMoneyCommand> allCommands) {
@@ -221,9 +220,9 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             return;
         }
         if (replyToMessage != null) {
-            TelegramMessage message = telegramMessageService.
+            List<TelegramMessage> messages = telegramMessageService.
                     getTelegramMessageMessageIdAndChatId(replyToMessage.getMessageId(), chatId);
-            if (message == null) {
+            if (messages == null) {
                 if (!userId.equals(replyToMessage.getFrom().getId())) {
                     sendMessage(chatId, INVALID_UPDATE_TRANSACTION_TEXT);
                     return;
@@ -233,10 +232,16 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             }
             if (!receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION) &&
                     !receivedMessageText.equalsIgnoreCase(replyToMessage.getText())) {
-                UUID idTransaction = message.getIdTransaction();
-                TransactionDTO previousTransaction = orchestratorRequestService.getTransactionById(idTransaction);
-                transactionMessageDTO.setDate(previousTransaction.getDate());
-                updateTransaction(transactionMessageDTO, idTransaction, chatId, messageId);
+                if (messages.size() > EDIT_COUNT_MESSAGES) {
+                    sendMessage(chatId, MULTILINE_MESSAGE_CANNOT_BE_EDITED);
+                    return;
+                }
+                messages.forEach(message -> {
+                    UUID idTransaction = message.getIdTransaction();
+                    TransactionDTO previousTransaction = orchestratorRequestService.getTransactionById(idTransaction);
+                    transactionMessageDTO.setDate(previousTransaction.getDate());
+                    updateTransaction(transactionMessageDTO, idTransaction, chatId, messageId);
+                });
                 return;
             }
         }
@@ -334,31 +339,54 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
                 sendMessage(chatId, TRANSACTION_MESSAGE_INVALID); // todo возможно тут 1
             }
         } else if (switcher.equals("kafka")) {
+            List<TransactionMessageDTO> messageDTOList = splitToTransactionDtoList(transactionMessageDTO);
+            for (TransactionMessageDTO messageDTO : messageDTOList) {
+                CompletableFuture<TransactionResponseDTO> future =
+                        kafkaProducerService.sendTransaction(messageDTO);
 
-            CompletableFuture<TransactionResponseDTO> future =
-                    kafkaProducerService.sendTransaction(chatId, transactionMessageDTO);
-
-            future.thenAccept(transactionResponseDTO -> {
-                if (transactionResponseDTO.getComment().equals("error")) {
-                    throw new RuntimeException("Невалидное сообщение");
-                }
-                telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
-                        .messageId(messageId)
-                        .chatId(chatId)
-                        .idTransaction(transactionResponseDTO.getId()).build());
-                sendMessage(chatId, transactionMapper
-                        .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
-            }).exceptionally(e -> {
-                if (e.getCause() instanceof RuntimeException &&
-                        "Невалидное сообщение".equals(e.getCause().getMessage())) {
-                    log.error(e.getMessage(), e);
-                    sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
-                } else {
-                    log.error(e.getMessage(), e);
-                    sendMessage(chatId, NETWORK_ERROR);
-                }
-                return null;
-            });
+                future.thenAccept(transactionResponseDTO -> {
+                    if (transactionResponseDTO.getComment().equals("error")) {
+                        throw new RuntimeException("Невалидное сообщение");
+                    }
+                    telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
+                            .messageId(messageId)
+                            .chatId(chatId)
+                            .idTransaction(transactionResponseDTO.getId()).build());
+                    sendMessage(chatId, transactionMapper
+                            .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
+                }).exceptionally(e -> {
+                    if (e.getCause() instanceof RuntimeException &&
+                            "Невалидное сообщение".equals(e.getCause().getMessage())) {
+                        log.error(e.getMessage(), e);
+                        sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
+                    } else {
+                        log.error(e.getMessage(), e);
+                        sendMessage(chatId, NETWORK_ERROR);
+                    }
+                    return null;
+                });
+            }
         }
+    }
+
+    private List<TransactionMessageDTO> splitToTransactionDtoList(TransactionMessageDTO transactionMessageDTO) {
+        List<TransactionMessageDTO> messageDTOList;
+        List<String> messageList = Arrays.asList(transactionMessageDTO.getMessage().split("\n"));
+        if (messageList.size() > 1) {
+            messageDTOList = new ArrayList<>();
+            for (String message : messageList) {
+                TransactionMessageDTO dto = new TransactionMessageDTO();
+                dto.setUserId(transactionMessageDTO.getUserId());
+                dto.setChatId(transactionMessageDTO.getChatId());
+                dto.setMessage(message);
+                dto.setDate(transactionMessageDTO.getDate());
+                dto.setBindingUuid(UUID.randomUUID());
+                messageDTOList.add(dto);
+            }
+        } else {
+            transactionMessageDTO.setBindingUuid(UUID.randomUUID());
+            messageDTOList = Collections.singletonList(transactionMessageDTO);
+        }
+        return messageDTOList;
     }
 }
