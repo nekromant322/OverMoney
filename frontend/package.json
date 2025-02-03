@@ -1,0 +1,26 @@
+{
+  "name": "overmoney",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OverMoney frontend",
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "author": "https://github.com/vkusnyjchaj",
+  "dependencies": {
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.0",
+    "@types/react": "^19.0.8",
+    "@types/react-dom": "^19.0.3",
+    "eslint": "9.19.0",
+    "eslint-config-next": "15.1.6",
+    "typescript": "^5"
+  }
+}
