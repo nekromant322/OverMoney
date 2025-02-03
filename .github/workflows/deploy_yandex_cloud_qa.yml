@@ -23,10 +23,10 @@ jobs:
           filters: |
             recognizer:
               - 'recognizer_service/**'
-#            orchestrator:
-#              - 'orchestrator_service/**'
-#            telegram-bot:
-#              - 'telegram_bot_service/**'
+            orchestrator:
+              - 'orchestrator_service/**'
+            telegram-bot:
+              - 'telegram_bot_service/**'
 #            invest:
 #              - 'invest_service/**'
 #            wit-ai-go-proxy:
@@ -173,14 +173,14 @@ jobs:
             kubectl rollout restart deployment sa-telegram-bot -n qa
           fi
 
-          if [ "${{ needs.detect-changes.outputs.invest }}" == "true" ]; then
-            kubectl rollout restart deployment sa-invest -n qa
-          fi
-
-          if [ "${{ needs.detect-changes.outputs.wit-ai-go-proxy }}" == "true" ]; then
-            kubectl rollout restart deployment sa-wit-ai-go-proxy -n qa
-          fi
-
-          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
-            kubectl rollout restart deployment frontend -n qa
-          fi
+#          if [ "${{ needs.detect-changes.outputs.invest }}" == "true" ]; then
+#            kubectl rollout restart deployment sa-invest -n qa
+#          fi
+#
+#          if [ "${{ needs.detect-changes.outputs.wit-ai-go-proxy }}" == "true" ]; then
+#            kubectl rollout restart deployment sa-wit-ai-go-proxy -n qa
+#          fi
+#
+#          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
+#            kubectl rollout restart deployment frontend -n qa
+#          fi
