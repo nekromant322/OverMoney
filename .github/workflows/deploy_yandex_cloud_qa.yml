@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
-#      orchestrator: ${{ steps.filter.outputs.orchestrator }}
-#      telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
+      orchestrator: ${{ steps.filter.outputs.orchestrator }}
+      telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
 #      invest: ${{ steps.filter.outputs.invest }}
 #      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
 #      frontend: ${{ steps.filter.outputs.frontend }}
@@ -159,28 +159,28 @@ jobs:
 #          helm upgrade --install --atomic -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
 #          helm upgrade --install --atomic -n qa -f ./charts/wit-ai-go-proxy/values-qa.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
 
-#      - name: Conditional Rollout Restarts
-#        run: |
-#          if [ "${{ needs.detect-changes.outputs.orchestrator }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-orchestrator -n qa
-#          fi
-#
-#          if [ "${{ needs.detect-changes.outputs.recognizer }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-recognizer -n qa
-#          fi
-#
-#          if [ "${{ needs.detect-changes.outputs.telegram-bot }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-telegram-bot -n qa
-#          fi
-#
-#          if [ "${{ needs.detect-changes.outputs.invest }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-invest -n qa
-#          fi
-#
-#          if [ "${{ needs.detect-changes.outputs.wit-ai-go-proxy }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-wit-ai-go-proxy -n qa
-#          fi
-#
-#          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
-#            kubectl rollout restart deployment frontend -n qa
-#          fi
+      - name: Conditional Rollout Restarts
+        run: |
+          if [ "${{ needs.detect-changes.outputs.orchestrator }}" == "true" ]; then
+            kubectl rollout restart deployment sa-orchestrator -n qa
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.recognizer }}" == "true" ]; then
+            kubectl rollout restart deployment sa-recognizer -n qa
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.telegram-bot }}" == "true" ]; then
+            kubectl rollout restart deployment sa-telegram-bot -n qa
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.invest }}" == "true" ]; then
+            kubectl rollout restart deployment sa-invest -n qa
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.wit-ai-go-proxy }}" == "true" ]; then
+            kubectl rollout restart deployment sa-wit-ai-go-proxy -n qa
+          fi
+
+          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
+            kubectl rollout restart deployment frontend -n qa
+          fi
