@@ -1,11 +1,9 @@
 # os
 .DS_Store
 
-# typescript
-next-env.d.ts
-
 # npm
 /node_modules
 
 # next
 /.next
+next-env.d.ts
