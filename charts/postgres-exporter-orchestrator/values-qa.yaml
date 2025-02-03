@@ -13,6 +13,6 @@ deployment:
       - name: DATA_SOURCE_URI
         value: "194.87.237.197:5433/orchestrator-db?sslmode=disable"
       - name: DATA_SOURCE_USER
-        value: "testmoney"
+        value: "{{ QA_ORCHESTRATOR_DB_USER }}"
       - name: DATA_SOURCE_PASS
-        value: "testmoney"
+        value: "{{ QA_ORCHESTRATOR_DB_PASSWORD }}"

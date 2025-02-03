@@ -21,7 +21,7 @@ deployment:
       - name: SPRING_APPLICATION_PROFILE
         value: "prod"
       - name: TELEGRAM_BOT_TOKEN
-        value: "8094666153:AAFei9psVilLDocwJlmxFoeZzMLXJq1QRa8"
+        value: "{{ QA_TELEGRAM_BOT_TOKEN }}"
       - name: TELEGRAM_BOT_NAME
         value: "TestOvermoneyBot"
       - name: INTERNAL_KEY_HEADER
@@ -33,9 +33,9 @@ deployment:
       - name: ORCHESTRATOR_DB_HOST
         value: "194.87.237.197"
       - name: ORCHESTRATOR_DB_PORT
-        value: "5433"
+        value: "{{ QA_ORCHESTRATOR_DB_PORT }}"
       - name: ORCHESTRATOR_DB_USER
-        value: "testmoney"
+        value: "{{ QA_ORCHESTRATOR_DB_USER }}"
       - name: ORCHESTRATOR_DB_PASSWORD
-        value: "testmoney"
+        value: "{{ QA_ORCHESTRATOR_DB_PASSWORD }}"
   priorityClassName: qa-priority-class

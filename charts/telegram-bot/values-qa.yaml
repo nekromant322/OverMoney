@@ -26,13 +26,13 @@ deployment:
       - name: TELEGRAM_BOT_NAME
         value: "TestOvermoneyBot"
       - name: TELEGRAM_BOT_TOKEN
-        value: "8094666153:AAFei9psVilLDocwJlmxFoeZzMLXJq1QRa8"
+        value: "{{ QA_TELEGRAM_BOT_TOKEN }}"
       - name: TELEGRAM_BOT_DB_HOST
         value: "194.87.237.197"
       - name: TELEGRAM_BOT_DB_PORT
         value: "5435"
       - name: TELEGRAM_BOT_DB_USER
-        value: "testmoney"
+        value: "{{ QA_TELEGRAM_BOT_DB_USER }}"
       - name: TELEGRAM_BOT_DB_PASSWORD
-        value: "testmoney"
+        value: "{{ QA_TELEGRAM_BOT_DB_PASSWORD }}"
     containerPort: 8080
