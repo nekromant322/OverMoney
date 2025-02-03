@@ -12,6 +12,8 @@ import java.util.UUID;
 
 @Repository
 public interface TelegramMessageRepository extends JpaRepository<TelegramMessage, Integer> {
+    void deleteByIdTransaction(UUID id);
+
     @Modifying
     @Query(value = "delete from telegram_message where id_transaction in (?1)", nativeQuery = true)
     void deleteByIdTransactions(List<UUID> ids);

@@ -108,7 +108,7 @@ public class OrchestratorRequestServiceTest {
     }
 
     @Test
-    public void deleteTransactionByIdTest() {
+    public void deleteTransactionByIdsTest() {
         UUID id = UUID.randomUUID();
         orchestratorRequestService.deleteTransactionByIds(Collections.singletonList(id));
         verify(orchestratorFeign, times(1)).deleteTransactionByIds(Collections.singletonList(id));

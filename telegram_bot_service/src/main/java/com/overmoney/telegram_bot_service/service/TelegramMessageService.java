@@ -25,11 +25,16 @@ public class TelegramMessageService {
     }
 
     @Transactional
+    public void deleteTelegramMessageByIdTransaction(UUID id) {
+        telegramMessageRepository.deleteByIdTransaction(id);
+    }
+
+    @Transactional
     public void deleteTelegramMessageByIdTransactions(List<UUID> ids) {
         telegramMessageRepository.deleteByIdTransactions(ids);
     }
 
-    public void deleteTransactionById(Integer messageId, Long chatId) {
+    public void deleteTransactionsById(Integer messageId, Long chatId) {
         List<UUID> telegramMessageIds = telegramMessageRepository
                 .findTgMessageIdsByMessageIdAndChatId(messageId, chatId).stream().map(TelegramMessage::getIdTransaction)
                 .collect(Collectors.toList());

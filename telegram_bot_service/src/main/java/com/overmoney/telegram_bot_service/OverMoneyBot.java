@@ -295,7 +295,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
 
     private void deleteTransaction(Message replyToMessage, Long chatId) {
         try {
-            telegramMessageService.deleteTransactionById(replyToMessage.getMessageId(), chatId);
+            telegramMessageService.deleteTransactionsById(replyToMessage.getMessageId(), chatId);
             sendMessage(chatId, SUCCESSFUL_DELETION_TRANSACTION);
         } catch (Exception e) {
             log.error(e.getMessage(), e);

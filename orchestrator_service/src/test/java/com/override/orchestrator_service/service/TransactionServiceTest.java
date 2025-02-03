@@ -290,6 +290,16 @@ public class TransactionServiceTest {
     public void deleteTransactionByIdTest() {
         Transaction transaction = TestFieldsUtil.generateTestTransaction();
         UUID id = transaction.getId();
+        when(transactionRepository.findById(id)).thenReturn(Optional.of(transaction));
+        transactionService.deleteTransactionById(id);
+        verify(transactionRepository, times(1)).findById(id);
+        verify(transactionRepository, times(1)).deleteById(id);
+    }
+
+    @Test
+    public void deleteTransactionsByIdsTest() {
+        Transaction transaction = TestFieldsUtil.generateTestTransaction();
+        UUID id = transaction.getId();
         when(transactionRepository.findAllByIds(Collections.singletonList(id))).thenReturn(Collections.singletonList(transaction));
         transactionService.deleteTransactionByIds(Collections.singletonList(id));
         verify(suggestionRepository, times(1)).deleteByTransactionIds(Collections.singletonList(id));

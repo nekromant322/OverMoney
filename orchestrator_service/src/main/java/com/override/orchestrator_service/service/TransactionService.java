@@ -227,6 +227,16 @@ public class TransactionService {
     }
 
     @Transactional
+    public void deleteTransactionById(UUID id) {
+        Optional<Transaction> transactionToDelete = transactionRepository.findById(id);
+        if (transactionToDelete.isPresent()) {
+            getKeywordByTransaction(transactionToDelete.get()).ifPresent(k -> keywordRepository.delete(k));
+            transactionRepository.deleteById(id);
+            telegramBotFeign.deleteTelegramMessageById(id);
+        }
+    }
+
+    @Transactional
     public void deleteTransactionByIds(List<UUID> ids) {
         List<Transaction> transactionsToDelete = transactionRepository.findAllByIds(ids);
         List<UUID> transactionIds = transactionsToDelete.stream().map(Transaction::getId).collect(Collectors.toList());
