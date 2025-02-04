@@ -12,14 +12,25 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
-      invest: ${{ steps.filter.outputs.invest }}
-      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
-      frontend: ${{ steps.filter.outputs.frontend }}
+      prod-priority-class-chart: ${{ steps.filter.outputs.prod-priority-class-chart }}
+      qa-priority-class-chart: ${{ steps.filter.outputs.qa-priority-class-chart }}
+      recognizer-chart: ${{ steps.filter.outputs.recognizer-chart }}
+      ingress-chart: ${{ steps.filter.outputs.ingress-chart }}
+      zookeeper-chart: ${{ steps.filter.outputs.zookeeper-chart }}
+      kafka-chart: ${{ steps.filter.outputs.kafka-chart }}
+      orchestrator-chart: ${{ steps.filter.outputs.orchestrator-chart }}
+      telegram-bot-chart: ${{ steps.filter.outputs.telegram-bot-chart }}
+      postgres-exporter-orchestrator-chart: ${{ steps.filter.outputs.postgres-exporter-orchestrator-chart }}
+      postgres-exporter-telegram-chart: ${{ steps.filter.outputs.postgres-exporter-telegram-chart }}
+#      invest: ${{ steps.filter.outputs.invest }}
+#      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
+#      frontend: ${{ steps.filter.outputs.frontend }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
         id: filter
         with:
+          base: ${{ github.ref }}
           filters: |
             recognizer:
               - 'recognizer_service/**'
@@ -27,16 +38,37 @@ jobs:
               - 'orchestrator_service/**'
             telegram-bot:
               - 'telegram_bot_service/**'
-            invest:
-              - 'invest_service/**'
-            wit-ai-go-proxy:
-              - 'wit_ai_go_proxy/**'
-            frontend:
-              - 'frontend/**'
+            prod-priority-class-chart:
+              - 'charts/prod-priority-class/**'
+            qa-priority-class-chart:
+              - 'charts/qa-priority-class/**'
+            recognizer-chart:
+              - 'charts/recognizer/**'
+            ingress-chart:
+              - 'charts/ingress/**'
+            zookeeper-chart:
+              - 'charts/zookeeper/**'
+            kafka-chart:
+              - 'charts/kafka/**'
+            orchestrator-chart:
+              - 'charts/orchestrator/**'
+            telegram-bot-chart:
+              - 'charts/telegram-bot/**'
+#            postgres-exporter-orchestrator-chart:
+#              - 'charts/postgres-exporter-orchestrator/**'
+#            postgres-exporter-telegram-chart:
+#              - 'charts/postgres-exporter-telegram/**'
+#            invest:
+#              - 'invest_service/**'
+#            wit-ai-go-proxy:
+#              - 'wit_ai_go_proxy/**'
+#            frontend:
+#              - 'frontend/**'
+
   build-and-push-images:
     name: Build & Push images to DockerHub
     runs-on: ubuntu-latest
-    needs: detect-changes
+    needs: [detect-changes]
     steps:
       - uses: actions/checkout@v4
       - name: Login to DockerHub
@@ -49,14 +81,6 @@ jobs:
         with:
           version: v0.7.0
 
-      - name: Orchestrator Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /orchestrator_service/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-orchestrator
-
       - name: Recognizer Build and Push to Dockerhub
         if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
         uses: docker/build-push-action@v2
@@ -64,6 +88,14 @@ jobs:
           file: /recognizer_service/Dockerfile
           push: true
           tags: nekromant322/overmoney-recognizer
+
+      - name: Orchestrator Build and Push to Dockerhub
+        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          file: /orchestrator_service/Dockerfile
+          push: true
+          tags: nekromant322/overmoney-orchestrator
 
       - name: Telegram Bot Build and Push to Dockerhub
         if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
@@ -73,28 +105,29 @@ jobs:
           push: true
           tags: nekromant322/overmoney-telegram-bot
 
-      - name: Invest Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /invest_service/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-invest
+#      - name: Invest Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /invest_service/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-invest
 
-      - name: Wit ai go proxy Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /wit_ai_go_proxy/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-wit-ai-go-proxy
-      - name: Frontend Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /frontend/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-frontend
+#      - name: Wit ai go proxy Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /wit_ai_go_proxy/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-wit-ai-go-proxy
+
+#      - name: Frontend Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /frontend/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-frontend
 
   deploy-to-k8s:
     name: Deploy to Kubernetes Cluster
@@ -108,26 +141,17 @@ jobs:
         uses: none0nfg/yaml-secrets-injector@v0.0.1
         with:
           inject_files: |-
-            resource-manifest/sa-recognizer-deployment.yaml
-            resource-manifest/service-sa-recognizer-lb.yaml
-            resource-manifest/sa-orchestrator-deployment.yaml
-            resource-manifest/service-sa-orchestrator-lb.yaml
-            resource-manifest/sa-telegram-bot-deployment.yaml
-            resource-manifest/service-sa-telegram-bot-lb.yaml
-            resource-manifest/sa-invest-deployment.yaml
-            resource-manifest/service-sa-invest-lb.yaml
-            resource-manifest/sa-wit-ai-go-proxy-deployment.yaml
-            resource-manifest/service-wit-ai-go-proxy-lb.yaml
-            resource-manifest/frontend-deployment.yaml
-            resource-manifest/service-frontend-lb.yaml
-            resource-manifest/sa-zookeeper.yaml
-            resource-manifest/sa-kafka-deployment.yaml
-            resource-manifest/sa-prometheus-deployment.yaml
-            resource-manifest/sa-grafana-deployment.yaml
-            resource-manifest/postgres-exporter-orchestrator.yaml
-            resource-manifest/postgres-exporter-telegram-bot.yaml
-            resource-manifest/kafka-ui-deployment.yaml
-            resource-manifest/frontend-deployment.yaml
+            charts/recognizer/values.yaml
+            charts/ingress/values.yaml
+            charts/zookeeper/values.yaml
+            charts/kafka/values.yaml
+            charts/postgres-exporter-orchestrator/values.yaml
+            charts/orchestrator/values.yaml
+            charts/postgres-exporter-telegram/values.yaml
+            charts/telegram-bot/values.yaml
+#            charts/invest/values.yaml
+#            charts/wit-ai-go-proxy/values.yaml
+#            charts/frontend/values.yaml
           secrets: ${{ toJSON(secrets) }}
 
       - name: Configure kubectl
@@ -139,31 +163,74 @@ jobs:
       - name: Test Kubernetes Connection
         run: kubectl cluster-info
 
+      - name: Helm Deploy Prod Priority Class
+        if: ${{ needs.detect-changes.outputs.prod-priority-class-chart == 'true' }}
+        run: helm upgrade --install --atomic -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
+
+      - name: Helm Deploy QA Priority Class
+        if: ${{ needs.detect-changes.outputs.qa-priority-class-chart == 'true' }}
+        run: helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
+
+      - name: Helm Deploy Recognizer Service
+        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/recognizer/values.yaml recognizer ./charts/recognizer
+
+      - name: Helm Deploy Ingress
+        if: ${{ needs.detect-changes.outputs.ingress-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/ingress/values.yaml ingress-qa ./charts/ingress
+
+      - name: Helm Deploy Zookeeper
+        if: ${{ needs.detect-changes.outputs.zookeeper-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/zookeeper/values.yaml zookeeper ./charts/zookeeper
+
+      - name: Helm Deploy Kafka
+        if: ${{ needs.detect-changes.outputs.kafka-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/kafka/values.yaml kafka ./charts/kafka
+
+      - name: Helm Deploy Postgres Exporter Orchestrator
+        if: ${{ needs.detect-changes.outputs.postgres-exporter-orchestrator-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/postgres-exporter-orchestrator/values.yaml postgres-exporter-orchestrator ./charts/postgres-exporter-orchestrator
+
+      - name: Helm Deploy Orchestrator Service
+        if: ${{ needs.detect-changes.outputs.orchestrator-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/orchestrator/values.yaml orchestrator ./charts/orchestrator
+
+      - name: Helm Deploy Postgres Exporter Telegram
+        if: ${{ needs.detect-changes.outputs.postgres-exporter-telegram-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/postgres-exporter-telegram/values.yaml postgres-exporter-telegram ./charts/postgres-exporter-telegram
+
+      - name: Helm Deploy Telegram Bot Service
+        if: ${{ needs.detect-changes.outputs.telegram-bot-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/telegram-bot/values.yaml telegram-bot ./charts/telegram-bot
+
+#      - name: Helm Deploy
+#        run: |-
+      #          helm upgrade --install --atomic -n default -f ./charts/frontend/values.yaml frontend ./charts/frontend
+      #          helm upgrade --install --atomic -n default -f ./charts/invest/values.yaml invest ./charts/invest
+      #          helm upgrade --install --atomic -n default -f ./charts/wit-ai-go-proxy/values.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
+
       - name: Conditional Rollout Restarts
         run: |
-          kubectl apply -f resource-manifest
           if [ "${{ needs.detect-changes.outputs.orchestrator }}" == "true" ]; then
-            kubectl rollout restart deployment sa-orchestrator
+            kubectl rollout restart deployment sa-orchestrator -n default
           fi
-          
+
           if [ "${{ needs.detect-changes.outputs.recognizer }}" == "true" ]; then
-            kubectl rollout restart deployment sa-recognizer
+            kubectl rollout restart deployment sa-recognizer -n default
           fi
-          
+
           if [ "${{ needs.detect-changes.outputs.telegram-bot }}" == "true" ]; then
-            kubectl rollout restart deployment sa-telegram-bot
+            kubectl rollout restart deployment sa-telegram-bot -n default
           fi
-          
-          if [ "${{ needs.detect-changes.outputs.invest }}" == "true" ]; then
-            kubectl rollout restart deployment sa-invest
-          fi
-          
-          if [ "${{ needs.detect-changes.outputs.wit-ai-go-proxy }}" == "true" ]; then
-            kubectl rollout restart deployment sa-wit-ai-go-proxy
-          fi
-          
-          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
-            kubectl rollout restart deployment frontend
-          fi
-          
-          
+
+#          if [ "${{ needs.detect-changes.outputs.invest }}" == "true" ]; then
+#            kubectl rollout restart deployment sa-invest -n default
+#          fi
+#
+#          if [ "${{ needs.detect-changes.outputs.wit-ai-go-proxy }}" == "true" ]; then
+#            kubectl rollout restart deployment sa-wit-ai-go-proxy -n default
+#          fi
+#
+#          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
+#            kubectl rollout restart deployment frontend -n default
+#          fi
