@@ -11,7 +11,7 @@ deployment:
       maxUnavailable: 1
       maxSurge: 1
   containers:
-    image: nekromant322/overmoney-recognizer
+    image: nekromant322/overmoney-recognizer-qa
     imageTag: latest
     pullPolicy: Always
     requestsMemory: "256Mi"

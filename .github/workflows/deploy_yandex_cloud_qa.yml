@@ -65,20 +65,28 @@ jobs:
 #            frontend:
 #              - 'frontend/**'
 
-#  build-and-push-images:
-#    name: Build & Push images to DockerHub
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Login to DockerHub
-#        uses: docker/login-action@v3
-#        with:
-#          username: ${{ secrets.DOCKERHUB_USERNAME }}
-#          password: ${{ secrets.DOCKERHUB_TOKEN }}
-#      - name: Set up Docker Buildx
-#        uses: docker/setup-buildx-action@v1
-#        with:
-#          version: v0.7.0
+  build-and-push-images:
+    name: Build & Push images to DockerHub
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          version: v0.7.0
+
+      - name: Recognizer Build and Push to Dockerhub
+        if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          file: /recognizer_service/Dockerfile
+          push: true
+          tags: nekromant322/overmoney-recognizer-qa
 
 #      - name: Orchestrator Build and Push to Dockerhub
 #        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
@@ -87,14 +95,6 @@ jobs:
 #          file: /orchestrator_service/Dockerfile
 #          push: true
 #          tags: nekromant322/overmoney-orchestrator
-
-#      - name: Recognizer Build and Push to Dockerhub
-#        if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
-#        uses: docker/build-push-action@v2
-#        with:
-#          file: /recognizer_service/Dockerfile
-#          push: true
-#          tags: nekromant322/overmoney-recognizer
 
 #      - name: Telegram Bot Build and Push to Dockerhub
 #        if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
@@ -130,7 +130,7 @@ jobs:
   deploy-to-k8s:
     name: Deploy to Kubernetes Cluster
     runs-on: ubuntu-latest
-    needs: [detect-changes]
+    needs: [detect-changes, build-and-push-images]
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -163,43 +163,35 @@ jobs:
 
       - name: Helm Deploy Prod Priority Class
         if: ${{ needs.detect-changes.outputs.prod-priority-class-chart == 'true' }}
-        run: |-
-          helm upgrade --install --atomic -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
+        run: helm upgrade --install --atomic -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
 
       - name: Helm Deploy QA Priority Class
         if: ${{ needs.detect-changes.outputs.qa-priority-class-chart == 'true' }}
-        run: |-
-          helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
+        run: helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
 
       - name: Helm Deploy Recognizer Service
         if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
-        run: |-
-          helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
+        run: helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
 
       - name: Helm Deploy Ingress
         if: ${{ needs.detect-changes.outputs.ingress-chart == 'true' }}
-        run: |-
-          helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
+        run: helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
 
       - name: Helm Deploy Zookeeper
         if: ${{ needs.detect-changes.outputs.zookeeper-chart == 'true' }}
-        run: |-
-          helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
+        run: helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
 
       - name: Helm Deploy Kafka
         if: ${{ needs.detect-changes.outputs.kafka-chart == 'true' }}
-        run: |-
-          helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
+        run: helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
 
       - name: Helm Deploy Orchestrator Service
         if: ${{ needs.detect-changes.outputs.orchestrator-chart == 'true' }}
-        run: |-
-          helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
+        run: helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
 
       - name: Helm Deploy Telegram Bot Service
         if: ${{ needs.detect-changes.outputs.telegram-bot-chart == 'true' }}
-        run: |-
-          helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
+        run: helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
 
 #      - name: Helm Deploy
 #        run: |-
