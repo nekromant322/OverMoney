@@ -90,7 +90,6 @@ jobs:
           tags: nekromant322/overmoney-recognizer-qa
 
       - name: Orchestrator Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
         uses: docker/build-push-action@v2
         with:
           file: /orchestrator_service/Dockerfile
@@ -98,7 +97,6 @@ jobs:
           tags: nekromant322/overmoney-orchestrator-qa
 
       - name: Telegram Bot Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
         uses: docker/build-push-action@v2
         with:
           file: /telegram_bot_service/Dockerfile
