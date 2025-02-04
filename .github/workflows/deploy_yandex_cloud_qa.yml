@@ -130,34 +130,43 @@ jobs:
       - name: Test Kubernetes Connection
         run: kubectl cluster-info
 
-      - name: Helm Dry Run Recognizer Service
+      - name: Helm Deploy Prod Priority Class
         run: |-
-          helm upgrade --install --atomic --dry-run=server -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
-          helm upgrade --install --atomic --dry-run=server -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
-          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
-          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
-          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
-          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
-          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
-          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
-#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
-#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
-#          helm upgrade --install --atomic --dry-run=server -n qa -f ./charts/wit-ai-go-proxy/values-qa.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
+          helm upgrade --install --atomic -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
 
+      - name: Helm Deploy QA Priority Class
+        run: |-
+          helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
 
       - name: Helm Deploy Recognizer Service
         run: |-
-          helm upgrade --install --atomic -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
-          helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
           helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
+
+      - name: Helm Deploy Ingress
+        run: |-
           helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
+
+      - name: Helm Deploy Zookeeper
+        run: |-
           helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
+
+      - name: Helm Deploy Kafka
+        run: |-
           helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
+
+      - name: Helm Deploy Orchestrator Service
+        run: |-
           helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
+
+      - name: Helm Deploy Telegram Bot Service
+        run: |-
           helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
-#          helm upgrade --install --atomic -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
-#          helm upgrade --install --atomic -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
-#          helm upgrade --install --atomic -n qa -f ./charts/wit-ai-go-proxy/values-qa.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
+
+#      - name: Helm Deploy
+#        run: |-
+      #          helm upgrade --install --atomic -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
+      #          helm upgrade --install --atomic -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
+      #          helm upgrade --install --atomic -n qa -f ./charts/wit-ai-go-proxy/values-qa.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
 
       - name: Conditional Rollout Restarts
         run: |
