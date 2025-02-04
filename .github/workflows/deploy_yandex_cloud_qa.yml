@@ -1,4 +1,4 @@
-name: Build & Push & Deploy to k8s cluster
+name: Build & Push & Deploy to k8s cluster QA namespace
 
 on:
   push:
