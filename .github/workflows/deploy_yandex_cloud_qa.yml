@@ -1,7 +1,7 @@
 name: Build & Push & Deploy to k8s cluster
 
 on:
-  pull_request:
+  push:
     branches:
       - qa
 
