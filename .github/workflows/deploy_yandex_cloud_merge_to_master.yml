@@ -21,8 +21,8 @@ jobs:
       kafka-chart: ${{ steps.filter.outputs.kafka-chart }}
       orchestrator-chart: ${{ steps.filter.outputs.orchestrator-chart }}
       telegram-bot-chart: ${{ steps.filter.outputs.telegram-bot-chart }}
-#      postgres-exporter-orchestrator-chart: ${{ steps.filter.outputs.postgres-exporter-orchestrator-chart }}
-#      postgres-exporter-telegram-chart: ${{ steps.filter.outputs.postgres-exporter-telegram-chart }}
+      postgres-exporter-orchestrator-chart: ${{ steps.filter.outputs.postgres-exporter-orchestrator-chart }}
+      postgres-exporter-telegram-chart: ${{ steps.filter.outputs.postgres-exporter-telegram-chart }}
 #      invest: ${{ steps.filter.outputs.invest }}
 #      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
 #      frontend: ${{ steps.filter.outputs.frontend }}
@@ -190,9 +190,17 @@ jobs:
         if: ${{ needs.detect-changes.outputs.kafka-chart == 'true' }}
         run: helm upgrade --install --atomic -n default -f ./charts/kafka/values.yaml kafka ./charts/kafka
 
+      - name: Helm Deploy Postgres Exporter Orchestrator
+        if: ${{ needs.detect-changes.outputs.postgres-exporter-orchestrator-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/postgres-exporter-orchestrator/values.yaml postgres-exporter-orchestrator ./charts/postgres-exporter-orchestrator
+
       - name: Helm Deploy Orchestrator Service
         if: ${{ needs.detect-changes.outputs.orchestrator-chart == 'true' }}
         run: helm upgrade --install --atomic -n default -f ./charts/orchestrator/values.yaml orchestrator ./charts/orchestrator
+
+      - name: Helm Deploy Postgres Exporter Telegram
+        if: ${{ needs.detect-changes.outputs.postgres-exporter-telegram-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/postgres-exporter-telegram/values.yaml postgres-exporter-telegram ./charts/postgres-exporter-telegram
 
       - name: Helm Deploy Telegram Bot Service
         if: ${{ needs.detect-changes.outputs.telegram-bot-chart == 'true' }}
