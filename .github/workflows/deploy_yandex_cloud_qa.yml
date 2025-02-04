@@ -12,6 +12,16 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
+      prod-priority-class-chart: ${{ steps.filter.outputs.prod-priority-class-chart }}
+      qa-priority-class-chart: ${{ steps.filter.outputs.qa-priority-class-chart }}
+      recognizer-chart: ${{ steps.filter.outputs.recognizer-chart }}
+      ingress-chart: ${{ steps.filter.outputs.ingress-chart }}
+      zookeeper-chart: ${{ steps.filter.outputs.zookeeper-chart }}
+      kafka-chart: ${{ steps.filter.outputs.kafka-chart }}
+#      postgres-exporter-orchestrator-chart: ${{ steps.filter.outputs.postgres-exporter-orchestrator-chart }}
+      orchestrator-chart: ${{ steps.filter.outputs.orchestrator-chart }}
+#      postgres-exporter-telegram-chart: ${{ steps.filter.outputs.postgres-exporter-telegram-chart }}
+      telegram-bot-chart: ${{ steps.filter.outputs.telegram-bot-chart }}
 #      invest: ${{ steps.filter.outputs.invest }}
 #      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
 #      frontend: ${{ steps.filter.outputs.frontend }}
@@ -27,6 +37,22 @@ jobs:
               - 'orchestrator_service/**'
             telegram-bot:
               - 'telegram_bot_service/**'
+            recognizer-chart:
+              - 'charts/recognizer/**'
+            ingress-chart:
+              - 'charts/ingress/**'
+            zookeeper-chart:
+              - 'charts/zookeeper/**'
+            kafka-chart:
+              - 'charts/kafka/**'
+            postgres-exporter-orchestrator-chart:
+              - 'charts/postgres-exporter-orchestrator/**'
+            orchestrator-chart:
+              - 'charts/orchestrator/**'
+            postgres-exporter-telegram-chart:
+              - 'charts/postgres-exporter-telegram/**'
+            telegram-bot-chart:
+              - 'charts/telegram-bot/**'
 #            invest:
 #              - 'invest_service/**'
 #            wit-ai-go-proxy:
@@ -131,34 +157,42 @@ jobs:
         run: kubectl cluster-info
 
       - name: Helm Deploy Prod Priority Class
+        if: ${{ needs.detect-changes.outputs.prod-priority-class-chart == 'true' }}
         run: |-
           helm upgrade --install --atomic -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
 
       - name: Helm Deploy QA Priority Class
+        if: ${{ needs.detect-changes.outputs.qa-priority-class-chart == 'true' }}
         run: |-
           helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
 
       - name: Helm Deploy Recognizer Service
+        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
         run: |-
           helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
 
       - name: Helm Deploy Ingress
+        if: ${{ needs.detect-changes.outputs.ingress-chart == 'true' }}
         run: |-
           helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
 
       - name: Helm Deploy Zookeeper
+        if: ${{ needs.detect-changes.outputs.zookeeper-chart == 'true' }}
         run: |-
           helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
 
       - name: Helm Deploy Kafka
+        if: ${{ needs.detect-changes.outputs.kafka-chart == 'true' }}
         run: |-
           helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
 
       - name: Helm Deploy Orchestrator Service
+        if: ${{ needs.detect-changes.outputs.orchestrator-chart == 'true' }}
         run: |-
           helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
 
       - name: Helm Deploy Telegram Bot Service
+        if: ${{ needs.detect-changes.outputs.telegram-bot-chart == 'true' }}
         run: |-
           helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
 
