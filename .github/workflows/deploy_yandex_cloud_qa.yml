@@ -18,10 +18,10 @@ jobs:
       ingress-chart: ${{ steps.filter.outputs.ingress-chart }}
       zookeeper-chart: ${{ steps.filter.outputs.zookeeper-chart }}
       kafka-chart: ${{ steps.filter.outputs.kafka-chart }}
-#      postgres-exporter-orchestrator-chart: ${{ steps.filter.outputs.postgres-exporter-orchestrator-chart }}
       orchestrator-chart: ${{ steps.filter.outputs.orchestrator-chart }}
-#      postgres-exporter-telegram-chart: ${{ steps.filter.outputs.postgres-exporter-telegram-chart }}
       telegram-bot-chart: ${{ steps.filter.outputs.telegram-bot-chart }}
+#      postgres-exporter-orchestrator-chart: ${{ steps.filter.outputs.postgres-exporter-orchestrator-chart }}
+#      postgres-exporter-telegram-chart: ${{ steps.filter.outputs.postgres-exporter-telegram-chart }}
 #      invest: ${{ steps.filter.outputs.invest }}
 #      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
 #      frontend: ${{ steps.filter.outputs.frontend }}
@@ -37,6 +37,10 @@ jobs:
               - 'orchestrator_service/**'
             telegram-bot:
               - 'telegram_bot_service/**'
+            prod-priority-class-chart:
+              - 'charts/prod-priority-class/**'
+            qa-priority-class-chart:
+              - 'charts/qa-priority-class/**'
             recognizer-chart:
               - 'charts/recognizer/**'
             ingress-chart:
@@ -45,14 +49,14 @@ jobs:
               - 'charts/zookeeper/**'
             kafka-chart:
               - 'charts/kafka/**'
-            postgres-exporter-orchestrator-chart:
-              - 'charts/postgres-exporter-orchestrator/**'
             orchestrator-chart:
               - 'charts/orchestrator/**'
-            postgres-exporter-telegram-chart:
-              - 'charts/postgres-exporter-telegram/**'
             telegram-bot-chart:
               - 'charts/telegram-bot/**'
+#            postgres-exporter-orchestrator-chart:
+#              - 'charts/postgres-exporter-orchestrator/**'
+#            postgres-exporter-telegram-chart:
+#              - 'charts/postgres-exporter-telegram/**'
 #            invest:
 #              - 'invest_service/**'
 #            wit-ai-go-proxy:
