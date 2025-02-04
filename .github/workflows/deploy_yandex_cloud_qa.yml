@@ -68,6 +68,7 @@ jobs:
   build-and-push-images:
     name: Build & Push images to DockerHub
     runs-on: ubuntu-latest
+    needs: [detect-changes]
     steps:
       - uses: actions/checkout@v4
       - name: Login to DockerHub
