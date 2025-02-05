@@ -44,46 +44,34 @@ jobs:
               - '!charts/prod-priority-class/values.yaml'
             qa-priority-class-chart:
               - 'charts/qa-priority-class/**'
-              - '!charts/qa-priority-class/values.yaml'
             recognizer-chart:
               - 'charts/recognizer/**'
-              - '!charts/recognizer/values.yaml'
             ingress-chart:
               - 'charts/ingress/**'
-              - '!charts/ingress/values.yaml'
             zookeeper-chart:
               - 'charts/zookeeper/**'
-              - '!charts/zookeeper/values.yaml'
             kafka-chart:
               - 'charts/kafka/**'
-              - '!charts/kafka/values.yaml'
             orchestrator-chart:
               - 'charts/orchestrator/**'
-              - '!charts/orchestrator/values.yaml'
             telegram-bot-chart:
               - 'charts/telegram-bot/**'
-              - '!charts/telegram-bot/values.yaml'
 #            postgres-exporter-orchestrator-chart:
 #              - 'charts/postgres-exporter-orchestrator/**'
-#              - '!charts/postgres-exporter-orchestrator/values.yaml'
 #            postgres-exporter-telegram-chart:
 #              - 'charts/postgres-exporter-telegram/**'
-#              - '!charts/postgres-exporter-telegram/values.yaml'
 #            invest:
 #              - 'invest_service/**'
 #            invest-chart:
 #              - 'charts/invest/**'
-#              - '!charts/invest/values.yaml'
 #            wit-ai-go-proxy:
 #              - 'wit_ai_go_proxy/**'
 #            wit-ai-go-proxy-chart:
 #              - 'charts/wit-ai-go-proxy/**'
-#              - '!charts/wit-ai-go-proxy/values.yaml'
 #            frontend:
 #              - 'frontend/**'
 #            frontend-chart:
 #              - 'charts/frontend/**'
-#              - '!charts/frontend/values.yaml'
 
   build-and-push-images:
     name: Build & Push images to DockerHub
