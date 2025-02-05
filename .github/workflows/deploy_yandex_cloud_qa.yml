@@ -42,7 +42,7 @@ jobs:
               - 'charts/prod-priority-class/**'
             qa-priority-class-chart:
               - 'charts/qa-priority-class/**'
-            recognizer-chart: ['charts/recognizer/**', '!/charts/recognizer/values.yaml']
+            recognizer-chart: ['charts/recognizer/*', 'charts/recognizer/templates/*', '!/charts/recognizer/values.yaml']
             ingress-chart:
               - 'charts/ingress/**'
             zookeeper-chart:
