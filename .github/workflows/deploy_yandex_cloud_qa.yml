@@ -38,7 +38,10 @@ jobs:
               - 'orchestrator_service/**'
             telegram-bot:
               - 'telegram_bot_service/**'
-            prod-priority-class-chart: [ 'charts/prod-priority-class/**', '!charts/prod-priority-class/values.yaml']
+            prod-priority-class-chart: 
+              - 'charts/prod-priority-class/**'
+            prod-priority-class-chart:
+              - '!charts/prod-priority-class/values.yaml'
             qa-priority-class-chart:
               - 'charts/qa-priority-class/**'
               - '!charts/qa-priority-class/values.yaml'
