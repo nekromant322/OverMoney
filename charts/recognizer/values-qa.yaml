@@ -3,7 +3,7 @@ service:
   targetPort: 8080
 
 deployment:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 15
   strategy:
     type: RollingUpdate
