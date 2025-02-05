@@ -39,9 +39,8 @@ jobs:
             telegram-bot:
               - 'telegram_bot_service/**'
             prod-priority-class-chart: 
-              - 'charts/prod-priority-class/**'
-            prod-priority-class-chart:
               - '!charts/prod-priority-class/values.yaml'
+              - 'charts/prod-priority-class/**'
             qa-priority-class-chart:
               - 'charts/qa-priority-class/**'
             recognizer-chart:
