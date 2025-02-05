@@ -47,44 +47,61 @@ jobs:
               - 'telegram_bot_service/**'
             prod-priority-class-chart:
               - 'charts/prod-priority-class/**'
+              - '!charts/prod-priority-class/values-qa.yaml'
             qa-priority-class-chart:
               - 'charts/qa-priority-class/**'
+              - '!charts/qa-priority-class/values-qa.yaml'
             recognizer-chart:
               - 'charts/recognizer/**'
+              - '!charts/recognizer/values-qa.yaml'
             ingress-chart:
               - 'charts/ingress/**'
+              - '!charts/ingress/values-qa.yaml'
             zookeeper-chart:
               - 'charts/zookeeper/**'
+              - '!charts/zookeeper/values-qa.yaml'
             kafka-chart:
               - 'charts/kafka/**'
+              - '!charts/kafka/values-qa.yaml'
             orchestrator-chart:
               - 'charts/orchestrator/**'
+              - '!charts/orchestrator/values-qa.yaml'
             telegram-bot-chart:
               - 'charts/telegram-bot/**'
+              - '!charts/telegram-bot/values-qa.yaml'
             postgres-exporter-orchestrator-chart:
               - 'charts/postgres-exporter-orchestrator/**'
+              - '!charts/postgres-exporter-orchestrator/values-qa.yaml'
             postgres-exporter-telegram-chart:
               - 'charts/postgres-exporter-telegram/**'
+              - '!charts/postgres-exporter-telegram/values-qa.yaml'
             kafka-ui-chart:
               - 'charts/kafka-ui/**'
+              - '!charts/kafka-ui/values-qa.yaml'
             grafana-chart:
               - 'charts/grafana/**'
+              - '!charts/grafana/values-qa.yaml'
             admin-user-chart:
               - 'charts/admin-user/**'
+              - '!charts/admin-user/values-qa.yaml'
             prometheus-chart:
               - 'charts/prometheus/**'
+              - '!charts/prometheus/values-qa.yaml'
 #            invest:
 #              - 'invest_service/**'
 #            invest-chart:
 #              - 'charts/invest/**'
+#              - '!charts/invest/values-qa.yaml'
 #            wit-ai-go-proxy:
 #              - 'wit_ai_go_proxy/**'
 #            wit-ai-go-proxy-chart:
 #              - 'charts/wit-ai-go-proxy/**'
+#              - '!charts/wit-ai-go-proxy/values-qa.yaml'
 #            frontend:
 #              - 'frontend/**'
 #            frontend-chart:
 #              - 'charts/frontend/**'
+#              - '!charts/frontend/values-qa.yaml'
 
   build-and-push-images:
     name: Build & Push images to DockerHub
