@@ -32,9 +32,9 @@ jobs:
         with:
           base: ${{ github.ref }}
           filters: |
-            recognizer: ['charts/recognizer/templates/**', '/charts/recognizer/chart.yaml', '/charts/recognizer/values-qa.yaml']
-            orchestrator: ['charts/orchestrator/templates/**', '/charts/orchestrator/chart.yaml', '/charts/orchestrator/values-qa.yaml']
-            telegram-bot: ['charts/telegram-bot/templates/**', '/charts/telegram-bot/chart.yaml', '/charts/telegram-bot/values-qa.yaml']
+            recognizer: ['charts/recognizer/**']
+            orchestrator: ['charts/orchestrator/**']
+            telegram-bot: ['charts/telegram-bot/**']
             prod-priority-class-chart: ['charts/prod-priority-class/templates/**', '/charts/prod-priority-class/chart.yaml', '/charts/prod-priority-class/values-qa.yaml'] 
             qa-priority-class-chart: ['charts/qa-priority-class/templates/**', '/charts/qa-priority-class/chart.yaml', '/charts/qa-priority-class/values-qa.yaml']
             recognizer-chart: ['charts/recognizer/templates/**', '/charts/recognizer/chart.yaml', '/charts/recognizer/values-qa.yaml']
