@@ -1,0 +1,22 @@
+service:
+  port: 80
+  targetPort: 8080
+
+deployment:
+  replicas: 1
+  minReadySeconds: 15
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 1
+  containers:
+    image: nekromant322/overmoney-wit-ai-go-proxy
+    imageTag: latest
+    pullPolicy: Always
+    env:
+      - name: WIT_AI_TOKEN
+        value: "{{ WIT_AI_TOKEN }}"
+    requestsMemory: "256Mi"
+    limitsMemory: "512Mi"
+    containerPort: 8080

@@ -22,9 +22,16 @@ jobs:
       telegram-bot-chart: ${{ steps.filter.outputs.telegram-bot-chart }}
       postgres-exporter-orchestrator-chart: ${{ steps.filter.outputs.postgres-exporter-orchestrator-chart }}
       postgres-exporter-telegram-chart: ${{ steps.filter.outputs.postgres-exporter-telegram-chart }}
+      kafka-ui-chart: ${{ steps.filter.outputs.kafka-ui-chart }}
+      grafana-chart: ${{ steps.filter.outputs.grafana-chart }}
+      admin-user-chart: ${{ steps.filter.outputs.admin-user-chart }}
+      prometheus-chart: ${{ steps.filter.outputs.prometheus-chart }}
 #      invest: ${{ steps.filter.outputs.invest }}
+#      invest-chart: ${{ steps.filter.outputs.invest-chart }}
 #      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
+#      wit-ai-go-proxy-chart: ${{ steps.filter.outputs.wit-ai-go-proxy-chart }}
 #      frontend: ${{ steps.filter.outputs.frontend }}
+#      frontend-chart: ${{ steps.filter.outputs.frontend-chart }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
@@ -54,16 +61,30 @@ jobs:
               - 'charts/orchestrator/**'
             telegram-bot-chart:
               - 'charts/telegram-bot/**'
-#            postgres-exporter-orchestrator-chart:
-#              - 'charts/postgres-exporter-orchestrator/**'
-#            postgres-exporter-telegram-chart:
-#              - 'charts/postgres-exporter-telegram/**'
+            postgres-exporter-orchestrator-chart:
+              - 'charts/postgres-exporter-orchestrator/**'
+            postgres-exporter-telegram-chart:
+              - 'charts/postgres-exporter-telegram/**'
+            kafka-ui-chart:
+              - 'charts/kafka-ui/**'
+            grafana-chart:
+              - 'charts/grafana/**'
+            admin-user-chart:
+              - 'charts/admin-user/**'
+            prometheus-chart:
+              - 'charts/prometheus/**'
 #            invest:
 #              - 'invest_service/**'
+#            invest-chart:
+#              - 'charts/invest/**'
 #            wit-ai-go-proxy:
 #              - 'wit_ai_go_proxy/**'
+#            wit-ai-go-proxy-chart:
+#              - 'charts/wit-ai-go-proxy/**'
 #            frontend:
 #              - 'frontend/**'
+#            frontend-chart:
+#              - 'charts/frontend/**'
 
   build-and-push-images:
     name: Build & Push images to DockerHub
@@ -149,6 +170,10 @@ jobs:
             charts/orchestrator/values.yaml
             charts/postgres-exporter-telegram/values.yaml
             charts/telegram-bot/values.yaml
+            charts/kafka-ui/values.yaml
+            charts/grafana/values.yaml
+            charts/admin-user/values.yaml
+            charts/prometheus/values.yaml
 #            charts/invest/values.yaml
 #            charts/wit-ai-go-proxy/values.yaml
 #            charts/frontend/values.yaml
@@ -202,6 +227,22 @@ jobs:
       - name: Helm Deploy Telegram Bot Service
         if: ${{ needs.detect-changes.outputs.telegram-bot-chart == 'true' }}
         run: helm upgrade --install --atomic -n default -f ./charts/telegram-bot/values.yaml telegram-bot ./charts/telegram-bot
+
+      - name: Helm Deploy Kafka UI
+        if: ${{ needs.detect-changes.outputs.kafka-ui-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/kafka-ui/values.yaml kafka-ui ./charts/kafka-ui
+
+      - name: Helm Deploy Grafana
+        if: ${{ needs.detect-changes.outputs.grafana-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/grafana/values.yaml grafana ./charts/grafana
+
+      - name: Helm Deploy Admin User
+        if: ${{ needs.detect-changes.outputs.admin-user-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/admin-user/values.yaml admin-user ./charts/admin-user
+
+      - name: Helm Deploy Prometheus
+        if: ${{ needs.detect-changes.outputs.prometheus-chart == 'true' }}
+        run: helm upgrade --install --atomic -n default -f ./charts/prometheus/values.yaml prometheus ./charts/prometheus
 
 #      - name: Helm Deploy
 #        run: |-

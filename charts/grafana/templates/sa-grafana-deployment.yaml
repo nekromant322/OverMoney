@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sa-{{ .Chart.Name }}
+  labels:
+    app: sa-{{ .Chart.Name }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  selector:
+    matchLabels:
+      app: sa-{{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: sa-{{ .Chart.Name }}
+    spec:
+      containers:
+        - name: sa-{{ .Chart.Name }}
+          image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
+          ports:
+            - containerPort: {{ .Values.deployment.containers.containerPort }}
+          env:
+            {{- range .Values.deployment.containers.env }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sa-{{ .Chart.Name }}-svc
+spec:
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP
+  selector:
+    app: sa-{{ .Chart.Name }}

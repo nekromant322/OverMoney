@@ -1,0 +1,13 @@
+serviceAccount:
+  namespace: default
+
+service:
+  port: 9090
+  targetPort: 9090
+
+deployment:
+  replicas: 1
+  containers:
+    image: prom/prometheus
+    imageTag: v2.33.5
+    containerPort: 9090
