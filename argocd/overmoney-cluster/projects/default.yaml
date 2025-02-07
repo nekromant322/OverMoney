@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: default
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project containing default environment services
+  sourceRepos:
+    - '*'
+  destinations:
+    - namespace: 'default'
+      server: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
