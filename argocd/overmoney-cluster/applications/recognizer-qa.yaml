@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: recognizer-qa
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: qa
+  destination:
+    server: https://kubernetes.default.svc # Т.к. argocd том же кластере
+    namespace: qa
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: qa
+    path: charts/recognizer
+    helm:
+      valueFiles:
+        - values-qa.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

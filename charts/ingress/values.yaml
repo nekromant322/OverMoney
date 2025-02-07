@@ -30,3 +30,10 @@ rules:
             name: kafka-ui-svc
             port:
               number: 80
+      - path: /argo-cd
+        pathType: Prefix
+        backend:
+          service:
+            name: argo-cd-argocd-server
+            port:
+              number: 443

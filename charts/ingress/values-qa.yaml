@@ -16,10 +16,3 @@ rules:
             name: frontend-svc
             port:
               number: 80
-      - path: /argo-cd
-        pathType: Prefix
-        backend:
-          service:
-            name: argo-cd-argocd-server
-            port:
-              number: 8080

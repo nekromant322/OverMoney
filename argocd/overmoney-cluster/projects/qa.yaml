@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: prod
+  namespace: argo-cd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  description: Project containing QA environment services
+  sourceRepos:
+    - '*'
+  destinations:
+    - namespace: 'qa'
+      server: '*'
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
