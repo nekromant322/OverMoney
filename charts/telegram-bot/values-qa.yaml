@@ -1,21 +1,6 @@
-service:
-  port: 80
-  targetPort: 8080
-
 deployment:
-  replicas: 1
-  minReadySeconds: 15
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
   containers:
     image: nekromant322/overmoney-telegram-bot-qa
-    imageTag: latest
-    pullPolicy: Always
-    requestsMemory: "256Mi"
-    limitsMemory: "512Mi"
     env:
       - name: SPRING_APPLICATION_PROFILE
         value: "prod"
@@ -37,5 +22,4 @@ deployment:
         value: "{{ QA_TELEGRAM_BOT_DB_PASSWORD }}"
       - name: JAVA_TOOL_OPTIONS
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
-    containerPort: 8080
     priorityClassName: qa-priority-class

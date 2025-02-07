@@ -1,16 +1,9 @@
 persistentVolumeClaim:
   requestsStorage: 1Gi
 
-service:
-  port: 9092
-  targetPort: 9092
-
 deployment:
   replicas: 1
   containers:
-    image: confluentinc/cp-kafka
-    imageTag: 7.0.1
-    containerPort: 9092
     env:
       - name: KAFKA_BROKER_ID
         value: "1"
@@ -26,5 +19,4 @@ deployment:
         value: "1"
       - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
         value: "1"
-    volumeMountPath: /var/lib/kafka/logs
   priorityClassName: qa-priority-class

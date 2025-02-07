@@ -1,13 +1,5 @@
-service:
-  port: 2181
-  targetPort: 2181
-
 deployment:
-  replicas: 1
   containers:
-    image: confluentinc/cp-zookeeper
-    imageTag: 7.0.1
-    containerPort: 2181
     env:
       - name: ZOOKEEPER_CLIENT_PORT
         value: "2181"

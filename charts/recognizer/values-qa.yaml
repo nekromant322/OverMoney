@@ -2,4 +2,11 @@ deployment:
   replicas: 1
   containers:
     image: nekromant322/overmoney-recognizer-qa
+    env:
+      - name: SPRING_APPLICATION_PROFILE
+        value: "prod"
+      - name: INTERNAL_KEY_HEADER
+        value: "{{ INTERNAL_KEY_HEADER }}"
+      - name: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
   priorityClassName: qa-priority-class
