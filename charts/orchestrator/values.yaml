@@ -38,3 +38,6 @@ deployment:
         value: "{{ ORCHESTRATOR_DB_USER }}"
       - name: ORCHESTRATOR_DB_PASSWORD
         value: "{{ ORCHESTRATOR_DB_PASSWORD }}"
+      - name: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
+    priorityClassName: prod-priority-class

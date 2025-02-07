@@ -3,7 +3,7 @@ service:
   targetPort: 8080
 
 deployment:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 15
   strategy:
     type: RollingUpdate
@@ -35,4 +35,7 @@ deployment:
         value: "{{ QA_TELEGRAM_BOT_DB_USER }}"
       - name: TELEGRAM_BOT_DB_PASSWORD
         value: "{{ QA_TELEGRAM_BOT_DB_PASSWORD }}"
+      - name: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
     containerPort: 8080
+    priorityClassName: qa-priority-class

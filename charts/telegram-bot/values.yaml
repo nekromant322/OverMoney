@@ -35,4 +35,7 @@ deployment:
         value: "{{ TELEGRAM_BOT_DB_USER }}"
       - name: TELEGRAM_BOT_DB_PASSWORD
         value: "{{ TELEGRAM_BOT_DB_PASSWORD }}"
+      - name: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
     containerPort: 8080
+    priorityClassName: prod-priority-class
