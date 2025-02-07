@@ -22,4 +22,4 @@ rules:
           service:
             name: argo-cd-argocd-server
             port:
-              number: 80
+              number: 8080
