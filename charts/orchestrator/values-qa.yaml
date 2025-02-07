@@ -1,25 +1,8 @@
-service:
-  port: 80
-  targetPort: 8080
-
 deployment:
   replicas: 1
-  minReadySeconds: 15
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
   containers:
     image: nekromant322/overmoney-orchestrator-qa
-    imageTag: latest
-    pullPolicy: Always
-    containerPort: 8080
-    requestsMemory: "256Mi"
-    limitsMemory: "512Mi"
     env:
-      - name: SPRING_APPLICATION_PROFILE
-        value: "prod"
       - name: TELEGRAM_BOT_TOKEN
         value: "{{ QA_TELEGRAM_BOT_TOKEN }}"
       - name: TELEGRAM_BOT_NAME
@@ -30,14 +13,10 @@ deployment:
         value: "{{ JWT_ACCESS_KEY }}"
       - name: JWT_REFRESH_KEY
         value: "{{ JWT_REFRESH_KEY }}"
-      - name: ORCHESTRATOR_DB_HOST
-        value: "194.87.237.197"
       - name: ORCHESTRATOR_DB_PORT
         value: "{{ QA_ORCHESTRATOR_DB_PORT }}"
       - name: ORCHESTRATOR_DB_USER
         value: "{{ QA_ORCHESTRATOR_DB_USER }}"
       - name: ORCHESTRATOR_DB_PASSWORD
         value: "{{ QA_ORCHESTRATOR_DB_PASSWORD }}"
-      - name: JAVA_TOOL_OPTIONS
-        value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
   priorityClassName: qa-priority-class
