@@ -12,6 +12,7 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
+      shared-chart: ${{ steps.filter.outputs.shared-chart }}
       prod-priority-class-chart: ${{ steps.filter.outputs.prod-priority-class-chart }}
       qa-priority-class-chart: ${{ steps.filter.outputs.qa-priority-class-chart }}
       recognizer-chart: ${{ steps.filter.outputs.recognizer-chart }}
@@ -43,6 +44,7 @@ jobs:
             kafka-chart: ['charts/kafka/templates/**', 'charts/kafka/chart.yaml', 'charts/kafka/values-qa.yaml']
             orchestrator-chart: ['charts/orchestrator/templates/**', 'charts/orchestrator/chart.yaml', 'charts/orchestrator/values-qa.yaml']
             telegram-bot-chart: ['charts/telegram-bot/templates/**', 'charts/telegram-bot/chart.yaml', 'charts/telegram-bot/values-qa.yaml']
+            shared-chart: ['charts/shared/**']
 #            postgres-exporter-orchestrator-chart: ['charts/postgres-exporter-orchestrator/templates/**', 'charts/postgres-exporter-orchestrator/chart.yaml', 'charts/postgres-exporter-orchestrator/values-qa.yaml']
 #            postgres-exporter-telegram-chart: ['charts/postgres-exporter-telegram/templates/**', 'charts/postgres-exporter-telegram/chart.yaml', 'charts/postgres-exporter-telegram/values-qa.yaml']
 #            invest: ['invest_service/**']
@@ -159,11 +161,11 @@ jobs:
         run: helm upgrade --install --atomic qa-priority-class ./charts/qa-priority-class
 
       - name: Helm Build Dependencies For Recognizer Service
-#        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
+        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' || needs.detect-changes.outputs.shared-chart == 'true' }}
         run: helm dependency build ./charts/recognizer
 
       - name: Helm Deploy Recognizer Service
-#        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
+        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' || needs.detect-changes.outputs.shared-chart == 'true' }}
         run: helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
 
       - name: Helm Deploy Ingress
