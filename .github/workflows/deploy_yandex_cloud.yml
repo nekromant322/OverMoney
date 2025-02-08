@@ -12,6 +12,7 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
+      shared-chart: ${{ steps.filter.outputs.shared-chart }}
       prod-priority-class-chart: ${{ steps.filter.outputs.prod-priority-class-chart }}
       qa-priority-class-chart: ${{ steps.filter.outputs.qa-priority-class-chart }}
       recognizer-chart: ${{ steps.filter.outputs.recognizer-chart }}
@@ -42,6 +43,7 @@ jobs:
             recognizer: ['recognizer_service/**']
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
+            shared-chart: ['charts/shared/**']
             prod-priority-class-chart: ['charts/prod-priority-class/templates/**', 'charts/prod-priority-class/chart.yaml', 'charts/prod-priority-class/values.yaml']
             qa-priority-class-chart: ['charts/qa-priority-class/templates/**', 'charts/qa-priority-class/chart.yaml', 'charts/qa-priority-class/values.yaml']
             recognizer-chart: ['charts/recognizer/templates/**', 'charts/recognizer/chart.yaml', 'charts/recognizer/values.yaml']
