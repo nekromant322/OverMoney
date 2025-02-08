@@ -167,65 +167,65 @@ jobs:
 
       - name: Helm Deploy Prod Priority Class
         if: ${{ needs.detect-changes.outputs.prod-priority-class-chart == 'true' }}
-        run: helm upgrade --install --atomic -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
+        run: helm upgrade --install --atomic prod-priority-class ./charts/prod-priority-class
 
       - name: Helm Deploy QA Priority Class
         if: ${{ needs.detect-changes.outputs.qa-priority-class-chart == 'true' }}
-        run: helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
+        run: helm upgrade --install --atomic qa-priority-class ./charts/qa-priority-class
 
       - name: Helm Deploy Recognizer Service
         if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/recognizer/values.yaml recognizer ./charts/recognizer
+        run: helm upgrade --install --atomic -n default recognizer ./charts/recognizer
 
       - name: Helm Deploy Ingress
         if: ${{ needs.detect-changes.outputs.ingress-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/ingress/values.yaml ingress-qa ./charts/ingress
+        run: helm upgrade --install --atomic -n default ingress-qa ./charts/ingress
 
       - name: Helm Deploy Zookeeper
         if: ${{ needs.detect-changes.outputs.zookeeper-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/zookeeper/values.yaml zookeeper ./charts/zookeeper
+        run: helm upgrade --install --atomic -n default zookeeper ./charts/zookeeper
 
       - name: Helm Deploy Kafka
         if: ${{ needs.detect-changes.outputs.kafka-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/kafka/values.yaml kafka ./charts/kafka
+        run: helm upgrade --install --atomic -n default kafka ./charts/kafka
 
       - name: Helm Deploy Postgres Exporter Orchestrator
         if: ${{ needs.detect-changes.outputs.postgres-exporter-orchestrator-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/postgres-exporter-orchestrator/values.yaml postgres-exporter-orchestrator ./charts/postgres-exporter-orchestrator
+        run: helm upgrade --install --atomic -n default postgres-exporter-orchestrator ./charts/postgres-exporter-orchestrator
 
       - name: Helm Deploy Orchestrator Service
         if: ${{ needs.detect-changes.outputs.orchestrator-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/orchestrator/values.yaml orchestrator ./charts/orchestrator
+        run: helm upgrade --install --atomic -n default orchestrator ./charts/orchestrator
 
       - name: Helm Deploy Postgres Exporter Telegram
         if: ${{ needs.detect-changes.outputs.postgres-exporter-telegram-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/postgres-exporter-telegram/values.yaml postgres-exporter-telegram ./charts/postgres-exporter-telegram
+        run: helm upgrade --install --atomic -n default postgres-exporter-telegram ./charts/postgres-exporter-telegram
 
       - name: Helm Deploy Telegram Bot Service
         if: ${{ needs.detect-changes.outputs.telegram-bot-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/telegram-bot/values.yaml telegram-bot ./charts/telegram-bot
+        run: helm upgrade --install --atomic -n default telegram-bot ./charts/telegram-bot
 
       - name: Helm Deploy Kafka UI
         if: ${{ needs.detect-changes.outputs.kafka-ui-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/kafka-ui/values.yaml kafka-ui ./charts/kafka-ui
+        run: helm upgrade --install --atomic -n default kafka-ui ./charts/kafka-ui
 
       - name: Helm Deploy Grafana
         if: ${{ needs.detect-changes.outputs.grafana-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/grafana/values.yaml grafana ./charts/grafana
+        run: helm upgrade --install --atomic -n default grafana ./charts/grafana
 
       - name: Helm Deploy Admin User
         if: ${{ needs.detect-changes.outputs.admin-user-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/admin-user/values.yaml admin-user ./charts/admin-user
+        run: helm upgrade --install --atomic -n default admin-user ./charts/admin-user
 
       - name: Helm Deploy Prometheus
         if: ${{ needs.detect-changes.outputs.prometheus-chart == 'true' }}
-        run: helm upgrade --install --atomic -n default -f ./charts/prometheus/values.yaml prometheus ./charts/prometheus
+        run: helm upgrade --install --atomic -n default prometheus ./charts/prometheus
 
 #      - name: Helm Deploy
 #        run: |-
-      #          helm upgrade --install --atomic -n default -f ./charts/frontend/values.yaml frontend ./charts/frontend
-      #          helm upgrade --install --atomic -n default -f ./charts/invest/values.yaml invest ./charts/invest
-      #          helm upgrade --install --atomic -n default -f ./charts/wit-ai-go-proxy/values.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
+      #          helm upgrade --install --atomic -n default frontend ./charts/frontend
+      #          helm upgrade --install --atomic -n default invest ./charts/invest
+      #          helm upgrade --install --atomic -n default wit-ai-go-proxy ./charts/wit-ai-go-proxy
 
       - name: Conditional Rollout Restarts
         run: |

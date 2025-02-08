@@ -152,11 +152,11 @@ jobs:
 
       - name: Helm Deploy Prod Priority Class
         if: ${{ needs.detect-changes.outputs.prod-priority-class-chart == 'true' }}
-        run: helm upgrade --install --atomic -f ./charts/prod-priority-class/values.yaml prod-priority-class ./charts/prod-priority-class
+        run: helm upgrade --install --atomic prod-priority-class ./charts/prod-priority-class
 
       - name: Helm Deploy QA Priority Class
         if: ${{ needs.detect-changes.outputs.qa-priority-class-chart == 'true' }}
-        run: helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
+        run: helm upgrade --install --atomic qa-priority-class ./charts/qa-priority-class
 
       - name: Helm Build Dependencies For Recognizer Service
 #        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
