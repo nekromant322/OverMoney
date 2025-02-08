@@ -158,8 +158,12 @@ jobs:
         if: ${{ needs.detect-changes.outputs.qa-priority-class-chart == 'true' }}
         run: helm upgrade --install --atomic -f ./charts/qa-priority-class/values.yaml qa-priority-class ./charts/qa-priority-class
 
+      - name: Helm Build Dependencies For Recognizer Service
+#        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
+        run: helm dependency build ./charts/recognizer
+
       - name: Helm Deploy Recognizer Service
-        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
+#        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' }}
         run: helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
 
       - name: Helm Deploy Ingress
