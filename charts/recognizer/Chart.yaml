@@ -26,5 +26,6 @@ appVersion: "0.1.0"
 dependencies:
   - name: shared
     version: 0.1.0
-#    repository: "https://github.com/nekromant322/OverMoney/tree/qa/charts"
     repository: file://../shared
+    import-values:
+      - data
