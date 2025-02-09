@@ -13,9 +13,6 @@ spec:
     targetRevision: qa
     path: charts/recognizer
     helm:
-      env:
-        - name: INTERNAL_KEY_HEADER
-          value: "123"
       valueFiles:
         - values-qa.yaml
   syncPolicy:
