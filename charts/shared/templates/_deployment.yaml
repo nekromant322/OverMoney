@@ -21,8 +21,9 @@ spec:
       labels:
         app: sa-{{ .Chart.Name }}
       annotations:
-        vault.hashicorp.com/agent-inject-secret-qa: '/secret/qa'
         vault.hashicorp.com/agent-inject: 'true'
+        vault.hashicorp.com/agent-inject-secret-qa: '/secret/qa'
+        vault.hashicorp.com/role: 'database'
     spec:
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
