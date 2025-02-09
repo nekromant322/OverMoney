@@ -10,7 +10,7 @@ spec:
     namespace: default
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
-    targetRevision: HEAD
+    targetRevision: qa # TODO change to HEAD after deploying to master
     path: charts/qa-priority-class
   syncPolicy:
     automated:
