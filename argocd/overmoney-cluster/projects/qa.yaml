@@ -8,7 +8,7 @@ metadata:
 spec:
   description: Project containing QA environment services
   sourceRepos:
-    - '*'
+    - 'https://github.com/nekromant322/OverMoney.git'
   destinations:
     - namespace: 'qa'
       server: '*'

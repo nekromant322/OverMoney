@@ -8,7 +8,7 @@ metadata:
 spec:
   description: Project containing production environment services
   sourceRepos:
-    - '*'
+    - 'https://github.com/nekromant322/OverMoney.git'
   destinations:
     - namespace: 'prod'
       server: '*'

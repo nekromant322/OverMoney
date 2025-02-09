@@ -8,7 +8,7 @@ metadata:
 spec:
   description: Project containing default environment services
   sourceRepos:
-    - '*'
+    - 'https://github.com/nekromant322/OverMoney.git'
   destinations:
     - namespace: 'default'
       server: '*'
