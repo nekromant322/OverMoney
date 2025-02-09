@@ -3,8 +3,6 @@ kind: AppProject
 metadata:
   name: prod
   namespace: argo-cd
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
 spec:
   description: Project containing production environment services
   sourceRepos:
