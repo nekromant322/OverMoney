@@ -4,7 +4,7 @@ metadata:
   name: ingress-qa
   namespace: argo-cd
 spec:
-  project: qa
+  project: default
   destination:
     server: https://kubernetes.default.svc
     namespace: qa
