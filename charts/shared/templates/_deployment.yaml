@@ -24,6 +24,10 @@ spec:
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/agent-inject-secret-qa: '/secret/qa'
         vault.hashicorp.com/role: 'database'
+        vault.hashicorp.com/agent-inject-template-qa: |
+          {{- with secret "secret/qa" -}}
+          export internal-key-header="{{ .Data.data.internal-key-header }}"
+          {{- end }}
     spec:
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
