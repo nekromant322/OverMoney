@@ -23,7 +23,7 @@ spec:
       annotations:
         vault.hashicorp.com/agent-inject: 'true'
         vault.hashicorp.com/agent-inject-secret-qa: '/secret/qa'
-        vault.hashicorp.com/role: 'database'
+        vault.hashicorp.com/role: 'qa'
         vault.hashicorp.com/agent-inject-template-qa: |
           {{- with secret "secret/qa" -}}
           export internal-key-header="{{ .Data.internal-key-header }}"
