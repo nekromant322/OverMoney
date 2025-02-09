@@ -11,7 +11,7 @@ exports:
           maxUnavailable: 1
           maxSurge: 1
       containers:
-        imageTag: latest
+        imageTag: latest # TODO replace with ArgoCD Image Updater
         pullPolicy: Always
         requestsMemory: "256Mi"
         limitsMemory: "512Mi"
