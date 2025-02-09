@@ -8,7 +8,7 @@ spec:
   selector:
     matchLabels:
       app: sa-recognizer
-  replicas: 0
+  replicas: 1
   minReadySeconds: 15
   strategy:
     type: RollingUpdate
