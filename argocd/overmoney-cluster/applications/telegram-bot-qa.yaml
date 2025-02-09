@@ -21,7 +21,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-    hooks:
-      - type: PostSync
-        command: [ "helm" ]
-        args: [ "dependency", "update" ]
