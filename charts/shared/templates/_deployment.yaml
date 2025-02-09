@@ -2,9 +2,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    vault.hashicorp.com/agent-inject-secret-qa: '/secret/qa'
-    vault.hashicorp.com/agent-inject: 'true'
   name: sa-{{ .Chart.Name }}
   labels:
     app: sa-{{ .Chart.Name }}
@@ -23,6 +20,9 @@ spec:
     metadata:
       labels:
         app: sa-{{ .Chart.Name }}
+      annotations:
+        vault.hashicorp.com/agent-inject-secret-qa: '/secret/qa'
+        vault.hashicorp.com/agent-inject: 'true'
     spec:
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
