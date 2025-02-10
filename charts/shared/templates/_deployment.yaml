@@ -24,11 +24,8 @@ spec:
         vault.hashicorp.com/agent-inject: "true"
         vault.hashicorp.com/agent-inject-secret-qa: "/secret/qa"
         vault.hashicorp.com/role: "qa"
-        vault.hashicorp.com/agent-inject-template-config: |
-                     {{ with secret "secret/qa" -}}
-                        export username={{ .Data.internal-key-header}}
-                     {{- end }}
     spec:
+      serviceAccountName: vault-kms
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
