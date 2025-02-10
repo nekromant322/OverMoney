@@ -32,7 +32,7 @@ spec:
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
           name: sa-{{ .Chart.Name }}
           volumeMounts:
-            - mountPath: "/secrets/qa"
+            - mountPath: "/vault/secrets/qa"
               name: secrets-store-inline
               readOnly: true
           resources:
