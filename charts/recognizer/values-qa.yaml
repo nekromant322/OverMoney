@@ -13,4 +13,9 @@ deployment:
           secretKeyRef:
             name: qa
             key: internal-key-header
+    secretTemplate: |
+      {{ with secret "secret/qa" -}}
+        export internal-key-header={{ .Data.internal-key-header}}
+      {{- end }}
+
   priorityClassName: qa-priority-class
