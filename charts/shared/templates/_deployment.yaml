@@ -21,7 +21,6 @@ spec:
       labels:
         app: sa-{{ .Chart.Name }}
     spec:
-      serviceAccountName: vault-kms
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}

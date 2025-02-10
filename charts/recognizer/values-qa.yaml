@@ -11,6 +11,6 @@ deployment:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
           secretKeyRef:
-            name: secret/qa
+            name: qa
             key: internal-key-header
   priorityClassName: qa-priority-class
