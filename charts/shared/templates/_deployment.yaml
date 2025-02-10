@@ -25,6 +25,7 @@ spec:
         vault.hashicorp.com/agent-inject-secret-qa: "secret/qa"
         vault.hashicorp.com/role: "qa"
     spec:
+      serviceAccountName: vault-kms
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
