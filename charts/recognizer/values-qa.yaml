@@ -21,7 +21,7 @@ deployment:
 serviceAccountName: vault-kms
 secretProviderClass:
   name: vault-qa
-  vaultAddress: http://vault.vault.svc:8200
+  vaultAddress: http://hashicorp-vault.vault:8200
   roleName: qa
   objects:
     - objectName: "internal-key-header"
