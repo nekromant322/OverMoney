@@ -26,6 +26,7 @@ spec:
         vault.hashicorp.com/role: "qa"
         vault.hashicorp.com/agent-inject-template-qa: {{ .Values.secretTemplate }}
     spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
