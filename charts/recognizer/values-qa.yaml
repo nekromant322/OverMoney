@@ -19,3 +19,11 @@ deployment:
       {{- end }}
   priorityClassName: qa-priority-class
 serviceAccountName: vault-kms
+secretProviderClass:
+  name: vault-qa
+  vaultAddress: http://vault.default:8200
+  roleName: qa
+  objects:
+    - objectName: "internal-key-header"
+      secretPath: "secret/qa"
+      secretKey: "internal-key-header"
