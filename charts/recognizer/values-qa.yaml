@@ -25,5 +25,5 @@ secretProviderClass:
   roleName: qa
   objects:
     - objectName: "internal-key-header"
-      secretPath: "secrets/data/qa"
+      secretPath: "secrets/qa"
       secretKey: "internal-key-header"
