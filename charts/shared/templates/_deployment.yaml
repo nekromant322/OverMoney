@@ -20,10 +20,6 @@ spec:
     metadata:
       labels:
         app: sa-{{ .Chart.Name }}
-      annotations:
-        vault.hashicorp.com/agent-inject: 'true'
-        vault.hashicorp.com/agent-inject-secret-qa: '/secret/qa'
-        vault.hashicorp.com/role: 'qa'
     spec:
       serviceAccountName: vault-kms
       containers:
