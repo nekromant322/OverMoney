@@ -17,5 +17,5 @@ deployment:
       {{ with secret "secret/qa" -}}
         export internal-key-header={{ .Data.internal-key-header}}
       {{- end }}
-
   priorityClassName: qa-priority-class
+serviceAccountName: vault-kms
