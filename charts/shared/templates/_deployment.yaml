@@ -29,6 +29,7 @@ spec:
           export internal-key-header="{{ .Data.internal-key-header }}"
           {{- end }}
     spec:
+      serviceAccountName: vault-kms
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
