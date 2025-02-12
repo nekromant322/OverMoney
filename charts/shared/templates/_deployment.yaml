@@ -36,10 +36,6 @@ spec:
 {{/*            - mountPath: "/vault/secrets/qa"*/}}
 {{/*              name: secrets-store-inline*/}}
 {{/*              readOnly: true*/}}
-          command:
-            ['/bin/bash', '-c']
-          args:
-            ['source /vault/secrets/secrets && java -jar app.jar']
           resources:
             requests:
               memory: {{ .Values.deployment.containers.requestsMemory }}
