@@ -46,13 +46,13 @@ spec:
             - name: {{ .name }}
               value: {{ .value | quote }}
             {{- end }}
-            {{- range .Values.deployment.containers.envFrom }}
-            - name: {{ .name }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .valueFrom.secretKeyRef.name | quote }}
-                  key: {{ .valueFrom.secretKeyRef.key | quote }}
-            {{- end }}
+{{/*            {{- range .Values.deployment.containers.envFrom }}*/}}
+{{/*            - name: {{ .name }}*/}}
+{{/*              valueFrom:*/}}
+{{/*                secretKeyRef:*/}}
+{{/*                  name: {{ .valueFrom.secretKeyRef.name | quote }}*/}}
+{{/*                  key: {{ .valueFrom.secretKeyRef.key | quote }}*/}}
+{{/*            {{- end }}*/}}
           ports:
             - containerPort: {{ .Values.deployment.containers.containerPort }}
       priorityClassName: {{ .Values.deployment.priorityClassName }}
