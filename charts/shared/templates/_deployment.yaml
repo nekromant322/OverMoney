@@ -31,10 +31,10 @@ spec:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
           name: sa-{{ .Chart.Name }}
-{{/*          volumeMounts:*/}}
-{{/*            - mountPath: "/vault/secret/qa"*/}}
-{{/*              name: secrets-store-inline*/}}
-{{/*              readOnly: true*/}}
+          volumeMounts:
+            - mountPath: "/vault/secrets/qa"
+              name: secrets-store-inline
+              readOnly: true
           resources:
             requests:
               memory: {{ .Values.deployment.containers.requestsMemory }}
