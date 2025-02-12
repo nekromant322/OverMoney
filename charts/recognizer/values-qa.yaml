@@ -18,10 +18,10 @@ deployment:
         export internal-key-header={{ .Data.internal-key-header}}
       {{- end }}
   priorityClassName: qa-priority-class
-serviceAccountName: vault-kms
+serviceAccountName: vault-kms # default
 secretProviderClass:
   name: vault-qa
-  vaultAddress: http://hashicorp-vault.vault:8200
+  vaultAddress: http://vault.vault:8200
   roleName: qa
   objects:
     - objectName: "internal-key-header"
