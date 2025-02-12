@@ -11,7 +11,7 @@ deployment:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
           secretKeyRef:
-            name: vault/secrets/qa
+            name: qa
             key: internal-key-header
     secretTemplate: |
       {{ with secret "secret/qa" -}}
