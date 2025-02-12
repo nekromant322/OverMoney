@@ -7,8 +7,11 @@ deployment:
         value: "prod"
       - name: JAVA_TOOL_OPTIONS
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
+    envFrom:
       - name: INTERNAL_KEY_HEADER
-        value: $INTERNAL_KEY_HEADER
+        valueFrom:
+          secretKeyRef:
+            name: internal-key-header
     secretTemplate: |
       {{- with secret "secret/qa" -}}
       {{- range $key, $value := .Data }}
