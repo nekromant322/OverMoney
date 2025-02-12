@@ -55,11 +55,11 @@ spec:
           ports:
             - containerPort: {{ .Values.deployment.containers.containerPort }}
       priorityClassName: {{ .Values.deployment.priorityClassName }}
-{{/*      volumes:*/}}
-{{/*        - name: secrets-store-inline*/}}
-{{/*          csi:*/}}
-{{/*            driver: secrets-store.csi.k8s.io*/}}
-{{/*            readOnly: true*/}}
-{{/*            volumeAttributes:*/}}
-{{/*              secretProviderClass: {{ .Values.secretProviderClass.name }}*/}}
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ .Values.secretProviderClass.name }}
 {{- end -}}
