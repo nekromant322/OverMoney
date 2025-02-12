@@ -21,7 +21,6 @@ deployment:
       {{- end }}
   priorityClassName: qa-priority-class
 serviceAccountName: default # vault-kms
-serviceAccountNamespace: qa
 secretProviderClass:
   name: vault-qa
   vaultAddress: http://vault-0.vault:8200
