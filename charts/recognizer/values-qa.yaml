@@ -21,7 +21,7 @@ deployment:
 serviceAccountName: vault-kms # default
 secretProviderClass:
   name: vault-qa
-  vaultAddress: http://vault.vault:8200
+  vaultAddress: http://vault-0.vault:8200
   roleName: qa
   objects:
     - objectName: "internal-key-header"
