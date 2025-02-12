@@ -16,7 +16,7 @@ deployment:
     secretTemplate: |
       {{- with secret "secret/qa" -}}
       {{- range $key, $value := .Data }}
-      export INTERNAL_KEY_HEADER='{{ $value }}'
+      export {{ $key }}='{{ $value }}'
       {{- end }}
       {{- end -}}
   priorityClassName: qa-priority-class
