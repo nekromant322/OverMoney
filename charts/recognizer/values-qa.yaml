@@ -7,8 +7,6 @@ deployment:
         value: "prod"
       - name: JAVA_TOOL_OPTIONS
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
-      - name: VAULT_ADDR
-        value: "http://vault-0.vault:8200"
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
