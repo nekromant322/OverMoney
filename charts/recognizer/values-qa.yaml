@@ -14,9 +14,9 @@ deployment:
             name: qa
             key: internal-key-header
     secretTemplate: |
-      {{ with secret "secret/qa" -}}
-        export internal-key-header={{ .Data.internal-key-header}}
-      {{- end }}
+      {{- with secret "secret/qa" -}}
+        export internal-key-header={{ .Data.internal-key-header }}
+      {{- end -}}
   priorityClassName: qa-priority-class
 serviceAccountName: vault-kms # vault-kms is working
 serviceAccountNamespace: qa # qa is working
