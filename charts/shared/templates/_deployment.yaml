@@ -37,9 +37,9 @@ spec:
 {{/*              name: secrets-store-inline*/}}
 {{/*              readOnly: true*/}}
           command:
-            [ 'sh', '-c' ]
+            ['/bin/bash', '-c']
           args:
-            [ 'source /vault/secrets/qa && <entrypoint script>' ]
+            ['source /vault/secrets/secrets && java -jar app.jar']
           resources:
             requests:
               memory: {{ .Values.deployment.containers.requestsMemory }}
