@@ -20,7 +20,8 @@ deployment:
         export internal-key-header={{ .Data.internal-key-header}}
       {{- end }}
   priorityClassName: qa-priority-class
-serviceAccountName: vault-kms # default
+serviceAccountName: vault-kms # vault-kms
+serviceAccountNamespace: qa
 secretProviderClass:
   name: vault-qa
   vaultAddress: http://vault-0.vault:8200
