@@ -26,15 +26,15 @@ spec:
         vault.hashicorp.com/role: "qa"
 {{/*        vault.hashicorp.com/agent-inject-template-qa: {{- .Values.deployment.containers.secretTemplate | toYaml | indent 8 }}*/}}
     spec:
-{{/*      serviceAccountName: {{ .Values.serviceAccountName }}*/}}
+      serviceAccountName: {{ .Values.serviceAccountName }}
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
           name: sa-{{ .Chart.Name }}
-          volumeMounts:
-            - mountPath: "/vault/secret/qa"
-              name: secrets-store-inline
-              readOnly: true
+{{/*          volumeMounts:*/}}
+{{/*            - mountPath: "/vault/secret/qa"*/}}
+{{/*              name: secrets-store-inline*/}}
+{{/*              readOnly: true*/}}
           resources:
             requests:
               memory: {{ .Values.deployment.containers.requestsMemory }}
@@ -55,11 +55,11 @@ spec:
           ports:
             - containerPort: {{ .Values.deployment.containers.containerPort }}
       priorityClassName: {{ .Values.deployment.priorityClassName }}
-      volumes:
-        - name: secrets-store-inline
-          csi:
-            driver: secrets-store.csi.k8s.io
-            readOnly: true
-            volumeAttributes:
-              secretProviderClass: {{ .Values.secretProviderClass.name }}
+{{/*      volumes:*/}}
+{{/*        - name: secrets-store-inline*/}}
+{{/*          csi:*/}}
+{{/*            driver: secrets-store.csi.k8s.io*/}}
+{{/*            readOnly: true*/}}
+{{/*            volumeAttributes:*/}}
+{{/*              secretProviderClass: {{ .Values.secretProviderClass.name }}*/}}
 {{- end -}}
