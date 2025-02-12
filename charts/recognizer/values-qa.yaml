@@ -19,10 +19,10 @@ deployment:
       {{- end }}
   priorityClassName: qa-priority-class
 serviceAccountName: vault-kms # vault-kms
-serviceAccountNamespace: qa
+serviceAccountNamespace: vault
 secretProviderClass:
   name: vault-qa
-  namespace: qa
+  namespace: vault
   vaultAddress: http://vault.vault:8200
   roleName: qa
   objects:
