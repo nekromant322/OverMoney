@@ -22,7 +22,7 @@ serviceAccountName: vault-kms # vault-kms is working
 serviceAccountNamespace: qa # qa is working
 secretProviderClass:
   name: vault-qa
-  namespace: qa
+  namespace: vault
   vaultAddress: http://vault-0.vault:8200
   roleName: qa
   objects:
