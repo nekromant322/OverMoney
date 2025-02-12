@@ -23,9 +23,9 @@ serviceAccountNamespace: qa # qa is working
 secretProviderClass:
   name: vault-qa
   namespace: vault
-  vaultAddress: http://vault-0.vault:8200
+  vaultAddress: http://vault.vault:8200
   roleName: qa
   objects:
-    - objectName: "internal-key-header"
+    - objectName: "qa"
       secretPath: "secret/qa"
       secretKey: "internal-key-header"
