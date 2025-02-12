@@ -20,11 +20,11 @@ spec:
     metadata:
       labels:
         app: sa-{{ .Chart.Name }}
-      annotations:
-        vault.hashicorp.com/agent-inject: "true"
-        vault.hashicorp.com/agent-inject-secret-qa: "secret/qa"
-        vault.hashicorp.com/role: "qa"
-        agent-inject-status: "update"
+{{/*      annotations:*/}}
+{{/*        vault.hashicorp.com/agent-inject: "true"*/}}
+{{/*        vault.hashicorp.com/agent-inject-secret-qa: "secret/qa"*/}}
+{{/*        vault.hashicorp.com/role: "qa"*/}}
+{{/*        agent-inject-status: "update"*/}}
 {{/*        vault.hashicorp.com/agent-inject-template-qa: {{- .Values.deployment.containers.secretTemplate | toYaml | indent 8 }}*/}}
     spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
@@ -32,10 +32,10 @@ spec:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
           name: sa-{{ .Chart.Name }}
-{{/*          volumeMounts:*/}}
-{{/*            - mountPath: "/vault/secrets/qa"*/}}
-{{/*              name: secrets-store-inline*/}}
-{{/*              readOnly: true*/}}
+          volumeMounts:
+            - mountPath: "/vault/secrets/qa"
+              name: secrets-store-inline
+              readOnly: true
           resources:
             requests:
               memory: {{ .Values.deployment.containers.requestsMemory }}
@@ -46,21 +46,21 @@ spec:
             - name: {{ .name }}
               value: {{ .value | quote }}
             {{- end }}
-{{/*            {{- range .Values.deployment.containers.envFrom }}*/}}
-{{/*            - name: {{ .name }}*/}}
-{{/*              valueFrom:*/}}
-{{/*                secretKeyRef:*/}}
-{{/*                  name: {{ .valueFrom.secretKeyRef.name | quote }}*/}}
-{{/*                  key: {{ .valueFrom.secretKeyRef.key | quote }}*/}}
-{{/*            {{- end }}*/}}
+            {{- range .Values.deployment.containers.envFrom }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .valueFrom.secretKeyRef.name | quote }}
+                  key: {{ .valueFrom.secretKeyRef.key | quote }}
+            {{- end }}
           ports:
             - containerPort: {{ .Values.deployment.containers.containerPort }}
       priorityClassName: {{ .Values.deployment.priorityClassName }}
-{{/*      volumes:*/}}
-{{/*        - name: secrets-store-inline*/}}
-{{/*          csi:*/}}
-{{/*            driver: secrets-store.csi.k8s.io*/}}
-{{/*            readOnly: true*/}}
-{{/*            volumeAttributes:*/}}
-{{/*              secretProviderClass: {{ .Values.secretProviderClass.name }}*/}}
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ .Values.secretProviderClass.name }}
 {{- end -}}
