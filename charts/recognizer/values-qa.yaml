@@ -23,7 +23,7 @@ serviceAccountNamespace: qa # qa is working
 secretProviderClass:
   name: vault-qa
   namespace: qa # qa is working
-  vaultAddress: http://hashicorp-vault.vault.svc.cluster.local:8200/
+  vaultAddress: http://hashicorp-vault.vault.svc:8200/
   roleName: qa
   objects:
     - objectName: "qa"
