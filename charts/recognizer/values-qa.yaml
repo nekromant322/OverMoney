@@ -23,7 +23,7 @@ serviceAccountNamespace: qa # qa is working
 secretProviderClass:
   name: vault-qa
   namespace: qa
-  vaultAddress: http://hashicorp-vault-0.vault:8200/
+  vaultAddress: http://hashicorp-vault-0.hashicorp-vault:8200/
   roleName: qa
   objects:
     - objectName: "qa"
