@@ -1,4 +1,5 @@
 deployment:
+  replicas: 1
   containers:
     image: nekromant322/overmoney-telegram-bot-qa
     env:
@@ -6,20 +7,35 @@ deployment:
         value: "prod"
       - name: ORCHESTRATOR_HOST
         value: "https://testmoney.tech/overmoney"
-      - name: INTERNAL_KEY_HEADER
-        value: "{{ INTERNAL_KEY_HEADER }}"
       - name: TELEGRAM_BOT_NAME
         value: "TestOvermoneyBot"
-      - name: TELEGRAM_BOT_TOKEN
-        value: "{{ QA_TELEGRAM_BOT_TOKEN }}"
       - name: TELEGRAM_BOT_DB_HOST
         value: "194.87.237.197"
       - name: TELEGRAM_BOT_DB_PORT
         value: "5435"
-      - name: TELEGRAM_BOT_DB_USER
-        value: "{{ QA_TELEGRAM_BOT_DB_USER }}"
-      - name: TELEGRAM_BOT_DB_PASSWORD
-        value: "{{ QA_TELEGRAM_BOT_DB_PASSWORD }}"
       - name: JAVA_TOOL_OPTIONS
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
+    envFrom:
+      - name: INTERNAL_KEY_HEADER
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-internal-key-header
+      - name: TELEGRAM_BOT_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-telegram-bot-token
+      - name: TELEGRAM_BOT_DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-telegram-bot-db-user
+      - name: TELEGRAM_BOT_DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-telegram-bot-db-password
     priorityClassName: qa-priority-class
+secretProviderClass:
+  name: vault-qa

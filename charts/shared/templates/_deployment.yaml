@@ -20,12 +20,6 @@ spec:
     metadata:
       labels:
         app: sa-{{ .Chart.Name }}
-{{/*      annotations:*/}}
-{{/*        vault.hashicorp.com/agent-inject: "true"*/}}
-{{/*        vault.hashicorp.com/agent-inject-secret-qa: "secret/qa"*/}}
-{{/*        vault.hashicorp.com/role: "qa"*/}}
-{{/*        agent-inject-status: "update"*/}}
-{{/*        vault.hashicorp.com/agent-inject-template-qa: {{- .Values.deployment.containers.secretTemplate | toYaml | indent 8 }}*/}}
     spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
       containers:

@@ -6,7 +6,7 @@ metadata:
     app: {{ .Chart.Name }}
 spec:
   strategy:
-    type: Recreate # Нужно из-за привязки PVC OneToOne - нет возможности законнектить одновременно две кафки, поэтому будет даунтайм
+    type: {{ .Values.deployment.strategy.type }} # Нужно из-за привязки PVC OneToOne - нет возможности законнектить одновременно две кафки, поэтому будет даунтайм
   replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
@@ -34,26 +34,3 @@ spec:
           persistentVolumeClaim:
             claimName: {{ .Chart.Name }}-pvc
       priorityClassName: {{ .Values.deployment.priorityClassName }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Chart.Name }}-service
-spec:
-  selector:
-    app: {{ .Chart.Name }}
-  ports:
-    - protocol: TCP
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: {{ .Chart.Name }}-pvc
-spec:
-  accessModes:
-    - ReadWriteOnce
-  resources:
-    requests:
-      storage: {{ .Values.persistentVolumeClaim.requestsStorage }}

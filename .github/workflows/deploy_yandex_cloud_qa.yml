@@ -12,15 +12,16 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
-      shared-chart: ${{ steps.filter.outputs.shared-chart }}
-      prod-priority-class-chart: ${{ steps.filter.outputs.prod-priority-class-chart }}
-      qa-priority-class-chart: ${{ steps.filter.outputs.qa-priority-class-chart }}
-      recognizer-chart: ${{ steps.filter.outputs.recognizer-chart }}
-      ingress-chart: ${{ steps.filter.outputs.ingress-chart }}
-      zookeeper-chart: ${{ steps.filter.outputs.zookeeper-chart }}
-      kafka-chart: ${{ steps.filter.outputs.kafka-chart }}
-      orchestrator-chart: ${{ steps.filter.outputs.orchestrator-chart }}
-      telegram-bot-chart: ${{ steps.filter.outputs.telegram-bot-chart }}
+      argocd-root: ${{ steps.filter.outputs.argocd-root }}
+#      shared-chart: ${{ steps.filter.outputs.shared-chart }}
+#      prod-priority-class-chart: ${{ steps.filter.outputs.prod-priority-class-chart }}
+#      qa-priority-class-chart: ${{ steps.filter.outputs.qa-priority-class-chart }}
+#      recognizer-chart: ${{ steps.filter.outputs.recognizer-chart }}
+#      ingress-chart: ${{ steps.filter.outputs.ingress-chart }}
+#      zookeeper-chart: ${{ steps.filter.outputs.zookeeper-chart }}
+#      kafka-chart: ${{ steps.filter.outputs.kafka-chart }}
+#      orchestrator-chart: ${{ steps.filter.outputs.orchestrator-chart }}
+#      telegram-bot-chart: ${{ steps.filter.outputs.telegram-bot-chart }}
 #      postgres-exporter-orchestrator-chart: ${{ steps.filter.outputs.postgres-exporter-orchestrator-chart }}
 #      postgres-exporter-telegram-chart: ${{ steps.filter.outputs.postgres-exporter-telegram-chart }}
 #      invest: ${{ steps.filter.outputs.invest }}
@@ -36,15 +37,16 @@ jobs:
             recognizer: ['recognizer_service/**']
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
-            shared-chart: ['charts/shared/**']
-            prod-priority-class-chart: ['charts/prod-priority-class/templates/**', 'charts/prod-priority-class/chart.yaml', 'charts/prod-priority-class/values-qa.yaml'] 
-            qa-priority-class-chart: ['charts/qa-priority-class/templates/**', 'charts/qa-priority-class/chart.yaml', 'charts/qa-priority-class/values-qa.yaml']
-            recognizer-chart: ['charts/recognizer/templates/**', 'charts/recognizer/chart.yaml', 'charts/recognizer/values-qa.yaml']
-            ingress-chart: ['charts/ingress/templates/**', 'charts/ingress/chart.yaml', 'charts/ingress/values-qa.yaml']
-            zookeeper-chart: ['charts/zookeeper/templates/**', 'charts/zookeeper/chart.yaml', 'charts/zookeeper/values-qa.yaml']
-            kafka-chart: ['charts/kafka/templates/**', 'charts/kafka/chart.yaml', 'charts/kafka/values-qa.yaml']
-            orchestrator-chart: ['charts/orchestrator/templates/**', 'charts/orchestrator/chart.yaml', 'charts/orchestrator/values-qa.yaml']
-            telegram-bot-chart: ['charts/telegram-bot/templates/**', 'charts/telegram-bot/chart.yaml', 'charts/telegram-bot/values-qa.yaml']
+            argocd-root: ['argocd/overmoney-cluster/root.yaml']
+#            shared-chart: ['charts/shared/**']
+#            prod-priority-class-chart: ['charts/prod-priority-class/templates/**', 'charts/prod-priority-class/chart.yaml', 'charts/prod-priority-class/values-qa.yaml']
+#            qa-priority-class-chart: ['charts/qa-priority-class/templates/**', 'charts/qa-priority-class/chart.yaml', 'charts/qa-priority-class/values-qa.yaml']
+#            recognizer-chart: ['charts/recognizer/templates/**', 'charts/recognizer/chart.yaml', 'charts/recognizer/values-qa.yaml']
+#            ingress-chart: ['charts/ingress/templates/**', 'charts/ingress/chart.yaml', 'charts/ingress/values-qa.yaml']
+#            zookeeper-chart: ['charts/zookeeper/templates/**', 'charts/zookeeper/chart.yaml', 'charts/zookeeper/values-qa.yaml']
+#            kafka-chart: ['charts/kafka/templates/**', 'charts/kafka/chart.yaml', 'charts/kafka/values-qa.yaml']
+#            orchestrator-chart: ['charts/orchestrator/templates/**', 'charts/orchestrator/chart.yaml', 'charts/orchestrator/values-qa.yaml']
+#            telegram-bot-chart: ['charts/telegram-bot/templates/**', 'charts/telegram-bot/chart.yaml', 'charts/telegram-bot/values-qa.yaml']
 #            postgres-exporter-orchestrator-chart: ['charts/postgres-exporter-orchestrator/templates/**', 'charts/postgres-exporter-orchestrator/chart.yaml', 'charts/postgres-exporter-orchestrator/values-qa.yaml']
 #            postgres-exporter-telegram-chart: ['charts/postgres-exporter-telegram/templates/**', 'charts/postgres-exporter-telegram/chart.yaml', 'charts/postgres-exporter-telegram/values-qa.yaml']
 #            invest: ['invest_service/**']
@@ -126,22 +128,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Inject secrets in resource manifests
-        uses: none0nfg/yaml-secrets-injector@v0.0.1
-        with:
-          inject_files: |-
-            charts/recognizer/values-qa.yaml
-            charts/ingress/values-qa.yaml
-            charts/zookeeper/values-qa.yaml
-            charts/kafka/values-qa.yaml
-            charts/postgres-exporter-orchestrator/values-qa.yaml
-            charts/orchestrator/values-qa.yaml
-            charts/postgres-exporter-telegram/values-qa.yaml
-            charts/telegram-bot/values-qa.yaml
+#      - name: Inject secrets in resource manifests
+#        uses: none0nfg/yaml-secrets-injector@v0.0.1
+#        with:
+#          inject_files: |-
+#            charts/recognizer/values-qa.yaml
+#            charts/ingress/values-qa.yaml
+#            charts/zookeeper/values-qa.yaml
+#            charts/kafka/values-qa.yaml
+#            charts/postgres-exporter-orchestrator/values-qa.yaml
+#            charts/orchestrator/values-qa.yaml
+#            charts/postgres-exporter-telegram/values-qa.yaml
+#            charts/telegram-bot/values-qa.yaml
 #            charts/invest/values-qa.yaml
 #            charts/wit-ai-go-proxy/values-qa.yaml
 #            charts/frontend/values-qa.yaml
-          secrets: ${{ toJSON(secrets) }}
+#          secrets: ${{ toJSON(secrets) }}
 
       - name: Configure kubectl
         run: |
@@ -152,13 +154,17 @@ jobs:
       - name: Test Kubernetes Connection
         run: kubectl cluster-info
 
-      - name: Helm Deploy Prod Priority Class
-        if: ${{ needs.detect-changes.outputs.prod-priority-class-chart == 'true' }}
-        run: helm upgrade --install --atomic prod-priority-class ./charts/prod-priority-class
+      - name: ArgoCD Application of Applications Root Update
+        if: ${{ needs.detect-changes.outputs.argocd-root == 'true' }}
+        run: kubectl apply -f argocd/overmoney-cluster/root.yaml
 
-      - name: Helm Deploy QA Priority Class
-        if: ${{ needs.detect-changes.outputs.qa-priority-class-chart == 'true' }}
-        run: helm upgrade --install --atomic qa-priority-class ./charts/qa-priority-class
+#      - name: Helm Deploy Prod Priority Class
+#        if: ${{ needs.detect-changes.outputs.prod-priority-class-chart == 'true' }}
+#        run: helm upgrade --install --atomic prod-priority-class ./charts/prod-priority-class
+#
+#      - name: Helm Deploy QA Priority Class
+#        if: ${{ needs.detect-changes.outputs.qa-priority-class-chart == 'true' }}
+#        run: helm upgrade --install --atomic qa-priority-class ./charts/qa-priority-class
 
 #      - name: Helm Build Dependencies For Recognizer Service
 #        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' || needs.detect-changes.outputs.shared-chart == 'true' }}
@@ -168,25 +174,25 @@ jobs:
 #        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' || needs.detect-changes.outputs.shared-chart == 'true' }}
 #        run: helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
 
-      - name: Helm Deploy Ingress
-        if: ${{ needs.detect-changes.outputs.ingress-chart == 'true' }}
-        run: helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
+#      - name: Helm Deploy Ingress
+#        if: ${{ needs.detect-changes.outputs.ingress-chart == 'true' }}
+#        run: helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
 
-      - name: Helm Deploy Zookeeper
-        if: ${{ needs.detect-changes.outputs.zookeeper-chart == 'true' }}
-        run: helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
+#      - name: Helm Deploy Zookeeper
+#        if: ${{ needs.detect-changes.outputs.zookeeper-chart == 'true' }}
+#        run: helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
 
-      - name: Helm Deploy Kafka
-        if: ${{ needs.detect-changes.outputs.kafka-chart == 'true' }}
-        run: helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
+#      - name: Helm Deploy Kafka
+#        if: ${{ needs.detect-changes.outputs.kafka-chart == 'true' }}
+#        run: helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
 
-      - name: Helm Deploy Orchestrator Service
-        if: ${{ needs.detect-changes.outputs.orchestrator-chart == 'true' }}
-        run: helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
-
-      - name: Helm Deploy Telegram Bot Service
-        if: ${{ needs.detect-changes.outputs.telegram-bot-chart == 'true' }}
-        run: helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
+#      - name: Helm Deploy Orchestrator Service
+#        if: ${{ needs.detect-changes.outputs.orchestrator-chart == 'true' }}
+#        run: helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
+#
+#      - name: Helm Deploy Telegram Bot Service
+#        if: ${{ needs.detect-changes.outputs.telegram-bot-chart == 'true' }}
+#        run: helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
 
 #      - name: Helm Deploy
 #        run: |-

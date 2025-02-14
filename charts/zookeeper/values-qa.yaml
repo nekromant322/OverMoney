@@ -6,3 +6,5 @@ deployment:
       - name: ZOOKEEPER_TICK_TIME
         value: "2000"
   priorityClassName: qa-priority-class
+secretProviderClass:
+  name: vault-qa

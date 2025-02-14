@@ -1,0 +1,9 @@
+serviceAccountNamespace: qa
+secretProviderClass:
+  name: vault-qa
+  namespace: qa
+  roleName: qa
+  objects:
+    - objectName: "qa"
+      secretPath: "secret/qa"
+      secretKey: "internal-key-header"

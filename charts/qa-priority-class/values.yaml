@@ -1,1 +1,2 @@
 priority: -1
+description: "This priority class should be used for qa pods."

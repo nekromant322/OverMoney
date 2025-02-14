@@ -16,3 +16,6 @@ exports:
         requestsMemory: "256Mi"
         limitsMemory: "512Mi"
         containerPort: 8080
+    serviceAccountName: vault-kms
+    secretProviderClass:
+      vaultAddress: http://hashicorp-vault.vault.svc:8200/
