@@ -12,7 +12,7 @@ deployment:
         valueFrom:
           secretKeyRef:
             name: qa
-            key: qa-internal-key-header
+            key: internal-key-header
   priorityClassName: qa-priority-class
 secretProviderClass:
   name: vault-qa
