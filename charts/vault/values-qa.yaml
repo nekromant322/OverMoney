@@ -6,7 +6,7 @@ secretProviderClass:
   secretName: qa
   objects:
     - objectName: "qa-internal-key-header"
-      secretPath: "secret/qa"
+      secretPath: "secret"
       secretKey: "qa-internal-key-header"
     - objectName: "qa-jwt-access-key"
       secretPath: "secret/qa"
