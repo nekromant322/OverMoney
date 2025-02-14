@@ -3,6 +3,7 @@ secretProviderClass:
   name: vault-qa
   namespace: qa
   roleName: qa
+  secretName: qa
   objects:
     - objectName: "qa-internal-key-header"
       secretPath: "secret/qa"
