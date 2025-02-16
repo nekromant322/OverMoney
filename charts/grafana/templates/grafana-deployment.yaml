@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}
+  name: {{ .Chart.Name }}-deployment
   labels:
     app: {{ .Chart.Name }}
 spec:
@@ -24,15 +24,3 @@ spec:
             - name: {{ .name }}
               value: {{ .value | quote }}
             {{- end }}
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: {{ .Chart.Name }}-svc
-spec:
-  ports:
-    - port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
-      protocol: TCP
-  selector:
-    app: {{ .Chart.Name }}

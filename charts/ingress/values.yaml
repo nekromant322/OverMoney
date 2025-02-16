@@ -6,28 +6,28 @@ rules:
         pathType: Prefix
         backend:
           service:
-            name: sa-orchestrator-svc
+            name: orchestrator-service
             port:
               number: 80
       - path: /front
         pathType: Prefix
         backend:
           service:
-            name: frontend-svc
+            name: frontend-service
             port:
               number: 80
       - path: /grafana
         pathType: Prefix
         backend:
           service:
-            name: sa-grafana-svc
+            name: grafana-service
             port:
               number: 3000
       - path: /kafka-ui
         pathType: ImplementationSpecific
         backend:
           service:
-            name: kafka-ui-svc
+            name: kafka-ui-service
             port:
               number: 80
       - path: /argo-cd

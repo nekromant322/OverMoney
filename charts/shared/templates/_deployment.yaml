@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Chart.Name }}
+  name: {{ .Chart.Name }}-deployment
   labels:
     app: {{ .Chart.Name }}
 spec:
@@ -39,15 +39,15 @@ spec:
             - name: KAFKA_SERVICE_HOST
               value: kafka-service
             - name: ORCHESTRATOR_SERVICE_HOST
-              value: orchestrator-svc
+              value: orchestrator-service
             - name: RECOGNIZER_SERVICE_HOST
-              value: recognizer-svc
+              value: recognizer-service
             - name: WIT_AI_GO_PROXY_SERVICE_HOST
-              value: wit-ai-go-proxy-svc
+              value: wit-ai-go-proxy-service
             - name: INVEST_SERVICE_HOST
-              value: invest-svc
+              value: invest-service
             - name: TELEGRAM_BOT_SERVICE_HOST
-              value: telegram-bot-svc
+              value: telegram-bot-service
             {{- range .Values.deployment.containers.env }}
             - name: {{ .name }}
               value: {{ .value | quote }}

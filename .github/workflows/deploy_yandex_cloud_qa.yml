@@ -13,20 +13,6 @@ jobs:
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
       argocd-root: ${{ steps.filter.outputs.argocd-root }}
-#      shared-chart: ${{ steps.filter.outputs.shared-chart }}
-#      prod-priority-class-chart: ${{ steps.filter.outputs.prod-priority-class-chart }}
-#      qa-priority-class-chart: ${{ steps.filter.outputs.qa-priority-class-chart }}
-#      recognizer-chart: ${{ steps.filter.outputs.recognizer-chart }}
-#      ingress-chart: ${{ steps.filter.outputs.ingress-chart }}
-#      zookeeper-chart: ${{ steps.filter.outputs.zookeeper-chart }}
-#      kafka-chart: ${{ steps.filter.outputs.kafka-chart }}
-#      orchestrator-chart: ${{ steps.filter.outputs.orchestrator-chart }}
-#      telegram-bot-chart: ${{ steps.filter.outputs.telegram-bot-chart }}
-#      postgres-exporter-orchestrator-chart: ${{ steps.filter.outputs.postgres-exporter-orchestrator-chart }}
-#      postgres-exporter-telegram-chart: ${{ steps.filter.outputs.postgres-exporter-telegram-chart }}
-#      invest: ${{ steps.filter.outputs.invest }}
-#      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
-#      frontend: ${{ steps.filter.outputs.frontend }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
@@ -38,23 +24,6 @@ jobs:
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
             argocd-root: ['argocd/overmoney-cluster/root.yaml']
-#            shared-chart: ['charts/shared/**']
-#            prod-priority-class-chart: ['charts/prod-priority-class/templates/**', 'charts/prod-priority-class/chart.yaml', 'charts/prod-priority-class/values-qa.yaml']
-#            qa-priority-class-chart: ['charts/qa-priority-class/templates/**', 'charts/qa-priority-class/chart.yaml', 'charts/qa-priority-class/values-qa.yaml']
-#            recognizer-chart: ['charts/recognizer/templates/**', 'charts/recognizer/chart.yaml', 'charts/recognizer/values-qa.yaml']
-#            ingress-chart: ['charts/ingress/templates/**', 'charts/ingress/chart.yaml', 'charts/ingress/values-qa.yaml']
-#            zookeeper-chart: ['charts/zookeeper/templates/**', 'charts/zookeeper/chart.yaml', 'charts/zookeeper/values-qa.yaml']
-#            kafka-chart: ['charts/kafka/templates/**', 'charts/kafka/chart.yaml', 'charts/kafka/values-qa.yaml']
-#            orchestrator-chart: ['charts/orchestrator/templates/**', 'charts/orchestrator/chart.yaml', 'charts/orchestrator/values-qa.yaml']
-#            telegram-bot-chart: ['charts/telegram-bot/templates/**', 'charts/telegram-bot/chart.yaml', 'charts/telegram-bot/values-qa.yaml']
-#            postgres-exporter-orchestrator-chart: ['charts/postgres-exporter-orchestrator/templates/**', 'charts/postgres-exporter-orchestrator/chart.yaml', 'charts/postgres-exporter-orchestrator/values-qa.yaml']
-#            postgres-exporter-telegram-chart: ['charts/postgres-exporter-telegram/templates/**', 'charts/postgres-exporter-telegram/chart.yaml', 'charts/postgres-exporter-telegram/values-qa.yaml']
-#            invest: ['invest_service/**']
-#            invest-chart: ['charts/invest/templates/**', 'charts/invest/chart.yaml', 'charts/invest/values-qa.yaml']
-#            wit-ai-go-proxy: ['wit_ai_go_proxy/**']
-#            wit-ai-go-proxy-chart: ['charts/wit-ai-go-proxy/templates/**', 'charts/wit-ai-go-proxy/chart.yaml', 'charts/wit-ai-go-proxy/values-qa.yaml']
-#            frontend: ['frontend/**']
-#            frontend-chart: ['charts/frontend/templates/**', 'charts/frontend/chart.yaml', 'charts/frontend/values-qa.yaml']
 
   build-and-push-images:
     name: Build & Push images to DockerHub
@@ -128,23 +97,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-#      - name: Inject secrets in resource manifests
-#        uses: none0nfg/yaml-secrets-injector@v0.0.1
-#        with:
-#          inject_files: |-
-#            charts/recognizer/values-qa.yaml
-#            charts/ingress/values-qa.yaml
-#            charts/zookeeper/values-qa.yaml
-#            charts/kafka/values-qa.yaml
-#            charts/postgres-exporter-orchestrator/values-qa.yaml
-#            charts/orchestrator/values-qa.yaml
-#            charts/postgres-exporter-telegram/values-qa.yaml
-#            charts/telegram-bot/values-qa.yaml
-#            charts/invest/values-qa.yaml
-#            charts/wit-ai-go-proxy/values-qa.yaml
-#            charts/frontend/values-qa.yaml
-#          secrets: ${{ toJSON(secrets) }}
-
       - name: Configure kubectl
         run: |
           mkdir -p $HOME/.kube
@@ -158,70 +110,28 @@ jobs:
         if: ${{ needs.detect-changes.outputs.argocd-root == 'true' }}
         run: kubectl apply -f argocd/overmoney-cluster/root.yaml
 
-#      - name: Helm Deploy Prod Priority Class
-#        if: ${{ needs.detect-changes.outputs.prod-priority-class-chart == 'true' }}
-#        run: helm upgrade --install --atomic prod-priority-class ./charts/prod-priority-class
-#
-#      - name: Helm Deploy QA Priority Class
-#        if: ${{ needs.detect-changes.outputs.qa-priority-class-chart == 'true' }}
-#        run: helm upgrade --install --atomic qa-priority-class ./charts/qa-priority-class
-
-#      - name: Helm Build Dependencies For Recognizer Service
-#        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' || needs.detect-changes.outputs.shared-chart == 'true' }}
-#        run: helm dependency build ./charts/recognizer
-#
-#      - name: Helm Deploy Recognizer Service
-#        if: ${{ needs.detect-changes.outputs.recognizer-chart == 'true' || needs.detect-changes.outputs.shared-chart == 'true' }}
-#        run: helm upgrade --install --atomic -n qa -f ./charts/recognizer/values-qa.yaml recognizer ./charts/recognizer
-
-#      - name: Helm Deploy Ingress
-#        if: ${{ needs.detect-changes.outputs.ingress-chart == 'true' }}
-#        run: helm upgrade --install --atomic -n qa -f ./charts/ingress/values-qa.yaml ingress-qa ./charts/ingress
-
-#      - name: Helm Deploy Zookeeper
-#        if: ${{ needs.detect-changes.outputs.zookeeper-chart == 'true' }}
-#        run: helm upgrade --install --atomic -n qa -f ./charts/zookeeper/values-qa.yaml zookeeper ./charts/zookeeper
-
-#      - name: Helm Deploy Kafka
-#        if: ${{ needs.detect-changes.outputs.kafka-chart == 'true' }}
-#        run: helm upgrade --install --atomic -n qa -f ./charts/kafka/values-qa.yaml kafka ./charts/kafka
-
-#      - name: Helm Deploy Orchestrator Service
-#        if: ${{ needs.detect-changes.outputs.orchestrator-chart == 'true' }}
-#        run: helm upgrade --install --atomic -n qa -f ./charts/orchestrator/values-qa.yaml orchestrator ./charts/orchestrator
-#
-#      - name: Helm Deploy Telegram Bot Service
-#        if: ${{ needs.detect-changes.outputs.telegram-bot-chart == 'true' }}
-#        run: helm upgrade --install --atomic -n qa -f ./charts/telegram-bot/values-qa.yaml telegram-bot ./charts/telegram-bot
-
-#      - name: Helm Deploy
-#        run: |-
-      #          helm upgrade --install --atomic -n qa -f ./charts/frontend/values-qa.yaml frontend ./charts/frontend
-      #          helm upgrade --install --atomic -n qa -f ./charts/invest/values-qa.yaml invest ./charts/invest
-      #          helm upgrade --install --atomic -n qa -f ./charts/wit-ai-go-proxy/values-qa.yaml wit-ai-go-proxy ./charts/wit-ai-go-proxy
-
       - name: Conditional Rollout Restarts
         run: |
           if [ "${{ needs.detect-changes.outputs.orchestrator }}" == "true" ]; then
-            kubectl rollout restart deployment sa-orchestrator -n qa
+            kubectl rollout restart deployment orchestrator-deployment -n qa
           fi
 
           if [ "${{ needs.detect-changes.outputs.recognizer }}" == "true" ]; then
-            kubectl rollout restart deployment sa-recognizer -n qa
+            kubectl rollout restart deployment recognizer-deployment -n qa
           fi
 
           if [ "${{ needs.detect-changes.outputs.telegram-bot }}" == "true" ]; then
-            kubectl rollout restart deployment sa-telegram-bot -n qa
+            kubectl rollout restart deployment telegram-bot-deployment -n qa
           fi
 
 #          if [ "${{ needs.detect-changes.outputs.invest }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-invest -n qa
+#            kubectl rollout restart deployment invest-deployment -n qa
 #          fi
 #
 #          if [ "${{ needs.detect-changes.outputs.wit-ai-go-proxy }}" == "true" ]; then
-#            kubectl rollout restart deployment sa-wit-ai-go-proxy -n qa
+#            kubectl rollout restart deployment wit-ai-go-proxy-deployment -n qa
 #          fi
 #
 #          if [ "${{ needs.detect-changes.outputs.frontend }}" == "true" ]; then
-#            kubectl rollout restart deployment frontend -n qa
+#            kubectl rollout restart deployment frontend-deployment -n qa
 #          fi

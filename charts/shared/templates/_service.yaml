@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Chart.Name }}-svc
+  name: {{ .Chart.Name }}-service
 spec:
   ports:
     - port: {{ .Values.servicePort }}
