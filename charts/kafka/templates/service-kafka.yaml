@@ -7,5 +7,5 @@ spec:
     app: {{ .Chart.Name }}
   ports:
     - protocol: TCP
-      port: {{ .Values.service.port }}
-      targetPort: {{ .Values.service.targetPort }}
+      port: {{ .Values.servicePort }}
+      targetPort: {{ .Values.serviceTargetPort }}

@@ -1,9 +1,8 @@
 persistentVolumeClaim:
   requestsStorage: 10Gi
 
-service:
-  port: 9092
-  targetPort: 9092
+servicePort: 9092
+serviceTargetPort: 9092
 
 deployment:
   strategy:
