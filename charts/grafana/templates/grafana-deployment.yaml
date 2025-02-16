@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sa-{{ .Chart.Name }}
+  name: {{ .Chart.Name }}
   labels:
-    app: sa-{{ .Chart.Name }}
+    app: {{ .Chart.Name }}
 spec:
   replicas: {{ .Values.deployment.replicas }}
   selector:
     matchLabels:
-      app: sa-{{ .Chart.Name }}
+      app: {{ .Chart.Name }}
   template:
     metadata:
       labels:
-        app: sa-{{ .Chart.Name }}
+        app: {{ .Chart.Name }}
     spec:
       containers:
-        - name: sa-{{ .Chart.Name }}
+        - name: {{ .Chart.Name }}
           image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           ports:
             - containerPort: {{ .Values.deployment.containers.containerPort }}
@@ -28,11 +28,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: sa-{{ .Chart.Name }}-svc
+  name: {{ .Chart.Name }}-svc
 spec:
   ports:
     - port: {{ .Values.service.port }}
       targetPort: {{ .Values.service.targetPort }}
       protocol: TCP
   selector:
-    app: sa-{{ .Chart.Name }}
+    app: {{ .Chart.Name }}
