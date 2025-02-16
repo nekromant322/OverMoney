@@ -17,8 +17,8 @@
   integration:
     internal:
       host:
-        orchestrator: http://sa-orchestrator-svc
-        recognizer: http://sa-recognizer-svc
+        orchestrator: http://${ORCHESTRATOR_SERVICE_HOST}
+        recognizer: http://${RECOGNIZER_SERVICE_HOST}
 
 
   server:

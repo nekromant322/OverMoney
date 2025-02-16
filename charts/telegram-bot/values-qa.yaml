@@ -17,6 +17,10 @@ deployment:
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
       - name: KAFKA_SERVICE_HOST
         value: kafka-service
+      - name: ORCHESTRATOR_SERVICE_HOST
+        value: orchestrator-svc
+      - name: RECOGNIZER_SERVICE_HOST
+        value: recognizer-svc
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:

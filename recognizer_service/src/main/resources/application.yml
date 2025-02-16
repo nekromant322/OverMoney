@@ -4,8 +4,8 @@
   integration:
     internal:
       host:
-        orchestrator: http://sa-orchestrator-svc
-        wit-ai-proxy: http://wit-ai-go-proxy-svc
+        orchestrator: http://${ORCHESTRATOR_SERVICE_HOST}
+        wit-ai-proxy: http://${WIT_AI_GO_PROXY_SERVICE_HOST}
 
   spring:
     application:

@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sa-{{ .Chart.Name }}
+  name: {{ .Chart.Name }}
   labels:
-    app: sa-{{ .Chart.Name }}
+    app: {{ .Chart.Name }}
 spec:
   selector:
     matchLabels:
-      app: sa-{{ .Chart.Name }}
+      app: {{ .Chart.Name }}
   replicas: {{ .Values.deployment.replicas }}
   minReadySeconds: {{ .Values.deployment.minReadySeconds }}
   strategy:
@@ -18,12 +18,12 @@ spec:
   template:
     metadata:
       labels:
-        app: sa-{{ .Chart.Name }}
+        app: {{ .Chart.Name }}
     spec:
       containers:
         - image: {{ .Values.deployment.containers.image}}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy}}
-          name: sa-{{ .Chart.Name }}
+          name: {{ .Chart.Name }}
           env:
             {{- range .Values.deployment.containers.env }}
             - name: {{ .name }}

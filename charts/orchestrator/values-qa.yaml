@@ -13,6 +13,14 @@ deployment:
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
       - name: KAFKA_SERVICE_HOST
         value: kafka-service
+      - name: KAFKA_CLIENT_SERVICE_HOST
+        value: sa-kafka-client-service
+      - name: INVEST_SERVICE_HOST
+        value: invest-svc
+      - name: RECOGNIZER_SERVICE_HOST
+        value: recognizer-svc
+      - name: TELEGRAM_BOT_SERVICE_HOST
+        value: telegram-bot-svc
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
