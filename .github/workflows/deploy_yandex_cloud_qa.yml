@@ -12,7 +12,6 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
-      argocd-root: ${{ steps.filter.outputs.argocd-root }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
@@ -23,7 +22,6 @@ jobs:
             recognizer: ['recognizer_service/**']
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
-            argocd-root: ['argocd/overmoney-cluster/root.yaml']
 
   build-and-push-images:
     name: Build & Push images to DockerHub
@@ -105,10 +103,6 @@ jobs:
 
       - name: Test Kubernetes Connection
         run: kubectl cluster-info
-
-      - name: ArgoCD Application of Applications Root Update
-        if: ${{ needs.detect-changes.outputs.argocd-root == 'true' }}
-        run: kubectl apply -f argocd/overmoney-cluster/root.yaml
 
       - name: Conditional Rollout Restarts
         run: |
