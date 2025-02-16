@@ -9,7 +9,7 @@
 
   spring:
     application:
-      name: recognizer-service
+      name: ${SPRING_APPLICATION_NAME:recognizer-service}
 
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}

@@ -3,7 +3,7 @@
 
   spring:
     application:
-      name: invest-service
+      name: ${SPRING_APPLICATION_NAME:invest-service}
 
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}

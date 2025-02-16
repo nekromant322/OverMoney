@@ -33,7 +33,7 @@
 
   spring:
     application:
-      name: telegram-bot-service
+      name: ${SPRING_APPLICATION_NAME:telegram-bot-service}
 
     datasource:
       url: jdbc:postgresql://${TELEGRAM_BOT_DB_HOST:localhost}:${TELEGRAM_BOT_DB_PORT:5435}/telegram-bot-db

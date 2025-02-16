@@ -7,6 +7,8 @@ deployment:
         value: "prod"
       - name: JAVA_TOOL_OPTIONS
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
+      - name: SPRING_APPLICATION_NAME
+        value: qa-recognizer-service
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
