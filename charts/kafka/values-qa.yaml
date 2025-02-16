@@ -8,7 +8,7 @@ deployment:
       - name: KAFKA_BROKER_ID
         value: "1"
       - name: KAFKA_ZOOKEEPER_CONNECT
-        value: 'sa-zookeeper-svc:2181'
+        value: 'zookeeper-service:2181'
       - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
         value: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
       - name: KAFKA_ADVERTISED_LISTENERS
