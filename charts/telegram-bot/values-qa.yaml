@@ -16,7 +16,7 @@ deployment:
       - name: JAVA_TOOL_OPTIONS
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
       - name: KAFKA_SERVICE_HOST
-        value: sa-kafka-service
+        value: kafka-service
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
