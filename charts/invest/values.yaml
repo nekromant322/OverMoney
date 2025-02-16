@@ -22,5 +22,3 @@ deployment:
         value: "prod"
       - name: INTERNAL_KEY_HEADER
         value: "{{ INTERNAL_KEY_HEADER }}"
-      - name: SPRING_APPLICATION_NAME
-        value: invest-service
