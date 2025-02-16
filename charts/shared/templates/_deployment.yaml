@@ -36,6 +36,18 @@ spec:
             limits:
               memory: {{ .Values.deployment.containers.limitsMemory }}
           env:
+            - name: KAFKA_SERVICE_HOST
+              value: kafka-service
+            - name: ORCHESTRATOR_SERVICE_HOST
+              value: orchestrator-svc
+            - name: RECOGNIZER_SERVICE_HOST
+              value: recognizer-svc
+            - name: WIT_AI_GO_PROXY_SERVICE_HOST
+              value: wit-ai-go-proxy-svc
+            - name: INVEST_SERVICE_HOST
+              value: invest-svc
+            - name: TELEGRAM_BOT_SERVICE_HOST
+              value: telegram-bot-svc
             {{- range .Values.deployment.containers.env }}
             - name: {{ .name }}
               value: {{ .value | quote }}

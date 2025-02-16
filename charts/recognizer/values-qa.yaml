@@ -7,10 +7,6 @@ deployment:
         value: "prod"
       - name: JAVA_TOOL_OPTIONS
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
-      - name: ORCHESTRATOR_SERVICE_HOST
-        value: orchestrator-svc
-      - name: WIT_AI_GO_PROXY_SERVICE_HOST
-        value: wit-ai-go-proxy-svc
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
