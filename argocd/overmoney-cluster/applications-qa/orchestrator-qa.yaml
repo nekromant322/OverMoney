@@ -6,6 +6,7 @@ metadata:
   annotations:
     argocd-image-updater.argoproj.io/image-list: orchestrator-qa=nekromant322/overmoney-orchestrator-qa
     argocd-image-updater.argoproj.io/orchestrator-qa.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/orchestrator-qa.force-update: 'true'
 spec:
   project: default
   destination:
