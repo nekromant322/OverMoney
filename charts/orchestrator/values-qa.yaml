@@ -11,6 +11,8 @@ deployment:
         value: "194.87.237.197"
       - name: JAVA_TOOL_OPTIONS
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
+      - name: ENVIRONMENT
+        value: "qa"
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:

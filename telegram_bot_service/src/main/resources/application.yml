@@ -20,6 +20,7 @@
         orchestrator: http://${ORCHESTRATOR_SERVICE_HOST}
         recognizer: http://${RECOGNIZER_SERVICE_HOST}
 
+  environment: ${ENVIRONMENT:dev}
 
   server:
     port: 8080

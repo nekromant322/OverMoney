@@ -19,6 +19,8 @@
         recognizer: http://${RECOGNIZER_SERVICE_HOST}
         invest: http://${INVEST_SERVICE_HOST}
 
+  environment: ${ENVIRONMENT:dev}
+
   telegram:
     bot:
       token: ${TELEGRAM_BOT_TOKEN:asd}

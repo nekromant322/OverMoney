@@ -7,6 +7,8 @@ metadata:
     argocd-image-updater.argoproj.io/image-list: recognizer-qa=nekromant322/overmoney-recognizer-qa:latest
     argocd-image-updater.argoproj.io/recognizer-qa.update-strategy: digest
     argocd-image-updater.argoproj.io/recognizer-qa.force-update: 'true'
+    argocd-image-updater.argoproj.io/recognizer-qa.helm.image-name: deployment.containers.image
+    argocd-image-updater.argoproj.io/recognizer-qa.helm.image-tag: deployment.containers.imageTag
 spec:
   project: default
   destination:
@@ -19,9 +21,6 @@ spec:
     helm:
       valueFiles:
         - values-qa.yaml
-      parameters:
-        - name: deployment.containers.imageTag
-          value: latest
   syncPolicy:
     automated:
       prune: true

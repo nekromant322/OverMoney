@@ -14,7 +14,8 @@
                         <pattern>
                             {
                             "app": "orchestrator",
-                            "message": "%message%n%ex{full}"
+                            "message": "%message%n%ex{full}",
+                            "environment": "${environment}"
                             }
                         </pattern>
                     </pattern>

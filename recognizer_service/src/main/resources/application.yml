@@ -7,7 +7,7 @@
         orchestrator: http://${ORCHESTRATOR_SERVICE_HOST}
         wit-ai-proxy: http://${WIT_AI_GO_PROXY_SERVICE_HOST}
 
-  environment: qa
+  environment: ${ENVIRONMENT:dev}
 
   spring:
     application:
