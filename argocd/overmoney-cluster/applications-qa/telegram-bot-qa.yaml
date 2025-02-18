@@ -3,6 +3,9 @@ kind: Application
 metadata:
   name: telegram-bot-qa
   namespace: argo-cd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: telegram-bot-qa=overmoney-telegram-bot-qa
+    argocd-image-updater.argoproj.io/telegram-bot-qa.update-strategy: newest-build
 spec:
   project: default
   destination:

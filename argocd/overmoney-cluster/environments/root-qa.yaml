@@ -8,12 +8,11 @@ metadata:
 #    argocd-image-updater.argoproj.io/recognizer-qa.update-strategy: digest
 #    argocd-image-updater.argoproj.io/orchestrator-qa.update-strategy: digest
 #    argocd-image-updater.argoproj.io/telegram-bot-qa.update-strategy: digest
-    argocd-image-updater.argoproj.io/image-list: recognizer-qa=nekromant322/overmoney-recognizer-qa, orchestrator-qa=overmoney-orchestrator-qa, telegram-bot-qa=overmoney-telegram-bot-qa
-    argocd-image-updater.argoproj.io/recognizer-qa.update-strategy: newest-build
-    argocd-image-updater.argoproj.io/orchestrator-qa.update-strategy: newest-build
-    argocd-image-updater.argoproj.io/telegram-bot-qa.update-strategy: newest-build
-    argocd-image-updater.argoproj.io/pull-policy: Always
-    argocd-image-updater.argoproj.io/write-back-method: argocd
+#    argocd-image-updater.argoproj.io/image-list: recognizer-qa=nekromant322/overmoney-recognizer-qa, orchestrator-qa=overmoney-orchestrator-qa, telegram-bot-qa=overmoney-telegram-bot-qa
+#    argocd-image-updater.argoproj.io/recognizer-qa.update-strategy: newest-build
+#    argocd-image-updater.argoproj.io/orchestrator-qa.update-strategy: newest-build
+#    argocd-image-updater.argoproj.io/telegram-bot-qa.update-strategy: newest-build
+#    argocd-image-updater.argoproj.io/pull-policy: Always
 spec:
   project: default
   destination:
