@@ -4,8 +4,8 @@ metadata:
   name: recognizer-qa
   namespace: argo-cd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: recognizer-qa=nekromant322/overmoney-recognizer-qa:latest
-    argocd-image-updater.argoproj.io/recognizer-qa.update-strategy: digest
+    argocd-image-updater.argoproj.io/image-list: recognizer-qa=nekromant322/overmoney-recognizer-qa
+    argocd-image-updater.argoproj.io/recognizer-qa.update-strategy: newest-build
     argocd-image-updater.argoproj.io/recognizer-qa.force-update: 'true'
 spec:
   project: default

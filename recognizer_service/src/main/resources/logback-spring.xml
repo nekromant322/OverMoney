@@ -15,7 +15,7 @@
                             {
                             "app": "recognizer",
                             "message": "%message%n%ex{full}",
-                            "environment": "qa"
+                            "environment": ${environment}
                             }
                         </pattern>
                     </pattern>
