@@ -14,7 +14,8 @@
                         <pattern>
                             {
                             "app": "recognizer",
-                            "message": "%message%n%ex{full}"
+                            "message": "%message%n%ex{full}",
+                            "environment": "qa"
                             }
                         </pattern>
                     </pattern>
