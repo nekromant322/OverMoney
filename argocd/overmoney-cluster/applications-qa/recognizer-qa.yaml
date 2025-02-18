@@ -20,7 +20,7 @@ spec:
         - values-qa.yaml
       parameters:
         - name: deployment.containers.imageTag
-          value: test
+          value: latest
   syncPolicy:
     automated:
       prune: true
