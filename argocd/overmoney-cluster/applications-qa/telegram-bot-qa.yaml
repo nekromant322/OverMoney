@@ -4,8 +4,8 @@ metadata:
   name: telegram-bot-qa
   namespace: argo-cd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: telegram-bot-qa=nekromant322/overmoney-telegram-bot-qa
-    argocd-image-updater.argoproj.io/telegram-bot-qa.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/image-list: telegram-bot-qa=nekromant322/overmoney-telegram-bot-qa:latest
+    argocd-image-updater.argoproj.io/telegram-bot-qa.update-strategy: digest
     argocd-image-updater.argoproj.io/telegram-bot-qa.force-update: 'true'
     argocd-image-updater.argoproj.io/telegram-bot-qa.helm.image-name: deployment.containers.image
     argocd-image-updater.argoproj.io/telegram-bot-qa.helm.image-tag: deployment.containers.imageTag
