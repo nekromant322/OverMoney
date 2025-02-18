@@ -18,6 +18,9 @@ spec:
     helm:
       valueFiles:
         - values-qa.yaml
+      parameters:
+        - name: deployment.containers.imageTag
+          value: test
   syncPolicy:
     automated:
       prune: true
