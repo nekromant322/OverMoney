@@ -1,13 +1,7 @@
-service:
-  port: 80
-  targetPort: 8080
-
 deployment:
   replicas: 1
   containers:
     image: provectuslabs/kafka-ui
-    imageTag: latest
-    containerPort: 8080
     env:
       - name: KAFKA_CLUSTERS_0_NAME
         value: "my-cluster"
@@ -19,7 +13,23 @@ deployment:
         value: "/kafka-ui"
       - name: AUTH_TYPE
         value: "LOGIN_FORM"
+    envFrom:
       - name: SPRING_SECURITY_USER_NAME
-        value: "{{ KAFKA_UI_USER }}"
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: kafka-ui-user
       - name: SPRING_SECURITY_USER_PASSWORD
-        value: "{{ KAFKA_UI_PASSWORD }}"
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: kafka-ui-password
+  volumes:
+    - name: secrets-store-inline
+      volumeMountPath: "/mnt/secrets-store"
+      readOnly: true
+  priorityClassName: prod-priority-class
+secretProviderClass:
+  name: vault-prod
+
+hostsNeeded: false

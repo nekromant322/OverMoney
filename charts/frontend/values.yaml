@@ -1,17 +1,9 @@
-service:
-  port: 80
-  targetPort: 80
+serviceTargetPort: 80
 
 deployment:
-  replicas: 2
-  minReadySeconds: 15
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
   containers:
     image: nekromant322/overmoney-frontend
-    imageTag: latest
-    pullPolicy: Always
     containerPort: 80
+  priorityClassName: prod-priority-class
+
+hostsNeeded: false

@@ -38,6 +38,13 @@ deployment:
           secretKeyRef:
             name: qa
             key: qa-telegram-bot-db-password
-    priorityClassName: qa-priority-class
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: qa-priority-class
+
 secretProviderClass:
   name: vault-qa
+
+hostsNeeded: true

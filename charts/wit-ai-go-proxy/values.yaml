@@ -1,22 +1,18 @@
-service:
-  port: 80
-  targetPort: 8080
-
 deployment:
   replicas: 1
-  minReadySeconds: 15
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
   containers:
     image: nekromant322/overmoney-wit-ai-go-proxy
-    imageTag: latest
-    pullPolicy: Always
-    env:
+    envFrom:
       - name: WIT_AI_TOKEN
-        value: "{{ WIT_AI_TOKEN }}"
-    requestsMemory: "256Mi"
-    limitsMemory: "512Mi"
-    containerPort: 8080
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: wit-ai-token
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: prod-priority-class
+
+secretProviderClass:
+  name: vault-prod

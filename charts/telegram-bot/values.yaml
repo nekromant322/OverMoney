@@ -1,41 +1,50 @@
-service:
-  port: 80
-  targetPort: 8080
-
 deployment:
   replicas: 1
-  minReadySeconds: 15
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
   containers:
     image: nekromant322/overmoney-telegram-bot
-    imageTag: latest
-    pullPolicy: Always
-    requestsMemory: "256Mi"
-    limitsMemory: "512Mi"
     env:
       - name: SPRING_APPLICATION_PROFILE
         value: "prod"
       - name: ORCHESTRATOR_HOST
         value: "https://overmoney.tech/overmoney"
-      - name: INTERNAL_KEY_HEADER
-        value: "{{ INTERNAL_KEY_HEADER }}"
       - name: TELEGRAM_BOT_NAME
         value: "OverMoneyBot"
-      - name: TELEGRAM_BOT_TOKEN
-        value: "{{ TELEGRAM_BOT_TOKEN }}"
       - name: TELEGRAM_BOT_DB_HOST
         value: "194.87.235.171"
       - name: TELEGRAM_BOT_DB_PORT
         value: "5435"
-      - name: TELEGRAM_BOT_DB_USER
-        value: "{{ TELEGRAM_BOT_DB_USER }}"
-      - name: TELEGRAM_BOT_DB_PASSWORD
-        value: "{{ TELEGRAM_BOT_DB_PASSWORD }}"
       - name: JAVA_TOOL_OPTIONS
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
-    containerPort: 8080
-    priorityClassName: prod-priority-class
+      - name: ENVIRONMENT
+        value: "prod"
+    envFrom:
+      - name: INTERNAL_KEY_HEADER
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: internal-key-header
+      - name: TELEGRAM_BOT_DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: telegram-bot-db-user
+      - name: TELEGRAM_BOT_DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: telegram-bot-db-password
+      - name: TELEGRAM_BOT_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: telegram-bot-token
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: prod-priority-class
+
+secretProviderClass:
+  name: vault-prod
+
+hostsNeeded: true

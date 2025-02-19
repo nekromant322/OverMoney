@@ -15,6 +15,13 @@ deployment:
           secretKeyRef:
             name: qa
             key: qa-internal-key-header
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
   priorityClassName: qa-priority-class
+
 secretProviderClass:
   name: vault-qa
+
+hostsNeeded: true

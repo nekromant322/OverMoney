@@ -35,7 +35,7 @@ data: |
       relabel_configs:
         - source_labels: [__meta_kubernetes_pod_label_app]
           action: keep
-          regex: sa-orchestrator
+          regex: orchestrator
         - source_labels: [__meta_kubernetes_pod_name]
           action: replace
           target_label: instance
@@ -50,7 +50,7 @@ data: |
       relabel_configs:
         - source_labels: [__meta_kubernetes_pod_label_app]
           action: keep
-          regex: sa-telegram-bot
+          regex: telegram-bot
         - source_labels: [__meta_kubernetes_pod_name]
           action: replace
           target_label: instance
