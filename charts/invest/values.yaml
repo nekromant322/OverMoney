@@ -8,6 +8,8 @@ deployment:
     env:
       - name: SPRING_APPLICATION_PROFILE
         value: "prod"
+      - name: ENVIRONMENT
+        value: "prod"
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
