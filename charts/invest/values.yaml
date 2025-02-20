@@ -3,6 +3,8 @@ deployment:
   containers:
     image: nekromant322/overmoney-invest
     containerPort: 8081
+    requestsMemory: "128Mi"
+    limitsMemory: "256Mi"
     env:
       - name: SPRING_APPLICATION_PROFILE
         value: "prod"

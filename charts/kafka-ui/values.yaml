@@ -2,6 +2,7 @@ deployment:
   replicas: 1
   containers:
     image: provectuslabs/kafka-ui
+    pullPolicy: IfNotPresent
     env:
       - name: KAFKA_CLUSTERS_0_NAME
         value: "my-cluster"

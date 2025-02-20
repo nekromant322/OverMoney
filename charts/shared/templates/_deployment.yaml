@@ -43,7 +43,7 @@ spec:
               memory: {{ .Values.deployment.containers.requestsMemory }}
             limits:
               memory: {{ .Values.deployment.containers.limitsMemory }}
-          {{- if .Values.deployment.containers.env }}
+          {{- if or .Values.deployment.containers.env .Values.deployment.containers.envFrom }}
           env:
             {{- range .Values.deployment.containers.env }}
             - name: {{ .name }}
