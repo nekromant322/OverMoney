@@ -39,8 +39,8 @@ public interface OrchestratorFeign {
     @GetMapping("/settings/backup/{id}")
     BackupUserDataDTO getBackup(@PathVariable Long id);
 
-    @DeleteMapping("/transaction/ids")
-    void deleteTransactionByIds(@RequestParam List<UUID> ids);
+    @DeleteMapping("/transaction/{id}")
+    void deleteTransactionById(@PathVariable("id") UUID id);
 
     @DeleteMapping("/transaction/ids")
     void deleteTransactionByIds(@RequestParam List<UUID> ids);
