@@ -13,9 +13,9 @@ public class TelegramMessageController {
     @Autowired
     private TelegramMessageService telegramMessageService;
 
-    @DeleteMapping("/{id}")
-    public void deleteTelegramMessageByIdTransaction(@PathVariable("id") UUID id) {
-        telegramMessageService.deleteTelegramMessageByIdTransaction(id);
+    @DeleteMapping("/ids")
+    public void deleteTelegramMessageByIdTransaction(@RequestParam List<UUID> ids) {
+        telegramMessageService.deleteTelegramMessageByIdTransactions(ids);
     }
 
     @DeleteMapping("/ids")
