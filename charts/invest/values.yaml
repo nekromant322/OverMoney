@@ -23,5 +23,3 @@ deployment:
   priorityClassName: prod-priority-class
 secretProviderClass:
   name: vault-prod
-
-hostsNeeded: false

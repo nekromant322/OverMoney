@@ -17,8 +17,8 @@
   integration:
     internal:
       host:
-        orchestrator: http://${ORCHESTRATOR_SERVICE_HOST}
-        recognizer: http://${RECOGNIZER_SERVICE_HOST}
+        orchestrator: http://orchestrator-service
+        recognizer: http://recognizer-service
 
   environment: ${ENVIRONMENT:dev}
 
@@ -63,7 +63,7 @@
       topics:
         request: transaction-request-events-topic
         response: transaction-response-events-topic
-      bootstrap-servers: ${KAFKA_SERVICE_HOST}:9092
+      bootstrap-servers: kafka-service:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer
         value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

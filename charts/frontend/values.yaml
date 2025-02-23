@@ -5,5 +5,3 @@ deployment:
     image: nekromant322/overmoney-frontend
     containerPort: 80
   priorityClassName: prod-priority-class
-
-hostsNeeded: false

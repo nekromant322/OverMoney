@@ -23,5 +23,3 @@ deployment:
 
 secretProviderClass:
   name: vault-prod
-
-hostsNeeded: true

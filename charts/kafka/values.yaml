@@ -34,5 +34,3 @@ deployment:
         persistentVolumeClaimName: kafka-pvc
         volumeMountPath: /var/lib/kafka/logs
   priorityClassName: prod-priority-class
-
-hostsNeeded: false

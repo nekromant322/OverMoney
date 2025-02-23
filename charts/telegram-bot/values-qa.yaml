@@ -46,5 +46,3 @@ deployment:
 
 secretProviderClass:
   name: vault-qa
-
-hostsNeeded: true

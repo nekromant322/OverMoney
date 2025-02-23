@@ -51,20 +51,6 @@ spec:
             - name: {{ .name }}
               value: {{ .value | quote }}
             {{- end }}
-            {{- if .Values.hostsNeeded }}
-            - name: KAFKA_SERVICE_HOST
-              value: kafka-service
-            - name: ORCHESTRATOR_SERVICE_HOST
-              value: orchestrator-service
-            - name: RECOGNIZER_SERVICE_HOST
-              value: recognizer-service
-            - name: WIT_AI_GO_PROXY_SERVICE_HOST
-              value: wit-ai-go-proxy-service
-            - name: INVEST_SERVICE_HOST
-              value: invest-service
-            - name: TELEGRAM_BOT_SERVICE_HOST
-              value: telegram-bot-service
-            {{- end }}
             {{- range .Values.deployment.containers.envFrom }}
             - name: {{ .name }}
               valueFrom:
