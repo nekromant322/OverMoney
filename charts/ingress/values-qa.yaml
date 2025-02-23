@@ -9,10 +9,3 @@ rules:
             name: orchestrator-service
             port:
               number: 80
-      - path: /front
-        pathType: Prefix
-        backend:
-          service:
-            name: frontend-service
-            port:
-              number: 80
