@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: telegram-bot-qa
+  namespace: argo-cd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: telegram-bot-qa=nekromant322/overmoney-telegram-bot-qa:latest
+    argocd-image-updater.argoproj.io/telegram-bot-qa.update-strategy: digest
+    argocd-image-updater.argoproj.io/telegram-bot-qa.force-update: 'true'
+    argocd-image-updater.argoproj.io/telegram-bot-qa.helm.image-name: deployment.containers.image
+    argocd-image-updater.argoproj.io/telegram-bot-qa.helm.image-tag: deployment.containers.imageTag
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: qa
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: qa
+    path: charts/telegram-bot
+    helm:
+      valueFiles:
+        - values-qa.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

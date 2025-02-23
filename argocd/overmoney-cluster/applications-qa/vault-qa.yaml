@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault-qa
+  namespace: argo-cd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: qa
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: qa # TODO change to HEAD after deploying to master
+    path: charts/vault
+    helm:
+      valueFiles:
+        - values-qa.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,22 @@
+serviceAccountNamespace: default
+serviceAccountName: prometheus
+
+roleRefName: prometheus
+
+servicePort: 9090
+serviceTargetPort: 9090
+
+deployment:
+  replicas: 1
+  containers:
+    image: prom/prometheus
+    imageTag: v2.33.5
+    pullPolicy: ifNotPresent
+    containerPort: 9090
+    args:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.retention.time=14d"
+    volumes:
+      - name: prometheus-config-volume
+        volumeMountPath: /etc/prometheus
+        configMapName: prometheus-config

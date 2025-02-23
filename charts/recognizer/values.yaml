@@ -1,0 +1,25 @@
+deployment:
+  replicas: 1
+  containers:
+    image: nekromant322/overmoney-recognizer
+    env:
+      - name: SPRING_APPLICATION_PROFILE
+        value: "prod"
+      - name: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
+      - name: ENVIRONMENT
+        value: "prod"
+    envFrom:
+      - name: INTERNAL_KEY_HEADER
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: internal-key-header
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: prod-priority-class
+
+secretProviderClass:
+  name: vault-prod

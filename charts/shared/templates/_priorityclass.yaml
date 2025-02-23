@@ -1,0 +1,9 @@
+{{- define "shared.priorityclass" -}}
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: {{ .Chart.Name }}
+value: {{ .Values.priority }}
+globalDefault: false
+description: {{ .Values.description }}
+{{- end -}}
