@@ -8,8 +8,8 @@ orchestrator:
 integration:
   internal:
     host:
-      orchestrator: http://orchestrator:8081
-      recognizer: http://recognizer:8080
+      orchestrator: http://localhost:8081
+      recognizer: http://localhost:8080
 
 spring:
   kafka:

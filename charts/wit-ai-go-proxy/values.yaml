@@ -1,0 +1,18 @@
+deployment:
+  replicas: 1
+  containers:
+    image: nekromant322/overmoney-wit-ai-go-proxy
+    envFrom:
+      - name: WIT_AI_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: wit-ai-token
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: prod-priority-class
+
+secretProviderClass:
+  name: vault-prod

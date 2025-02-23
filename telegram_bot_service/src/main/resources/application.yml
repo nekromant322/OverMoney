@@ -17,9 +17,10 @@
   integration:
     internal:
       host:
-        orchestrator: http://sa-orchestrator-svc
-        recognizer: http://sa-recognizer-svc
+        orchestrator: http://orchestrator-service
+        recognizer: http://recognizer-service
 
+  environment: ${ENVIRONMENT:dev}
 
   server:
     port: 8080

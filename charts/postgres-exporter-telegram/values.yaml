@@ -1,0 +1,33 @@
+servicePort: 9187
+serviceTargetPort: 9187
+serviceNamespace: monitoring
+
+deployment:
+  namespace: monitoring
+  replicas: 1
+  containers:
+    image: prometheuscommunity/postgres-exporter
+    pullPolicy: IfNotPresent
+    containerPort: 9187
+    env:
+      - name: DATA_SOURCE_URI
+        value: "194.87.235.171:5435/telegram-bot-db?sslmode=disable"
+    envFrom:
+      - name: DATA_SOURCE_USER
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: telegram-bot-db-user
+      - name: DATA_SOURCE_PASS
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: telegram-bot-db-password
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: prod-priority-class
+
+secretProviderClass:
+  name: vault-prod

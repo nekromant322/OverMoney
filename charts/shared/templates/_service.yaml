@@ -1,0 +1,16 @@
+{{- define "shared.service" -}}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-service
+  {{- if .Values.serviceNamespace }}
+  namespace: {{ .Values.serviceNamespace }}
+  {{- end }}
+spec:
+  ports:
+    - port: {{ .Values.servicePort }}
+      protocol: TCP
+      targetPort: {{ .Values.serviceTargetPort }}
+  selector:
+    app: {{ .Chart.Name }}
+{{- end -}}

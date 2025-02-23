@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <springProperty scope="context" name="environment" source="environment"/>
     <springProfile name="!dev">
         <appender name="logstash" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
             <destination>194.87.237.197:50000</destination>
@@ -14,7 +15,8 @@
                         <pattern>
                             {
                             "app": "orchestrator",
-                            "message": "%message%n%ex{full}"
+                            "message": "%message%n%ex{full}",
+                            "environment": "${environment}"
                             }
                         </pattern>
                     </pattern>

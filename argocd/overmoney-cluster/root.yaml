@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root
+  namespace: argo-cd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argo-cd
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: qa # TODO change to HEAD after deploying to master
+    path: argocd/overmoney-cluster/environments
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

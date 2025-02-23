@@ -1,0 +1,32 @@
+namespace: default
+rules:
+  - host: overmoney.tech
+    paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: orchestrator-service
+            port:
+              number: 80
+      - path: /front
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+      - path: /grafana
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana-service
+            port:
+              number: 3000
+      - path: /kafka-ui
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: kafka-ui-service
+            port:
+              number: 80

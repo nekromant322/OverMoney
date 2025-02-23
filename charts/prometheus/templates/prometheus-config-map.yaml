@@ -1,0 +1,72 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+  labels:
+    app: {{ .Chart.Name }}
+data: |
+  global:
+    scrape_interval: 15s
+  scrape_configs:
+    - job_name: 'prometheus'
+      static_configs:
+        - targets: ['localhost:9090']
+
+    - job_name: 'recognizer_overmoney_monitoring'
+      scrape_interval: 5s
+      metrics_path: '/actuator/prometheus'
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          action: keep
+          regex: recognizer
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: instance
+          replacement: $1
+          regex: (.+)
+
+    - job_name: 'orchestrator_overmoney_monitoring'
+      scrape_interval: 5s
+      metrics_path: '/actuator/prometheus'
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          action: keep
+          regex: orchestrator
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: instance
+          replacement: $1
+          regex: (.+)
+
+    - job_name: 'telegram_bot_overmoney_monitoring'
+      scrape_interval: 5s
+      metrics_path: '/actuator/prometheus'
+      kubernetes_sd_configs:
+        - role: pod
+      relabel_configs:
+        - source_labels: [__meta_kubernetes_pod_label_app]
+          action: keep
+          regex: telegram-bot
+        - source_labels: [__meta_kubernetes_pod_name]
+          action: replace
+          target_label: instance
+          replacement: $1
+          regex: (.+)
+
+    - job_name: 'orchestrator_db_monitoring'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['postgres-exporter-orchestrator-svc.monitoring:9187']
+          labels:
+            group: 'orchestrator-db'
+
+    - job_name: 'telegram_db_monitoring'
+      scrape_interval: 15s
+      static_configs:
+        - targets: ['postgres-exporter-telegram-svc.monitoring:9187']
+          labels:
+            group: 'telegram-bot-db'

@@ -15,10 +15,11 @@
   integration:
     internal:
       host:
-        telegram-bot: http://sa-telegram-bot-svc
-        recognizer: http://sa-recognizer-svc
-        invest: http://sa-invest-svc
-        kafka: http://sa-kafka-client-service
+        telegram-bot: http://telegram-bot-service
+        recognizer: http://recognizer-service
+        invest: http://invest-service
+
+  environment: ${ENVIRONMENT:dev}
 
   telegram:
     bot:
