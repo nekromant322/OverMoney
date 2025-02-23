@@ -10,7 +10,7 @@ spec:
     namespace: argo-cd
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
-    targetRevision: qa # TODO change to HEAD after deploying to master
+    targetRevision: HEAD
     path: argocd/overmoney-cluster/applications
   syncPolicy:
     automated:
