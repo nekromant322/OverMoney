@@ -6,7 +6,7 @@ deployment:
   containers:
     image: confluentinc/cp-zookeeper
     imageTag: 7.0.1
-    pullPolicy: ifNotPresent
+    pullPolicy: IfNotPresent
     containerPort: 2181
     env:
       - name: ZOOKEEPER_CLIENT_PORT
