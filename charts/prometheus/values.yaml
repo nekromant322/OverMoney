@@ -11,7 +11,7 @@ deployment:
   containers:
     image: prom/prometheus
     imageTag: v2.33.5
-    pullPolicy: ifNotPresent
+    pullPolicy: IfNotPresent
     containerPort: 9090
     args:
       - "--config.file=/etc/prometheus/prometheus.yml"
