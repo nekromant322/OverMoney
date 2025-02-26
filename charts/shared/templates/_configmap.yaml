@@ -10,4 +10,3 @@ data:
   {{ $path | base }}: |
     {{- $.Files.Get $path | nindent 4 }}
   {{- end }}
-{{- end -}}
