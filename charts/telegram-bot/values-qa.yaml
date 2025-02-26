@@ -1,5 +1,4 @@
 deployment:
-  replicas: 1
   containers:
     image: nekromant322/overmoney-telegram-bot-qa
     env:

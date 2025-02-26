@@ -7,7 +7,6 @@ serviceTargetPort: 9092
 deployment:
   strategy:
     type: Recreate # Нужно из-за привязки PVC OneToOne - нет возможности законнектить одновременно две кафки, поэтому будет даунтайм
-  replicas: 1
   containers:
     name: broker
     image: confluentinc/cp-kafka

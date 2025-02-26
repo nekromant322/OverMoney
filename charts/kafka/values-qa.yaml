@@ -2,5 +2,4 @@ persistentVolumeClaim:
   requestsStorage: 1Gi
 
 deployment:
-  replicas: 1
   priorityClassName: qa-priority-class
