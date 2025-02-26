@@ -3,7 +3,7 @@ exports:
     servicePort: 80
     serviceTargetPort: 8080
     deployment:
-      replicas: 2
+      replicas: 1
       minReadySeconds: 15
       strategy:
         type: RollingUpdate
@@ -11,7 +11,7 @@ exports:
           maxUnavailable: 1
           maxSurge: 1
       containers:
-        imageTag: latest # TODO replace with ArgoCD Image Updater
+        imageTag: latest
         pullPolicy: Always
         requestsMemory: "256Mi"
         limitsMemory: "512Mi"

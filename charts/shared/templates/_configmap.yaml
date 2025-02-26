@@ -1,0 +1,10 @@
+{{- define "shared.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+  labels:
+    app: {{ .Chart.Name }}
+data:
+  {{ (.Files.Glob "*.yml").AsConfig | indent 2 }}
+{{- end -}}

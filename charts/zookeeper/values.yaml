@@ -2,7 +2,6 @@ servicePort: 2181
 serviceTargetPort: 2181
 
 deployment:
-  replicas: 1
   containers:
     image: confluentinc/cp-zookeeper
     imageTag: 7.0.1
