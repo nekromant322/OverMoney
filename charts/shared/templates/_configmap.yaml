@@ -6,5 +6,9 @@ metadata:
   labels:
     app: {{ .Chart.Name }}
 data:
-  {{ (.Files.Glob "*.yml").AsConfig | indent 2 }}
-{{- end -}}
+  {{- range $path, $_ := .Files.Glob "**.yml" }}
+  {{ $path }}: |
+  {{- range $.Files.Lines $path }}
+    {{ . }}
+  {{- end }}
+  {{- end }}
