@@ -7,7 +7,6 @@ servicePort: 9090
 serviceTargetPort: 9090
 
 deployment:
-  replicas: 1
   containers:
     image: prom/prometheus
     imageTag: v2.33.5

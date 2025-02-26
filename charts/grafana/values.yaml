@@ -2,7 +2,6 @@ servicePort: 3000
 serviceTargetPort: 3000
 
 deployment:
-  replicas: 1
   containers:
     image: grafana/grafana
     imageTag: latest

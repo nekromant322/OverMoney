@@ -6,7 +6,6 @@ serviceNamespace: monitoring
 
 deployment:
   namespace: monitoring
-  replicas: 1
   containers:
     image: prometheuscommunity/postgres-exporter
     pullPolicy: IfNotPresent
