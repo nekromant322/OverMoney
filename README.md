@@ -19,9 +19,9 @@
 Полезную информацию о том как поковыряться в кишках тестового окружения можно найти в [confluence](https://override-platform.atlassian.net/wiki/spaces/O/pages/28344321)
 
 Прод
-[https://overmoney.tech/overmoney](https://overmoney.tech/overmoney)
-Тестовый стенд
-[https://overmoneytest.online/overmoney]([https://overmoney.tech/overmoney](https://overmoneytest.online/overmoney))
+[https://overmoney.tech/overmoney](https://overmoney.tech/overmoney)  
+Тестовый стенд  
+[https://overmoneytest.online/overmoney]([https://overmoney.tech/overmoney](https://overmoneytest.online/overmoney))  
 
 
 ![Схема инфры](infra.svg)
