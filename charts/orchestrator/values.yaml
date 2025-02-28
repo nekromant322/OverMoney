@@ -13,7 +13,7 @@ deployment:
       - name: ENVIRONMENT
         value: "prod"
       - name: KAFKA_BOOTSTRAP_SERVERS
-        value: 'kafka-service.prod.svc.cluster.local'
+        value: 'kafka-service.prod.svc'
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
