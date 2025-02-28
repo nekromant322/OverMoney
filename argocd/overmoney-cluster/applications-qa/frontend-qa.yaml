@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frontend-qa
+  namespace: argo-cd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: frontend-qa=nekromant322/overmoney-frontend-qa:latest
+    argocd-image-updater.argoproj.io/frontend-qa.update-strategy: digest
+    argocd-image-updater.argoproj.io/frontend-qa.force-update: 'true'
+    argocd-image-updater.argoproj.io/frontend-qa.helm.image-name: deployment.containers.image
+    argocd-image-updater.argoproj.io/frontend-qa.helm.image-tag: deployment.containers.imageTag
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: qa
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: qa
+    path: charts/frontend
+    helm:
+      valueFiles:
+        - values-qa.yaml
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

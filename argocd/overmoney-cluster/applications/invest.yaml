@@ -3,6 +3,12 @@ kind: Application
 metadata:
   name: invest
   namespace: argo-cd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: invest=nekromant322/overmoney-invest:latest
+    argocd-image-updater.argoproj.io/invest.update-strategy: digest
+    argocd-image-updater.argoproj.io/invest.force-update: 'true'
+    argocd-image-updater.argoproj.io/invest.helm.image-name: deployment.containers.image
+    argocd-image-updater.argoproj.io/invest.helm.image-tag: deployment.containers.imageTag
 spec:
   project: default
   destination:
