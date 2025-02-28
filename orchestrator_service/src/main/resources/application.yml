@@ -92,7 +92,7 @@
       topics:
         request: transaction-request-events-topic
         response: transaction-response-events-topic
-      bootstrap-servers: kafka-service:9092
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer
         value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

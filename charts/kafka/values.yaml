@@ -28,6 +28,8 @@ deployment:
         value: "1"
       - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
         value: "1"
+      - name: KAFKA_BOOTSTRAP_SERVERS
+        value: 'kafka-service.prod.svc.cluster.local'
     volumes:
       - name: kafka-logs
         persistentVolumeClaimName: kafka-pvc
