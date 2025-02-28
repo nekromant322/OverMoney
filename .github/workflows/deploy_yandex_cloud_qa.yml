@@ -68,7 +68,7 @@ jobs:
           tags: nekromant322/overmoney-telegram-bot-qa
 
       - name: Invest Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
+#        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
         uses: docker/build-push-action@v2
         with:
           file: /invest_service/Dockerfile
@@ -76,7 +76,7 @@ jobs:
           tags: nekromant322/overmoney-invest-qa
 
       - name: Frontend Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+#        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
         uses: docker/build-push-action@v2
         with:
           file: /frontend/Dockerfile
