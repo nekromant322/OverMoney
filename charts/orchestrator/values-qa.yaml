@@ -12,6 +12,8 @@ deployment:
         value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
       - name: ENVIRONMENT
         value: "qa"
+      - name: KAFKA_BOOTSTRAP_SERVERS
+        value: 'kafka-service.qa.svc.cluster.local'
     envFrom:
       - name: INTERNAL_KEY_HEADER
         valueFrom:
