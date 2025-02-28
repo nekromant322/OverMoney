@@ -3,6 +3,12 @@ kind: Application
 metadata:
   name: admin-user
   namespace: argo-cd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: recognizer=nekromant322/overmoney-recognizer:latest
+    argocd-image-updater.argoproj.io/recognizer.update-strategy: digest
+    argocd-image-updater.argoproj.io/recognizer.force-update: 'true'
+    argocd-image-updater.argoproj.io/recognizer.helm.image-name: deployment.containers.image
+    argocd-image-updater.argoproj.io/recognizer.helm.image-tag: deployment.containers.imageTag
 spec:
   project: default
   destination:
