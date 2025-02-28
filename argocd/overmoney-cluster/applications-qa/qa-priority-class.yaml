@@ -1,17 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-prod
+  name: qa-priority-class
   namespace: argo-cd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo-cd
+    namespace: qa
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
     targetRevision: HEAD
-    path: argocd/overmoney-cluster/applications-prod
+    path: charts/qa-priority-class
+    helm:
+      valueFiles:
+        - values-qa.yaml
   syncPolicy:
     automated:
       prune: true

@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: orchestrator
+  namespace: argo-cd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: orchestrator=nekromant322/overmoney-orchestrator:latest
+    argocd-image-updater.argoproj.io/orchestrator.update-strategy: digest
+    argocd-image-updater.argoproj.io/orchestrator.force-update: 'true'
+    argocd-image-updater.argoproj.io/orchestrator.helm.image-name: deployment.containers.image
+    argocd-image-updater.argoproj.io/orchestrator.helm.image-tag: deployment.containers.imageTag
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: HEAD
+    path: charts/orchestrator
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

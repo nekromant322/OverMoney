@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-prod
+  name: vault
   namespace: argo-cd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo-cd
+    namespace: prod
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
     targetRevision: HEAD
-    path: argocd/overmoney-cluster/applications-prod
+    path: charts/vault
   syncPolicy:
     automated:
       prune: true
