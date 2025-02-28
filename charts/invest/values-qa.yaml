@@ -11,7 +11,7 @@ deployment:
         valueFrom:
           secretKeyRef:
             name: qa
-            key: internal-key-header
+            key: qa-internal-key-header
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
