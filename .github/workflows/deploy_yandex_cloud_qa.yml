@@ -12,6 +12,8 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      invest: ${{ steps.filter.outputs.invest }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
@@ -22,6 +24,8 @@ jobs:
             recognizer: ['recognizer_service/**']
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
+            frontend: [frontend/**']
+            invest: ['invest_service/**']
 
   build-and-push-images:
     name: Build & Push images to DockerHub
@@ -63,26 +67,18 @@ jobs:
           push: true
           tags: nekromant322/overmoney-telegram-bot-qa
 
-#      - name: Invest Build and Push to Dockerhub
-#        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
-#        uses: docker/build-push-action@v2
-#        with:
-#          file: /invest_service/Dockerfile
-#          push: true
-#          tags: nekromant322/overmoney-invest-qa
+      - name: Invest Build and Push to Dockerhub
+        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          file: /invest_service/Dockerfile
+          push: true
+          tags: nekromant322/overmoney-invest-qa
 
-#      - name: Wit ai go proxy Build and Push to Dockerhub
-#        if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}
-#        uses: docker/build-push-action@v2
-#        with:
-#          file: /wit_ai_go_proxy/Dockerfile
-#          push: true
-#          tags: nekromant322/overmoney-wit-ai-go-proxy-qa
-
-#      - name: Frontend Build and Push to Dockerhub
-#        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
-#        uses: docker/build-push-action@v2
-#        with:
-#          file: /frontend/Dockerfile
-#          push: true
-#          tags: nekromant322/overmoney-frontend-qa
+      - name: Frontend Build and Push to Dockerhub
+        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          file: /frontend/Dockerfile
+          push: true
+          tags: nekromant322/overmoney-frontend-qa

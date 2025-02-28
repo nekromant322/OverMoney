@@ -1,0 +1,4 @@
+deployment:
+  containers:
+    image: nekromant322/overmoney-frontend-qa
+  priorityClassName: qa-priority-class
