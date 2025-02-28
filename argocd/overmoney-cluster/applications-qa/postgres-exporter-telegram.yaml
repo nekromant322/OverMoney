@@ -1,17 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: root-prod
+  name: postgres-exporter-telegram-qa
   namespace: argo-cd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo-cd
+    namespace: qa
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
-    targetRevision: HEAD
-    path: argocd/overmoney-cluster/applications-prod
+    targetRevision: qa
+    path: charts/postgres-exporter-telegram
+    helm:
+      valueFiles:
+        - values-qa.yaml
   syncPolicy:
     automated:
       prune: true

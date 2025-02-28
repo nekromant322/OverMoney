@@ -1,4 +1,3 @@
-namespace: default
 rules:
   - host: overmoney.tech
     paths:
