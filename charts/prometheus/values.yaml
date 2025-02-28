@@ -1,4 +1,3 @@
-serviceAccountNamespace: default
 serviceAccountName: prometheus
 
 roleRefName: prometheus

@@ -1,9 +1,7 @@
 servicePort: 9187
 serviceTargetPort: 9187
-serviceNamespace: monitoring
 
 deployment:
-  namespace: monitoring
   containers:
     image: prometheuscommunity/postgres-exporter
     pullPolicy: IfNotPresent

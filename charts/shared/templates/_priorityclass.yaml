@@ -2,7 +2,7 @@
 apiVersion: scheduling.k8s.io/v1
 kind: PriorityClass
 metadata:
-  name: {{ .Chart.Name }}
+  name: {{ .Values.name }}
 value: {{ .Values.priority }}
 globalDefault: false
 description: {{ .Values.description }}

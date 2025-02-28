@@ -1,7 +1,5 @@
-serviceAccountNamespace: default
 secretProviderClass:
   name: vault-prod
-  namespace: default
   roleName: prod
   secretName: prod
   objects:

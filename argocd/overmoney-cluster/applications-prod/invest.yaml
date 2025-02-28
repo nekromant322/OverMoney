@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: invest
+  namespace: argo-cd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: invest=nekromant322/overmoney-invest:latest
+    argocd-image-updater.argoproj.io/invest.update-strategy: digest
+    argocd-image-updater.argoproj.io/invest.force-update: 'true'
+    argocd-image-updater.argoproj.io/invest.helm.image-name: deployment.containers.image
+    argocd-image-updater.argoproj.io/invest.helm.image-tag: deployment.containers.imageTag
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: HEAD
+    path: charts/invest
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

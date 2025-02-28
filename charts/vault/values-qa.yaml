@@ -1,7 +1,5 @@
-serviceAccountNamespace: qa
 secretProviderClass:
   name: vault-qa
-  namespace: qa
   roleName: qa
   secretName: qa
   objects:
