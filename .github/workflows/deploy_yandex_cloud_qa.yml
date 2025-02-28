@@ -12,6 +12,8 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+      invest: ${{ steps.filter.outputs.invest }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
@@ -22,6 +24,8 @@ jobs:
             recognizer: ['recognizer_service/**']
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
+            frontend: [frontend/**']
+            invest: ['invest_service/**']
 
   build-and-push-images:
     name: Build & Push images to DockerHub
