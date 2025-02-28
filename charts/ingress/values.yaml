@@ -30,3 +30,10 @@ rules:
             name: kafka-ui-service
             port:
               number: 80
+      - path: /vault
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: hashicorp-vault-ui
+            port:
+              number: 80
