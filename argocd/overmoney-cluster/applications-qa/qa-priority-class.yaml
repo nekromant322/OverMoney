@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
     targetRevision: HEAD
-    path: charts/qa-priority-class
+    path: charts/priority-class
     helm:
       valueFiles:
         - values-qa.yaml

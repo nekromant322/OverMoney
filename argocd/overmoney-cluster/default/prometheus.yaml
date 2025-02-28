@@ -12,6 +12,10 @@ spec:
     repoURL: https://github.com/nekromant322/OverMoney.git
     targetRevision: HEAD
     path: charts/prometheus
+    helm:
+      parameters:
+        - name: serviceAccountNamespace
+          value: default
   syncPolicy:
     automated:
       prune: true
