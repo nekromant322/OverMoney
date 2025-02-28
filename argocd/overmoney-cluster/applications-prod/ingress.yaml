@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ingress
+  name: ingress-prod
   namespace: argo-cd
   annotations:
     argocd-image-updater.argoproj.io/image-list: invest=nekromant322/overmoney-invest:latest
