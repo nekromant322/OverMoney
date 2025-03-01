@@ -8,6 +8,7 @@ import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
+import com.override.orchestrator_service.repository.SuggestionRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.repository.specification.TransactionSpecification;
 import com.override.orchestrator_service.util.NumericalUtils;
@@ -48,6 +49,8 @@ public class TransactionService {
     private TransactionProcessingService transactionProcessingService;
     @Autowired
     private KeywordService keywordService;
+    @Autowired
+    private SuggestionRepository suggestionRepository;
 
     public int getTransactionsCount() {
         return transactionRepository.getTransactionsCount();
@@ -233,11 +236,31 @@ public class TransactionService {
         }
     }
 
+    @Transactional
+    public void deleteTransactionByIds(List<UUID> ids) {
+        List<Transaction> transactionsToDelete = transactionRepository.findAllByIds(ids);
+        List<UUID> transactionIds = transactionsToDelete.stream().map(Transaction::getId).collect(Collectors.toList());
+        deleteKeyWordByTransactions(transactionsToDelete);
+        suggestionRepository.deleteByTransactionIds(transactionIds);
+        transactionRepository.deleteByIds(transactionIds);
+        telegramBotFeign.deleteTelegramMessageByIds(transactionIds);
+    }
+
     public Optional<Keyword> getKeywordByTransaction(Transaction transaction) {
         KeywordId keywordId = new KeywordId();
         keywordId.setAccountId(transaction.getAccount().getId());
         keywordId.setName(transaction.getMessage());
         return keywordRepository.findByKeywordId(keywordId);
+    }
+
+    public void deleteKeyWordByTransactions(List<Transaction> transaction) {
+        List<KeywordId> keywordIds = transaction.stream().map(t -> {
+            KeywordId keywordId = new KeywordId();
+            keywordId.setAccountId(t.getAccount().getId());
+            keywordId.setName(t.getMessage());
+            return keywordId;
+        }).collect(Collectors.toList());
+        keywordRepository.deleteAll(keywordRepository.findByKeywordIdIsIn(keywordIds));
     }
 
     public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long accountId,

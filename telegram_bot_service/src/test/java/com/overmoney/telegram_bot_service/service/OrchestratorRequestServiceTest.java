@@ -1,19 +1,17 @@
 package com.overmoney.telegram_bot_service.service;
 
 import com.overmoney.telegram_bot_service.feign.OrchestratorFeign;
-import com.override.dto.AccountDataDTO;
-import com.override.dto.ChatMemberDTO;
-import com.override.dto.TransactionMessageDTO;
+import com.override.dto.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.UUID;
+import java.util.*;
 
 import static com.overmoney.telegram_bot_service.utils.TestFieldsUtil.generateTransactionDTO;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class OrchestratorRequestServiceTest {
@@ -108,10 +106,11 @@ public class OrchestratorRequestServiceTest {
 
         verify(orchestratorFeign, times(1)).removeChatMemberFromAccount(leftChatMember);
     }
+
     @Test
-    public void deleteTransactionByIdTest() {
+    public void deleteTransactionByIdsTest() {
         UUID id = UUID.randomUUID();
-        orchestratorRequestService.deleteTransactionById(id);
-        verify(orchestratorFeign, times(1)).deleteTransactionById(id);
+        orchestratorRequestService.deleteTransactionByIds(Collections.singletonList(id));
+        verify(orchestratorFeign, times(1)).deleteTransactionByIds(Collections.singletonList(id));
     }
 }
