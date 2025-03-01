@@ -1,3 +1,4 @@
+environment: prod
 rules:
   - host: overmoney.tech
     paths:
