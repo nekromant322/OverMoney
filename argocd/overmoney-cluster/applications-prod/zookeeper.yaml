@@ -13,8 +13,5 @@ spec:
     targetRevision: HEAD
     path: charts/zookeeper
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true

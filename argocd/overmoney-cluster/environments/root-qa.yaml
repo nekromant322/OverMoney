@@ -13,8 +13,5 @@ spec:
     targetRevision: qa
     path: argocd/overmoney-cluster/applications-qa
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true

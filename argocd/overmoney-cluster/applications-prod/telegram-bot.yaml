@@ -19,8 +19,5 @@ spec:
     targetRevision: HEAD
     path: charts/telegram-bot
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true

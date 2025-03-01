@@ -13,8 +13,5 @@ spec:
     targetRevision: HEAD
     path: charts/postgres-exporter-orchestrator
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true

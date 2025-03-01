@@ -17,8 +17,5 @@ spec:
         - name: serviceAccountNamespace
           value: default
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true

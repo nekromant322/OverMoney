@@ -19,8 +19,5 @@ spec:
     targetRevision: HEAD
     path: charts/admin-user
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true

@@ -19,8 +19,5 @@ spec:
     targetRevision: HEAD
     path: charts/orchestrator
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
     syncOptions:
       - CreateNamespace=true
