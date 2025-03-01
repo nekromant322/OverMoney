@@ -1,3 +1,4 @@
+environment: qa
 rules:
   - host: overmoneytest.online
     paths:

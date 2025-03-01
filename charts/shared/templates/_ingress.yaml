@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: orchestrator-{{ .Chart.Name }}
+  name: orchestrator-{{ .Chart.Name }}-{{ .Values.environment}}
   {{- if .Values.namespace }}
   namespace: {{ .Values.namespace }}
   {{- end }}

@@ -1,3 +1,4 @@
+environment: argo-cd
 rules:
   - host: overmoneytest.online
     paths:
