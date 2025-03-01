@@ -13,6 +13,7 @@ spec:
     targetRevision: HEAD
     path: argocd/overmoney-cluster/environments
   syncPolicy:
+    automated: {}
     retry:
       limit: -1
       backoff:
