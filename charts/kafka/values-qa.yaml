@@ -5,7 +5,7 @@ deployment:
   containers:
     env:
       - name: KAFKA_BROKER_ID
-        value: "2"
+        value: "1"
       - name: KAFKA_ZOOKEEPER_CONNECT
         value: 'zookeeper-service.qa.svc:2181'
       - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP

@@ -22,8 +22,13 @@ spec:
       valueFiles:
         - values-qa.yaml
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+    automated: {}
+    retry:
+      limit: -1
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 23h
     syncOptions:
       - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true
