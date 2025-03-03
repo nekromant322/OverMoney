@@ -2,7 +2,7 @@ environment: argo-cd
 rules:
   - host: overmoneytest.online
     paths:
-      - path: /argo-cd
+      - path: /
         pathType: Prefix
         backend:
           service:
@@ -12,4 +12,3 @@ rules:
 annotations:
   nginx.ingress.kubernetes.io/ssl-redirect: false
   nginx.ingress.kubernetes.io/backend-protocol: HTTP
-  nginx.ingress.kubernetes.io/rewrite-target: /

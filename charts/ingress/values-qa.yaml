@@ -2,7 +2,7 @@ environment: qa
 rules:
   - host: overmoneytest.online
     paths:
-      - path: /
+      - path: /overmoney
         pathType: Prefix
         backend:
           service:
