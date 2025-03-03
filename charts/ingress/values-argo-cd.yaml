@@ -1,0 +1,10 @@
+rules:
+  - host: overmoneytest.online
+    paths:
+      - path: /argo-cd
+        pathType: Prefix
+        backend:
+          service:
+            name: argo-cd-server
+            port:
+              number: 80
