@@ -1,14 +1,14 @@
-environment: argo-cd
+environment: vault
 rules:
   - host: overmoneytest.online
     paths:
-      - path: /argo-cd
+      - path: /vault
         pathType: Prefix
         backend:
           service:
-            name: 'argo-cd-argocd-server'
+            name: 'hashicorp-vault-0'
             port:
-              number: 80
+              number: 8200
 annotations:
   nginx.ingress.kubernetes.io/ssl-redirect: false
   nginx.ingress.kubernetes.io/backend-protocol: HTTP
