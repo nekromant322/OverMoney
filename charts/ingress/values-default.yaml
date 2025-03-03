@@ -1,3 +1,4 @@
+environment: default
 rules:
   - host: overmoney.tech
     paths:
