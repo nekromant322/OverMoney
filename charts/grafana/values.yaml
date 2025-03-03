@@ -1,0 +1,28 @@
+servicePort: 3000
+serviceTargetPort: 3000
+
+deployment:
+  containers:
+    image: grafana/grafana
+    imageTag: latest
+    containerPort: 3000
+    env:
+      - name: GF_SECURITY_ADMIN_USER
+        value: "grafana"
+      - name: GF_SERVER_ROOT_URL
+        value: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+      - name: GF_SERVER_SERVE_FROM_SUB_PATH
+        value: "true"
+    envFrom:
+      - name: GF_SECURITY_ADMIN_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: grafana-password
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: prod-priority-class
+secretProviderClass:
+  name: vault-prod

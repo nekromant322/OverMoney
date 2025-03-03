@@ -1,6 +1,8 @@
   server:
     port: 8080
 
+  environment: ${ENVIRONMENT:dev}
+
   spring:
     application:
       name: invest-service

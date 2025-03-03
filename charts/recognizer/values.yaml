@@ -1,24 +1,24 @@
-service:
-  port: 80
-  targetPort: 8080
-
 deployment:
-  replicas: 2
-  minReadySeconds: 15
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 1
-      maxSurge: 1
   containers:
     image: nekromant322/overmoney-recognizer
-    imageTag: latest
-    pullPolicy: Always
-    requestsMemory: "256Mi"
-    limitsMemory: "512Mi"
-    containerPort: 8080
     env:
       - name: SPRING_APPLICATION_PROFILE
         value: "prod"
+      - name: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
+      - name: ENVIRONMENT
+        value: "prod"
+    envFrom:
       - name: INTERNAL_KEY_HEADER
-        value: "{{ INTERNAL_KEY_HEADER }}"
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: internal-key-header
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: prod-priority-class
+
+secretProviderClass:
+  name: vault-prod

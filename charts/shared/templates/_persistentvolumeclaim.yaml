@@ -1,0 +1,12 @@
+{{- define "shared.persistentVolumeClaim" -}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Chart.Name }}-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: {{ .Values.persistentVolumeClaim.requestsStorage }}
+{{- end -}}

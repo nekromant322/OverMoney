@@ -1,0 +1,31 @@
+deployment:
+  containers:
+    env:
+      - name: KAFKA_CLUSTERS_0_NAME
+        value: "my-cluster"
+      - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
+        value: "kafka-service.qa.svc:9092"
+      - name: MANAGEMENT_HEALTH_LDAP_ENABLED
+        value: "FALSE"
+      - name: SERVER_SERVLET_CONTEXT_PATH
+        value: "/kafka-ui"
+      - name: AUTH_TYPE
+        value: "LOGIN_FORM"
+    envFrom:
+      - name: SPRING_SECURITY_USER_NAME
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-kafka-ui-user
+      - name: SPRING_SECURITY_USER_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-kafka-ui-password
+  volumes:
+    - name: secrets-store-inline
+      volumeMountPath: "/mnt/secrets-store"
+      readOnly: true
+  priorityClassName: qa-priority-class
+secretProviderClass:
+  name: vault-qa

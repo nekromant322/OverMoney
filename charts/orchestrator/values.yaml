@@ -1,0 +1,59 @@
+deployment:
+  containers:
+    image: nekromant322/overmoney-orchestrator
+    env:
+      - name: SPRING_APPLICATION_PROFILE
+        value: "prod"
+      - name: TELEGRAM_BOT_NAME
+        value: "OverMoneyBot"
+      - name: ORCHESTRATOR_DB_HOST
+        value: "194.87.235.171"
+      - name: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
+      - name: ENVIRONMENT
+        value: "prod"
+      - name: KAFKA_BOOTSTRAP_SERVERS
+        value: 'kafka-service.prod.svc'
+    envFrom:
+      - name: INTERNAL_KEY_HEADER
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: internal-key-header
+      - name: TELEGRAM_BOT_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: telegram-bot-token
+      - name: JWT_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: jwt-access-key
+      - name: JWT_REFRESH_KEY
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: jwt-refresh-key
+      - name: ORCHESTRATOR_DB_PORT
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: orchestrator-db-port
+      - name: ORCHESTRATOR_DB_USER
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: orchestrator-db-user
+      - name: ORCHESTRATOR_DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: orchestrator-db-password
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: prod-priority-class
+secretProviderClass:
+  name: vault-prod

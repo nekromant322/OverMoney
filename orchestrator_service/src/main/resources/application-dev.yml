@@ -4,10 +4,10 @@
   integration:
     internal:
       host:
-        orchestrator: http://orchestrator:8081
-        telegram-bot: http://telegram-bot:8082
-        recognizer: http://recognizer:8080
-        invest: http://invest:8087
+        orchestrator: http://localhost:8081
+        telegram-bot: http://localhost:8082
+        recognizer: http://localhost:8080
+        invest: http://localhost:8087
 
   spring:
     kafka:
