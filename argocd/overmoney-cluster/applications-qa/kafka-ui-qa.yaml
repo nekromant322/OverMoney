@@ -1,17 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: postgres-exporter-telegram
+  name: kafka-ui-qa
   namespace: argo-cd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: prod
+    namespace: qa
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
-    targetRevision: HEAD
-    path: charts/postgres-exporter-telegram
+    targetRevision: qa
+    path: charts/kafka-ui
+    helm:
+      valueFiles:
+        - values-qa.yaml
   syncPolicy:
     automated:
       selfHeal: true

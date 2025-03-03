@@ -16,7 +16,8 @@ spec:
       valueFiles:
         - values-default.yaml
   syncPolicy:
-    automated: {}
+    automated:
+      selfHeal: true
     retry:
       limit: -1
       backoff:

@@ -17,7 +17,8 @@ spec:
         - name: serviceAccountNamespace
           value: default
   syncPolicy:
-    automated: {}
+    automated:
+      selfHeal: true
     retry:
       limit: -1
       backoff:

@@ -1,12 +1,10 @@
 deployment:
   containers:
-    image: provectuslabs/kafka-ui
-    pullPolicy: IfNotPresent
     env:
       - name: KAFKA_CLUSTERS_0_NAME
         value: "my-cluster"
       - name: KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS
-        value: "kafka-service.prod.svc:9092"
+        value: "kafka-service.qa.svc:9092"
       - name: MANAGEMENT_HEALTH_LDAP_ENABLED
         value: "FALSE"
       - name: SERVER_SERVLET_CONTEXT_PATH
@@ -17,17 +15,13 @@ deployment:
       - name: SPRING_SECURITY_USER_NAME
         valueFrom:
           secretKeyRef:
-            name: prod
-            key: kafka-ui-user
+            name: qa
+            key: qa-kafka-ui-user
       - name: SPRING_SECURITY_USER_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: prod
-            key: kafka-ui-password
-  volumes:
-    - name: secrets-store-inline
-      volumeMountPath: "/mnt/secrets-store"
-      readOnly: true
-  priorityClassName: prod-priority-class
+            name: qa
+            key: qa-kafka-ui-password
+  priorityClassName: qa-priority-class
 secretProviderClass:
-  name: vault-prod
+  name: vault-qa

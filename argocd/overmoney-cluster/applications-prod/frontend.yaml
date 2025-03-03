@@ -19,7 +19,8 @@ spec:
     targetRevision: HEAD
     path: charts/frontend
   syncPolicy:
-    automated: {}
+    automated:
+      selfHeal: true
     retry:
       limit: -1
       backoff:
