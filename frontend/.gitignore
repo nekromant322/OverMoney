@@ -1,9 +1,0 @@
-# os
-.DS_Store
-
-# npm
-/node_modules
-
-# next
-/.next
-next-env.d.ts
