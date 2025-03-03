@@ -6,6 +6,6 @@ rules:
         pathType: Prefix
         backend:
           service:
-            name: 'argo-cd-server'
+            name: 'argo-cd-argocd-server'
             port:
               number: 80
