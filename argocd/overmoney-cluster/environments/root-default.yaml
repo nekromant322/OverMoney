@@ -13,7 +13,8 @@ spec:
     targetRevision: HEAD
     path: argocd/overmoney-cluster/default
   syncPolicy:
-    automated: {}
+    automated:
+      selfHeal: true
     retry:
       limit: -1
       backoff:

@@ -8,3 +8,17 @@ rules:
             name: orchestrator-service
             port:
               number: 80
+      - path: /front
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-service
+            port:
+              number: 80
+      - path: /kafka-ui
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: kafka-ui-service
+            port:
+              number: 80

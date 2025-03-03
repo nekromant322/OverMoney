@@ -13,7 +13,8 @@ spec:
     targetRevision: HEAD
     path: charts/priority-class
   syncPolicy:
-    automated: {}
+    automated:
+      selfHeal: true
     retry:
       limit: -1
       backoff:

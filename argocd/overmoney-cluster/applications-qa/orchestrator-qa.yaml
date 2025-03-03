@@ -22,7 +22,8 @@ spec:
       valueFiles:
         - values-qa.yaml
   syncPolicy:
-    automated: {}
+    automated:
+      selfHeal: true
     retry:
       limit: -1
       backoff:

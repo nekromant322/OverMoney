@@ -19,7 +19,8 @@ spec:
     targetRevision: HEAD
     path: charts/telegram-bot
   syncPolicy:
-    automated: {}
+    automated:
+      selfHeal: true
     retry:
       limit: -1
       backoff:
