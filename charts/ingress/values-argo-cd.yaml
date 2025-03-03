@@ -9,3 +9,5 @@ rules:
             name: 'argo-cd-argocd-server'
             port:
               number: 80
+annotations:
+  nginx.ingress.kubernetes.io/ssl-redirect: "false"

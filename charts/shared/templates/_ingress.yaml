@@ -6,6 +6,12 @@ metadata:
   {{- if .Values.namespace }}
   namespace: {{ .Values.namespace }}
   {{- end }}
+  {{- if .Values.annotations }}
+  annotations:
+    {{- range $key, $value := .Values.annotations }}
+    {{ $key }}: {{ $value }}
+    {{- end }}
+  {{- end }}
 spec:
   ingressClassName: nginx
   rules:
