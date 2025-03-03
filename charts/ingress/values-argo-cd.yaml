@@ -12,4 +12,3 @@ rules:
 annotations:
   nginx.ingress.kubernetes.io/ssl-redirect: false
   nginx.ingress.kubernetes.io/backend-protocol: HTTP
-  nginx.ingress.kubernetes.io/rewrite-target: /
