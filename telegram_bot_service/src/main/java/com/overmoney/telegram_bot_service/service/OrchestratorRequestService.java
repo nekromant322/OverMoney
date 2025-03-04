@@ -69,8 +69,8 @@ public class OrchestratorRequestService {
         return orchestratorFeign.getBackup(userId);
     }
 
-    public void deleteTransactionById(UUID id) {
-        orchestratorFeign.deleteTransactionById(id);
+    public void deleteTransactionByIds(List<UUID> ids) {
+        orchestratorFeign.deleteTransactionByIds(ids);
     }
 
     public TransactionResponseDTO submitTransactionForPatch(TransactionMessageDTO transaction, UUID id) {
