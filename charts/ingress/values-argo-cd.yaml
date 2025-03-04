@@ -9,7 +9,7 @@ rules:
             name: 'argo-cd-argocd-server'
             port:
               number: 80
-      - path: /argo-cd
+      - path: /argo-cd/grpc-web
         pathType: Prefix
         backend:
           service:
