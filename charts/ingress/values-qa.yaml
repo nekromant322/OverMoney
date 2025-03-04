@@ -1,4 +1,8 @@
 environment: qa
+tls:
+  - hosts:
+      - overmoneytest.online
+    secretName: qa-tls-secret
 rules:
   - host: overmoneytest.online
     paths:
@@ -23,3 +27,5 @@ rules:
             name: kafka-ui-service
             port:
               number: 80
+annotations:
+  cert-manager.io/cluster-issuer: letsencrypt-staging
