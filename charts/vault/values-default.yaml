@@ -1,0 +1,8 @@
+secretProviderClass:
+  name: vault-default
+  roleName: default
+  secretName: default
+  objects:
+    - objectName: "default-grafana-password"
+      secretPath: "secret/default"
+      secretKey: "default-grafana-password"

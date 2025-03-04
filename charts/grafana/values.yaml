@@ -17,12 +17,12 @@ deployment:
       - name: GF_SECURITY_ADMIN_PASSWORD
         valueFrom:
           secretKeyRef:
-            name: prod
-            key: grafana-password
+            name: default
+            key: default-grafana-password
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
         readOnly: true
   priorityClassName: prod-priority-class
 secretProviderClass:
-  name: vault-prod
+  name: vault-default

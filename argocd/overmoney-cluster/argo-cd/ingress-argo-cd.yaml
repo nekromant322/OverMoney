@@ -10,7 +10,7 @@ spec:
     namespace: argo-cd
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
-    targetRevision: qa
+    targetRevision: HEAD
     path: charts/ingress
     helm:
       valueFiles:
