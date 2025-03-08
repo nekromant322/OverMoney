@@ -1,20 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ingress-argo-cd
+  name: vault-default
   namespace: argo-cd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo-cd
+    namespace: default
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
     targetRevision: HEAD
-    path: charts/ingress
+    path: charts/vault
     helm:
       valueFiles:
-        - values-argo-cd.yaml
+        - values-default.yaml
   syncPolicy:
     automated:
       selfHeal: true
