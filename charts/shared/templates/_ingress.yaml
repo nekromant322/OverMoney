@@ -14,6 +14,16 @@ metadata:
   {{- end }}
 spec:
   ingressClassName: nginx
+  {{- if .Values.tls }}
+  tls:
+    {{- range .Values.tls }}
+    - hosts:
+        {{- range .hosts }}
+        - {{ . }}
+        {{- end }}
+      secretName: {{ .secretName }}
+    {{- end }}
+  {{- end }}
   rules:
     {{- range .Values.rules }}
     - host: {{ .host }}
