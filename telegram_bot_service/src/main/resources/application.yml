@@ -30,7 +30,7 @@
 # Для выбора kafka необходимо установить значение processing: kafka
   service:
     transaction:
-      processing: orchestrator
+      processing: kafka
 
   spring:
     application:
