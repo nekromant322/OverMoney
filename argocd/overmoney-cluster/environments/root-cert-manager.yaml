@@ -1,20 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: ingress-argo-cd
+  name: root-cert-manager
   namespace: argo-cd
 spec:
   project: default
   destination:
     server: https://kubernetes.default.svc
-    namespace: argo-cd
+    namespace: cert-manager
   source:
     repoURL: https://github.com/nekromant322/OverMoney.git
     targetRevision: qa
-    path: charts/ingress
-    helm:
-      valueFiles:
-        - values-argo-cd.yaml
+    path: argocd/overmoney-cluster/cert-manager
   syncPolicy:
     automated:
       selfHeal: true

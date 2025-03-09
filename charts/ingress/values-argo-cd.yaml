@@ -1,4 +1,8 @@
 environment: argo-cd
+tls:
+  - hosts:
+      - argo-cd.overmoneytest.online
+    secretName: argo-cd-tls-secret
 rules:
   - host: overmoneytest.online
     paths:
@@ -12,3 +16,4 @@ rules:
 annotations:
   nginx.ingress.kubernetes.io/ssl-redirect: false
   nginx.ingress.kubernetes.io/backend-protocol: HTTP
+  cert-manager.io/cluster-issuer: letsencrypt-staging
