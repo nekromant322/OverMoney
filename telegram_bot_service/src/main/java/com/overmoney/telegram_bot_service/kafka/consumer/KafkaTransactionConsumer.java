@@ -16,7 +16,6 @@ public class KafkaTransactionConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topics.response}")
     public void receiveTransactionResponse(TransactionResponseDTO responseDTO) {
-        Long chatId = responseDTO.getChatId();
-        kafkaProducerService.completeResponse(chatId, responseDTO);
+        kafkaProducerService.completeResponse(responseDTO);
     }
 }
