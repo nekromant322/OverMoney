@@ -12,6 +12,4 @@ deployment:
         value: "2181"
       - name: ZOOKEEPER_TICK_TIME
         value: "2000"
-      - name: JVMFLAGS
-        value: "-Dos.memory.max=512m"
   priorityClassName: prod-priority-class
