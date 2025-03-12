@@ -12,7 +12,9 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.util.Map;
-import java.util.concurrent.*;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Slf4j
@@ -21,15 +23,14 @@ public class KafkaProducerService {
     @Autowired
     private KafkaTemplate<String, TransactionMessageDTO> kafkaTemplate;
 
-    private final Map<Long, CompletableFuture<TransactionResponseDTO>> responseFutures = new ConcurrentHashMap<>();
+    private final Map<UUID, CompletableFuture<TransactionResponseDTO>> responseFutures = new ConcurrentHashMap<>();
 
     @Value("${spring.kafka.topics.request}")
     private String requestTopic;
 
-    public CompletableFuture<TransactionResponseDTO> sendTransaction(
-            Long chatId, TransactionMessageDTO transactionMessageDTO) {
+    public CompletableFuture<TransactionResponseDTO> sendTransaction(TransactionMessageDTO transactionMessageDTO) {
         CompletableFuture<TransactionResponseDTO> future = new CompletableFuture<>();
-        responseFutures.put(chatId, future);
+        responseFutures.put(transactionMessageDTO.getBindingUuid(), future);
 
         ListenableFuture<SendResult<String, TransactionMessageDTO>> kafkaResultFuture =
                 kafkaTemplate.send(requestTopic, transactionMessageDTO);
@@ -51,8 +52,8 @@ public class KafkaProducerService {
         return future;
     }
 
-    public void completeResponse(Long chatId, TransactionResponseDTO responseDTO) {
-        CompletableFuture<TransactionResponseDTO> future = responseFutures.remove(chatId);
+    public void completeResponse(TransactionResponseDTO responseDTO) {
+        CompletableFuture<TransactionResponseDTO> future = responseFutures.remove(responseDTO.getBindingUuid());
         if (future != null) {
             future.complete(responseDTO);
         }
