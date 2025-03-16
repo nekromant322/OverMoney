@@ -1,11 +1,9 @@
 package com.override.orchestrator_service.config.filter;
 
-import com.override.orchestrator_service.config.jwt.JwtFilter;
-import com.override.orchestrator_service.config.jwt.JwtProvider;
-import io.jsonwebtoken.Claims;
+import com.override.orchestrator_service.config.jwt.JwtAuthentication;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,20 +19,15 @@ public class AdminPageFilter extends OncePerRequestFilter {
 
     @Value("${admin.allowed_users}")
     private String[] allowedUsers;
-    @Autowired
-    private JwtFilter jwtFilter;
-    @Autowired
-    private JwtProvider jwtProvider;
+
     private final String ADMIN_PATH = "/admin";
     private final String SWAGGER_PATH = "/swagger";
-    private final String USERNAME_CLAIM = "username";
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        final String token = jwtFilter.getTokenFromRequest(request);
-        final Claims claims = jwtProvider.getAccessClaims(token);
-        final String username = claims.get(USERNAME_CLAIM, String.class);
+        JwtAuthentication authentication = (JwtAuthentication) SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getUsername();
         for (String allowedUsername : allowedUsers) {
             if (username.equals(allowedUsername)) {
                 filterChain.doFilter(request, response);
@@ -42,7 +35,6 @@ public class AdminPageFilter extends OncePerRequestFilter {
             }
         }
         response.sendError(HttpServletResponse.SC_FORBIDDEN);
-        filterChain.doFilter(request, response);
     }
 
     @Override
