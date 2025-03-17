@@ -70,10 +70,6 @@
       lifetime-in-hours: 24
 
   spring:
-
-    config:
-      import: classpath:git.properties
-
     servlet:
       multipart:
         max-file-size: 10MB
