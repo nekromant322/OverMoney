@@ -70,6 +70,10 @@
       lifetime-in-hours: 24
 
   spring:
+
+    config:
+      import: classpath:git.properties
+
     servlet:
       multipart:
         max-file-size: 10MB
@@ -140,7 +144,8 @@
     endpoints:
       web:
         exposure:
-          include: health,prometheus
+          include: health,prometheus,info,gitInfo
+
     metrics:
       export:
         prometheus:
