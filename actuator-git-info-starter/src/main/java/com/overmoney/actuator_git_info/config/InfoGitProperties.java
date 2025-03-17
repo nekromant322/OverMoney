@@ -1,12 +1,11 @@
-package com.override.orchestrator_service.actuator.config;
+package com.overmoney.actuator_git_info.config;
 
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
-@Component
+
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "app.git")

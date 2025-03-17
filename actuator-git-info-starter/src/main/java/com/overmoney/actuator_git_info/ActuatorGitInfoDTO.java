@@ -1,4 +1,4 @@
-package com.override.orchestrator_service.actuator;
+package com.overmoney.actuator_git_info;
 
 import lombok.*;
 

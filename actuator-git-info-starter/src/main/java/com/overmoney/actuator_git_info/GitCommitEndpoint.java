@@ -1,15 +1,15 @@
-package com.override.orchestrator_service.actuator;
+package com.overmoney.actuator_git_info;
 
-import com.override.orchestrator_service.actuator.config.InfoGitProperties;
+import com.overmoney.actuator_git_info.config.InfoGitProperties;
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
 import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
-import org.springframework.stereotype.Component;
 
-@Component
 @Endpoint(id = "gitInfo")
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class GitCommitEndpoint {
 
     @Autowired
@@ -17,6 +17,7 @@ public class GitCommitEndpoint {
 
     @Autowired
     private InfoGitProperties gitProperties;
+
 
     @ReadOperation
     public ActuatorGitInfoDTO getInfoDTO() {

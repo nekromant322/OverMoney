@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: actuator_git_info
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gitInfo
+
