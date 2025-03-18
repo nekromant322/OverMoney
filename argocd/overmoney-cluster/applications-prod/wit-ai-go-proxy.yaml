@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: wit-ai-go-proxy
+  namespace: argo-cd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: wit-ai-go-proxy=nekromant322/overmoney-wit-ai-go-proxy:latest
+    argocd-image-updater.argoproj.io/wit-ai-go-proxy.update-strategy: digest
+    argocd-image-updater.argoproj.io/wit-ai-go-proxy.force-update: 'true'
+    argocd-image-updater.argoproj.io/wit-ai-go-proxy.helm.image-name: deployment.containers.image
+    argocd-image-updater.argoproj.io/wit-ai-go-proxy.helm.image-tag: deployment.containers.imageTag
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: HEAD
+    path: charts/wit-ai-go-proxy
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: -1
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 23h
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true

@@ -1,0 +1,21 @@
+deployment:
+  containers:
+    image: nekromant322/overmoney-invest-qa
+    env:
+      - name: SPRING_APPLICATION_PROFILE
+        value: "prod"
+      - name: ENVIRONMENT
+        value: "qa"
+    envFrom:
+      - name: INTERNAL_KEY_HEADER
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-internal-key-header
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: qa-priority-class
+secretProviderClass:
+  name: vault-qa

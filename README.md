@@ -18,9 +18,10 @@
 После мержа в мастер микросервисы деплоятся overmoney.tech, закрывай задачу после того как убедился, что там все в порядке и ты ничего не сломал  
 Полезную информацию о том как поковыряться в кишках тестового окружения можно найти в [confluence](https://override-platform.atlassian.net/wiki/spaces/O/pages/28344321)
 
-[https://overmoney.tech/overmoney](https://overmoney.tech/overmoney)
+Прод [https://overmoney.tech/overmoney](https://overmoney.tech/overmoney)  
+Тестовый стенд [https://overmoneytest.online/overmoney](https://overmoneytest.online/overmoney)
 
 
-
+![Схема инфры](infra.svg)
 
 

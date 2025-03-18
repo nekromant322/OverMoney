@@ -1,0 +1,37 @@
+persistentVolumeClaim:
+  requestsStorage: 10Gi
+
+servicePort: 9092
+serviceTargetPort: 9092
+
+deployment:
+  strategy:
+    type: Recreate # Нужно из-за привязки PVC OneToOne - нет возможности законнектить одновременно две кафки, поэтому будет даунтайм
+  containers:
+    name: broker
+    image: confluentinc/cp-kafka
+    imageTag: 7.0.1
+    pullPolicy: IfNotPresent
+    containerPort: 9092
+    requestsMemory: "2Gi"
+    limitsMemory: "4Gi"
+    env:
+      - name: KAFKA_BROKER_ID
+        value: "1"
+      - name: KAFKA_ZOOKEEPER_CONNECT
+        value: 'zookeeper-service.prod.svc:2181'
+      - name: KAFKA_LISTENER_SECURITY_PROTOCOL_MAP
+        value: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      - name: KAFKA_ADVERTISED_LISTENERS
+        value: PLAINTEXT://:29092,PLAINTEXT_INTERNAL://kafka-service.prod.svc:9092
+      - name: KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR
+        value: "1"
+      - name: KAFKA_TRANSACTION_STATE_LOG_MIN_ISR
+        value: "1"
+      - name: KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR
+        value: "1"
+    volumes:
+      - name: kafka-logs
+        persistentVolumeClaimName: kafka-pvc
+        volumeMountPath: /var/lib/kafka/logs
+  priorityClassName: prod-priority-class

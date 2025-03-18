@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Chart.Name }}-deployment
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  replicas: {{ .Values.deployment.replicas }}
+  minReadySeconds: {{ .Values.deployment.minReadySeconds }}
+  strategy:
+    type: {{ .Values.deployment.strategy.type }}
+    {{- if eq .Values.deployment.strategy.type "RollingUpdate" }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.deployment.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ .Values.deployment.strategy.rollingUpdate.maxSurge }}
+    {{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccountName }}
+      containers:
+        - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
+          imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
+          {{- if .Values.deployment.containers.name }}
+          name: {{ .Values.deployment.containers.name }}
+          {{- else }}
+          name: {{ .Chart.Name }}
+          {{- end }}
+          ports:
+            - containerPort: {{ .Values.deployment.containers.containerPort }}
+          {{- if .Values.deployment.containers.args }}
+          args:
+          {{- range .Values.deployment.containers.args }}
+            - {{ . | quote }}
+          {{- end }}
+          {{- end }}
+          resources:
+            requests:
+              memory: {{ .Values.deployment.containers.requestsMemory }}
+            limits:
+              memory: {{ .Values.deployment.containers.limitsMemory }}
+          {{- if or .Values.deployment.containers.env .Values.deployment.containers.envFrom }}
+          env:
+            {{- range .Values.deployment.containers.env }}
+            - name: {{ .name }}
+              value: {{ .value | quote }}
+            {{- end }}
+            {{- range .Values.deployment.containers.envFrom }}
+            - name: {{ .name }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .valueFrom.secretKeyRef.name | quote }}
+                  key: {{ .valueFrom.secretKeyRef.key | quote }}
+            {{- end }}
+          {{- end }}
+          {{- if .Values.deployment.containers.volumes }}
+          volumeMounts:
+          {{- range .Values.deployment.containers.volumes }}
+            - name: {{ .name }}
+              mountPath: {{ .volumeMountPath }}
+              {{- if .readOnly }}
+              readOnly: {{ .readOnly }}
+              {{- end }}
+          {{- end }}
+          {{- end }}
+      priorityClassName: {{ .Values.deployment.priorityClassName }}
+      {{- if .Values.deployment.containers.volumes }}
+      volumes:
+      {{- range .Values.deployment.containers.volumes }}
+        - name: {{ .name }}
+          {{- if .persistentVolumeClaimName }}
+          persistentVolumeClaim:
+            claimName: {{ .persistentVolumeClaimName }}
+          {{- else if $.Values.secretProviderClass.name }}
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ $.Values.secretProviderClass.name }}
+          {{- else if .configMapName }}
+          configMap:
+            name: {{ .configMapName }}
+          {{- end }}
+      {{- end }}
+      {{- end }}

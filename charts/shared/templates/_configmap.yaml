@@ -1,0 +1,13 @@
+{{- define "shared.configmap" -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-config
+  labels:
+    app: {{ .Chart.Name }}
+data:
+  {{- range $path, $_ := .Files.Glob "**.yml" }}
+  {{ $path | base }}: |
+    {{- $.Files.Get $path | nindent 4 }}
+  {{- end }}
+{{- end }}

@@ -15,10 +15,11 @@
   integration:
     internal:
       host:
-        telegram-bot: http://sa-telegram-bot-svc
-        recognizer: http://sa-recognizer-svc
-        invest: http://sa-invest-svc
-        kafka: http://sa-kafka-client-service
+        telegram-bot: http://telegram-bot-service
+        recognizer: http://recognizer-service
+        invest: http://invest-service
+
+  environment: ${ENVIRONMENT:dev}
 
   telegram:
     bot:
@@ -47,18 +48,7 @@
     allowed_users:
       Marandyuk_Anatolii,
       HomerTheBald,
-      shapran_dmitry,
-      Galactic_Alex,
-      coderror404,
       Shainara,
-      Kulpinov_Evgeny,
-      Ubeev_Valerii,
-      Denis_Shvartcer,
-      NikoTiN_RnD,
-      annov4,
-      Alego22,
-      Katz_Soviet,
-      developing_warrior,
       Kovaaf
 
   # Для удаления кейвордов по которым давно не было транзакций
@@ -90,7 +80,7 @@
       topics:
         request: transaction-request-events-topic
         response: transaction-response-events-topic
-      bootstrap-servers: kafka-service:9092
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer
         value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

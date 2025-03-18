@@ -1,0 +1,7 @@
+serviceTargetPort: 80
+
+deployment:
+  containers:
+    image: nekromant322/overmoney-frontend
+    containerPort: 80
+  priorityClassName: prod-priority-class
