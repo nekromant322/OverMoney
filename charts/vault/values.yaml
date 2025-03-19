@@ -39,3 +39,6 @@ secretProviderClass:
     - objectName: "telegram-bot-token"
       secretPath: "secret/prod"
       secretKey: "telegram-bot-token"
+    - objectName: "docker-config-json"
+      secretPath: "secret/default"
+      secretKey: "docker-config-json"

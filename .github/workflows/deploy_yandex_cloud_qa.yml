@@ -53,34 +53,34 @@ jobs:
           push: true
           tags: overregistry.ru/overmoney-recognizer-qa
 
-      - name: Orchestrator Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /orchestrator_service/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-orchestrator-qa
-
-      - name: Telegram Bot Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /telegram_bot_service/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-telegram-bot-qa
-
-      - name: Invest Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /invest_service/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-invest-qa
-
-      - name: Frontend Build and Push to Dockerhub
-        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          file: /frontend/Dockerfile
-          push: true
-          tags: nekromant322/overmoney-frontend-qa
+#      - name: Orchestrator Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /orchestrator_service/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-orchestrator-qa
+#
+#      - name: Telegram Bot Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /telegram_bot_service/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-telegram-bot-qa
+#
+#      - name: Invest Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /invest_service/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-invest-qa
+#
+#      - name: Frontend Build and Push to Dockerhub
+#        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+#        uses: docker/build-push-action@v2
+#        with:
+#          file: /frontend/Dockerfile
+#          push: true
+#          tags: nekromant322/overmoney-frontend-qa
