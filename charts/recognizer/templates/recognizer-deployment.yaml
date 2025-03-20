@@ -63,40 +63,31 @@ spec:
           {{- end }}
           {{- if .Values.deployment.containers.volumes }}
           volumeMounts:
-            {{- range .Values.deployment.containers.volumes }}
+          {{- range .Values.deployment.containers.volumes }}
             - name: {{ .name }}
               mountPath: {{ .volumeMountPath }}
               {{- if .readOnly }}
               readOnly: {{ .readOnly }}
               {{- end }}
-            {{- end }}
-
-            {{- range $.Values.secretProviderClass }}
-            - name: {{ .name }}
-              mountPath: "/mnt/secrets-store/{{ .name }}"  # Уникальная папка для каждого SecretProviderClass
-              readOnly: true
-            {{- end }}
-          {{- end}}
+          {{- end }}
+          {{- end }}
       priorityClassName: {{ .Values.deployment.priorityClassName }}
       {{- if .Values.deployment.containers.volumes }}
       volumes:
-        {{- range .Values.deployment.containers.volumes }}
+      {{- range .Values.deployment.containers.volumes }}
         - name: {{ .name }}
           {{- if .persistentVolumeClaimName }}
           persistentVolumeClaim:
             claimName: {{ .persistentVolumeClaimName }}
-          {{- else if .configMapName }}
-          configMap:
-            name: {{ .configMapName }}
-          {{- end }}
-        {{- end }}
-
-        {{- range $.Values.secretProviderClass }}
-        - name: {{ .name }}  # Имя тома соответствует SecretProviderClass
+          {{- else if $.Values.secretProviderClass.name }}
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: {{ .name }}  # Каждый том получает свой SecretProviderClass
-        {{- end }}
+              secretProviderClass: {{ $.Values.secretProviderClass.name }}
+          {{- else if .configMapName }}
+          configMap:
+            name: {{ .configMapName }}
+          {{- end }}
+      {{- end }}
       {{- end }}

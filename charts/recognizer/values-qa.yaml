@@ -21,4 +21,4 @@ deployment:
   priorityClassName: qa-priority-class
 
 secretProviderClass:
-  - name: vault-qa
+  name: vault-qa
