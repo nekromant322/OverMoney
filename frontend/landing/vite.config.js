@@ -6,5 +6,8 @@ export default defineConfig(() => {
     plugins: [
       ViteImageOptimizer(),
     ],
+    server: {
+      allowedHosts: true
+    }
   };
 });
