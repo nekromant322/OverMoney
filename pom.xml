@@ -22,7 +22,7 @@
         <module>telegram_bot_service</module>
         <module>invest_service</module>
         <module>mask_log_starter</module>
-        <module>actuator-git-info-starter</module>
+        <module>actuator_git_info_starter</module>
     </modules>
 
     <properties>
@@ -43,7 +43,7 @@
         </dependency>
         <dependency>
             <groupId>com.overmoney</groupId>
-            <artifactId>actuator-git-info-starter</artifactId>
+            <artifactId>actuator_git_info_starter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>

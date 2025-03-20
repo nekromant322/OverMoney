@@ -118,7 +118,7 @@
         </dependency>
         <dependency>
             <groupId>com.overmoney</groupId>
-            <artifactId>actuator-git-info-starter</artifactId>
+            <artifactId>actuator_git_info_starter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>

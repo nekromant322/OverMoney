@@ -10,7 +10,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.overmoney</groupId>
-    <artifactId>actuator-git-info-starter</artifactId>
+    <artifactId>actuator_git_info_starter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>actuator_git_info</name>

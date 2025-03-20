@@ -1,5 +1,11 @@
 FROM maven:3.6.3-jdk-11-slim AS build
 
+RUN mkdir -p /actuator_git_info_starter
+WORKDIR /actuator_git_info_starter
+COPY /actuator_git_info_starter/pom.xml /actuator_git_info_starter
+COPY /actuator_git_info_starter/src /actuator_git_info_starter/src
+RUN mvn -B -f pom.xml clean install -DskipTests -Dcheckstyle.skip
+
 RUN mkdir -p /dto
 WORKDIR /dto
 COPY /dto/pom.xml /dto
