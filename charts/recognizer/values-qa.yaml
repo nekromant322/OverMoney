@@ -18,11 +18,7 @@ deployment:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
         readOnly: true
-      - name: secrets-store-inline-default
-        volumeMountPath: "/mnt/secrets-store/default"
-        readOnly: true
   priorityClassName: qa-priority-class
 
 secretProviderClass:
   - name: vault-qa
-  - name: vault-default

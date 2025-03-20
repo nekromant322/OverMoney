@@ -1,6 +1,7 @@
 deployment:
+  registry: overregistry.ru
   containers:
-    image: nekromant322/overmoney-orchestrator-qa
+    image: overregistry.ru/overmoney-orchestrator-qa
     env:
       - name: SPRING_APPLICATION_PROFILE
         value: "prod"

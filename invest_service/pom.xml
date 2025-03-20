@@ -8,6 +8,7 @@
         <version>2.7.10</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.overmoney</groupId>
     <artifactId>invest_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>

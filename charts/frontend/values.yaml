@@ -1,7 +1,8 @@
 serviceTargetPort: 80
 
 deployment:
+  registry: overregistry.ru
   containers:
-    image: nekromant322/overmoney-frontend
+    image: overregistry.ru/overmoney-frontend
     containerPort: 80
   priorityClassName: prod-priority-class
