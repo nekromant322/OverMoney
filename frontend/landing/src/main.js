@@ -1,5 +1,4 @@
 const LOGIN_URL = `${import.meta.env.VITE_BASE_URL}/auth/login`;
-const APP_URL = '/overmoney';
 
 window.addEventListener('load', async () => {
   embedTelegramWidget()
@@ -19,7 +18,7 @@ window.onTelegramAuth = async (user) => {
     return;
   }
 
-  window.location.href = `${import.meta.env.VITE_APP_URL}/overmoney`;
+  window.location.href = `${import.meta.env.VITE_APP_URL}`;
 }
 
 function embedTelegramWidget() {
