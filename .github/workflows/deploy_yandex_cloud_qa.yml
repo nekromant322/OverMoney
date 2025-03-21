@@ -24,7 +24,7 @@ jobs:
             recognizer: ['recognizer_service/**']
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
-            frontend: [frontend/**']
+            frontend: ['frontend/**']
             invest: ['invest_service/**']
 
   build-and-push-images:
