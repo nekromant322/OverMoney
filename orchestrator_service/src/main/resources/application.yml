@@ -50,7 +50,7 @@
       HomerTheBald,
       Shainara,
       Kovaaf,
-      @vkusnyjchaj
+      vkusnyjchaj
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
