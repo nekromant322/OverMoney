@@ -8,6 +8,7 @@
         <version>2.7.10</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.overmoney</groupId>
     <artifactId>telegram_bot_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>

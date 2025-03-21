@@ -23,6 +23,9 @@ spec:
         app: {{ .Chart.Name }}
     spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
+      imagePullSecrets:
+        - name: registry-secret
+
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}

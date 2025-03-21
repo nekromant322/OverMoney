@@ -24,6 +24,12 @@ spec:
         app: {{ .Chart.Name }}
     spec:
       serviceAccountName: {{ .Values.serviceAccountName }}
+
+      {{- if eq (toString .Values.deployment.registry)  "overregistry.ru" }}
+      imagePullSecrets:
+        - name: registry-secret
+      {{- end }}
+
       containers:
         - image: {{ .Values.deployment.containers.image }}:{{ .Values.deployment.containers.imageTag }}
           imagePullPolicy: {{ .Values.deployment.containers.pullPolicy }}
