@@ -49,7 +49,8 @@
       Marandyuk_Anatolii,
       HomerTheBald,
       Shainara,
-      Kovaaf
+      Kovaaf,
+      vkusnyjchaj
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:

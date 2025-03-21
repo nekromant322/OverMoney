@@ -1,6 +1,6 @@
 deployment:
   containers:
-    image: nekromant322/overmoney-recognizer-qa
+    image: overregistry.ru/overmoney-recognizer-qa
     env:
       - name: SPRING_APPLICATION_PROFILE
         value: "prod"

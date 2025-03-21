@@ -36,3 +36,6 @@ secretProviderClass:
     - objectName: "qa-kafka-ui-password"
       secretPath: "secret/qa"
       secretKey: "qa-kafka-ui-password"
+    - objectName: "docker-config-json"
+      secretPath: "secret/default"
+      secretKey: "docker-config-json"

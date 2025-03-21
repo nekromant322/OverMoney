@@ -8,12 +8,12 @@
         <version>2.7.10</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.overmoney</groupId>
     <artifactId>telegram_bot_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>telegram_bot_service</name>
     <description>telegram_bot_service</description>
-         
     <properties>
         <java.version>11</java.version>
         <spring-cloud.version>2021.0.6</spring-cloud.version>

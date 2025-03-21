@@ -33,3 +33,4 @@ annotations:
   nginx.ingress.kubernetes.io/cors-allow-origin: "*"
   nginx.ingress.kubernetes.io/cors-allow-methods: "*"
   nginx.ingress.kubernetes.io/cors-allow-headers: "*"
+  nginx.ingress.kubernetes.io/cors-allow-credentials: "true"

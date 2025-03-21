@@ -4,7 +4,7 @@ metadata:
   name: telegram-bot
   namespace: argo-cd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: telegram-bot=nekromant322/overmoney-telegram-bot:latest
+    argocd-image-updater.argoproj.io/image-list: telegram-bot=overregistry.ru/overmoney-telegram-bot:latest
     argocd-image-updater.argoproj.io/telegram-bot.update-strategy: digest
     argocd-image-updater.argoproj.io/telegram-bot.force-update: 'true'
     argocd-image-updater.argoproj.io/telegram-bot.helm.image-name: deployment.containers.image
