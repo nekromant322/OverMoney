@@ -4,14 +4,13 @@
     <meta charset="UTF-8">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preconnect" href="https://unpkg.com">
+    <link rel="preload" fetchpriority="high" as="image" href="/images/logo.svg">
     <link rel="preload" fetchpriority="high" as="image" href="/images/background.svg">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <link rel="preload" href="https://unpkg.com/modern-normalize@3.0.1/modern-normalize.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
       <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-      <link href="https://unpkg.com/modern-normalize@3.0.1/modern-normalize.css" rel="stylesheet">
     </noscript>
+    <link rel="stylesheet" href="/src/styles/main.css">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="OverMoney - Удобный, функциональный, безопасный трекер финансов">
@@ -25,8 +24,11 @@
         <a href="/">
           <img src="/images/logo.svg" width="32" height="32" alt="app logo">
         </a>
-        <button class="login-button">
-          <span class="login-button__text">Войти</span>
+        <div id="login-button">
+          <!-- Telegram widget will be embedded here -->
+        </div>
+        <button id="logout-button" class="login-button" style="display: none;">
+          <span class="login-button__text">Перейти в приложение</span>
           <img src="/images/telegram.svg" width="24" height="24" alt="telegram logo" class="login-button__icon">
         </button>
       </header>
@@ -85,7 +87,7 @@
         <section class="landing__feedback">
           <h3>Напишите нам</h3>
           <div class="landing__feedback-info">Нашли баг или хотите предложить новую фичу? Расскажите нам чтобы мы могли сделать приложение лучше.</div>
-          <a class="landing__send-feedback link-button" href="mailto:%VITE_EMAIL%">Отправить email</a>
+          <a class="landing__send-feedback link-button" href="mailto:%VITE_SUPPORT_EMAIL%">Отправить email</a>
         </section>
       </main>
       <footer class="landing__footer footer">

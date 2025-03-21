@@ -2,6 +2,7 @@
   min-height: 100%;
   background-color: #0D1117;
   position: relative;
+  overflow: hidden;
 }
 
 @media screen and (max-width: 1024px) {
