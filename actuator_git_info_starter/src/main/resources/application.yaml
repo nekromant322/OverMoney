@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: actuator_git_info
+
+  config:
+    import: classpath:git.properties
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gitInfo
+

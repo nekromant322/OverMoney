@@ -52,7 +52,8 @@ jobs:
         if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /recognizer_service/Dockerfile
+          context: .
+          file: ./recognizer_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-recognizer
 
@@ -60,7 +61,8 @@ jobs:
         if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /orchestrator_service/Dockerfile
+          context: .
+          file: ./orchestrator_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-orchestrator
 
@@ -68,7 +70,8 @@ jobs:
         if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /telegram_bot_service/Dockerfile
+          context: .
+          file: ./telegram_bot_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-telegram-bot
 
@@ -76,7 +79,8 @@ jobs:
         if: ${{ needs.detect-changes.outputs.invest == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /invest_service/Dockerfile
+          context: .
+          file: ./invest_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-invest
 
@@ -84,7 +88,8 @@ jobs:
         if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /wit_ai_go_proxy/Dockerfile
+          context: .
+          file: ./wit_ai_go_proxy/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-wit-ai-go-proxy
 
@@ -92,6 +97,7 @@ jobs:
         if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /frontend/Dockerfile
+          context: .
+          file: ./frontend/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-frontend
