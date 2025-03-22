@@ -4,7 +4,7 @@ metadata:
   name: invest-qa
   namespace: argo-cd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: invest-qa=nekromant322/overmoney-invest-qa:latest
+    argocd-image-updater.argoproj.io/image-list: invest-qa=overregistry.ru/overmoney-invest-qa:latest
     argocd-image-updater.argoproj.io/invest-qa.update-strategy: digest
     argocd-image-updater.argoproj.io/invest-qa.force-update: 'true'
     argocd-image-updater.argoproj.io/invest-qa.helm.image-name: deployment.containers.image

@@ -49,7 +49,9 @@
       Marandyuk_Anatolii,
       HomerTheBald,
       Shainara,
-      Kovaaf
+      Kovaaf,
+      vkusnyjchaj,
+      V_EIIE_V
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
@@ -140,7 +142,8 @@
     endpoints:
       web:
         exposure:
-          include: health,prometheus
+          include: health,prometheus,info,gitInfo
+
     metrics:
       export:
         prometheus:

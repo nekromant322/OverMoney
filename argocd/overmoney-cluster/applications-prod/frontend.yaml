@@ -4,7 +4,7 @@ metadata:
   name: frontend
   namespace: argo-cd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: frontend=nekromant322/overmoney-frontend:latest
+    argocd-image-updater.argoproj.io/image-list: frontend=overregistry.ru/overmoney-frontend:latest
     argocd-image-updater.argoproj.io/frontend.update-strategy: digest
     argocd-image-updater.argoproj.io/frontend.force-update: 'true'
     argocd-image-updater.argoproj.io/frontend.helm.image-name: deployment.containers.image
