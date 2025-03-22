@@ -7,6 +7,11 @@ import org.springframework.stereotype.Component;
 public class TransactionMapper {
 
     public String mapTransactionResponseToTelegramMessage(TransactionResponseDTO transactionResponseDTO) {
+        String type = transactionResponseDTO.getType();
+        if (type != null && type.equals("Error")){
+            return transactionResponseDTO.getComment();
+        }
+
         return "Записал в " + transactionResponseDTO.getType() +
                 " -> " + transactionResponseDTO.getCategory() +
                 ". Сумма: " + transactionResponseDTO.getAmount() +

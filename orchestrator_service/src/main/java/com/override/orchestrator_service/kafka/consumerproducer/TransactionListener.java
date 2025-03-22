@@ -2,6 +2,7 @@ package com.override.orchestrator_service.kafka.consumerproducer;
 
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
+import com.override.orchestrator_service.exception.TransactionProcessingException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.service.TransactionProcessingService;
@@ -47,9 +48,12 @@ public class TransactionListener {
             kafkaTemplate.send(responseTopic, transactionMapper
                     .mapTransactionToTelegramResponse(currentTransactional, transaction.getBindingUuid()));
         } catch (Exception e) {
-            TransactionResponseDTO errorResponse = new TransactionResponseDTO();
-            errorResponse.setComment("error");
-            errorResponse.setChatId(transaction.getChatId());
+            TransactionResponseDTO errorResponse = TransactionResponseDTO.builder()
+                    .chatId(transaction.getChatId())
+                    .bindingUuid(transaction.getBindingUuid())
+                    .type("Error")
+                    .build();
+            errorResponse.setComment("Ошибка в обработке транзакции: " + transaction.getMessage());
             log.error(e.getMessage());
             kafkaTemplate.send(responseTopic, errorResponse);
         }
