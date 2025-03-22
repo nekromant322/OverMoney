@@ -5,10 +5,8 @@ window.addEventListener('load', async () => {
 })
 
 window.onTelegramAuth = async (user) => {
-  console.log(LOGIN_URL);
-  const response = await fetch({
+  const response = await fetch(LOGIN_URL, {
     method: 'POST',
-    url: LOGIN_URL,
     data: JSON.stringify(user),
     contentType: "application/json; charset=utf8",
   });

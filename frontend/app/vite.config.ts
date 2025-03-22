@@ -15,4 +15,13 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  server: {
+    proxy: {
+      '/transactions': {
+        target: 'https://overmoneytest.online',
+        changeOrigin: true,
+        secure: false,
+      }
+    }
+  }
 })
