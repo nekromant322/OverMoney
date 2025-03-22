@@ -32,4 +32,7 @@ public class TransactionResponseDTO {
 
     @Schema(description = "Id чата в котором произведена транзакция")
     private Long chatId;
+
+    @Schema(description = "Айди для связки сообщений из тг бота")
+    private UUID bindingUuid;
 }
