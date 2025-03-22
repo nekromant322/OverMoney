@@ -1,30 +1,33 @@
+# Stage 1: Build
 FROM maven:3.6.3-jdk-11-slim AS build
 
-RUN mkdir -p /actuator_git_info_starter
-WORKDIR /actuator_git_info_starter
-COPY /actuator_git_info_starter/pom.xml /actuator_git_info_starter
-COPY /actuator_git_info_starter/src /actuator_git_info_starter/src
-RUN mvn -B -f pom.xml clean install -DskipTests -Dcheckstyle.skip
+# Сначала копируем .git вручную
+COPY .git /workspace/.git
+WORKDIR /workspace
 
-RUN mkdir -p /dto
-WORKDIR /dto
-COPY /dto/pom.xml /dto
-COPY /dto/src /dto/src
-RUN mvn -B -f pom.xml clean install -DskipTests -Dcheckstyle.skip
+WORKDIR /workspace/actuator_git_info_starter
+COPY /actuator_git_info_starter/pom.xml /workspace/actuator_git_info_starter
+COPY /actuator_git_info_starter/src /workspace/actuator_git_info_starter/src
+RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
 
-RUN mkdir -p /mask_log_starter
-WORKDIR /mask_log_starter
-COPY /mask_log_starter/pom.xml /mask_log_starter
-COPY /mask_log_starter/src /mask_log_starter/src
-RUN mvn -B -f pom.xml clean install -DskipTests -Dcheckstyle.skip
+WORKDIR /workspace/dto
+COPY /dto/pom.xml /workspace/dto
+COPY /dto/src /workspace/dto/src
+RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
 
-RUN mkdir -p /orchestrator
-WORKDIR /orchestrator
-COPY /orchestrator_service/pom.xml /orchestrator
-COPY /orchestrator_service/src /orchestrator/src
+WORKDIR /workspace/mask_log_starter
+COPY /mask_log_starter/pom.xml /workspace/mask_log_starter
+COPY /mask_log_starter/src /workspace/mask_log_starter/src
+RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+
+WORKDIR /workspace/orchestrator
+COPY /orchestrator_service/pom.xml /workspace/orchestrator
+COPY /orchestrator_service/src /workspace/orchestrator/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
+# Stage 2: Runtime
 FROM amazoncorretto:11-alpine
-COPY --from=build /orchestrator/target/*.jar app.jar
+
 EXPOSE 8081
+COPY --from=build /workspace/orchestrator/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
