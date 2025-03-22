@@ -20,7 +20,8 @@ import java.util.Objects;
 @Slf4j
 public class JwtFilter extends GenericFilterBean {
 
-    private static final String ACCESS_TOKEN = "accessToken";
+    private static final String COOKIE_ACCESS_TOKEN = "accessToken";
+    private static final String HEADER_ACCESS_TOKEN = "Authorization";
 
     @Autowired
     private JwtProvider jwtProvider;
@@ -38,12 +39,20 @@ public class JwtFilter extends GenericFilterBean {
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    public String getTokenFromRequest(HttpServletRequest request) {
+    private String getTokenFromRequest(HttpServletRequest request) {
+        String token = request.getHeader(HEADER_ACCESS_TOKEN);
+        if (token != null) {
+            return token;
+        }
+        return getTokenFromCookies(request);
+    }
+
+    private String getTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         String token = null;
         if (!Objects.isNull(cookies)) {
             for (Cookie cookie : cookies) {
-                if (ACCESS_TOKEN.equals(cookie.getName())) {
+                if (COOKIE_ACCESS_TOKEN.equals(cookie.getName())) {
                     token = cookie.getValue();
                 }
             }
