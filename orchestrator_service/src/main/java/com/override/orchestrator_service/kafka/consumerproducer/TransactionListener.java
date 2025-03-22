@@ -2,7 +2,6 @@ package com.override.orchestrator_service.kafka.consumerproducer;
 
 import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
-import com.override.orchestrator_service.exception.TransactionProcessingException;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.service.TransactionProcessingService;

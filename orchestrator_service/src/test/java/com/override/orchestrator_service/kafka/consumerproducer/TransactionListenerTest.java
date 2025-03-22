@@ -24,6 +24,7 @@ import java.util.UUID;
 import static com.override.orchestrator_service.utils.TestFieldsUtil.generateTestAccount;
 import static com.override.orchestrator_service.utils.TestFieldsUtil.generateTestCategory;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -112,7 +113,7 @@ public class TransactionListenerTest {
 
         ArgumentCaptor<TransactionResponseDTO> responseCaptor = ArgumentCaptor.forClass(TransactionResponseDTO.class);
         verify(kafkaTemplate).send(eq(responseTopic), responseCaptor.capture());
-        assertEquals("error", responseCaptor.getValue().getComment());
+        assertTrue(responseCaptor.getValue().getComment().startsWith("Ошибка в обработке транзакции:"));
         assertEquals(transactionMessageDTO.getChatId(), responseCaptor.getValue().getChatId());
     }
 }
