@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 
 @Component
 @Profile("dev")
@@ -61,7 +62,7 @@ public class TransactionUtils {
             int randomSeconds = random.nextInt((int) periodStart.until(periodEnd, ChronoUnit.SECONDS));
             LocalDateTime anyTime = periodEnd.minusSeconds(randomSeconds);
             TransactionMessageDTO transactionMessageDTO = new TransactionMessageDTO(message,
-                    telegramId, overMoneyAccount.getChatId(), anyTime);
+                    telegramId, overMoneyAccount.getChatId(), anyTime, UUID.randomUUID());
             transactionRepository.save(transactionProcessingService.processTransaction(transactionMessageDTO));
         }
     }

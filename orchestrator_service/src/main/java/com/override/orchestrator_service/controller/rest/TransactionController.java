@@ -217,6 +217,17 @@ public class TransactionController {
         transactionService.deleteTransactionById(id);
     }
 
+    @DeleteMapping("/transaction/ids")
+    @Operation(summary = "Удалить транзакцию по ID", description = "Удаляет транзакцию по указанным ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Транзакция удалена"),
+            @ApiResponse(responseCode = "404", description = "Транзакция не найдена")
+    })
+    public void deleteTransactionById(
+            @Parameter(description = "ID транзакции") @RequestParam List<UUID> ids) {
+        transactionService.deleteTransactionByIds(ids);
+    }
+
     @PatchMapping("/transaction/update/{id}")
     @Operation(summary = "Частично обновить транзакцию", description = "Обновляет поля message и amount у транзакции")
     @ApiResponses(value = {

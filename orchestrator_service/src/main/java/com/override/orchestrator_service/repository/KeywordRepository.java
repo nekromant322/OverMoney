@@ -25,6 +25,8 @@ public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
 
     Optional<Keyword> findByKeywordId(KeywordId keywordId);
 
+    List<Keyword> findByKeywordIdIsIn(List<KeywordId> keywordIds);
+
     List<Keyword> findAllByKeywordId_Name(String name);
 
     void deleteByKeywordId(KeywordId keywordId);

@@ -42,6 +42,9 @@ public interface OrchestratorFeign {
     @DeleteMapping("/transaction/{id}")
     void deleteTransactionById(@PathVariable("id") UUID id);
 
+    @DeleteMapping("/transaction/ids")
+    void deleteTransactionByIds(@RequestParam List<UUID> ids);
+
     @PatchMapping("/transaction/update/{id}")
     TransactionResponseDTO submitTransactionForPatch(@RequestBody TransactionMessageDTO transactionMessage,
                                                      @PathVariable("id") UUID id);

@@ -9,6 +9,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Collections;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -37,12 +39,21 @@ public class TelegramMessageServiceTest {
     }
 
     @Test
-    public void deleteTransactionByIdTest() {
+    public void deleteTelegramMessagesByIdTransactionsTest() {
         TelegramMessage telegramMessage = TestFieldsUtil.generateTelegramMessage();
-        when(telegramMessageRepository.findByMessageIdAndChatId(any(), any())).thenReturn(telegramMessage);
+        telegramMessageService.deleteTelegramMessageByIdTransactions(Collections.singletonList(telegramMessage.getIdTransaction()));
+        verify(telegramMessageRepository, times(1))
+                .deleteByIdTransactions(Collections.singletonList(telegramMessage.getIdTransaction()));
+    }
 
-        telegramMessageService.deleteTransactionById(telegramMessage.getMessageId(), telegramMessage.getChatId());
-        verify(orchestratorRequestService, times(1)).deleteTransactionById(telegramMessage.getIdTransaction());
+    @Test
+    public void deleteTransactionByIdsTest() {
+        TelegramMessage telegramMessage = TestFieldsUtil.generateTelegramMessage();
+        when(telegramMessageRepository.findTgMessageIdsByMessageIdAndChatId(any(), any())).thenReturn(Collections.singletonList(telegramMessage));
+
+        telegramMessageService.deleteTransactionsById(telegramMessage.getMessageId(), telegramMessage.getChatId());
+        verify(orchestratorRequestService, times(1))
+                .deleteTransactionByIds(Collections.singletonList(telegramMessage.getIdTransaction()));
     }
 
 }

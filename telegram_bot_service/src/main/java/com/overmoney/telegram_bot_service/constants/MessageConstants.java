@@ -28,4 +28,6 @@ public class MessageConstants {
     public static final String NETWORK_ERROR = "сетевая ошибка, функционал временно не доступен";
     public static final String MESSAGE_NOT_REGISTERED = "Возможно, вы не ввели команду /start. " +
             "Пожалуйста, введите /start и повторите вашу попытку :)";
+    public static final String MULTILINE_MESSAGE_CANNOT_BE_EDITED = "Многострочное сообщение может " +
+            "быть изменено только через интрефейс";
 }

@@ -142,4 +142,11 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             @Param("userId") Long userId,
             @Param("year") int year,
             @Param("month") int month);
+
+    @Query(value = "SELECT * FROM transactions WHERE id IN (:ids)", nativeQuery = true)
+    List<Transaction> findAllByIds(@Param("ids") List<UUID> ids);
+
+    @Modifying
+    @Query(value = "DELETE FROM transactions t WHERE t.id IN (:ids)", nativeQuery = true)
+    void deleteByIds(@Param("ids") List<UUID> ids);
 }
