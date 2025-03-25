@@ -2,6 +2,7 @@ package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.constants.SuggestionAlgorithm;
+import com.override.recognizer_service.config.LlamaOptionsProperties;
 import com.override.recognizer_service.feign.LLMFeignClient;
 import com.override.recognizer_service.llm.LLMRequestDTO;
 import com.override.recognizer_service.llm.LLMResponseDTO;
@@ -12,7 +13,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -22,6 +22,8 @@ public class ApiCategoryRecognizer implements CategoryRecognizer {
 
     private final LLMFeignClient llmFeignClient;
 
+    private LlamaOptionsProperties llamaOptionsProperties;
+
     @Value("${llm.model}")
     private String model;
 
@@ -29,9 +31,9 @@ public class ApiCategoryRecognizer implements CategoryRecognizer {
         this.llmFeignClient = llmFeignClient;
     }
 
+    //  todo секс тут
     public LLMResponseDTO recognizeCategoryUsingAPI(String message, List<CategoryDTO> categories) {
-        List<String> categoryNames = categories.stream().map(CategoryDTO::getName).collect(Collectors.toList());
-        LLMRequestDTO request = new LLMRequestDTO(model, message, categoryNames);
+        LLMRequestDTO request = new LLMRequestDTO(model, message, categories, llamaOptionsProperties);
 
         return llmFeignClient.recognizeCategory(request);
     }

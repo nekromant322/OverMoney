@@ -38,6 +38,7 @@ public class CategoryMapper {
             KeywordIdDTO keywordIdDTO = KeywordIdDTO.builder()
                     .accountId(keyword.getKeywordId().getAccountId())
                     .name(keyword.getKeywordId().getName())
+                    .frequency(keyword.getUsageCount())
                     .build();
             allKeywords.add(keywordIdDTO);
         });
