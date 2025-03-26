@@ -18,7 +18,13 @@
 
   logging:
     level:
-      org.zalando.logbook: TRACE
+      # Уровень логирования для всех Feign-клиентов
+      feign.Logger: DEBUG
+      feign.Client: DEBUG
+      feign.Request: DEBUG
+      feign.Response: DEBUG
+      # Пакет, где находятся твои Feign-клиенты — замени на свой
+      com.override.recognizer_service.feign: DEBUG
 
   management:
     endpoints:

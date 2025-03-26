@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @AllArgsConstructor
@@ -42,8 +43,8 @@ public class LLMRequestDTO {
 
         StringBuilder systemContentBuilder = new StringBuilder();
         systemContentBuilder.append(SYSTEM_BASELINE_START);
-        for (CategoryDTO category : categories) {
-            systemContentBuilder.append(category.getName()).append(":\n\n");
+        for (CategoryDTO category : categories.stream().limit(10).collect(Collectors.toList())) {
+            systemContentBuilder.append(":\n").append(category.getName()).append(":\n");
             List<KeywordIdDTO> keywordIdDTO = category.getKeywords();
             if (keywordIdDTO != null && !keywordIdDTO.isEmpty()) {
                 keywordIdDTO.stream()
@@ -53,11 +54,10 @@ public class LLMRequestDTO {
                         .forEach(keyword -> systemContentBuilder.append(keyword).append("\n"));
             }
         }
+
         systemContentBuilder.append(SYSTEM_BASELINE_ENDING);
-
-        messages.add(new Message("user", String.format("Определи категорию для: \"%s\"", message)));
         messages.add(new Message("system", systemContentBuilder.toString()));
-
+        messages.add(new Message("user", String.format("Определи категорию для: \"%s\"", message)));
         return messages;
     }
 }

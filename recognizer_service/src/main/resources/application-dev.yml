@@ -1,11 +1,6 @@
 server:
   port: 8080
 
-feign:
-  client:
-    config:
-      default:
-        loggerLevel: FULL
 
 
 integration:

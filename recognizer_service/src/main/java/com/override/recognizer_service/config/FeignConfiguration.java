@@ -13,6 +13,12 @@ public class FeignConfiguration {
     @Value("${authorization-header.header-value}")
     private String headerValue;
 
+
+    @Bean
+    public feign.Logger.Level feignLoggerLevel() {
+        return feign.Logger.Level.FULL;
+    }
+
     @Bean
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {

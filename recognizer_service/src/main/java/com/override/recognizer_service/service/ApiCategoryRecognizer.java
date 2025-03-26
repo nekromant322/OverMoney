@@ -22,13 +22,14 @@ public class ApiCategoryRecognizer implements CategoryRecognizer {
 
     private final LLMFeignClient llmFeignClient;
 
-    private LlamaOptionsProperties llamaOptionsProperties;
+    private final LlamaOptionsProperties llamaOptionsProperties;
 
     @Value("${llm.model}")
     private String model;
 
-    public ApiCategoryRecognizer(LLMFeignClient llmFeignClient) {
+    public ApiCategoryRecognizer(LLMFeignClient llmFeignClient, LlamaOptionsProperties llamaOptionsProperties) {
         this.llmFeignClient = llmFeignClient;
+        this.llamaOptionsProperties = llamaOptionsProperties;
     }
 
     //  todo секс тут
