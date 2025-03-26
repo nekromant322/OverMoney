@@ -1,7 +1,7 @@
 package com.override.recognizer_service.controller.rest;
 
 import com.override.dto.CategoryDTO;
-import com.override.recognizer_service.service.CategoryRecognizerService;
+import com.override.recognizer_service.service.category.CategoryRecognizerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

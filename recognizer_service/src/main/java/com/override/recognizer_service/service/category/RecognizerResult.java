@@ -1,4 +1,4 @@
-package com.override.recognizer_service.service;
+package com.override.recognizer_service.service.category;
 
 import com.override.dto.CategoryDTO;
 import lombok.Getter;

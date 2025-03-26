@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @ConfigurationProperties(prefix = "llm.options")
-public class LlamaOptionsProperties {
+public class LlmOptionsProperties {
     Float temperature;
     Float topP;
     Float repetitionPenalty;

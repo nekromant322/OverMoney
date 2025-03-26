@@ -18,9 +18,6 @@
 
   logging:
     level:
-      # Уровень логирования для всех Feign-клиентов
-      feign.Logger: DEBUG
-      feign.Client: DEBUG
       feign.Request: DEBUG
       feign.Response: DEBUG
       # Пакет, где находятся твои Feign-клиенты — замени на свой
@@ -59,9 +56,21 @@
       keywords: 3
       verbose-categories: 8
 
-  recognizer:
-    llm-algo: ACTIVE
-    levenshtein-algo: ACTIVE
+  deepseek:
+    auth-token: ${DEEPSEEK_AUTH_TOKEN:sk-257d9aaa093e4081b1834e0d89d2bab5}
+    model: deepseek-chat
+    url: https://api.deepseek.com/v1/chat/completions
+    options:
+      temperature: 0.2
+      top_p: 0.9
+      repetition_penalty: 1.1
 
+  recognizer:
+    llm-algo: NO
+    levenshtein-algo: ACTIVE
+    deep-seek-algo: ACTIVE
+
+  # Валидность подсказки
+    min-accuracy: 0.7 # Минимальная точность подсказки
 
 

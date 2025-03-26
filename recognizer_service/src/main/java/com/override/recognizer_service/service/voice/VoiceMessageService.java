@@ -1,8 +1,7 @@
-package com.override.recognizer_service.service;
+package com.override.recognizer_service.service.voice;
 
 import com.override.dto.AudioRecognizerGoRequestDTO;
 import com.override.dto.VoiceMessageDTO;
-import com.override.recognizer_service.service.voice.VoiceDTORecognitionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

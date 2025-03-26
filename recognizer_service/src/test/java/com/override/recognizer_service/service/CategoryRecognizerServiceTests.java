@@ -4,6 +4,9 @@ import com.override.dto.CategoryDTO;
 import com.override.dto.KeywordIdDTO;
 import com.override.recognizer_service.llm.Message;
 import com.override.recognizer_service.llm.LLMResponseDTO;
+import com.override.recognizer_service.service.category.LlamaApiCategoryRecognizer;
+import com.override.recognizer_service.service.category.LevenshteinCategoryRecognizer;
+import com.override.recognizer_service.service.category.RecognizerResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +28,7 @@ public class CategoryRecognizerServiceTests {
     private LevenshteinCategoryRecognizer levenshteinRecognizer;
 
     @Mock
-    private ApiCategoryRecognizer apiCategoryRecognizer;
+    private LlamaApiCategoryRecognizer llamaApiCategoryRecognizer;
 
     private float minAccuracy;
 
@@ -179,10 +182,10 @@ public class CategoryRecognizerServiceTests {
         List<CategoryDTO> categories = new ArrayList<>();
         categories.add(CategoryDTO.builder().name(categoryName).build());
 
-        when(apiCategoryRecognizer.recognizeCategoryUsingAPI(message, categories)).thenReturn(
+        when(llamaApiCategoryRecognizer.recognizeCategoryUsingAPI(message, categories)).thenReturn(
             mockResponse);
 
-        LLMResponseDTO response = apiCategoryRecognizer.recognizeCategoryUsingAPI(message,
+        LLMResponseDTO response = llamaApiCategoryRecognizer.recognizeCategoryUsingAPI(message,
             categories);
 
         Assertions.assertEquals(categoryName, response.getCategoryName());

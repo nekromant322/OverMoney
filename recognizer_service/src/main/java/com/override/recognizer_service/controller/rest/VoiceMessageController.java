@@ -1,7 +1,7 @@
 package com.override.recognizer_service.controller.rest;
 
 import com.override.dto.VoiceMessageDTO;
-import com.override.recognizer_service.service.VoiceMessageService;
+import com.override.recognizer_service.service.voice.VoiceMessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;

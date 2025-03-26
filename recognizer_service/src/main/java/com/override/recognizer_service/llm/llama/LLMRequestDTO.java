@@ -1,6 +1,7 @@
-package com.override.recognizer_service.llm;
+package com.override.recognizer_service.llm.llama;
 
-import com.override.recognizer_service.config.LlamaOptionsProperties;
+import com.override.recognizer_service.config.LlmOptionsProperties;
+import com.override.recognizer_service.llm.Message;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,10 +15,10 @@ public class LLMRequestDTO {
 
     private String model;
     private boolean stream;
-    private LlamaOptionsProperties options;
+    private LlmOptionsProperties options;
     private List<Message> messages;
 
-    public LLMRequestDTO(String model, LlamaOptionsProperties options, List<Message> messages) {
+    public LLMRequestDTO(String model, LlmOptionsProperties options, List<Message> messages) {
         this.model = model;
         this.stream = false;
         this.options = options;
