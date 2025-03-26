@@ -14,6 +14,11 @@ deployment:
           secretKeyRef:
             name: prod
             key: internal-key-header
+      - name: DEEPSEEK_AUTH_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: deepseek-auth-token
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
