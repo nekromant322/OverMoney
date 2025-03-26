@@ -66,7 +66,6 @@ public class MessageConstructor {
         systemContentBuilder.append("\nКатегории без примеров: ");
         categories.stream()
                 .skip(verboseCategoriesLimit)
-                .limit(5)
                 .map(CategoryDTO::getName)
                 .forEach(category -> systemContentBuilder.append(category).append(", "));
         systemContentBuilder.append(".\n\n").append(SYSTEM_BASELINE_ENDING);

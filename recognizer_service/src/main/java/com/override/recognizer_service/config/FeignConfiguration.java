@@ -13,6 +13,9 @@ public class FeignConfiguration {
     @Value("${authorization-header.header-value}")
     private String headerValue;
 
+    @Value("${deepseek.auth-token}")
+    private String authToken;
+
     @Bean
     public feign.Logger.Level feignLoggerLevel() {
         return feign.Logger.Level.FULL;
@@ -22,6 +25,7 @@ public class FeignConfiguration {
     public RequestInterceptor requestInterceptor() {
         return requestTemplate -> {
             requestTemplate.header(HEADER_NAME, headerValue);
+            requestTemplate.header("Authorization", "Bearer " + authToken);
         };
     }
 }
