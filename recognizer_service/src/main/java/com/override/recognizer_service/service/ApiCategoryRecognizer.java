@@ -6,6 +6,8 @@ import com.override.recognizer_service.config.LlamaOptionsProperties;
 import com.override.recognizer_service.feign.LLMFeignClient;
 import com.override.recognizer_service.llm.LLMRequestDTO;
 import com.override.recognizer_service.llm.LLMResponseDTO;
+import com.override.recognizer_service.llm.Message;
+import com.override.recognizer_service.llm.MessageConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -21,26 +23,29 @@ import java.util.List;
 public class ApiCategoryRecognizer implements CategoryRecognizer {
 
     private final LLMFeignClient llmFeignClient;
-
+    private final MessageConstructor messageConstructor;
     private final LlamaOptionsProperties llamaOptionsProperties;
 
     @Value("${llm.model}")
     private String model;
 
-    public ApiCategoryRecognizer(LLMFeignClient llmFeignClient, LlamaOptionsProperties llamaOptionsProperties) {
+    public ApiCategoryRecognizer(LLMFeignClient llmFeignClient, MessageConstructor messageConstructor,
+                                 LlamaOptionsProperties llamaOptionsProperties) {
         this.llmFeignClient = llmFeignClient;
+        this.messageConstructor = messageConstructor;
         this.llamaOptionsProperties = llamaOptionsProperties;
     }
 
-    //  todo секс тут
     public LLMResponseDTO recognizeCategoryUsingAPI(String message, List<CategoryDTO> categories) {
-        LLMRequestDTO request = new LLMRequestDTO(model, message, categories, llamaOptionsProperties);
+        List<Message> messages = messageConstructor.construct(categories, message);
+        LLMRequestDTO request = new LLMRequestDTO(model, llamaOptionsProperties, messages);
 
         return llmFeignClient.recognizeCategory(request);
     }
 
     @Override
     public RecognizerResult recognizeCategoryAndAccuracy(String message, List<CategoryDTO> categories) {
+        log.debug("на распознание получено сообщени: {}", message);
         LLMResponseDTO responseDTO = recognizeCategoryUsingAPI(message, categories);
         if (responseDTO != null) {
             String categoryFromAPI = responseDTO.getCategoryName();
@@ -49,6 +54,7 @@ public class ApiCategoryRecognizer implements CategoryRecognizer {
                     .findFirst()
                     .orElse(null);
             float accuracy = responseDTO.getAccuracy();
+            log.debug("Предполагаемая категория: {}, {}", categoryFromAPI, accuracy);
             return new RecognizerResult(matchedCategory, accuracy);
         }
         return new RecognizerResult(null, 0.0f);
