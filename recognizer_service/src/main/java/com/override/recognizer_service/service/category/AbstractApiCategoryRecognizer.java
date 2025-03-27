@@ -1,9 +1,7 @@
-package com.override.recognizer_service.service;
+package com.override.recognizer_service.service.category;
 
 import com.override.dto.CategoryDTO;
 import com.override.recognizer_service.llm.LLMResponseDTO;
-import com.override.recognizer_service.service.category.CategoryRecognizer;
-import com.override.recognizer_service.service.category.RecognizerResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

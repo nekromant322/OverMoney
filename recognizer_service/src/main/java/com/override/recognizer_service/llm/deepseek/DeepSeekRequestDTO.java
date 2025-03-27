@@ -1,6 +1,6 @@
 package com.override.recognizer_service.llm.deepseek;
 
-import com.override.recognizer_service.config.LlmOptionsProperties;
+import com.override.recognizer_service.config.DeepSeekOptionsProperties;
 import com.override.recognizer_service.llm.Message;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,7 +20,7 @@ public class DeepSeekRequestDTO {
     private float repetitionPenalty;
     private List<Message> messages;
 
-    public DeepSeekRequestDTO(String model, LlmOptionsProperties options, List<Message> messages) {
+    public DeepSeekRequestDTO(String model, DeepSeekOptionsProperties options, List<Message> messages) {
         this.model = model;
         this.stream = false;
         this.temperature = options.getTemperature();

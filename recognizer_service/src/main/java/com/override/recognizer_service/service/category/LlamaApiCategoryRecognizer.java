@@ -4,11 +4,10 @@ import com.override.dto.CategoryDTO;
 import com.override.dto.constants.SuggestionAlgorithm;
 import com.override.recognizer_service.config.LlmOptionsProperties;
 import com.override.recognizer_service.feign.LlamaFeignClient;
-import com.override.recognizer_service.llm.llama.LLMRequestDTO;
 import com.override.recognizer_service.llm.LLMResponseDTO;
 import com.override.recognizer_service.llm.Message;
 import com.override.recognizer_service.llm.MessageConstructor;
-import com.override.recognizer_service.service.AbstractApiCategoryRecognizer;
+import com.override.recognizer_service.llm.llama.LLMRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +19,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-@Order(1)
+@Order(2)
 @RequiredArgsConstructor
 @ConditionalOnProperty(name = "recognizer.llm-algo", havingValue = "ACTIVE")
 public class LlamaApiCategoryRecognizer extends AbstractApiCategoryRecognizer {
@@ -34,7 +33,7 @@ public class LlamaApiCategoryRecognizer extends AbstractApiCategoryRecognizer {
 
     @Override
     public LLMResponseDTO recognizeCategoryUsingAPI(String message, List<CategoryDTO> categories) {
-        List<Message> messages = messageConstructor.construct(categories, message);
+        List<Message> messages = messageConstructor.construct(categories, message, true);
         LLMRequestDTO request = new LLMRequestDTO(model, llmOptionsProperties, messages);
         log.debug("Для распознования сообщения был зайдествован алгоритм: {}", SuggestionAlgorithm.DEEPSEEK);
 

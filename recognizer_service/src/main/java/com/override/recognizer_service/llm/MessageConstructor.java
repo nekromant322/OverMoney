@@ -28,15 +28,15 @@ public class MessageConstructor {
     private static final String SYSTEM_BASELINE_ENDING = "Не добавляй пояснений. Не используй кавычки. " +
             "Только: <категория>, <уверенность>.";
 
-    public List<Message> construct(List<CategoryDTO> categories, String message) {
+    public List<Message> construct(List<CategoryDTO> categories, String message, boolean isLimited) {
         List<Message> messages = new ArrayList<>();
 
-        messages.add(constructSystemMessage(categories));
+        messages.add(constructSystemMessage(categories, isLimited));
         messages.add(new Message("user", String.format("Определи категорию для: \"%s\"", message)));
         return messages;
     }
 
-    private Message constructSystemMessage(List<CategoryDTO> categories) {
+    private Message constructSystemMessage(List<CategoryDTO> categories, boolean isLimited) {
 
         StringBuilder systemContentBuilder = new StringBuilder();
         systemContentBuilder.append(SYSTEM_BASELINE_START);
@@ -50,6 +50,30 @@ public class MessageConstructor {
                     return -overallUsage;
                 }));
 
+        //todo протестить будет ли работать
+        if (isLimited) {
+            limitedCategoryBuild(categories, systemContentBuilder);
+        } else {
+            unlimitedCategoryBuild(categories, systemContentBuilder);
+        }
+        systemContentBuilder.append(".\n\n").append(SYSTEM_BASELINE_ENDING);
+        return new Message("system", systemContentBuilder.toString());
+    }
+
+    private void unlimitedCategoryBuild(List<CategoryDTO> categories, StringBuilder systemContentBuilder) {
+        for (CategoryDTO category : categories) {
+            systemContentBuilder.append(":\n").append(category.getName()).append(":\n");
+            List<KeywordIdDTO> keywordIdDTO = category.getKeywords();
+            if (keywordIdDTO != null && !keywordIdDTO.isEmpty()) {
+                keywordIdDTO.stream()
+                        .sorted(Comparator.comparingInt(KeywordIdDTO::getFrequency).reversed())
+                        .map(KeywordIdDTO::getName)
+                        .forEach(keyword -> systemContentBuilder.append(keyword).append("\n"));
+            }
+        }
+    }
+
+    private void limitedCategoryBuild(List<CategoryDTO> categories, StringBuilder systemContentBuilder) {
         for (CategoryDTO category : categories.stream().limit(verboseCategoriesLimit).collect(Collectors.toList())) {
 
             systemContentBuilder.append(":\n").append(category.getName()).append(":\n");
@@ -68,7 +92,5 @@ public class MessageConstructor {
                 .skip(verboseCategoriesLimit)
                 .map(CategoryDTO::getName)
                 .forEach(category -> systemContentBuilder.append(category).append(", "));
-        systemContentBuilder.append(".\n\n").append(SYSTEM_BASELINE_ENDING);
-        return new Message("system", systemContentBuilder.toString());
     }
 }

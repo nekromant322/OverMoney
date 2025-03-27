@@ -20,7 +20,6 @@
     level:
       feign.Request: DEBUG
       feign.Response: DEBUG
-      # Пакет, где находятся твои Feign-клиенты — замени на свой
       com.override.recognizer_service.feign: DEBUG
 
   management:
@@ -58,15 +57,15 @@
 
   deepseek:
     auth-token: ${DEEPSEEK_AUTH_TOKEN:no-auth-token}
-    model: deepseek-chat
-    url: https://api.deepseek.com/v1/chat/completions
+    model: "deepseek-chat"
+    url: "https://api.deepseek.com/v1/chat/completions"
     options:
       temperature: 0.2
       top_p: 0.9
       repetition_penalty: 1.1
 
   recognizer:
-    llm-algo: NO
+    llm-algo: ACTIVE
     levenshtein-algo: ACTIVE
     deep-seek-algo: ACTIVE
 
