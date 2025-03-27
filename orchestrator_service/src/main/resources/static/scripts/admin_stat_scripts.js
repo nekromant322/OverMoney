@@ -19,6 +19,8 @@ window.onload = function () {
 
     getStat();
     getStatLastLastThirtyDays();
+    getDeepSeekBalance();
+
 }
 
 function getStat() {
@@ -118,4 +120,17 @@ function updateTableHeader() {
     const dateString = date.toLocaleDateString('ru-RU');
     const header = document.getElementById('stat-table-last-thirty-days-header');
     header.textContent = `Статистика использования трекера с ${dateString}:`;
+}
+
+
+function getDeepSeekBalance() {
+    $.ajax({
+        url: "/admin/deepseek/balance",
+        type: "GET",
+        async: false,
+        success: function (data) {
+            const row = "<tr><td>" + (data ?? "н/д") + "</td></tr>";
+            $('#deepseek-table-body').html(row);
+        }
+    });
 }
