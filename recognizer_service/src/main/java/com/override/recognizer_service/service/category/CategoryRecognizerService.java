@@ -45,7 +45,7 @@ public class CategoryRecognizerService {
             selectedAlgorithm = recognizer.getAlgorithm();
             try {
                 recognizerResult = recognizer.recognizeCategoryAndAccuracy(message, categories);
-// todo возможно нужно будет пересмотреть логику, сейчас если хорошей категории не нашлось, результаты игнорируются
+
                 if (recognizerResult != null
                         && recognizerResult.getCategory() != null
                         && recognizerResult.getAccuracy() >= minAccuracy) {

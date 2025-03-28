@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/recognizer/deepseek")
-public class DeepSeekBalanceController {
+public class DeepSeekMetaInfoController {
 
     @Autowired
     private DeepSeekBalanceService deepSeekBalanceService;

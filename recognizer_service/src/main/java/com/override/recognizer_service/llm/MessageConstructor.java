@@ -50,7 +50,6 @@ public class MessageConstructor {
                     return -overallUsage;
                 }));
 
-        //todo протестить будет ли работать
         if (isLimited) {
             limitedCategoryBuild(categories, systemContentBuilder);
         } else {

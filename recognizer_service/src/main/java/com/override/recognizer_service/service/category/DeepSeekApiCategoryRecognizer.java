@@ -33,12 +33,16 @@ public class DeepSeekApiCategoryRecognizer extends AbstractApiCategoryRecognizer
     @Value("${deepseek.model}")
     private String model;
 
+    @Value("${deepseek.auth-token}")
+    private String authToken;
+
     @Override
     public LLMResponseDTO recognizeCategoryUsingAPI(String message, List<CategoryDTO> categories) {
+        log.info("Для распознования сообщения был зайдествован алгоритм: {}", SuggestionAlgorithm.DEEPSEEK);
         List<Message> messages = messageConstructor.construct(categories, message, false);
+        log.info("В LLM передан следующий контент: {}", messages);
         DeepSeekRequestDTO request = new DeepSeekRequestDTO(model, deepSeekOptionsProperties, messages);
-        log.debug("Для распознования сообщения был зайдествован алгоритм: {}", SuggestionAlgorithm.DEEPSEEK);
-        DeepSeekResponseWrapperDTO wrapper = deepSeekFeignClient.recognizeCategory(request);
+        DeepSeekResponseWrapperDTO wrapper = deepSeekFeignClient.recognizeCategory("Bearer " + authToken, request);
         return new LLMResponseDTO(wrapper.getChoices().get(0).getMessage());
     }
 

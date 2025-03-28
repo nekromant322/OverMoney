@@ -13,7 +13,7 @@ public abstract class AbstractApiCategoryRecognizer implements CategoryRecognize
 
     @Override
     public RecognizerResult recognizeCategoryAndAccuracy(String message, List<CategoryDTO> categories) {
-        log.debug("на распознание получено сообщени: {}", message);
+        log.info("на распознание получено сообщени: {}", message);
         LLMResponseDTO responseDTO = recognizeCategoryUsingAPI(message, categories);
         if (responseDTO != null) {
             String categoryFromAPI = responseDTO.getCategoryName();
@@ -22,7 +22,7 @@ public abstract class AbstractApiCategoryRecognizer implements CategoryRecognize
                     .findFirst()
                     .orElse(null);
             float accuracy = responseDTO.getAccuracy();
-            log.debug("Предполагаемая категория: {}, {}", categoryFromAPI, accuracy);
+            log.info("Предполагаемая категория: {}, {}", categoryFromAPI, accuracy);
             return new RecognizerResult(matchedCategory, accuracy);
         }
         return new RecognizerResult(null, 0.0f);

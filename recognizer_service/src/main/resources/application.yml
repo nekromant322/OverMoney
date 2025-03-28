@@ -16,11 +16,6 @@
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
 
-  logging:
-    level:
-      feign.Request: DEBUG
-      feign.Response: DEBUG
-      com.override.recognizer_service.feign: DEBUG
 
   management:
     endpoints:
@@ -56,10 +51,9 @@
       verbose-categories: 8
 
   deepseek:
-    #не работает локально
     auth-token: ${DEEPSEEK_AUTH_TOKEN:no-auth-token}
     model: "deepseek-chat"
-    base-url: "https://api.deepseek.com"
+    url: "https://api.deepseek.com"
     options:
       temperature: 0.2
       top_p: 0.9
