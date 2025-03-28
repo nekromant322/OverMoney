@@ -1,4 +1,4 @@
-package com.override.recognizer_service.service;
+package com.override.recognizer_service.service.voice;
 
 import org.springframework.stereotype.Service;
 

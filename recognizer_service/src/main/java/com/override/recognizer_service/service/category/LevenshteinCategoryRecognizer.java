@@ -1,4 +1,4 @@
-package com.override.recognizer_service.service;
+package com.override.recognizer_service.service.category;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.KeywordIdDTO;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Component
 @Slf4j
-@Order(2)
+@Order(3)
 @ConditionalOnProperty(name = "recognizer.levenshtein-algo", havingValue = "ACTIVE")
 public class LevenshteinCategoryRecognizer implements CategoryRecognizer {
 

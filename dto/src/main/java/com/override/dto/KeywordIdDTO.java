@@ -18,4 +18,7 @@ public class KeywordIdDTO {
 
     @Schema(description = "Ключевое слово")
     private String name;
+
+    @Schema(description = "Частота использования")
+    private Integer frequency;
 }

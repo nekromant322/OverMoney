@@ -5,7 +5,8 @@ import lombok.Getter;
 @Getter
 public enum SuggestionAlgorithm {
     LEVENSHTEIN("LEVENSHTEIN"),
-    LLM("LLM");
+    LLM("LLM"),
+    DEEPSEEK("DEEPSEEK");
 
     private final String name;
 

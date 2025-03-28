@@ -16,9 +16,6 @@
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
 
-  logging:
-    level:
-      org.zalando.logbook: TRACE
 
   management:
     endpoints:
@@ -42,12 +39,32 @@
       - voiceMessageBytes
 
   llm:
-    model: "llama3.1"
+    model: "llama3.2:latest"
     url: "http://195.133.49.108:11434/api/chat"
+    options:
+      temperature: 0.2
+      top_p: 0.9
+
+    limit:
+      keywords: 3
+      verbose-categories: 8
+
+  deepseek:
+    auth-token: ${DEEPSEEK_AUTH_TOKEN:no-auth-token}
+    model: "deepseek-chat"
+    url: "https://api.deepseek.com/v1/chat/completions"
+
+    #https://api-docs.deepseek.com/api/create-chat-completion
+    options:
+      temperature: 0.2
+      top_p: 0.9
 
   recognizer:
     llm-algo: ACTIVE
     levenshtein-algo: ACTIVE
+    deep-seek-algo: ACTIVE
 
+  # Валидность подсказки
+    min-accuracy: 0.7 # Минимальная точность подсказки
 
 

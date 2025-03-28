@@ -39,3 +39,6 @@ secretProviderClass:
     - objectName: "docker-config-json"
       secretPath: "secret/default"
       secretKey: "docker-config-json"
+    - objectName: "qa-deepseek-auth-token"
+      secretPath: "secret/qa"
+      secretKey: "qa-deepseek-auth-token"

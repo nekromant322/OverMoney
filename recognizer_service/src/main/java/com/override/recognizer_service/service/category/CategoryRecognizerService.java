@@ -1,11 +1,12 @@
-package com.override.recognizer_service.service;
+package com.override.recognizer_service.service.category;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.TransactionDTO;
+import com.override.dto.constants.SuggestionAlgorithm;
 import com.override.recognizer_service.feign.OrchestratorFeign;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import com.override.dto.constants.SuggestionAlgorithm;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,6 +14,9 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class CategoryRecognizerService {
+
+    @Value("${recognizer.min-accuracy}")
+    private float minAccuracy;
 
     private final OrchestratorFeign orchestratorFeign;
     private final List<CategoryRecognizer> recognizers;
@@ -41,7 +45,10 @@ public class CategoryRecognizerService {
             selectedAlgorithm = recognizer.getAlgorithm();
             try {
                 recognizerResult = recognizer.recognizeCategoryAndAccuracy(message, categories);
-                if (recognizerResult != null && recognizerResult.getCategory() != null) {
+
+                if (recognizerResult != null
+                        && recognizerResult.getCategory() != null
+                        && recognizerResult.getAccuracy() >= minAccuracy) {
                     TransactionDTO transactionDTO = TransactionDTO.builder()
                             .accuracy(recognizerResult.getAccuracy())
                             .id(transactionId)
