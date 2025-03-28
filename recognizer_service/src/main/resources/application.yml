@@ -44,6 +44,7 @@
     options:
       temperature: 0.2
       top_p: 0.9
+      repetition_penalty: 1.1
 
     limit:
       keywords: 3
@@ -52,12 +53,11 @@
   deepseek:
     auth-token: ${DEEPSEEK_AUTH_TOKEN:no-auth-token}
     model: "deepseek-chat"
-    url: "https://api.deepseek.com/v1/chat/completions"
-
-    #https://api-docs.deepseek.com/api/create-chat-completion
+    url: "https://api.deepseek.com"
     options:
       temperature: 0.2
       top_p: 0.9
+      repetition_penalty: 1.1
 
   recognizer:
     llm-algo: ACTIVE
