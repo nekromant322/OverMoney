@@ -16,11 +16,6 @@
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
 
-  logging:
-    level:
-      feign.Request: DEBUG
-      feign.Response: DEBUG
-      com.override.recognizer_service.feign: DEBUG
 
   management:
     endpoints:
@@ -49,7 +44,6 @@
     options:
       temperature: 0.2
       top_p: 0.9
-      repetition_penalty: 1.1
 
     limit:
       keywords: 3
@@ -59,10 +53,11 @@
     auth-token: ${DEEPSEEK_AUTH_TOKEN:no-auth-token}
     model: "deepseek-chat"
     url: "https://api.deepseek.com/v1/chat/completions"
+
+    #https://api-docs.deepseek.com/api/create-chat-completion
     options:
       temperature: 0.2
       top_p: 0.9
-      repetition_penalty: 1.1
 
   recognizer:
     llm-algo: ACTIVE

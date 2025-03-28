@@ -15,6 +15,10 @@ public class LLMRequestDTO {
 
     private String model;
     private boolean stream;
+    /**
+     * мета информации для настройки работы модели
+     * <a href="https://api-docs.deepseek.com/api/create-chat-completion">deepseek API doc</a>
+     */
     private LlmOptionsProperties options;
     private List<Message> messages;
 
