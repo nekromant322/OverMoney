@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class DeepSeekBalanceService {
 
     @Autowired
-    DeepSeekFeignClient client;
+    private DeepSeekFeignClient client;
 
     @Value("${deepseek.auth-token}")
     private String authToken;
