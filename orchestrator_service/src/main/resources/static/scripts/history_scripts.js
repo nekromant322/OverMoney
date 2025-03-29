@@ -3,6 +3,7 @@ let pageNumber = 0;
 let working = false;
 let options = [];
 let categoryNow;
+let isfiltered = false;
 
 $(document).ready(function () {
     getTransactions();
@@ -26,10 +27,82 @@ $(window).scroll(function () {
     if ($(window).scrollTop() >= $(document).height() - $(window).height() - 10) {
         if (working === false) {
             working = true;
-            getTransactions();
+            if (!isfiltered) {
+                getTransactions();
+            } else {
+                getFilteredTransactions(makePayLoad());
+            }
         }
     }
 })
+
+$(document).on("click", "#transactions-table tr", function () {
+    let trId;
+    trId = $(this).attr('id');
+    getTransactionById(trId);
+    $('#editModal').modal('show');
+})
+
+document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("filter").addEventListener("click", applyFilter);
+});
+
+function applyFilter() {
+    clearTable();
+    pageNumber = 0;
+    isfiltered = true;
+    const searchText = document.getElementById("search-input").value;
+
+    if (searchText === "") {
+        isfiltered = false;
+        getTransactions();
+    } else {
+        getFilteredTransactions(makePayLoad())
+    }
+}
+
+function makePayLoad(){
+    const searchText = document.getElementById("search-input").value;
+
+    return {
+        category: null,
+        amount: null,
+        message: searchText,
+        telegramUserIdList: null,
+        pageSize: pageSize,
+        pageNumber: pageNumber
+    };
+}
+
+function clearTable() {
+    const table = document.getElementById("transactions-table");
+    const tbody = table.getElementsByTagName("tbody")[0];
+
+    // Удаляем все строки в tbody
+    while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+    }
+}
+
+function getFilteredTransactions(payload) {
+    $.ajax({
+        url: './transactions/filtered',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(payload),
+        success: function (data) {
+            prepareAndDraw(data);
+            working = false;
+        },
+        error: function (xhr, status, error) {
+            console.error("Ошибка при получении транзакций:", error);
+        }
+    });
+    // do запрос
+    // он успех >> cleantable()
+    //          >> prepareAndDraw(data)
+    //          >> working = false;
+}
 
 function getTransactions() {
     $.ajax({
@@ -193,7 +266,7 @@ $(function editButtonClick() {
             success: () => {
                 location.reload();
             },
-            error: function(xhr, status, error) {
+            error: function (xhr, status, error) {
                 let err = JSON.parse(xhr.responseText);
                 if (err.message.indexOf("only_positive_amount_constraint") >= 0) {
                     alert("ОШИБКА: Сумма не может быть отрицательной!")
@@ -217,5 +290,9 @@ function deleteButtonClick() {
         }
     })
 }
+
+
+
+
 
 
