@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-@Schema(description = "Диапазон цен")
+@Schema(description = "Диапазон сум")
 public class AmountRangeDTO {
 
     @Schema(description = "минимальное значение", example = "35", nullable = true)

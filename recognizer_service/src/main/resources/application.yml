@@ -51,7 +51,7 @@
       verbose-categories: 8
 
   deepseek:
-    auth-token: ${DEEPSEEK_AUTH_TOKEN:sk-257d9aaa093e4081b1834e0d89d2bab5}
+    auth-token: ${DEEPSEEK_AUTH_TOKEN:no-auth-token}
     model: "deepseek-chat"
     url: "https://api.deepseek.com"
     options:
