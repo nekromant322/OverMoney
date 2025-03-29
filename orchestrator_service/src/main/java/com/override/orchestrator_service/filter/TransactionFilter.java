@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 public class TransactionFilter {
 
+    //todo private List<String> categories??
     private Category category;
     private AmountRangeDTO amount;
     private String message;
