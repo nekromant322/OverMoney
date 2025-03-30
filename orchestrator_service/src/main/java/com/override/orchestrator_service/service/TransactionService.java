@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
-import javax.persistence.EntityManager;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.*;
