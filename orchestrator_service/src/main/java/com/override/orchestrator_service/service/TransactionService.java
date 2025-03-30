@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
+import javax.persistence.EntityManager;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -30,6 +31,9 @@ import java.util.stream.Stream;
 
 @Service
 public class TransactionService {
+
+    @Autowired
+    TransactionSpecification transactionSpecification;
 
     @Autowired
     private TransactionRepository transactionRepository;
@@ -113,7 +117,7 @@ public class TransactionService {
         Long accID = userService.getUserById(id).getAccount().getId();
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by("date").descending());
 
-        Specification<Transaction> spec = TransactionSpecification.createSpecification(accID, filter);
+        Specification<Transaction> spec = transactionSpecification.createSpecification(accID, filter);
 
         List<TransactionDTO> transactionList = transactionRepository.findAll(spec, pageable).getContent().stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
