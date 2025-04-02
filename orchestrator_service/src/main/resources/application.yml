@@ -51,7 +51,8 @@
       Shainara,
       Kovaaf,
       vkusnyjchaj,
-      V_EIIE_V
+      V_EIIE_V,
+      SadWalther
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
