@@ -40,6 +40,6 @@ public class TransactionHandlerImplSumAmountAtFront implements TransactionHandle
 
     @Override
     public String getRegExp() {
-        return "^(\\d*(\\,|\\.)?\\d+)((\\s*)(\\+((\\s*)\\d*(\\,|\\.)?\\d+)(\\s*)))+\\s+([a-zA-Zа-яА-я0-9\\p{P}\\s]+)";
+        return "^(\\d*(\\,|\\.)?\\d+)((\\s*)(\\+((\\s*)\\d*(\\,|\\.)?\\d+)(\\s*)))+\\s+([a-zA-Zа-яёА-ЯЁ0-9\\p{P}\\s]+)";
     }
 }

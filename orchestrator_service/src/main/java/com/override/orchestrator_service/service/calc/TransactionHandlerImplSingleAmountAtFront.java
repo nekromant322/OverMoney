@@ -18,6 +18,6 @@ public class TransactionHandlerImplSingleAmountAtFront implements TransactionHan
 
     @Override
     public String getRegExp() {
-        return "^(\\d*(\\,|\\.)?\\d+)(\\s+)([a-zA-Zа-яА-я0-9\\p{P}\\s]+)";
+        return "^(\\d*(\\,|\\.)?\\d+)(\\s+)([a-zA-Zа-яёА-ЯЁ0-9\\p{P}\\s]+)";
     }
 }
