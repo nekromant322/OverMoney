@@ -208,6 +208,7 @@
 <!--                    <outputChangeLogFile>src/main/resources/db/liquibase=outputChangeLog.xml</outputChangeLogFile>-->
 <!--                </configuration>-->
 <!--            </plugin>-->
+                 
             <plugin>
                 <groupId>pl.project13.maven</groupId>
                 <artifactId>git-commit-id-plugin</artifactId>
