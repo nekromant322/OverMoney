@@ -40,7 +40,7 @@ secretProviderClass:
       secretPath: "secret/prod"
       secretKey: "telegram-bot-token"
     - objectName: "docker-config-json"
-      secretPath: "secret/default"
+      secretPath: "secret/prod"
       secretKey: "docker-config-json"
     - objectName: "deepseek-auth-token"
       secretPath: "secret/prod"
