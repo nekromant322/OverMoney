@@ -52,7 +52,8 @@
       Kovaaf,
       vkusnyjchaj,
       V_EIIE_V,
-      SadWalther
+      SadWalther,
+      bahertylop
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
