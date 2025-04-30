@@ -169,14 +169,14 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
         return userTypes;
     }
 
-    private void sendRegistrationGroupAccountInfo(Long chatId) throws TelegramApiException {
-        SendMessage message = new SendMessage(chatId.toString(), REGISTRATION_INFO_TEXT);
-        execute(message);
+    private void sendRegistrationGroupAccountInfo(Long chatId) {
+        sendMessage(chatId, REGISTRATION_INFO_TEXT);
     }
 
     private void sendMergeRequest(Long chatId) throws TelegramApiException {
         SendMessage message = new SendMessage(chatId.toString(), MERGE_REQUEST_TEXT);
         message.setReplyMarkup(inlineKeyboardMarkupUtil.generateMergeRequestMarkup());
+        message.setDisableNotification(true);
         Message mergeRequestMessage = execute(message);
         mergeRequestService.saveMergeRequestMessage(mergeRequestMessage);
     }
@@ -262,6 +262,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
 
     public StatusMailing sendMessage(Long chatId, String messageText) {
         SendMessage message = new SendMessage(chatId.toString(), messageText);
+        message.setDisableNotification(true);
         try {
             execute(message);
             return StatusMailing.SUCCESS;
@@ -285,6 +286,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
         SendDocument sendDocument = new SendDocument();
         sendDocument.setChatId(userChatId);
         sendDocument.setDocument(new InputFile(file));
+        sendDocument.setDisableNotification(true);
         try {
             execute(sendDocument);
             file.delete();
