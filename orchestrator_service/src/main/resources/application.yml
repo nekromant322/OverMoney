@@ -53,7 +53,8 @@
       vkusnyjchaj,
       V_EIIE_V,
       SadWalther,
-      bahertylop
+      bahertylop,
+      Megokolos
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
