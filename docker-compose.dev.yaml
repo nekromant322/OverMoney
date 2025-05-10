@@ -23,6 +23,17 @@ services:
       POSTGRES_DB: telegram-bot-db
     restart: always
 
+  payment-db:
+    container_name: payment-db
+    image: postgres:14.1-alpine
+    ports:
+      - '5436:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payment-db
+    restart: always
+
   orchestrator:
     container_name: orchestrator
     build:
@@ -101,6 +112,19 @@ services:
       driver: "json-file"
       options:
         max-size: 50m
+
+  payment:
+    container_name: payment
+    build:
+      context: .
+      dockerfile: payment_service/Dockerfile
+    ports:
+      - '8084:8084'
+    environment:
+      _JAVA_OPTIONS: -Xmx256m
+    depends_on:
+      - payment-db
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.0.1
     environment:

@@ -29,6 +29,7 @@ jobs:
             invest: ['invest_service/**']
             wit-ai-go-proxy: ['wit_ai_go_proxy/**']
             frontend: ['frontend/**']
+            payment: ['payment_service/**']
 
   build-and-push-images:
     name: Build & Push images to DockerHub
@@ -101,3 +102,12 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-frontend
+
+      - name: Payment Build and Push to overregistry.ru
+        if: ${{ needs.detect-changes.outputs.payment == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./payment_service/Dockerfile
+          push: true
+          tags: overregistry.ru/overmoney-payment
