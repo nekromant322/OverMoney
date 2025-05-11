@@ -1,9 +1,6 @@
 package com.override.orchestrator_service.controller.rest;
 
-import com.override.dto.TransactionDTO;
-import com.override.dto.TransactionDefineDTO;
-import com.override.dto.TransactionMessageDTO;
-import com.override.dto.TransactionResponseDTO;
+import com.override.dto.*;
 import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
@@ -142,6 +139,11 @@ public class TransactionController {
             throws InstanceNotFoundException {
         return transactionService
                 .findTransactionsByUserIdLimitedAndFiltered(telegramUtils.getTelegramId(principal), filter);
+    }
+
+    @GetMapping("/transactions/sums")
+    List<SumTransactionPerCategoryPerPeriodDTO> getSummedByCategoriesTransactions(Principal principal) {
+        return List.of();
     }
 
     @PostMapping("/transaction/define")
