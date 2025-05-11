@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.*;
+import com.override.dto.constants.Period;
 import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
@@ -142,8 +143,10 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions/sums")
-    List<SumTransactionPerCategoryPerPeriodDTO> getSummedByCategoriesTransactions(Principal principal) {
-        return List.of();
+    List<SumTransactionPerCategoryPerPeriodDTO> getSummedByCategoriesTransactions(Principal principal,
+                                                                                  @RequestParam(defaultValue = "DAY") Period period
+    ) {
+        return transactionService.getSummedTransactionsByUserIdCategoryAndPeriod(telegramUtils.getTelegramId(principal), period);
     }
 
     @PostMapping("/transaction/define")

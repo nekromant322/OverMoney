@@ -18,6 +18,4 @@ public class SumTransactionPerCategoryPerPeriodDTO {
     private Double sum;
 
     private String type;
-
-    private String period;
 }

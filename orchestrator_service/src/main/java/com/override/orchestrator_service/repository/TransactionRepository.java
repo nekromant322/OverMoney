@@ -143,6 +143,48 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             @Param("year") int year,
             @Param("month") int month);
 
+    @Query("select new com.override.dto.SumTransactionPerCategoryPerPeriodDTO(" +
+            "c.id, c.name, COALESCE(CAST(sum(t.amount) AS double), 0.0), cast(c.type as string)) " +
+            "from Transaction t " +
+            "right join Category c ON t.category.id = c.id " +
+            "and t.telegramUserId = :userId " +
+            "and YEAR(t.date) = :year " +
+            "group by c.id, c.name, c.type")
+    List<SumTransactionPerCategoryPerPeriodDTO> findSumTransactionsPerCategoryPerPeriodForAccount(
+        @Param("userId") Long userId,
+        @Param("year") int year
+    );
+
+    @Query("select new com.override.dto.SumTransactionPerCategoryPerPeriodDTO(" +
+            "c.id, c.name, COALESCE(CAST(sum(t.amount) AS double), 0.0), cast(c.type as string)) " +
+            "from Transaction t " +
+            "right join Category c ON t.category.id = c.id " +
+            "and t.telegramUserId = :userId " +
+            "and YEAR(t.date) = :year " +
+            "and MONTH(t.date) = :month " +
+            "group by c.id, c.name, c.type")
+    List<SumTransactionPerCategoryPerPeriodDTO> findSumTransactionsPerCategoryPerPeriodForAccount(
+            @Param("userId") Long userId,
+            @Param("year") int year,
+            @Param("month") int month
+    );
+
+    @Query("select new com.override.dto.SumTransactionPerCategoryPerPeriodDTO(" +
+            "c.id, c.name, COALESCE(CAST(sum(t.amount) AS double), 0.0), cast(c.type as string)) " +
+            "from Transaction t " +
+            "right join Category c ON t.category.id = c.id " +
+            "and t.telegramUserId = :userId " +
+            "and YEAR(t.date) = :year " +
+            "and MONTH(t.date) = :month " +
+            "and DAY(t.date) = :day " +
+            "group by c.id, c.name, c.type")
+    List<SumTransactionPerCategoryPerPeriodDTO> findSumTransactionsPerCategoryPerPeriodForAccount(
+            @Param("userId") Long userId,
+            @Param("year") int year,
+            @Param("month") int month,
+            @Param("day") int day
+    );
+
     @Query(value = "SELECT * FROM transactions WHERE id IN (:ids)", nativeQuery = true)
     List<Transaction> findAllByIds(@Param("ids") List<UUID> ids);
 
