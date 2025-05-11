@@ -12,7 +12,7 @@ spring:
     name: payment-service
 
   datasource:
-    url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payment-db
+    url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payments-db
     username: ${PAYMENT_DB_USER:postgres}
     password: ${PAYMENT_DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
