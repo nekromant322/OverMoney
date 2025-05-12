@@ -143,10 +143,20 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions/sums")
-    List<SumTransactionPerCategoryPerPeriodDTO> getSummedByCategoriesTransactions(Principal principal,
-                                                                                  @RequestParam(defaultValue = "DAY") Period period
+    @Operation(summary = "Получить суммы трат и доходов пользователя по категориям ",
+            description = "Возвращает список категорий с указанием суммы потраченной или полученной для категории")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список трат/доходов получен")
+    })
+    List<SumTransactionPerCategoryPerPeriodDTO> getSummedByCategoriesTransactions(
+            Principal principal,
+            @Parameter(description = "Период для выборки YEAR|MONTH|DAY")
+            @RequestParam(defaultValue = "DAY") Period period
     ) {
-        return transactionService.getSummedTransactionsByUserIdCategoryAndPeriod(telegramUtils.getTelegramId(principal), period);
+        return transactionService.getSummedTransactionsByUserIdCategoryAndPeriod(
+                telegramUtils.getTelegramId(principal),
+                period
+        );
     }
 
     @PostMapping("/transaction/define")

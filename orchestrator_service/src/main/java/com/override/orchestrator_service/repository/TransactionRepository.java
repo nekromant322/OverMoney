@@ -151,8 +151,8 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             "and YEAR(t.date) = :year " +
             "group by c.id, c.name, c.type")
     List<SumTransactionPerCategoryPerPeriodDTO> findSumTransactionsPerCategoryPerPeriodForAccount(
-        @Param("userId") Long userId,
-        @Param("year") int year
+            @Param("userId") Long userId,
+            @Param("year") int year
     );
 
     @Query("select new com.override.dto.SumTransactionPerCategoryPerPeriodDTO(" +

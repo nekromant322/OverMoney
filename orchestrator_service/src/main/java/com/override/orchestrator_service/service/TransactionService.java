@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
-import java.security.Principal;
 import java.time.DateTimeException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -390,7 +389,9 @@ public class TransactionService {
         return transactionRepository.findCountTransactionsLastDays(numberDaysAgo);
     }
 
-    public List<SumTransactionPerCategoryPerPeriodDTO> getSummedTransactionsByUserIdCategoryAndPeriod(Long id, Period period) {
+    public List<SumTransactionPerCategoryPerPeriodDTO> getSummedTransactionsByUserIdCategoryAndPeriod(
+            Long id, Period period
+    ) {
         switch (period) {
             case YEAR:
                 return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
