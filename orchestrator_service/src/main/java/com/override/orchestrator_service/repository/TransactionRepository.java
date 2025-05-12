@@ -144,7 +144,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
             @Param("month") int month);
 
     @Query("select new com.override.dto.SumTransactionPerCategoryPerPeriodDTO(" +
-            "c.id, c.name, COALESCE(CAST(sum(t.amount) AS double), 0.0), cast(c.type as string)) " +
+            "c.id, c.name, COALESCE(CAST(sum(t.amount) AS double), 0.0), c.type) " +
             "from Transaction t " +
             "right join Category c ON t.category.id = c.id " +
             "and t.telegramUserId = :userId " +
@@ -156,7 +156,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     );
 
     @Query("select new com.override.dto.SumTransactionPerCategoryPerPeriodDTO(" +
-            "c.id, c.name, COALESCE(CAST(sum(t.amount) AS double), 0.0), cast(c.type as string)) " +
+            "c.id, c.name, COALESCE(CAST(sum(t.amount) AS double), 0.0), c.type) " +
             "from Transaction t " +
             "right join Category c ON t.category.id = c.id " +
             "and t.telegramUserId = :userId " +
@@ -170,7 +170,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     );
 
     @Query("select new com.override.dto.SumTransactionPerCategoryPerPeriodDTO(" +
-            "c.id, c.name, COALESCE(CAST(sum(t.amount) AS double), 0.0), cast(c.type as string)) " +
+            "c.id, c.name, COALESCE(CAST(sum(t.amount) AS double), 0.0), c.type) " +
             "from Transaction t " +
             "right join Category c ON t.category.id = c.id " +
             "and t.telegramUserId = :userId " +

@@ -1,5 +1,6 @@
 package com.override.dto;
 
+import com.override.dto.constants.Type;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,5 @@ public class SumTransactionPerCategoryPerPeriodDTO {
 
     private Double sum;
 
-    private String type;
+    private Type type;
 }
