@@ -18,7 +18,6 @@
         telegram-bot: http://telegram-bot-service
         recognizer: http://recognizer-service
         invest: http://invest-service
-        payment: http://payment-service
 
   environment: ${ENVIRONMENT:dev}
 
@@ -54,8 +53,7 @@
       vkusnyjchaj,
       V_EIIE_V,
       SadWalther,
-      bahertylop,
-      Megokolos
+      bahertylop
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:

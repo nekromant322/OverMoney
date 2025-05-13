@@ -14,7 +14,6 @@ jobs:
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
       frontend: ${{ steps.filter.outputs.frontend }}
       invest: ${{ steps.filter.outputs.invest }}
-      payment: ${{ steps.filter.outputs.payment }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
@@ -27,7 +26,6 @@ jobs:
             telegram-bot: ['telegram_bot_service/**']
             frontend: ['frontend/**']
             invest: ['invest_service/**']
-            payment: ['payment_service/**']
 
   build-and-push-images:
     name: Build & Push images to DockerHub
@@ -91,12 +89,3 @@ jobs:
           file: ./frontend/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-frontend-qa
-
-      - name: Payment Build and Push to overregistry.ru
-        if: ${{ needs.detect-changes.outputs.payment == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./payment_service/Dockerfile
-          push: true
-          tags: overregistry.ru/overmoney-payment-qa

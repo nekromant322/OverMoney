@@ -20,16 +20,8 @@ scrape_configs:
       - targets: ['recognizer:8080']
         labels:
           group: 'recognizer'
-  - job_name: 'payment_overmoney_monitoring'
-    scrape_interval: 5s
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets: [ 'payment:8084' ]
-        labels:
-          group: 'payment'
   - job_name: 'db_monitoring'
     scrape_interval: 15s
     static_configs:
       - targets: ['postgres-exporter_orchestrator-db:9187']
       - targets: ['postgres-exporter_telegram-bot-db:9187']
-      - targets: ['postgres-exporter_payment-db:9187']
