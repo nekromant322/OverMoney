@@ -15,6 +15,7 @@ jobs:
       invest: ${{ steps.filter.outputs.invest }}
       wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
       frontend: ${{ steps.filter.outputs.frontend }}
+      payment: ${{ steps.filter.outputs.payment }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
