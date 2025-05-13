@@ -1,0 +1,83 @@
+environment: ${ENVIRONMENT:dev}
+
+server:
+  port: 8080
+
+#service:
+#  transaction:
+#    processing: kafka
+
+spring:
+  application:
+    name: payment-service
+
+  datasource:
+    url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payments-db
+    username: ${PAYMENT_DB_USER:postgres}
+    password: ${PAYMENT_DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+
+  liquibase:
+    enabled: true
+    change-log: /db/changelog/db.changelog-master.xml
+
+  profiles:
+    active: ${SPRING_APPLICATION_PROFILE:dev}
+
+#  kafka:
+#    topics:
+#      request: transaction-request-events-topic
+#      response: transaction-response-events-topic
+#    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
+#    producer:
+#      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+#      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+#    consumer:
+#      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+#      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+#      group-id: transaction-payment-events
+#      properties:
+#        spring.json.trusted.packages: com.override.dto
+#        spring:
+#          deserializer:
+#            key:
+#              delegate:
+#                class: org.apache.kafka.common.serialization.StringDeserializer
+#            value:
+#              delegate:
+#                class: org.springframework.kafka.support.serializer.JsonDeserializer
+
+logging:
+  level:
+    org.zalando.logbook: TRACE
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,prometheus,gitInfo
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+
+authorization-header:
+  header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+
+mask-log-spring-boot-starter:
+  maskedFields:
+    - x-internal-key

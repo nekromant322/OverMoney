@@ -23,6 +23,17 @@ services:
       POSTGRES_DB: telegram-bot-db
     restart: always
 
+  payment-db:
+    container_name: payment-db
+    image: postgres:14.1-alpine
+    ports:
+      - '5436:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: payment-db
+    restart: always
+
   orchestrator:
     container_name: orchestrator
     build:
@@ -45,6 +56,7 @@ services:
       SPRING_INTEGRATION_INTERNAL_HOST_RECOGNIZER: http://recognizer:8080
       SPRING_INTEGRATION_INTERNAL_HOST_TELEGRAM_BOT: http://telegram-bot:8082
       SPRING_INTEGRATION_INTERNAL_HOST_INVEST: http://invest:8087
+      SPRING_INTEGRATION_INTERNAL_HOST_PAYMENT: http://payment:8084
 #      закоменти следующую строку если охота пулять транзакции через кафку
       SPRING_SERVICE_TRANSACTION_PROCESSING: orchestrator
     depends_on:
@@ -82,6 +94,7 @@ services:
       INTERNAL_KEY_HEADER: X-INTERNAL-KEY
       SPRING_INTEGRATION_INTERNAL_HOST_ORCHESTRATOR: http://orchestrator:8081
       SPRING_INTEGRATION_INTERNAL_HOST_RECOGNIZER: http://recognizer:8080
+      SPRING_INTEGRATION_INTERNAL_HOST_PAYMENT: http://payment:8084
       #      закоменти следующую строку если охота пулять транзакции через кафку
       SPRING_SERVICE_TRANSACTION_PROCESSING: orchestrator
     depends_on:
@@ -101,6 +114,23 @@ services:
       driver: "json-file"
       options:
         max-size: 50m
+
+  payment:
+    container_name: payment
+    build:
+      context: .
+      dockerfile: payment_service/Dockerfile
+    ports:
+      - '8084:8084'
+    environment:
+      _JAVA_OPTIONS: -Xmx256m
+      PAYMENT_DB_USER: postgres
+      PAYMENT_DB_PASSWORD: postgres
+      PAYMENT_DB_HOST: payment-db
+      PAYMENT_DB_PORT: 5432
+    depends_on:
+      - payment-db
+
   zookeeper:
     image: confluentinc/cp-zookeeper:7.0.1
     environment:
