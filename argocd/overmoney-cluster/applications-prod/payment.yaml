@@ -18,16 +18,16 @@ spec:
     repoURL: https://github.com/nekromant322/OverMoney.git
     targetRevision: HEAD
     path: charts/payment
-    syncPolicy:
-      automated:
-        selfHeal: true
-        prune: true
-      retry:
-        limit: -1
-        backoff:
-          duration: 1m
-          factor: 2
-          maxDuration: 23h
-      syncOptions:
-        - CreateNamespace=true
-        - ApplyOutOfSyncOnly=true
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: -1
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 23h
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true

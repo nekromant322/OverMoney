@@ -1,7 +1,7 @@
 deployment:
   registry: overregistry.ru
   containers:
-    image: nekromant322/overmoney:payment
+    image: nekromant322/overmoney-payment
     env:
       - name: SPRING_APPLICATION_PROFILE
         value: "prod"
