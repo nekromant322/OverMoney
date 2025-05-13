@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: payment-qa
+  name: payment
   namespace: argo-cd
   annotations:
     argocd-image-updater.argoproj.io/image-list: payment=overregistry.ru/overmoney-payment:latest
