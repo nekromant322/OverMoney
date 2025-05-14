@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" fetchpriority="high" as="image" href="/images/logo.svg">
+    <link rel="preload" fetchpriority="high" as="image" href="/images/background.svg">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    </noscript>
+    <link rel="stylesheet" href="/src/styles/main.css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OverMoney - Удобный, функциональный, безопасный трекер финансов">
+    <title>OverMoney</title>
+  </head>
+  <body>
+    <div class="landing__wrapper">
+      <img class="landing__top-background" src="/images/background.svg" alt="background" loading="eager" decoding="async">
+      <img class="landing__bottom-background" src="/images/background.svg" alt="background" loading="eager" decoding="async">
+      <header class="landing__header header">
+        <a href="/">
+          <img src="/images/logo.svg" width="32" height="32" alt="app logo">
+        </a>
+        <div id="login-button">
+          <!-- Telegram widget will be embedded here -->
+        </div>
+        <button id="logout-button" class="login-button" style="display: none;">
+          <span class="login-button__text">Перейти в приложение</span>
+          <img src="/images/telegram.svg" width="24" height="24" alt="telegram logo" class="login-button__icon">
+        </button>
+      </header>
+      <main class="landing__content">
+        <section class="landing__hero">
+          <h1>OverMoney</h1>
+          <h2 class="landing__subtitle">Твой трекер финансов</h2>
+        </section>
+        <div class="landing__features">
+          <div class="feature-card">
+            <div class="feature-card__title">Удобный</div>
+            <div class="feature-card__description">Распознавание текстовых и голосовых сообщений в Telegram боте и создание операций на их основе.</div>
+            <a href="#comfortable" class="feature-card__link">Узнать больше -&#8250;</a>
+          </div>
+          <div class="feature-card">
+            <div class="feature-card__title">Функциональный</div>
+            <div class="feature-card__description">Подробная аналитика финансов. Распределение операций по категориям на основе ML.</div>
+            <a href="#functional" class="feature-card__link">Узнать больше -&#8250;</a>
+          </div>
+          <div class="feature-card">
+            <div class="feature-card__title">Безопасный</div>
+            <div class="feature-card__description">Не требует доступа к SMS на вашем устройстве и не отправляет запросов к API банков.</div>
+            <a href="#safe" class="feature-card__link">Узнать больше -&#8250;</a>
+          </div>
+        </div>
+        <button class="landing__try-app-button button">Попробовать сейчас</button>
+        <section class="landing__info">
+          <div id="comfortable" class="landing__detail feature-details">
+            <div class="feature-details__content-container">
+              <h3>Легко записывайте свои доходы и расходы</h3>
+              <div class="feature-details__description">С OverMoney контролировать финансы проще: записывайте операции текстом или голосом через наш Telegram-бот, указав сумму и описание в свободном формате. Приложение автоматически добавит новую операцию и определит категорию к которой она относится или предоставит возможность указать ее самостоятельно через удобный web интерфейс.</div>
+            </div>
+            <div class="feature-details__image-container">
+              <img fetchpriority="low" class="feature-details__image" src="/images/comfortable.svg" width="320" height="320" alt="comfortable illustration">
+            </div>
+          </div>
+          <div id="functional" class="landing__detail feature-details">
+            <div class="feature-details__content-container">
+              <h3>Группируйте траты по категориям и следите за динамикой</h3>
+              <div class="feature-details__description">OverMoney использует технологии машинного обучения (ML), адаптируясь под ваши привычки и автоматизируя рутинные действия. Встроенные средства аналитики позволяют легко отслеживать динамику, вовремя выявлять ненужные траты и концентировать усилия на достижении ваших финансовых целей.</div>
+            </div>
+            <div class="feature-details__image-container">
+              <img fetchpriority="low" class="feature-details__image" src="/images/functional.svg" width="320" height="320" alt="functional illustration">
+            </div>
+          </div>
+          <div id="safe" class="landing__detail feature-details">
+            <div class="feature-details__content-container">
+              <h3>Не беспокойтесь за безопасность своих данных</h3>
+              <div class="feature-details__description">Конфиденциальность – наш приоритет. В OverMoney все данные шифруются и доступны только вам. Сервис не запрашивает доступ к SMS и банковским API, не передает информацию третьим лицам и не использует её для рекламы.</div>
+            </div>
+            <div class="feature-details__image-container">
+              <img fetchpriority="low" class="feature-details__image" src="/images/safe.svg" width="320" height="320" alt="safe illustration">
+            </div>
+          </div>
+        </section>
+        <section class="landing__feedback">
+          <h3>Напишите нам</h3>
+          <div class="landing__feedback-info">Нашли баг или хотите предложить новую фичу? Расскажите нам чтобы мы могли сделать приложение лучше.</div>
+          <a class="landing__send-feedback link-button" href="mailto:%VITE_SUPPORT_EMAIL%">Отправить email</a>
+        </section>
+      </main>
+      <footer class="landing__footer footer">
+        <a href="/">
+          <img src="/images/logo.svg" width="32" height="32" alt="app logo">
+        </a>
+        <span class="footer__copyright">© 2024 OverMoney</span>
+      </footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

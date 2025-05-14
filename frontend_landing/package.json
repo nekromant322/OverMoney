@@ -1,0 +1,17 @@
+{
+  "name": "landing",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build-production": "vite build --mode production",
+    "build-staging": "vite build --mode staging",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "svgo": "^3.3.2",
+    "vite": "^6.2.0",
+    "vite-plugin-image-optimizer": "^1.1.8"
+  }
+}
