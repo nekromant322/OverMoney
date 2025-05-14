@@ -11,3 +11,4 @@ public class PaymentServiceApplication {
         SpringApplication.run(PaymentServiceApplication.class, args);
     }
 }
+//Тест деплоя образа
