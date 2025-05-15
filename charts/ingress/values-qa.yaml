@@ -13,6 +13,13 @@ rules:
             name: orchestrator-service
             port:
               number: 80
+      - path: /landing
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-landing-service
+            port:
+              number: 80
       - path: /front
         pathType: Prefix
         backend:
