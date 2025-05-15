@@ -2,10 +2,10 @@
 @import url('utils/normalize.css');
 
 /* Global */
-@import url('global/root');
-@import url('global/headings');
-@import url('global/buttons');
-@import url('global/links');
+@import url('global/root.css');
+@import url('global/headings.css');
+@import url('global/buttons.css');
+@import url('global/links.css');
 
 /* Components */
 @import url('app/components/header.css');
