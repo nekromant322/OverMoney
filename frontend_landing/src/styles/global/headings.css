@@ -1,0 +1,52 @@
+h1, h2, h3 {
+  line-height: normal;
+}
+
+h1 {
+  font-size: 72px;
+  font-weight: 800;
+  background-image: linear-gradient(to right, #FF8491, #FFA84F);
+  color: transparent;
+  background-clip: text;
+  display: inline-block;
+  margin: 0;
+}
+
+@media screen and (max-width: 640px) {
+  h1 {
+    font-size: 40px;
+  }
+}
+
+
+h2 {
+  font-size: 32px;
+  font-weight: 500;
+  background-image: linear-gradient(to right, #D16C77, #C9833C);
+  color: transparent;
+  background-clip: text;
+  display: inline-block;
+  margin: 0;
+}
+
+@media screen and (max-width: 640px) {
+  h2 {
+    font-size: 24px;
+  }
+}
+
+h3 {
+  font-size: 32px;
+  font-weight: 700;
+  background-image: linear-gradient(to right, #FF8491, #FFA84F);
+  color: transparent;
+  background-clip: text;
+  margin: 0;
+}
+
+
+@media screen and (max-width: 640px) {
+  h3 {
+    font-size: 24px;
+  }
+}

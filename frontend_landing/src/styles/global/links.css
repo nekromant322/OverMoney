@@ -1,0 +1,8 @@
+a {
+  text-decoration: none;
+  user-select: none;
+}
+
+a:hover {
+  cursor: pointer;
+}

@@ -1,0 +1,21 @@
+.link-button {
+  background-image: linear-gradient(to right, #D16C77, #C9833C);
+  font-size: 16px;
+  line-height: 16px;
+  color: #fff;
+  font-weight: 700;
+  padding: 16px;
+  border-radius: 6px;
+  display: inline-block;
+  transition: filter 250ms ease-in-out;
+}
+
+@media (hover: hover) {
+  .link-button:hover {
+    filter:brightness(1.1);
+  }
+}
+
+.link-button:active {
+  filter:brightness(1.2);
+}

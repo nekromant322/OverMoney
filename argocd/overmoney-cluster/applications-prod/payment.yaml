@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: payment-qa
+  name: payment
   namespace: argo-cd
   annotations:
     argocd-image-updater.argoproj.io/image-list: payment=overregistry.ru/overmoney-payment:latest
@@ -18,16 +18,16 @@ spec:
     repoURL: https://github.com/nekromant322/OverMoney.git
     targetRevision: HEAD
     path: charts/payment
-    syncPolicy:
-      automated:
-        selfHeal: true
-        prune: true
-      retry:
-        limit: -1
-        backoff:
-          duration: 1m
-          factor: 2
-          maxDuration: 23h
-      syncOptions:
-        - CreateNamespace=true
-        - ApplyOutOfSyncOnly=true
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: -1
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 23h
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true

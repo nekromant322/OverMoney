@@ -178,6 +178,8 @@ services:
       driver: "json-file"
       options:
         max-size: 50m
+    depends_on:
+      - payment-db
 
   wit-ai-go-proxy:
     container_name: wit-ai-go-proxy
