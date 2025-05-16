@@ -23,6 +23,102 @@ deployment:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
         readOnly: true
+      - name: grafana-datasources
+        mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
+        subPath: datasources.yaml
+      - name: grafana-alerting
+        mountPath: "/etc/grafana/provisioning/alerting/default-alert-rules.yaml"
+        subPath: default-alert-rules.yaml
+      - name: grafana-notifiers
+        mountPath: "/etc/grafana/provisioning/notifiers/default-contact-points.yaml"
+        subPath: default-contact-points.yaml
+      - name: grafana-notification-templates
+        mountPath: "/etc/grafana/notification-templates/telegram-template.tmpl"
+        subPath: telegram-template.tmpl
   priorityClassName: prod-priority-class
+
+grafana-datasources:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-service:9090
+        access: proxy
+        isDefault: true
+        jsonData:
+          timeInterval: "5s"
+          httpMethod: "POST"
+
+grafana-alerting:
+  default-alert-rules.yaml: |
+    apiVersion: 1
+    groups:
+      - name: Critical Alerts
+        folder: Alerts
+        interval: 10s
+        rules:
+          - title: System CPU Usage > 80
+            condition: B
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 600
+                  to: 0
+                datasourceUid: fejkzilfrpy4gf
+                model:
+                  expr: system_cpu_usage * 100
+                  instant: true
+                  refId: A
+              - refId: B
+                datasourceUid: __expr__
+                model:
+                  conditions:
+                    - evaluator:
+                        params: [80]
+                        type: gt
+                      operator: { type: and }
+                      type: query
+                  expression: A
+                  refId: B
+                  type: threshold
+            noDataState: Alerting
+            execErrState: Alerting
+            for: 1m
+            annotations:
+              description: "Использование CPU > 80%"
+              summary: "Высокая нагрузка CPU"
+            notification_settings:
+              receiver: "Telegram"
+
+grafana-notifiers:
+  default-contact-points.yaml: |
+    apiVersion: 1
+    contactPoints:
+      - name: Telegram
+        receivers:
+          - type: telegram
+            settings:
+              bottoken: "$__env{telegram-bot-token-grafana}"
+              chatid: "$__env{telegram-chat-id-grafana}"
+              message: '{{ template "telegram.message" . }}'
+
+grafana-notification-templates:
+  telegram-template.tmpl: |
+    {{ define "alert_list" }}
+    {{ range . }}
+    {{ if eq .Status "firing" }}🔴{{ else }}🟢{{ end }} <b>{{ .Labels.alertname }}</b>
+    {{ if .Labels.instance }}• <b>Инстанс:</b> {{ .Labels.instance }}{{ end }}
+    {{ if .Labels.job }}• <b>Сервис:</b> {{ .Labels.job }}{{ end }}
+    {{ range .Annotations.SortedPairs }}• <b>{{ .Name }}:</b> {{ .Value }}
+    {{ end }}{{ end }}{{ end }}
+
+    {{ define "telegram.message" }}
+    {{ if gt (len .Alerts.Firing) 0 }}<b>🚨 КРИТИЧЕСКИЕ АЛЕРТЫ</b>
+    {{ template "alert_list" .Alerts.Firing }}{{ end }}
+    {{ if gt (len .Alerts.Resolved) 0 }}<b>✅ РЕШЕННЫЕ АЛЕРТЫ</b>
+    {{ template "alert_list" .Alerts.Resolved }}{{ end }}
+    {{ end }}
+
 secretProviderClass:
   name: vault-default
