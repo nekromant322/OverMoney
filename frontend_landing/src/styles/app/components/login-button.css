@@ -1,0 +1,18 @@
+.login-button {
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 8px;
+}
+
+.login-button__text {
+  color: white;
+  font-size: clamp(12px, 12px + 0.36vw, 16px);
+  line-height: 24px;
+}
+
+.login-button__icon {
+  margin-left: 6px;
+}

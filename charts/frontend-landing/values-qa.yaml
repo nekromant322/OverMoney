@@ -1,0 +1,5 @@
+deployment:
+  registry: overregistry.ru
+  containers:
+    image: nekromant322/overmoney-frontend-landing-qa
+  priorityClassName: qa-priority-class
