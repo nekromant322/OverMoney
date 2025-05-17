@@ -2,6 +2,8 @@ package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.MergeCategoryDTO;
+import com.override.dto.SumTransactionPerCategoryPerPeriodDTO;
+import com.override.dto.constants.Period;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.model.KeywordId;
 import com.override.orchestrator_service.service.CategoryService;
@@ -42,6 +44,24 @@ public class CategoryController {
     })
     public List<CategoryDTO> getCategoriesList(Principal principal) throws InstanceNotFoundException {
         return categoryService.findCategoriesListByUserId(telegramUtils.getTelegramId(principal));
+    }
+
+    @GetMapping("/sums")
+    @Operation(summary = "Получить суммы трат и доходов пользователя по категориям",
+            description = "Возвращает список категорий с указанием суммы потраченной или полученной для категории" +
+                    "за период день/месяц/год")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список трат/доходов получен")
+    })
+    List<SumTransactionPerCategoryPerPeriodDTO> getCategoriesWithSumOfTransactionsPerPeriod(
+            Principal principal,
+            @Parameter(description = "Период для выборки YEAR|MONTH|DAY")
+            @RequestParam(defaultValue = "DAY") Period period
+    ) throws InstanceNotFoundException {
+        return categoryService.getUserCategoriesWithSumOfTransactionsPerPeriod(
+                telegramUtils.getTelegramId(principal),
+                period
+        );
     }
 
     @GetMapping("/{id}")
