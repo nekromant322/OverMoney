@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.*;
-import com.override.dto.constants.Period;
 import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
@@ -140,23 +139,6 @@ public class TransactionController {
             throws InstanceNotFoundException {
         return transactionService
                 .findTransactionsByUserIdLimitedAndFiltered(telegramUtils.getTelegramId(principal), filter);
-    }
-
-    @GetMapping("/transactions/sums")
-    @Operation(summary = "Получить суммы трат и доходов пользователя по категориям ",
-            description = "Возвращает список категорий с указанием суммы потраченной или полученной для категории")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Список трат/доходов получен")
-    })
-    List<SumTransactionPerCategoryPerPeriodDTO> getSummedByCategoriesTransactions(
-            Principal principal,
-            @Parameter(description = "Период для выборки YEAR|MONTH|DAY")
-            @RequestParam(defaultValue = "DAY") Period period
-    ) {
-        return transactionService.getSummedTransactionsByUserIdCategoryAndPeriod(
-                telegramUtils.getTelegramId(principal),
-                period
-        );
     }
 
     @PostMapping("/transaction/define")

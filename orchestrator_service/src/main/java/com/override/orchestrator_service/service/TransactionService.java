@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
-import com.override.dto.constants.Period;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.filter.TransactionFilter;
@@ -387,31 +386,5 @@ public class TransactionService {
     public int getTransactionsCountLastDays(int numberDays) {
         LocalDateTime numberDaysAgo = LocalDateTime.now().minusDays(numberDays);
         return transactionRepository.findCountTransactionsLastDays(numberDaysAgo);
-    }
-
-    public List<SumTransactionPerCategoryPerPeriodDTO> getSummedTransactionsByUserIdCategoryAndPeriod(
-            Long id, Period period
-    ) {
-        switch (period) {
-            case YEAR:
-                return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
-                        id,
-                        LocalDateTime.now().getYear()
-                );
-            case MONTH:
-                return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
-                        id,
-                        LocalDateTime.now().getYear(),
-                        LocalDateTime.now().getMonthValue()
-                );
-            case DAY:
-                return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
-                        id,
-                        LocalDateTime.now().getYear(),
-                        LocalDateTime.now().getMonthValue(),
-                        LocalDateTime.now().getDayOfMonth()
-                );
-        }
-        return List.of();
     }
 }
