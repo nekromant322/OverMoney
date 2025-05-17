@@ -12,6 +12,6 @@ public class SubscriptionController {
     //Todo
     @PostMapping("/check")
     public String checkSubscription(AccountDataDTO accountDataDTO) {
-        return "Дата истечений подписки";
+        return "Дата истечения подписки";
     }
 }
