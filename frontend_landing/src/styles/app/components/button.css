@@ -1,0 +1,21 @@
+.button {
+  background-image: linear-gradient(to right, #D16C77, #C9833C);
+  font-size: 16px;
+  line-height: 16px;
+  color: #fff;
+  font-weight: 700;
+  padding: 16px;
+  border: none;
+  border-radius: 6px;
+  transition: filter 250ms ease-in-out;
+}
+
+@media (hover: hover) {
+  .button:hover {
+    filter:brightness(1.1);
+  }
+}
+
+.button:active {
+  filter:brightness(1.2);
+}
