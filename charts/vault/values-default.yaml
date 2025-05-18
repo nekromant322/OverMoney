@@ -9,6 +9,3 @@ secretProviderClass:
     - objectName: "telegram-bot-token-grafana"
       secretPath: "secret/grafana"
       secretKey: "telegram-bot-token-grafana"
-    - objectName: "telegram-chat-id-grafana"
-      secretPath: "secret/grafana"
-      secretKey: "telegram-chat-id-grafana"

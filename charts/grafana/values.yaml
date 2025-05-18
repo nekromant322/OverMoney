@@ -54,11 +54,13 @@ grafana-alerting:
   default-alert-rules.yaml: |
     apiVersion: 1
     groups:
-      - name: Critical Alerts
+      - orgId: 1
+        name: Critical Alerts
         folder: Alerts
         interval: 10s
         rules:
-          - title: System CPU Usage > 80
+          - uid: dejlx8yk10flse
+            title: System CPU Usage > 80
             condition: B
             data:
               - refId: A
@@ -67,29 +69,116 @@ grafana-alerting:
                   to: 0
                 datasourceUid: fejkzilfrpy4gf
                 model:
+                  disableTextWrap: false
+                  editorMode: code
                   expr: system_cpu_usage * 100
+                  fullMetaSearch: false
+                  includeNullMetadata: true
                   instant: true
+                  intervalMs: 1000
+                  legendFormat: __auto
+                  maxDataPoints: 43200
+                  range: false
                   refId: A
+                  useBackend: false
               - refId: B
                 datasourceUid: __expr__
                 model:
                   conditions:
                     - evaluator:
-                        params: [80]
+                        params:
+                          - 80
                         type: gt
-                      operator: { type: and }
+                      operator:
+                        type: and
+                      query:
+                        params:
+                          - C
+                      reducer:
+                        params: []
+                        type: last
                       type: query
+                  datasource:
+                    type: __expr__
+                    uid: __expr__
                   expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 43200
                   refId: B
                   type: threshold
             noDataState: Alerting
             execErrState: Alerting
             for: 1m
             annotations:
-              description: "Использование CPU > 80%"
-              summary: "Высокая нагрузка CPU"
+              description: Использование CPU > 80%
+              summary: Высокая нагрузка CPU
+            isPaused: false
             notification_settings:
-              receiver: "Telegram"
+              receiver: Telegram
+          - uid: cejm0732h5khsb
+            title: Heap Used > 80
+            condition: C
+            data:
+              - refId: A
+                relativeTimeRange:
+                  from: 3600
+                  to: 0
+                datasourceUid: fejkzilfrpy4gf
+                model:
+                  adhocFilters: []
+                  datasource:
+                    type: prometheus
+                    uid: fejkzilfrpy4gf
+                  editorMode: code
+                  expr: jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"} * 100
+                  format: time_series
+                  instant: true
+                  interval: ""
+                  intervalFactor: 1
+                  intervalMs: 30000
+                  legendFormat: ""
+                  maxDataPoints: 100
+                  range: false
+                  refId: A
+                  step: 14400
+              - refId: C
+                datasourceUid: __expr__
+                model:
+                  conditions:
+                    - evaluator:
+                        params:
+                          - 80
+                        type: gt
+                      operator:
+                        type: and
+                      query:
+                        params:
+                          - C
+                      reducer:
+                        params: []
+                        type: last
+                      type: query
+                  datasource:
+                    type: __expr__
+                    uid: __expr__
+                  expression: A
+                  intervalMs: 1000
+                  maxDataPoints: 43200
+                  refId: C
+                  type: threshold
+            dashboardUid: spring_boot_21
+            panelId: 58
+            noDataState: Alerting
+            execErrState: Alerting
+            for: 1m
+            annotations:
+              __dashboardUid__: spring_boot_21
+              __panelId__: "58"
+              description: Использование памяти JVM > 80%
+              summary: Высокая загрузка памяти
+            isPaused: false
+            notification_settings:
+              receiver: Telegram
 
 grafana-notifiers:
   default-contact-points.yaml: |
@@ -100,7 +189,7 @@ grafana-notifiers:
           - type: telegram
             settings:
               bottoken: "$__env{telegram-bot-token-grafana}"
-              chatid: "$__env{telegram-chat-id-grafana}"
+              chatid: "-4795149880"
               message: '{{ template "telegram.message" . }}'
 
 grafana-notification-templates:
