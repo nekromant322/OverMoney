@@ -87,6 +87,24 @@ public class CategoryServiceTest {
     }
 
     @Test
+    public void saveCategoryWhenNameIsBlank() {
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setName("   ");
+
+        assertThrows(IllegalArgumentException.class,
+                () -> categoryService.saveCategoryForAcc(1L, categoryDTO));
+    }
+
+    @Test
+    public void saveCategoryWhenNameIsTooLong() {
+        CategoryDTO categoryDTO = new CategoryDTO();
+        categoryDTO.setName("a".repeat(50));
+
+        assertThrows(IllegalArgumentException.class,
+                () -> categoryService.saveCategoryForAcc(1L, categoryDTO));
+    }
+
+    @Test
     void saveAllCategoriesTest() {
         Set<Category> categories = new HashSet<>();
         Category category1 = TestFieldsUtil.generateTestCategory();
