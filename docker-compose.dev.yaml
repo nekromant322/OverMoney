@@ -31,7 +31,7 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: payment-db
+      POSTGRES_DB: payments-db
     restart: always
 
   orchestrator:

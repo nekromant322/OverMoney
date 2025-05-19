@@ -17,4 +17,20 @@ public class KafkaConfig {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    NewTopic requestSubscriptionTopic() {
+        return TopicBuilder.name("subscription-request-events-topic")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    NewTopic responseSubscriptionTopic() {
+        return TopicBuilder.name("subscription-response-events-topic")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
 }
