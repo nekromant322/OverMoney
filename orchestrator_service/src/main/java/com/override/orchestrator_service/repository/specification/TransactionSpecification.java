@@ -2,15 +2,22 @@ package com.override.orchestrator_service.repository.specification;
 
 import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.model.Transaction;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class TransactionSpecification {
 
-    public static Specification<Transaction> createSpecification(Long accountId, TransactionFilter filters) {
+    @Value("${search.accuracy-threshold}")
+    private double accuracyThreshold;
+
+    public Specification<Transaction> createSpecification(Long accountId, TransactionFilter filters) {
 
         return (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
@@ -25,9 +32,20 @@ public class TransactionSpecification {
             }
 
             if (filters.getMessage() != null) {
-                predicates.add(criteriaBuilder.like(
+                Predicate likePredicate = criteriaBuilder.like(
                         criteriaBuilder.lower(root.get("message")),
-                        "%" + filters.getMessage().toLowerCase() + "%"));
+                        "%" + filters.getMessage().toLowerCase() + "%");
+
+                Expression<Double> similarityExpr = criteriaBuilder.function(
+                        "similarity", Double.class,
+                        criteriaBuilder.lower(root.get("message")),
+                        criteriaBuilder.literal(filters.getMessage().toLowerCase()));
+
+                Predicate similarityPredicate = criteriaBuilder.greaterThan(similarityExpr, accuracyThreshold);
+
+                Predicate messagePredicate = criteriaBuilder.or(likePredicate, similarityPredicate);
+
+                predicates.add(messagePredicate);
             }
 
             if (filters.getDate() != null) {
