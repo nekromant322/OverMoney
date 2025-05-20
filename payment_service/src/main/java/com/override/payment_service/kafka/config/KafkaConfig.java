@@ -11,6 +11,14 @@ import org.springframework.kafka.config.TopicBuilder;
 public class KafkaConfig {
 
     @Bean
+    NewTopic requestTopic() {
+        return TopicBuilder.name("transaction-request-events-topic")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
     NewTopic responseTopic() {
         return TopicBuilder.name("transaction-response-events-topic")
                 .partitions(3)
