@@ -1,10 +1,9 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.AnalyticsAnnualAndMonthlyReportDTO;
-import com.override.dto.AnalyticsDataDTO;
-import com.override.dto.AnalyticsDataMonthDTO;
-import com.override.dto.AnalyticsMonthlyReportForYearDTO;
+import com.override.dto.*;
+import com.override.dto.constants.Period;
 import com.override.dto.constants.Type;
+import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +12,8 @@ import javax.management.InstanceNotFoundException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,5 +89,50 @@ public class AnalyticService {
             throws InstanceNotFoundException {
         Long accountId = accountService.getAccountByUserId(telegramId).getId();
         return transactionService.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
+    }
+
+    public List<SumTransactionPerCategoryPerPeriodDTO> getUserCategoriesWithSumOfTransactionsPerPeriod(
+            Long id, Period period
+    ) throws InstanceNotFoundException {
+        Long accID = userService.getUserById(id).getAccount().getId();
+
+        List<SumTransactionPerCategoryPerPeriodDTO> sumsList = new ArrayList<>();
+
+        switch (period) {
+            case YEAR:
+                sumsList = categoryRepository.getCategoriesWithSumOfTransactionsByPeriodForAccount(
+                        accID,
+                        LocalDateTime.now().getYear()
+                );
+                break;
+            case MONTH:
+                sumsList = categoryRepository.getCategoriesWithSumOfTransactionsByPeriodForAccount(
+                        accID,
+                        LocalDateTime.now().getYear(),
+                        LocalDateTime.now().getMonthValue()
+                );
+                break;
+            case DAY:
+                sumsList = categoryRepository.getCategoriesWithSumOfTransactionsByPeriodForAccount(
+                        accID,
+                        LocalDateTime.now().getYear(),
+                        LocalDateTime.now().getMonthValue(),
+                        LocalDateTime.now().getDayOfMonth()
+                );
+        }
+
+        List<Category> categoriesList = categoryRepository.findAllByUserId(accID);
+
+        for (Category category : categoriesList) {
+            if (sumsList.stream().noneMatch(x -> x.getName().equals(category.getName()))) {
+                sumsList.add(SumTransactionPerCategoryPerPeriodDTO.builder()
+                        .id(category.getId())
+                        .name(category.getName())
+                        .sum(0.0)
+                        .type(category.getType())
+                        .build());
+            }
+        }
+        return sumsList;
     }
 }
