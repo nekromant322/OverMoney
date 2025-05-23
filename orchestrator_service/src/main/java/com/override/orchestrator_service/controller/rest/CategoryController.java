@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
 
@@ -105,8 +106,8 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Пользователь не найден")
     })
     public ResponseEntity<HttpStatus> saveCategoryForAcc(Principal principal,
-                                                         @Parameter(description = "Данные категории") @RequestBody
-                                                         CategoryDTO category) throws InstanceNotFoundException {
+            @Parameter(description = "Данные категории")
+            @Valid @RequestBody CategoryDTO category) throws InstanceNotFoundException {
         categoryService.saveCategoryForAcc(telegramUtils.getTelegramId(principal), category);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
@@ -119,8 +120,8 @@ public class CategoryController {
             @ApiResponse(responseCode = "404", description = "Пользователь или категория не найдены")
     })
     public ResponseEntity<HttpStatus> updateCategoryForAcc(Principal principal,
-                                                           @Parameter(description = "Данные категории") @RequestBody
-                                                           CategoryDTO category) throws InstanceNotFoundException {
+             @Parameter(description = "Данные категории")
+             @Valid @RequestBody CategoryDTO category) throws InstanceNotFoundException {
         categoryService.updateCategoryForAcc(telegramUtils.getTelegramId(principal), category);
         return ResponseEntity.ok(HttpStatus.CREATED);
     }

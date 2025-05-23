@@ -87,6 +87,8 @@ public class CategoryService {
     }
 
     public void saveCategoryForAcc(Long id, CategoryDTO categoryDTO) throws InstanceNotFoundException {
+        validateCategoryName(categoryDTO.getName());
+
         OverMoneyAccount account = accountService.getAccountByUserId(id);
 
         try {
@@ -98,10 +100,21 @@ public class CategoryService {
     }
 
     public void updateCategoryForAcc(Long id, CategoryDTO categoryDTO) throws InstanceNotFoundException {
+        validateCategoryName(categoryDTO.getName());
+
         OverMoneyAccount account = accountService.getAccountByUserId(id);
         Category updatedCategory = categoryMapper.mapCategoryDTOToCategory(categoryDTO, account);
         updatedCategory.setId(categoryDTO.getId());
         categoryRepository.save(updatedCategory);
+    }
+
+    private void validateCategoryName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new IllegalArgumentException("Название категории не может быть пустым");
+        }
+        if (name.length() > 40) {
+            throw new IllegalArgumentException("Название категории не может быть длиннее 40 символов");
+        }
     }
 
     public void saveAllCategories(Set<Category> categories) {
