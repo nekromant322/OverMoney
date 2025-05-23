@@ -609,7 +609,7 @@ function drawCategory(category, length) {
             }
         });
 
-        $('.button-edit-category').click(function () {
+        $('.button-edit-category').click(async function () {
             let idCategory = newCategory.dataset.id;
             let keywordsCategory = category.keywords;
             let nameValue = $('#formModalCategory').find('#name').val();
@@ -621,8 +621,8 @@ function drawCategory(category, length) {
                     name: nameValue,
                     type: typeValue,
                     keywords: keywordsCategory
-                }
-                updateCategory(data);
+                };
+                await updateCategory(data);
                 $(this).parents('.modal-category-fade').fadeOut();
                 location.reload();
             }
@@ -723,22 +723,19 @@ function createNewCategory(category) {
 }
 
 function updateCategory(category) {
-    $.ajax({
+    return $.ajax({
         type: 'PUT',
         url: './categories/',
         headers: {
             'Content-Type': 'application/json',
         },
         data: JSON.stringify(category),
-        async: false,
         dataType: 'json',
-        success: function () {
-            console.log("Successfully updated categories")
-        },
-        error: function (error) {
-            console.log(error)
-        }
-    })
+    }).fail(function(error) {
+        console.error("Ошибка при обновлении категории", error);
+        window.alert("Ошибка при обновлении категории");
+        location.reload();
+    });
 }
 
 function mergeCategory(mergeCategoryDTO) {

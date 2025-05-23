@@ -1,9 +1,7 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.AnalyticsAnnualAndMonthlyReportDTO;
-import com.override.dto.AnalyticsDataDTO;
-import com.override.dto.AnalyticsDataMonthDTO;
-import com.override.dto.AnalyticsMonthlyReportForYearDTO;
+import com.override.dto.*;
+import com.override.dto.constants.Period;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import javax.management.InstanceNotFoundException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,5 +87,32 @@ public class AnalyticService {
             throws InstanceNotFoundException {
         Long accountId = accountService.getAccountByUserId(telegramId).getId();
         return transactionService.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
+    }
+
+    public List<SumTransactionPerCategoryPerPeriodDTO> getUserCategoriesWithSumOfTransactionsPerPeriod(
+            Long id, Period period
+    ) throws InstanceNotFoundException {
+        Long accID = userService.getUserById(id).getAccount().getId();
+        switch (period) {
+            case YEAR:
+                return categoryRepository.getCategoriesWithSumOfTransactionsByPeriodForAccount(
+                        accID,
+                        LocalDateTime.now().getYear()
+                );
+            case MONTH:
+                return categoryRepository.getCategoriesWithSumOfTransactionsByPeriodForAccount(
+                        accID,
+                        LocalDateTime.now().getYear(),
+                        LocalDateTime.now().getMonthValue()
+                );
+            case DAY:
+                return categoryRepository.getCategoriesWithSumOfTransactionsByPeriodForAccount(
+                        accID,
+                        LocalDateTime.now().getYear(),
+                        LocalDateTime.now().getMonthValue(),
+                        LocalDateTime.now().getDayOfMonth()
+                );
+        }
+        return List.of();
     }
 }
