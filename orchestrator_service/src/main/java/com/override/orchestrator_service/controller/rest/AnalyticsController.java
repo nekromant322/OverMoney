@@ -1,19 +1,18 @@
 package com.override.orchestrator_service.controller.rest;
 
-import com.override.dto.AnalyticsAnnualAndMonthlyReportDTO;
-import com.override.dto.AnalyticsDataDTO;
-import com.override.dto.AnalyticsDataMonthDTO;
-import com.override.dto.AnalyticsMonthlyReportForYearDTO;
+import com.override.dto.*;
+import com.override.dto.constants.Period;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.service.AnalyticService;
 import com.override.orchestrator_service.service.OverMoneyAccountService;
 import com.override.orchestrator_service.util.TelegramUtils;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
@@ -64,5 +63,23 @@ public class AnalyticsController {
             throws InstanceNotFoundException {
         return analyticService.findAnnualAndMonthlyTotalStatisticsByAccountId(telegramUtils.getTelegramId(principal),
                 year);
+    }
+
+    @GetMapping("/categories/sums")
+    @Operation(summary = "Получить суммы трат и доходов пользователя по категориям",
+            description = "Возвращает список категорий с указанием суммы потраченной или полученной для категории" +
+                    "за период день/месяц/год")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список трат/доходов получен")
+    })
+    List<SumTransactionPerCategoryPerPeriodDTO> getCategoriesWithSumOfTransactionsPerPeriod(
+            Principal principal,
+            @Parameter(description = "Период для выборки YEAR|MONTH|DAY")
+            @RequestParam(defaultValue = "DAY") Period period
+    ) throws InstanceNotFoundException {
+        return analyticService.getUserCategoriesWithSumOfTransactionsPerPeriod(
+                telegramUtils.getTelegramId(principal),
+                period
+        );
     }
 }

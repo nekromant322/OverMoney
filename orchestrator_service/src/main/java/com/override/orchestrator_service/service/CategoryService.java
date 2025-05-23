@@ -2,8 +2,6 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.MergeCategoryDTO;
-import com.override.dto.SumTransactionPerCategoryPerPeriodDTO;
-import com.override.dto.constants.Period;
 import com.override.dto.constants.Type;
 import com.override.orchestrator_service.config.DefaultCategoryProperties;
 import com.override.orchestrator_service.exception.CategoryNameIsNotUniqueException;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.management.InstanceNotFoundException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -140,32 +137,5 @@ public class CategoryService {
         return categoryDTOList.stream()
                 .filter(categoryDTO -> categoryDTOName.equals(categoryDTO.getName()))
                 .findFirst();
-    }
-
-    public List<SumTransactionPerCategoryPerPeriodDTO> getUserCategoriesWithSumOfTransactionsPerPeriod(
-            Long id, Period period
-    ) throws InstanceNotFoundException {
-        Long accID = userService.getUserById(id).getAccount().getId();
-        switch (period) {
-            case YEAR:
-                return categoryRepository.getCategoriesWithSumOfTransactionsByPeriodForAccount(
-                        accID,
-                        LocalDateTime.now().getYear()
-                );
-            case MONTH:
-                return categoryRepository.getCategoriesWithSumOfTransactionsByPeriodForAccount(
-                        accID,
-                        LocalDateTime.now().getYear(),
-                        LocalDateTime.now().getMonthValue()
-                );
-            case DAY:
-                return categoryRepository.getCategoriesWithSumOfTransactionsByPeriodForAccount(
-                        accID,
-                        LocalDateTime.now().getYear(),
-                        LocalDateTime.now().getMonthValue(),
-                        LocalDateTime.now().getDayOfMonth()
-                );
-        }
-        return List.of();
     }
 }
