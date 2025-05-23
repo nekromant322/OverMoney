@@ -28,7 +28,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Set<Category> findAllByAccount_Id(Long id);
 
     @Query("SELECT c FROM Category c WHERE c.account.id = :id")
-    List<Category> findAllByUserId(@Param("id") String accountId);
+    List<Category> findAllByUserId(@Param("id") Long accountId);
 
     @Query("SELECT c FROM Category c WHERE c.account.id = :id AND c.type = :type")
     List<Category> findAllByTypeAndAccId(@Param("id") Long accountId, @Param("type") Type type);
@@ -49,7 +49,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "FROM Category c " +
             "LEFT JOIN Transaction t on c.id = t.category.id " +
             "WHERE c.account.id = :accountId " +
-            "AND (t.date IS NULL OR YEAR(t.date) = :year) " +
+            "AND YEAR(t.date) = :year " +
             "GROUP BY c.id, c.name, c.type")
     List<SumTransactionPerCategoryPerPeriodDTO> getCategoriesWithSumOfTransactionsByPeriodForAccount(
             @Param("accountId") Long accountId,
@@ -60,9 +60,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "FROM Category c " +
             "LEFT JOIN Transaction t on c.id = t.category.id " +
             "WHERE c.account.id = :accountId " +
-            "AND (t.date IS NULL " +
-            "OR (YEAR(t.date) = :year " +
-            "AND MONTH(t.date) = :month)) " +
+            "AND (YEAR(t.date) = :year " +
+            "AND MONTH(t.date) = :month) " +
             "GROUP BY c.id, c.name, c.type")
     List<SumTransactionPerCategoryPerPeriodDTO> getCategoriesWithSumOfTransactionsByPeriodForAccount(
             @Param("accountId") Long accountId,
@@ -74,10 +73,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             "FROM Category c " +
             "LEFT JOIN Transaction t on c.id = t.category.id " +
             "WHERE c.account.id = :accountId " +
-            "AND (t.date IS NULL " +
-            "OR (YEAR(t.date) = :year " +
+            "AND YEAR(t.date) = :year " +
             "AND MONTH(t.date) = :month " +
-            "AND DAY(t.date) = :day)) " +
+            "AND DAY(t.date) = :day " +
             "GROUP BY c.id, c.name, c.type")
     List<SumTransactionPerCategoryPerPeriodDTO> getCategoriesWithSumOfTransactionsByPeriodForAccount(
             @Param("accountId") Long accountId,
