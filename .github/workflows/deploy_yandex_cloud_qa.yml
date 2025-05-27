@@ -27,7 +27,7 @@ jobs:
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
             frontend: ['frontend/**']
-            frontend-landing: ['frontend_landing/**']
+            frontend-landing: ['frontend/landing/**']
             invest: ['invest_service/**']
             payment: ['payment_service/**']
 
@@ -99,7 +99,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./frontend_landing/Dockerfile
+          file: ./frontend/landing/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-frontend-landing-qa
           build-args: |

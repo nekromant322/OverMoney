@@ -31,7 +31,7 @@ jobs:
             invest: ['invest_service/**']
             wit-ai-go-proxy: ['wit_ai_go_proxy/**']
             frontend: ['frontend/**']
-            frontend-landing: ['frontend_landing/**']
+            frontend-landing: ['frontend/landing/**']
             payment: ['payment_service/**']
 
   build-and-push-images:
@@ -111,7 +111,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          file: ./frontend_landing/Dockerfile
+          file: ./frontend/landing/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-frontend-landing
           build-args: |
