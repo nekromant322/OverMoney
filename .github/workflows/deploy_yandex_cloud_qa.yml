@@ -13,7 +13,9 @@ jobs:
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
       frontend: ${{ steps.filter.outputs.frontend }}
+      frontend-landing: ${{ steps.filter.outputs.frontend-landing }}
       invest: ${{ steps.filter.outputs.invest }}
+      payment: ${{ steps.filter.outputs.payment }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v2
@@ -24,8 +26,10 @@ jobs:
             recognizer: ['recognizer_service/**']
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
-            frontend: [frontend/**']
+            frontend: ['frontend/**']
+            frontend-landing: ['frontend_landing/**']
             invest: ['invest_service/**']
+            payment: ['payment_service/**']
 
   build-and-push-images:
     name: Build & Push images to DockerHub
@@ -33,52 +37,79 @@ jobs:
     needs: [detect-changes]
     steps:
       - uses: actions/checkout@v4
-      - name: Login to DockerHub
+      - name: Login to private Docker registry (overregistry.ru)
         uses: docker/login-action@v3
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          registry: overregistry.ru
+          username: ${{ secrets.DOCKER_PRIVATE_REGISTRY_USERNAME }}
+          password: ${{ secrets.DOCKER_PRIVATE_REGISTRY_PASSWORD }}
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
         with:
           version: v0.7.0
 
-      - name: Recognizer Build and Push to Dockerhub
+      - name: Recognizer Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /recognizer_service/Dockerfile
+          context: .
+          file: ./recognizer_service/Dockerfile
           push: true
-          tags: nekromant322/overmoney-recognizer-qa
+          tags: overregistry.ru/overmoney-recognizer-qa
 
-      - name: Orchestrator Build and Push to Dockerhub
+      - name: Orchestrator Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /orchestrator_service/Dockerfile
+          context: .
+          file: ./orchestrator_service/Dockerfile
           push: true
-          tags: nekromant322/overmoney-orchestrator-qa
+          tags: overregistry.ru/overmoney-orchestrator-qa
 
-      - name: Telegram Bot Build and Push to Dockerhub
+      - name: Telegram Bot Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /telegram_bot_service/Dockerfile
+          context: .
+          file: ./telegram_bot_service/Dockerfile
           push: true
-          tags: nekromant322/overmoney-telegram-bot-qa
+          tags: overregistry.ru/overmoney-telegram-bot-qa
 
-      - name: Invest Build and Push to Dockerhub
+      - name: Invest Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.invest == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /invest_service/Dockerfile
+          context: .
+          file: ./invest_service/Dockerfile
           push: true
-          tags: nekromant322/overmoney-invest-qa
+          tags: overregistry.ru/overmoney-invest-qa
 
-      - name: Frontend Build and Push to Dockerhub
+      - name: Frontend Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
         uses: docker/build-push-action@v2
         with:
-          file: /frontend/Dockerfile
+          context: .
+          file: ./frontend/Dockerfile
           push: true
-          tags: nekromant322/overmoney-frontend-qa
+          tags: overregistry.ru/overmoney-frontend-qa
+
+      - name: Frontend Landing Build and Push to overregistry.ru
+        if: ${{ needs.detect-changes.outputs.frontend-landing == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./frontend_landing/Dockerfile
+          push: true
+          tags: overregistry.ru/overmoney-frontend-landing-qa
+          build-args: |
+            BUILD_CMD=build-staging
+
+      - name: Payment Build and Push to overregistry.ru
+        if: ${{ needs.detect-changes.outputs.payment == 'true' }}
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./payment_service/Dockerfile
+          push: true
+          tags: overregistry.ru/overmoney-payment-qa

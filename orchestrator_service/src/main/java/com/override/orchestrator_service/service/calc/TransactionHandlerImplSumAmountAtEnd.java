@@ -38,7 +38,7 @@ public class TransactionHandlerImplSumAmountAtEnd implements TransactionHandler 
 
     @Override
     public String getRegExp() {
-        return "([a-zA-Zа-яА-я0-9\\p{P}\\s]+)(\\s+)((\\s*)(\\d*(\\,|\\.)?\\d+)(\\s*)\\+(\\s*))*((\\s*)\\d*(\\,|\\.)?" +
-                "\\d+)$";
+        return "([a-zA-Zа-яёА-ЯЁ0-9\\p{P}\\s]+)(\\s+)((\\s*)(\\d*(\\,|\\.)?\\d+)(\\s*)\\+(\\s*))*((\\s*)\\d*(\\,|" +
+                "\\.)?\\d+)$";
     }
 }

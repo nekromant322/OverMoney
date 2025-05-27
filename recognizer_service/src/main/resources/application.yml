@@ -16,15 +16,12 @@
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
 
-  logging:
-    level:
-      org.zalando.logbook: TRACE
 
   management:
     endpoints:
       web:
         exposure:
-          include: health,prometheus
+          include: health,prometheus,gitInfo
     metrics:
       export:
         prometheus:
@@ -42,12 +39,32 @@
       - voiceMessageBytes
 
   llm:
-    model: "llama3.1"
+    model: "llama3.2:latest"
     url: "http://195.133.49.108:11434/api/chat"
+    options:
+      temperature: 0.2
+      top_p: 0.9
+      repetition_penalty: 1.1
+
+    limit:
+      keywords: 3
+      verbose-categories: 8
+
+  deepseek:
+    auth-token: ${DEEPSEEK_AUTH_TOKEN:no-auth-token}
+    model: "deepseek-chat"
+    url: "https://api.deepseek.com"
+    options:
+      temperature: 0.2
+      top_p: 0.9
+      repetition_penalty: 1.1
 
   recognizer:
     llm-algo: ACTIVE
     levenshtein-algo: ACTIVE
+    deep-seek-algo: ACTIVE
 
+  # Валидность подсказки
+    min-accuracy: 0.7 # Минимальная точность подсказки
 
 

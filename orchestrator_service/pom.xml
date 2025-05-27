@@ -8,6 +8,7 @@
         <version>2.7.10</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.overmoney</groupId>
     <artifactId>orchestrator_service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
@@ -159,6 +160,12 @@
             <artifactId>shedlock-provider-jdbc-template</artifactId>
             <version>4.33.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.overmoney</groupId>
+            <artifactId>actuator_git_info_starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
     <dependencyManagement>
@@ -172,7 +179,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
     <build>
         <plugins>
             <plugin>
@@ -202,6 +208,25 @@
 <!--                    <outputChangeLogFile>src/main/resources/db/liquibase=outputChangeLog.xml</outputChangeLogFile>-->
 <!--                </configuration>-->
 <!--            </plugin>-->
+                 
+            <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <version>4.9.10</version>
+                <executions>
+                    <execution>
+                        <id>generate-git-info</id>
+                        <goals>
+                            <goal>revision</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                    <gitPropertiesFile>${project.build.outputDirectory}/git.properties</gitPropertiesFile>
+                    <prefix>app.git</prefix>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>

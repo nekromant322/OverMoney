@@ -2,6 +2,7 @@ package com.override.orchestrator_service.feign;
 
 import com.override.dto.CategoryDTO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,4 +17,7 @@ public interface RecognizerFeign {
     void recognizeCategory(@RequestParam String message,
                                                   @RequestParam UUID transactionId,
                                                   @RequestBody List<CategoryDTO> categories);
+
+    @GetMapping("/recognizer/deepseek/balance")
+    String getBalance();
 }

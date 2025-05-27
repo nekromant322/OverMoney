@@ -18,6 +18,7 @@
         telegram-bot: http://telegram-bot-service
         recognizer: http://recognizer-service
         invest: http://invest-service
+        payment: http://payment-service
 
   environment: ${ENVIRONMENT:dev}
 
@@ -48,19 +49,13 @@
     allowed_users:
       Marandyuk_Anatolii,
       HomerTheBald,
-      shapran_dmitry,
-      Galactic_Alex,
-      coderror404,
       Shainara,
-      Kulpinov_Evgeny,
-      Ubeev_Valerii,
-      Denis_Shvartcer,
-      NikoTiN_RnD,
-      annov4,
-      Alego22,
-      Katz_Soviet,
-      developing_warrior,
-      Kovaaf
+      Kovaaf,
+      vkusnyjchaj,
+      V_EIIE_V,
+      SadWalther,
+      bahertylop,
+      Megokolos
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
@@ -151,7 +146,8 @@
     endpoints:
       web:
         exposure:
-          include: health,prometheus
+          include: health,prometheus,info,gitInfo
+
     metrics:
       export:
         prometheus:

@@ -2,6 +2,7 @@ package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.BugReportDTO;
 import com.override.dto.MailDTO;
+import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.service.BugReportService;
 import com.override.orchestrator_service.service.OverMoneyAccountService;
 import com.override.orchestrator_service.service.TelegramBotRequestService;
@@ -26,6 +27,9 @@ public class AdminController {
 
     @Autowired
     private OverMoneyAccountService accountService;
+
+    @Autowired
+    private RecognizerFeign recognizerFeign;
 
     @PostMapping("/announce")
     public void sendAnnounce(@RequestBody String text) {
@@ -60,5 +64,11 @@ public class AdminController {
     @GetMapping("/activeAccountCount/{numberDays}")
     public int getActiveUsersCount(@PathVariable("numberDays") int numberDays) {
         return accountService.getActiveAccountCount(numberDays);
+    }
+
+    @GetMapping("/deepseek/balance")
+    public String getDeepSeekBalance() {
+        String balance = recognizerFeign.getBalance();
+        return balance;
     }
 }

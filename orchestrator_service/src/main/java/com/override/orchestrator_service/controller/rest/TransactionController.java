@@ -1,9 +1,7 @@
 package com.override.orchestrator_service.controller.rest;
 
-import com.override.dto.TransactionDTO;
-import com.override.dto.TransactionDefineDTO;
-import com.override.dto.TransactionMessageDTO;
-import com.override.dto.TransactionResponseDTO;
+import com.override.dto.*;
+import com.override.dto.constants.Period;
 import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
@@ -144,6 +142,23 @@ public class TransactionController {
                 .findTransactionsByUserIdLimitedAndFiltered(telegramUtils.getTelegramId(principal), filter);
     }
 
+    @GetMapping("/transactions/sums")
+    @Operation(summary = "Получить суммы трат и доходов пользователя по категориям ",
+            description = "Возвращает список категорий с указанием суммы потраченной или полученной для категории")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Список трат/доходов получен")
+    })
+    List<SumTransactionPerCategoryPerPeriodDTO> getSummedByCategoriesTransactions(
+            Principal principal,
+            @Parameter(description = "Период для выборки YEAR|MONTH|DAY")
+            @RequestParam(defaultValue = "DAY") Period period
+    ) {
+        return transactionService.getSummedTransactionsByUserIdCategoryAndPeriod(
+                telegramUtils.getTelegramId(principal),
+                period
+        );
+    }
+
     @PostMapping("/transaction/define")
     @Operation(summary = "Установить категорию транзакции",
             description = "Устанавливает категорию для указанной транзакции по её ID")
@@ -215,6 +230,17 @@ public class TransactionController {
     public void deleteTransactionById(
             @Parameter(description = "ID транзакции") @PathVariable("id") UUID id) {
         transactionService.deleteTransactionById(id);
+    }
+
+    @DeleteMapping("/transaction/ids")
+    @Operation(summary = "Удалить транзакцию по ID", description = "Удаляет транзакцию по указанным ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Транзакция удалена"),
+            @ApiResponse(responseCode = "404", description = "Транзакция не найдена")
+    })
+    public void deleteTransactionById(
+            @Parameter(description = "ID транзакции") @RequestParam List<UUID> ids) {
+        transactionService.deleteTransactionByIds(ids);
     }
 
     @PatchMapping("/transaction/update/{id}")

@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
+import com.override.dto.constants.Period;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.filter.TransactionFilter;
@@ -8,6 +9,7 @@ import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
+import com.override.orchestrator_service.repository.SuggestionRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.repository.specification.TransactionSpecification;
 import com.override.orchestrator_service.util.NumericalUtils;
@@ -48,6 +50,8 @@ public class TransactionService {
     private TransactionProcessingService transactionProcessingService;
     @Autowired
     private KeywordService keywordService;
+    @Autowired
+    private SuggestionRepository suggestionRepository;
 
     public int getTransactionsCount() {
         return transactionRepository.getTransactionsCount();
@@ -233,11 +237,31 @@ public class TransactionService {
         }
     }
 
+    @Transactional
+    public void deleteTransactionByIds(List<UUID> ids) {
+        List<Transaction> transactionsToDelete = transactionRepository.findAllByIds(ids);
+        List<UUID> transactionIds = transactionsToDelete.stream().map(Transaction::getId).collect(Collectors.toList());
+        deleteKeyWordByTransactions(transactionsToDelete);
+        suggestionRepository.deleteByTransactionIds(transactionIds);
+        transactionRepository.deleteByIds(transactionIds);
+        telegramBotFeign.deleteTelegramMessageByIds(transactionIds);
+    }
+
     public Optional<Keyword> getKeywordByTransaction(Transaction transaction) {
         KeywordId keywordId = new KeywordId();
         keywordId.setAccountId(transaction.getAccount().getId());
         keywordId.setName(transaction.getMessage());
         return keywordRepository.findByKeywordId(keywordId);
+    }
+
+    public void deleteKeyWordByTransactions(List<Transaction> transaction) {
+        List<KeywordId> keywordIds = transaction.stream().map(t -> {
+            KeywordId keywordId = new KeywordId();
+            keywordId.setAccountId(t.getAccount().getId());
+            keywordId.setName(t.getMessage());
+            return keywordId;
+        }).collect(Collectors.toList());
+        keywordRepository.deleteAll(keywordRepository.findByKeywordIdIsIn(keywordIds));
     }
 
     public List<AnalyticsAnnualAndMonthlyReportDTO> findAnnualAndMonthlyTotalStatisticsByAccountId(Long accountId,
@@ -363,5 +387,31 @@ public class TransactionService {
     public int getTransactionsCountLastDays(int numberDays) {
         LocalDateTime numberDaysAgo = LocalDateTime.now().minusDays(numberDays);
         return transactionRepository.findCountTransactionsLastDays(numberDaysAgo);
+    }
+
+    public List<SumTransactionPerCategoryPerPeriodDTO> getSummedTransactionsByUserIdCategoryAndPeriod(
+            Long id, Period period
+    ) {
+        switch (period) {
+            case YEAR:
+                return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
+                        id,
+                        LocalDateTime.now().getYear()
+                );
+            case MONTH:
+                return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
+                        id,
+                        LocalDateTime.now().getYear(),
+                        LocalDateTime.now().getMonthValue()
+                );
+            case DAY:
+                return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
+                        id,
+                        LocalDateTime.now().getYear(),
+                        LocalDateTime.now().getMonthValue(),
+                        LocalDateTime.now().getDayOfMonth()
+                );
+        }
+        return List.of();
     }
 }

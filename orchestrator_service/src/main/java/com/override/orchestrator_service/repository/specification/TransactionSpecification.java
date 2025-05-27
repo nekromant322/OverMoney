@@ -25,7 +25,9 @@ public class TransactionSpecification {
             }
 
             if (filters.getMessage() != null) {
-                predicates.add(criteriaBuilder.like(root.get("message"), "%" + filters.getMessage() + "%"));
+                predicates.add(criteriaBuilder.like(
+                        criteriaBuilder.lower(root.get("message")),
+                        "%" + filters.getMessage().toLowerCase() + "%"));
             }
 
             if (filters.getDate() != null) {

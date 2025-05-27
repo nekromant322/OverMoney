@@ -24,7 +24,6 @@ type RecognizerRequestDTO struct {
 }
 
 func main() {
-
 	mux := http.NewServeMux()
 	mux.HandleFunc("/actuator/health", getStatus)
 	mux.HandleFunc("/recognizer", postRecognize)

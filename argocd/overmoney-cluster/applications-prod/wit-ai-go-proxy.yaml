@@ -4,7 +4,7 @@ metadata:
   name: wit-ai-go-proxy
   namespace: argo-cd
   annotations:
-    argocd-image-updater.argoproj.io/image-list: wit-ai-go-proxy=nekromant322/overmoney-wit-ai-go-proxy:latest
+    argocd-image-updater.argoproj.io/image-list: wit-ai-go-proxy=overregistry.ru/overmoney-wit-ai-go-proxy:latest
     argocd-image-updater.argoproj.io/wit-ai-go-proxy.update-strategy: digest
     argocd-image-updater.argoproj.io/wit-ai-go-proxy.force-update: 'true'
     argocd-image-updater.argoproj.io/wit-ai-go-proxy.helm.image-name: deployment.containers.image

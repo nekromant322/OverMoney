@@ -34,6 +34,21 @@ services:
       options:
         max-size: 50m
 
+  payment-db:
+    container_name: payment-db
+    image: postgres:14.1-alpine
+    ports:
+      - '5436:5432'
+    environment:
+      POSTGRES_USER: ${PAYMENT_DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${PAYMENT_DB_PASSWORD:-postgres}
+      POSTGRES_DB: payment-db
+    restart: always
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+
   postgres-exporter_orchestrator-db:
     image: prometheuscommunity/postgres-exporter
     ports:
@@ -56,6 +71,18 @@ services:
       DATA_SOURCE_PASS: ${TELEGRAM_BOT_DB_PASSWORD}
     depends_on:
       - telegram-bot-db
+      - prometheus
+
+  postgres-exporter_payment-db:
+    image: prometheuscommunity/postgres-exporter
+    ports:
+      - '9189:9187'
+    environment:
+      DATA_SOURCE_URI: ${PAYMENT_DB_HOST}:${PAYMENT_DB_PORT}/payment-db?sslmode=disable
+      DATA_SOURCE_USER: ${PAYMENT_DB_USER}
+      DATA_SOURCE_PASS: ${PAYMENT_DB_PASSWORD}
+    depends_on:
+      - payment-db
       - prometheus
 
   orchestrator:
@@ -136,6 +163,23 @@ services:
       driver: "json-file"
       options:
         max-size: 50m
+
+  payment:
+    container_name: payment
+    image: nekromant322/overmoney:payment
+    restart: unless-stopped
+    ports:
+      - '8084:8084'
+    environment:
+      _JAVA_OPTIONS: -Xmx256m
+      SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
+      INTERNAL_KEY_HEADER: ${INTERNAL_KEY_HEADER}
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+    depends_on:
+      - payment-db
 
   wit-ai-go-proxy:
     container_name: wit-ai-go-proxy

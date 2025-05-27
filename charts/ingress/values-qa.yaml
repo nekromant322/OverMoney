@@ -1,4 +1,8 @@
 environment: qa
+tls:
+  - hosts:
+      - overmoneytest.online
+    secretName: qa-tls-secret
 rules:
   - host: overmoneytest.online
     paths:
@@ -7,6 +11,13 @@ rules:
         backend:
           service:
             name: orchestrator-service
+            port:
+              number: 80
+      - path: /landing
+        pathType: Prefix
+        backend:
+          service:
+            name: frontend-landing-service
             port:
               number: 80
       - path: /front
@@ -23,3 +34,10 @@ rules:
             name: kafka-ui-service
             port:
               number: 80
+annotations:
+  cert-manager.io/cluster-issuer: letsencrypt-staging
+  nginx.ingress.kubernetes.io/enable-cors: "true"
+  nginx.ingress.kubernetes.io/cors-allow-origin: "*"
+  nginx.ingress.kubernetes.io/cors-allow-methods: "*"
+  nginx.ingress.kubernetes.io/cors-allow-headers: "*"
+  nginx.ingress.kubernetes.io/cors-allow-credentials: "true"

@@ -22,6 +22,8 @@
         <module>telegram_bot_service</module>
         <module>invest_service</module>
         <module>mask_log_starter</module>
+        <module>actuator_git_info_starter</module>
+        <module>payment_service</module>
     </modules>
 
     <properties>
@@ -39,6 +41,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.overmoney</groupId>
+            <artifactId>actuator_git_info_starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <dependencyManagement>

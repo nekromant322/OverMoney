@@ -1,4 +1,5 @@
 deployment:
+  registry: overregistry.ru
   containers:
     image: nekromant322/overmoney-telegram-bot
     env:
