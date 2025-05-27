@@ -24,13 +24,6 @@
         <a href="/">
           <img src="/images/logo.svg" width="32" height="32" alt="app logo">
         </a>
-        <div id="login-button">
-          <!-- Telegram widget will be embedded here -->
-        </div>
-        <button id="logout-button" class="login-button" style="display: none;">
-          <span class="login-button__text">Перейти в приложение</span>
-          <img src="/images/telegram.svg" width="24" height="24" alt="telegram logo" class="login-button__icon">
-        </button>
       </header>
       <main class="landing__content">
         <section class="landing__hero">
@@ -54,7 +47,7 @@
             <a href="#safe" class="feature-card__link">Узнать больше -&#8250;</a>
           </div>
         </div>
-        <button class="landing__try-app-button button">Попробовать сейчас</button>
+        <a href="%VITE_APP_URL%" target="_blank" class="landing__try-app-button button">Попробовать сейчас</a>
         <section class="landing__info">
           <div id="comfortable" class="landing__detail feature-details">
             <div class="feature-details__content-container">
@@ -97,6 +90,5 @@
         <span class="footer__copyright">© 2024 OverMoney</span>
       </footer>
     </div>
-    <script type="module" src="/src/main.js"></script>
   </body>
 </html>

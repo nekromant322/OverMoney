@@ -85,6 +85,7 @@
 }
 
 .landing__try-app-button {
+  width: fit-content;
   display: flex;
   margin: 80px auto 0 auto;
 }
