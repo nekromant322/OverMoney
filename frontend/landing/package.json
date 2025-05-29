@@ -12,6 +12,6 @@
   "devDependencies": {
     "svgo": "^3.3.2",
     "vite": "^6.2.0",
-    "vite-plugin-image-optimizer": "^1.1.8"
+    "vite-plugin-image-optimizer": "^1.1.8" 
   }
 }
