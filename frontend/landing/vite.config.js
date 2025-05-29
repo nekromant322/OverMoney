@@ -8,6 +8,7 @@ export default defineConfig(() => {
     ],
     server: {
       allowedHosts: true
-    }
+    },
+    base: '/landing/',
   };
 });
