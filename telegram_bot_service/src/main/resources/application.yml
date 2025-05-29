@@ -19,6 +19,7 @@
       host:
         orchestrator: http://orchestrator-service
         recognizer: http://recognizer-service
+        payment: http://payment-service
 
   environment: ${ENVIRONMENT:dev}
 
@@ -63,6 +64,8 @@
       topics:
         request: transaction-request-events-topic
         response: transaction-response-events-topic
+        subscription-request: subscription-request-topic
+        subscription-response: subscription-response-topic
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer

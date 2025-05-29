@@ -11,8 +11,16 @@ import org.springframework.kafka.config.TopicBuilder;
 public class KafkaConfig {
 
     @Bean
-    NewTopic responseTopic() {
-        return TopicBuilder.name("transaction-response-events-topic")
+    public NewTopic subscriptionRequestTopic() {
+        return TopicBuilder.name("subscription-request-topic")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    public NewTopic subscriptionResponseTopic() {
+        return TopicBuilder.name("subscription-response-topic")
                 .partitions(3)
                 .replicas(1)
                 .build();
