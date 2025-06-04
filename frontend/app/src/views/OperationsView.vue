@@ -5,7 +5,7 @@
 
   onMounted(async () => {
     try {
-      const response = await fetch('/transactions', {
+      const response = await fetch('/api/transactions', {
         method: 'GET',
         headers: {
         'Content-Type': 'application/json',
