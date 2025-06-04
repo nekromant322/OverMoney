@@ -3,6 +3,7 @@ import logo from '@/assets/images/logo.svg';
 import ViewWrapper from '@/components/ViewWrapper.vue';
 import { onMounted } from 'vue';
 import type { TelegramUser } from '../../global';
+import { toast, type ToastOptions } from 'vue3-toastify';
 
 const LOGIN_URL = `${import.meta.env.VITE_BASE_URL}/auth/login`;
 const TELEGRAM_WIDGET_SRC = `https://telegram.org/js/telegram-widget.js?${import.meta.env.VITE_TELEGRAM_WIDGET_VERSION}`;
@@ -18,18 +19,24 @@ window.onTelegramAuth = async (user: TelegramUser) => {
     });
 
     if (!response.ok) {
-      // TODO Replace with the UI error
-      console.error('Authorization failed');
+      showLoginError();
       return;
     }
 
     document.cookie = `accessToken=${response.json()}`;
     window.location.href = '/';
   } catch (err) {
-    // TODO Replace with the UI error
-    console.error('Login error:', err);
+    showLoginError();
   }
 };
+
+const showLoginError = () => {
+  toast("Ошибка авторизации. Повторите попытку позже.", {
+    type: 'error',
+    autoClose: 2000,
+    position: toast.POSITION.BOTTOM_RIGHT,
+  } as ToastOptions);
+}
 
 onMounted(() => {
   const element = document.getElementById('login-button');
