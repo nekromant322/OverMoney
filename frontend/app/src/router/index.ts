@@ -16,6 +16,9 @@ const router = createRouter({
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
+      meta: {
+        requiresAuthorization: false
+      }
     },
   ],
 })
@@ -36,6 +39,8 @@ router.beforeEach((to, from, next) => {
     } else {
       next();
     }
+  } else if (to.name === 'login' && token) {
+    next('/');
   } else {
     next();
   }
