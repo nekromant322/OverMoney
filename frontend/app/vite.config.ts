@@ -17,7 +17,15 @@ export default ({ mode }: { mode: string }) => {
       },
     },
     server: {
-      allowedHosts: [env.VITE_ALLOWED_HOSTS]
+      allowedHosts: [env.VITE_ALLOWED_HOSTS],
+      proxy: {
+        '/api': {
+          target: 'https://overmoneytest.online',
+          changeOrigin: true,
+          secure: false,
+          rewrite: path => path.replace(/^\/api/, '')
+        }
+      }
     }
   });
 };

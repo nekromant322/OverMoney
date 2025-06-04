@@ -4,8 +4,7 @@ import ViewWrapper from '@/components/ViewWrapper.vue';
 import { onMounted } from 'vue';
 import type { TelegramUser } from '../../global';
 
-const LOGIN_URL = `${import.meta.env.VITE_BASE_URL}/login`;
-const REDIRECT_URL = `${import.meta.env.VITE_BASE_URL}`;
+const LOGIN_URL = `${import.meta.env.VITE_BASE_URL}/auth/login`;
 const TELEGRAM_WIDGET_SRC = `https://telegram.org/js/telegram-widget.js?${import.meta.env.VITE_TELEGRAM_WIDGET_VERSION}`;
 
 window.onTelegramAuth = async (user: TelegramUser) => {
@@ -24,7 +23,8 @@ window.onTelegramAuth = async (user: TelegramUser) => {
       return;
     }
 
-    window.location.href = REDIRECT_URL;
+    document.cookie = `accessToken=${response.json()}`;
+    window.location.href = '/';
   } catch (err) {
     // TODO Replace with the UI error
     console.error('Login error:', err);
