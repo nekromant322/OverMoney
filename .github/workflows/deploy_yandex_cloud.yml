@@ -12,7 +12,6 @@ jobs:
       recognizer: ${{ steps.filter.outputs.recognizer }}
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
-      invest: ${{ steps.filter.outputs.invest }}
       wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
       frontend: ${{ steps.filter.outputs.frontend }}
       frontend-landing: ${{ steps.filter.outputs.frontend-landing }}
@@ -28,7 +27,6 @@ jobs:
             orchestrator: ['orchestrator_service/**']
             telegram-bot: ['telegram_bot_service/**']
             shared-chart: ['charts/shared/**']
-            invest: ['invest_service/**']
             wit-ai-go-proxy: ['wit_ai_go_proxy/**']
             frontend: ['frontend/**']
             frontend-landing: ['frontend_landing/**']
@@ -78,15 +76,6 @@ jobs:
           file: ./telegram_bot_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-telegram-bot
-
-      - name: Invest Build and Push to overregistry.ru
-        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./invest_service/Dockerfile
-          push: true
-          tags: overregistry.ru/overmoney-invest
 
       - name: Wit ai go proxy Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}

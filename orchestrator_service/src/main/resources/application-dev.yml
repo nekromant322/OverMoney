@@ -7,7 +7,6 @@
         orchestrator: http://localhost:8081
         telegram-bot: http://localhost:8082
         recognizer: http://localhost:8080
-        invest: http://localhost:8087
         payment: http://localhost:8084
 
   spring:

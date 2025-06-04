@@ -17,7 +17,6 @@
       host:
         telegram-bot: http://telegram-bot-service
         recognizer: http://recognizer-service
-        invest: http://invest-service
         payment: http://payment-service
 
   environment: ${ENVIRONMENT:dev}
