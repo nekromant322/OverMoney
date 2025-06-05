@@ -11,6 +11,10 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: orchestrator-db
     restart: always
+    command:
+      - "postgres"
+      - "-c"
+      - "idle_in_transaction_session_timeout=5s"
 
   telegram-bot-db:
     container_name: telegram-bot-db
