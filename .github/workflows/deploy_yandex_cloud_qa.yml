@@ -14,7 +14,6 @@ jobs:
       telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
       frontend: ${{ steps.filter.outputs.frontend }}
       frontend-landing: ${{ steps.filter.outputs.frontend-landing }}
-      invest: ${{ steps.filter.outputs.invest }}
       payment: ${{ steps.filter.outputs.payment }}
     steps:
       - uses: actions/checkout@v4
@@ -28,7 +27,6 @@ jobs:
             telegram-bot: ['telegram_bot_service/**']
             frontend: ['frontend/app/**']
             frontend-landing: ['frontend/landing/**']
-            invest: ['invest_service/**']
             payment: ['payment_service/**']
 
   build-and-push-images:
@@ -76,14 +74,6 @@ jobs:
           push: true
           tags: overregistry.ru/overmoney-telegram-bot-qa
 
-      - name: Invest Build and Push to overregistry.ru
-        if: ${{ needs.detect-changes.outputs.invest == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./invest_service/Dockerfile
-          push: true
-          tags: overregistry.ru/overmoney-invest-qa
 
 #      - name: Frontend Build and Push to overregistry.ru
 #        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
