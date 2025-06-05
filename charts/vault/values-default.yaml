@@ -6,3 +6,6 @@ secretProviderClass:
     - objectName: "default-grafana-password"
       secretPath: "secret/default"
       secretKey: "default-grafana-password"
+    - objectName: "telegram-bot-token-grafana"
+      secretPath: "secret/grafana"
+      secretKey: "telegram-bot-token-grafana"
