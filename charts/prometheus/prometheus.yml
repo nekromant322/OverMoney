@@ -50,6 +50,21 @@ scrape_configs:
         replacement: $1
         regex: (.+)
 
+  - job_name: 'payment_overmoney_monitoring'
+    scrape_interval: 5s
+    metrics_path: '/actuator/prometheus'
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      - source_labels: [ __meta_kubernetes_pod_label_app ]
+        action: keep
+        regex: payment
+      - source_labels: [ __meta_kubernetes_pod_name ]
+        action: replace
+        target_label: instance
+        replacement: $1
+        regex: (.+)
+
   - job_name: 'orchestrator_db_monitoring'
     scrape_interval: 15s
     static_configs:
@@ -63,3 +78,10 @@ scrape_configs:
       - targets: ['postgres-exporter-telegram-svc.monitoring:9187']
         labels:
           group: 'telegram-bot-db'
+
+  - job_name: 'payment_db_monitoring'
+    scrape_interval: 15s
+    static_configs:
+      - targets: [ 'postgres-exporter-payment-svc.monitoring:9187' ]
+        labels:
+          group: 'payment-db'

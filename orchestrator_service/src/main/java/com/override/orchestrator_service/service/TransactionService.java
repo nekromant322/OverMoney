@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
-import com.override.dto.constants.Period;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.filter.TransactionFilter;
@@ -31,6 +30,9 @@ import java.util.stream.Stream;
 
 @Service
 public class TransactionService {
+
+    @Autowired
+    TransactionSpecification transactionSpecification;
 
     @Autowired
     private TransactionRepository transactionRepository;
@@ -114,7 +116,7 @@ public class TransactionService {
         Long accID = userService.getUserById(id).getAccount().getId();
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by("date").descending());
 
-        Specification<Transaction> spec = TransactionSpecification.createSpecification(accID, filter);
+        Specification<Transaction> spec = transactionSpecification.createSpecification(accID, filter);
 
         List<TransactionDTO> transactionList = transactionRepository.findAll(spec, pageable).getContent().stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
@@ -387,31 +389,5 @@ public class TransactionService {
     public int getTransactionsCountLastDays(int numberDays) {
         LocalDateTime numberDaysAgo = LocalDateTime.now().minusDays(numberDays);
         return transactionRepository.findCountTransactionsLastDays(numberDaysAgo);
-    }
-
-    public List<SumTransactionPerCategoryPerPeriodDTO> getSummedTransactionsByUserIdCategoryAndPeriod(
-            Long id, Period period
-    ) {
-        switch (period) {
-            case YEAR:
-                return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
-                        id,
-                        LocalDateTime.now().getYear()
-                );
-            case MONTH:
-                return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
-                        id,
-                        LocalDateTime.now().getYear(),
-                        LocalDateTime.now().getMonthValue()
-                );
-            case DAY:
-                return transactionRepository.findSumTransactionsPerCategoryPerPeriodForAccount(
-                        id,
-                        LocalDateTime.now().getYear(),
-                        LocalDateTime.now().getMonthValue(),
-                        LocalDateTime.now().getDayOfMonth()
-                );
-        }
-        return List.of();
     }
 }
