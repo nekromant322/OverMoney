@@ -17,7 +17,6 @@
       host:
         telegram-bot: http://telegram-bot-service
         recognizer: http://recognizer-service
-        invest: http://invest-service
         payment: http://payment-service
 
   environment: ${ENVIRONMENT:dev}
@@ -55,7 +54,8 @@
       V_EIIE_V,
       SadWalther,
       bahertylop,
-      Megokolos
+      Megokolos,
+      KGrach
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
@@ -172,3 +172,8 @@
   # Валидность подсказки
   recognizer:
     min-accuracy: 0.7 # Минимальная точность подсказки
+
+  # степень схожести слов при неточном поиске
+  # симечки | семечки ~= 0.45
+  search:
+    accuracy-threshold: 0.35

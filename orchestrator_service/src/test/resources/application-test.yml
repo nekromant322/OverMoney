@@ -7,7 +7,6 @@ integration:
     host:
       orchestrator: http://localhost:8081
       recognizer: http://localhost:8080
-      invest: http://localhost:8087
 ---
 spring:
   datasource:
