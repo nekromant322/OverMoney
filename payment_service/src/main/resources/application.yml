@@ -36,18 +36,40 @@ spring:
     active: ${SPRING_APPLICATION_PROFILE:dev}
 
   kafka:
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost}:9092
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service:9092}
+    topics:
+      payment-request: payment-requests
+      payment-response: payment-responses
+      subscription-request: subscription-requests
+      subscription-response: subscription-responses
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      group-id: payment-service-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: com.override.dto
-        spring.json.use.type.headers: false
+    consumer:
+      auto-offset-reset: earliest
+      properties:
+        spring.json.trusted.packages: com.override.dto
+      # Конфигурация для payment-service-group
+      payment-service:
+        group-id: payment-service-group
+        key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+        properties:
+          spring:
+            deserializer:
+              key:
+                delegate:
+                  class: org.apache.kafka.common.serialization.StringDeserializer
+              value:
+                delegate:
+                  class: org.springframework.kafka.support.serializer.JsonDeserializer
+      # Конфигурация для subscription-consumer
+      subscription-service:
+        group-id: subscription-consumer
+        key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+        value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
 
 logging:
   level:
@@ -70,7 +92,7 @@ management:
 authorization-header:
   header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
 
-mask-log-spring-boot-starter:
+mask-log spring-boot-starter:
   maskedFields:
     - x-internal-key
 
