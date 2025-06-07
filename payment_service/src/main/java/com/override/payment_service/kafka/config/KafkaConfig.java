@@ -25,4 +25,20 @@ public class KafkaConfig {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    NewTopic subscriptionRequestsTopic() {
+        return TopicBuilder.name("subscription-requests")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    NewTopic subscriptionResponsesTopic() {
+        return TopicBuilder.name("subscription-responses")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
 }
