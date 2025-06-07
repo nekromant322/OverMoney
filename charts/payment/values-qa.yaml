@@ -40,6 +40,16 @@ deployment:
           secretKeyRef:
             name: qa
             key: qa-payment-db-password
+      - name: YOOKASSA_SHOP_ID
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-yookassa-shop-id
+      - name: YOOKASSA_SECRET_KEY
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-yookassa-secret-key
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
