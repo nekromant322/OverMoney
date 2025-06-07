@@ -42,7 +42,7 @@ services:
     environment:
       POSTGRES_USER: ${PAYMENT_DB_USER:-postgres}
       POSTGRES_PASSWORD: ${PAYMENT_DB_PASSWORD:-postgres}
-      POSTGRES_DB: payment-db
+      POSTGRES_DB: payments-db
     restart: always
     logging:
       driver: "json-file"
@@ -78,7 +78,7 @@ services:
     ports:
       - '9189:9187'
     environment:
-      DATA_SOURCE_URI: ${PAYMENT_DB_HOST}:${PAYMENT_DB_PORT}/payment-db?sslmode=disable
+      DATA_SOURCE_URI: ${PAYMENT_DB_HOST}:${PAYMENT_DB_PORT}/payments-db?sslmode=disable
       DATA_SOURCE_USER: ${PAYMENT_DB_USER}
       DATA_SOURCE_PASS: ${PAYMENT_DB_PASSWORD}
     depends_on:
@@ -149,20 +149,6 @@ services:
   #     driver: "json-file"
   #     options:
   #       max-size: 50m
-  invest:
-    container_name: invest
-    image: nekromant322/overmoney:invest
-    restart: unless-stopped
-    ports:
-      - '8087:8087'
-    environment:
-      _JAVA_OPTIONS: -Xmx256m
-      INTERNAL_KEY_HEADER: ${INTERNAL_KEY_HEADER}
-      SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
-    logging:
-      driver: "json-file"
-      options:
-        max-size: 50m
 
   payment:
     container_name: payment

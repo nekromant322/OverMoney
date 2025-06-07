@@ -9,6 +9,7 @@ import com.override.orchestrator_service.repository.CategoryRepository;
 import com.override.orchestrator_service.repository.KeywordRepository;
 import com.override.orchestrator_service.repository.SuggestionRepository;
 import com.override.orchestrator_service.repository.TransactionRepository;
+import com.override.orchestrator_service.repository.specification.TransactionSpecification;
 import com.override.orchestrator_service.utils.TestFieldsUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,6 +18,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -38,6 +40,9 @@ public class TransactionServiceTest {
 
     @InjectMocks
     private TransactionService transactionService;
+
+    @Spy
+    private TransactionSpecification transactionSpecification;
 
     @Mock
     private TransactionRepository transactionRepository;

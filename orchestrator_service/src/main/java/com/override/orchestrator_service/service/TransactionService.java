@@ -32,6 +32,9 @@ import java.util.stream.Stream;
 public class TransactionService {
 
     @Autowired
+    TransactionSpecification transactionSpecification;
+
+    @Autowired
     private TransactionRepository transactionRepository;
     @Autowired
     private UserService userService;
@@ -113,7 +116,7 @@ public class TransactionService {
         Long accID = userService.getUserById(id).getAccount().getId();
         Pageable pageable = PageRequest.of(filter.getPageNumber(), filter.getPageSize(), Sort.by("date").descending());
 
-        Specification<Transaction> spec = TransactionSpecification.createSpecification(accID, filter);
+        Specification<Transaction> spec = transactionSpecification.createSpecification(accID, filter);
 
         List<TransactionDTO> transactionList = transactionRepository.findAll(spec, pageable).getContent().stream()
                 .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
