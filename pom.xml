@@ -20,7 +20,6 @@
         <module>recognizer_service</module>
         <module>orchestrator_service</module>
         <module>telegram_bot_service</module>
-        <module>invest_service</module>
         <module>mask_log_starter</module>
         <module>actuator_git_info_starter</module>
         <module>payment_service</module>
