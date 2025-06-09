@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { ref, onMounted, Fragment } from 'vue';
 import AppHeader from '@/components/AppHeader.vue';
 import ViewWrapper from '@/components/ViewWrapper.vue';
-import { ref, onMounted } from 'vue';
+import ProfileSidebar from '@/components/ProfileSidebar.vue';
 
 const data = ref(null);
+
+// TODO Get data from an endpoint
+const avatar = '';
+// TODO Get data from an endpoint
+const username = 'nekromant322';
 
 onMounted(async () => {
   try {
@@ -24,7 +30,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ViewWrapper>
-    <AppHeader></AppHeader>
+  <ViewWrapper :avatar="avatar" :username="username">
+    Operations
   </ViewWrapper>
 </template>
