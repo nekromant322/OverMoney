@@ -9,7 +9,8 @@ import { RouterLink } from 'vue-router';
         <img class="logo" :src="logo" width="32" height="32" alt="app logo">
       </RouterLink>
       <button class="profile-button">
-        <img class="avatar" width="32" height="32" alt="user avatar">
+        <!-- TODO Replace src from logo to user avatar -->
+        <img class="avatar" :src="logo" width="32" height="32" alt="user avatar">
       </button>
     </header>
 </template>
