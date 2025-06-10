@@ -2,6 +2,8 @@ package com.override.payment_service.kafka.consumerproducer;
 
 import com.override.dto.PaymentRequestDTO;
 import com.override.dto.PaymentResponseDTO;
+import com.override.dto.constants.PaymentStatus;
+import com.override.payment_service.constants.KafkaConstants;
 import com.override.payment_service.service.YooKassaService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +21,17 @@ public class KafkaConsumerService {
     private final YooKassaService yooKassaService;
     private final KafkaProducerService kafkaProducerService;
 
-    @KafkaListener(topics = "payment-requests", groupId = "payment-service-group")
+    @KafkaListener(
+            topics = KafkaConstants.PAYMENT_REQUESTS_TOPIC,
+            groupId = KafkaConstants.PAYMENT_SERVICE_GROUP
+    )
     public void listenForPaymentRequests(
             @Payload PaymentRequestDTO paymentRequest,
             @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
             @Header(KafkaHeaders.CORRELATION_ID) String correlationId) {
 
-        log.info("Получен запрос на оплату заказа: {}", paymentRequest.getOrderId());
+        String orderId = paymentRequest.getOrderId();
+        log.info("Получен запрос на оплату заказа: {}", orderId);
 
         PaymentResponseDTO response = new PaymentResponseDTO();
         response.setOrderId(paymentRequest.getOrderId());
@@ -33,11 +39,11 @@ public class KafkaConsumerService {
         try {
             PaymentResponseDTO yooKassaResponse = yooKassaService.createPayment(paymentRequest);
             response.setPaymentUrl(yooKassaResponse.getPaymentUrl());
-            response.setStatus("success");
-            log.info("Платеж успешно создан для заказа: {}", paymentRequest.getOrderId());
+            response.setStatus(PaymentStatus.SUCCESS);
+            log.info("Платеж успешно создан для заказа: {}", orderId);
         } catch (Exception e) {
-            log.error("Ошибка обработки платежа за заказ: {}", paymentRequest.getOrderId(), e);
-            response.setStatus("failed");
+            log.error("Ошибка обработки платежа за заказ: {}", orderId, e);
+            response.setStatus(PaymentStatus.FAILED);
             response.setPaymentUrl(null);
         }
 

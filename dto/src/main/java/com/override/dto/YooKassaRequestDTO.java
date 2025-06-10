@@ -1,5 +1,6 @@
 package com.override.dto;
 
+import com.override.dto.constants.Currency;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -13,7 +14,7 @@ public class YooKassaRequestDTO {
     @Data
     public static class Amount {
         private String value;
-        private String currency;
+        private Currency currency;
     }
 
     @Data

@@ -1,6 +1,7 @@
 package com.override.payment_service.kafka.consumerproducer;
 
 import com.override.dto.PaymentResponseDTO;
+import com.override.payment_service.constants.KafkaConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -19,7 +20,7 @@ public class KafkaProducerService {
     public void sendPaymentResponse(String key, String correlationId, PaymentResponseDTO response) {
         Message<PaymentResponseDTO> message = MessageBuilder
                 .withPayload(response)
-                .setHeader(KafkaHeaders.TOPIC, "payment-responses")
+                .setHeader(KafkaHeaders.TOPIC, KafkaConstants.PAYMENT_RESPONSES_TOPIC)
                 .setHeader(KafkaHeaders.MESSAGE_KEY, key)
                 .setHeader(KafkaHeaders.CORRELATION_ID, correlationId)
                 .build();

@@ -1,5 +1,6 @@
 package com.override.dto;
 
+import com.override.dto.constants.Currency;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -8,7 +9,7 @@ import java.math.BigDecimal;
 public class PaymentRequestDTO {
     private String orderId;
     private BigDecimal amount;
-    private String currency;
+    private Currency currency;
     private String returnUrl;
     private String description;
 }
