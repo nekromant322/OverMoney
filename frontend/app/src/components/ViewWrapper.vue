@@ -18,7 +18,7 @@ const isSidebarVisible = ref<boolean>(false);
     <slot></slot>
   </div>
   <ProfileSidebar :class="{ visible: isSidebarVisible }" :avatar="props.avatar" :username="props.username" @close-sidebar="isSidebarVisible = false" />
-  <Overlay v-if="isSidebarVisible" />
+  <Overlay v-if="isSidebarVisible" @click="isSidebarVisible = false" />
 </template>
 
 <style scoped>
