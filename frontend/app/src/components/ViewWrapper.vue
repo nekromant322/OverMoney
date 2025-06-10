@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import AppHeader from './AppHeader.vue';
 import ProfileSidebar from './ProfileSidebar.vue';
+import Overlay from './Overlay.vue';
 
 const props = defineProps<{
   avatar: string,
@@ -16,7 +17,8 @@ const isSidebarVisible = ref<boolean>(false);
   <div class="wrapper">
     <slot></slot>
   </div>
-    <ProfileSidebar :class="{ visible: isSidebarVisible }" :avatar="props.avatar" :username="props.username" @close-sidebar="isSidebarVisible = false" />
+  <ProfileSidebar :class="{ visible: isSidebarVisible }" :avatar="props.avatar" :username="props.username" @close-sidebar="isSidebarVisible = false" />
+  <Overlay v-if="isSidebarVisible" />
 </template>
 
 <style scoped>

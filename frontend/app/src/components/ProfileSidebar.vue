@@ -40,6 +40,7 @@ const emits = defineEmits(['closeSidebar']);
   border-bottom-left-radius: 6px;
   right: -320px;
   transition: right 0.3s ease-in-out;
+  z-index: 2;
 }
 
 .sidebar.visible {
