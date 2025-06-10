@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, Fragment } from 'vue';
-import AppHeader from '@/components/AppHeader.vue';
 import ViewWrapper from '@/components/ViewWrapper.vue';
-import ProfileSidebar from '@/components/ProfileSidebar.vue';
+import ExampleAvatar from '@/assets/images/example-avatar.jpg';
 
 const data = ref(null);
 
@@ -30,7 +29,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ViewWrapper :avatar="avatar" :username="username">
+  <ViewWrapper :avatar="ExampleAvatar" :username="username">
     Operations
   </ViewWrapper>
 </template>
