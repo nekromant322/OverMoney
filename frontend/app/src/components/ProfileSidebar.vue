@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import Avatar from './Avatar.vue';
 import CloseIcon from '@/assets/images/Close.svg';
+import SettingsItem from './SettingsItem.vue';
+import SettingsIcon from '@/assets/images/Settings.svg';
+import LinkIcon from '@/assets/images/Link.svg';
+import EmailIcon from '@/assets/images/Email.svg';
+import LogoutIcon from '@/assets/images/Logout.svg';
 
 const props = defineProps<{
   avatar: string,
@@ -8,6 +13,10 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits(['closeSidebar']);
+
+const logout = () => {
+ // TODO Remove coockie
+}
 </script>
 
 <template>
@@ -15,12 +24,28 @@ const emits = defineEmits(['closeSidebar']);
     <header class="header">
       <div class="user">
         <Avatar :src="props.avatar" alt="avatar" />
-        <div class="username app-username">{{ props.username }}</div>
+        <div class="username">{{ props.username }}</div>
       </div>
       <button class="close-button" @click="emits('closeSidebar')">
         <img :src="CloseIcon" alt="close">
       </button>
     </header>
+    <nav class="settings">
+      <ul>
+        <RouterLink to="#">
+          <SettingsItem :icon="SettingsIcon" text="Настройки" />
+        </RouterLink>
+      </ul>
+      <div class="divider"></div>
+      <ul>
+        <RouterLink to="#"><SettingsItem :icon="LinkIcon" text="Политика конфиденциальности" /></RouterLink>
+        <RouterLink to="#"><SettingsItem :icon="EmailIcon" text="Написать в поддержку" /></RouterLink>
+      </ul>
+      <div class="divider"></div>
+      <ul>
+        <SettingsItem :icon="LogoutIcon" text="Выйти" @onclick="logout" />
+      </ul>
+    </nav>
   </div>
 </template>
 
@@ -47,6 +72,17 @@ const emits = defineEmits(['closeSidebar']);
   right: 0;
 }
 
+.settings {
+  margin-top: 16px;
+}
+
+.divider {
+  height: 1px;
+  width: 100%;
+  background-color: #30363D;
+  margin: 8px 0;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -59,6 +95,10 @@ const emits = defineEmits(['closeSidebar']);
 .username {
   margin-left: 8px;
   line-height: 32px;
+  color: #C9D1D9;
+  font-family: 'NotoSans', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .close-button {
