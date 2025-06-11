@@ -23,8 +23,6 @@ const logout = () => {
  setCookie('accessToken', '', 0);
  router.push(routes.login.path)
 }
-
-const 
 </script>
 
 <template>
