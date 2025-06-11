@@ -29,7 +29,6 @@ const isSidebarVisible = ref<boolean>(false);
   background-color: #0D1117;
   margin: 0 auto;
   min-height: calc(100% - 60px);
-  padding: 0 32px;
 }
 
 .fade-enter-active, .fade-leave-active {
