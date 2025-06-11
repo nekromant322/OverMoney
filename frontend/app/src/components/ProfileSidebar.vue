@@ -32,18 +32,16 @@ const logout = () => {
     </header>
     <nav class="settings">
       <ul>
-        <RouterLink to="#">
-          <SettingsItem :icon="SettingsIcon" text="Настройки" />
-        </RouterLink>
+        <SettingsItem :icon="SettingsIcon" text="Настройки" link="#" />
       </ul>
       <div class="divider"></div>
       <ul>
-        <RouterLink to="#"><SettingsItem :icon="LinkIcon" text="Политика конфиденциальности" /></RouterLink>
-        <RouterLink to="#"><SettingsItem :icon="EmailIcon" text="Написать в поддержку" /></RouterLink>
+        <SettingsItem :icon="LinkIcon" text="Политика конфиденциальности" link="#" />
+        <SettingsItem :icon="EmailIcon" text="Написать в поддержку" link="#" />
       </ul>
       <div class="divider"></div>
       <ul>
-        <SettingsItem :icon="LogoutIcon" text="Выйти" @onclick="logout" />
+        <SettingsItem :icon="LogoutIcon" text="Выйти" />
       </ul>
     </nav>
   </div>
@@ -110,5 +108,9 @@ const logout = () => {
   background: transparent;
   border: none;
   padding: 0;
+}
+
+.close-button:hover {
+  background-color: #21262D;
 }
 </style>
