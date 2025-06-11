@@ -22,8 +22,9 @@ const emits = defineEmits(['closeSidebar']);
 const logout = () => {
  setCookie('accessToken', '', 0);
  router.push(routes.login.path)
-
 }
+
+const 
 </script>
 
 <template>
@@ -39,12 +40,12 @@ const logout = () => {
     </header>
     <nav class="settings">
       <ul>
-        <SettingsItem :icon="SettingsIcon" text="Настройки" link="#" />
+        <SettingsItem :icon="SettingsIcon" text="Настройки" />
       </ul>
       <div class="divider"></div>
       <ul>
-        <SettingsItem :icon="LinkIcon" text="Политика конфиденциальности" link="#" />
-        <SettingsItem :icon="EmailIcon" text="Написать в поддержку" link="#" />
+        <SettingsItem :icon="LinkIcon" text="Политика конфиденциальности" />
+        <SettingsItem :icon="EmailIcon" text="Написать в поддержку" />
       </ul>
       <div class="divider"></div>
       <ul>
