@@ -5,22 +5,19 @@ import HistoryIcon from '@/assets/images/History.svg';
 import DynamicIcon from '@/assets/images/Dynamic.svg';
 import Tab from './Tab.vue';
 
+const tabs = [
+  { icon: ArrowUpDownIcon, title: 'Операции', count: 12, active: true },
+  { icon: CategoriesIcon, title: 'Категории', count: 0, active: false },
+  { icon: HistoryIcon, title: 'Архив', count: 0, active: false },
+  { icon: DynamicIcon, title: 'Динамика', count: 0, active: false }
+]
 </script>
 
 <template>
   <div class="container">
     <ul class="list">
-      <li class="item">
-        <Tab :icon="ArrowUpDownIcon" title="Операции" :count="12" :is-active="true" />
-      </li>
-      <li class="item">
-        <Tab :icon="CategoriesIcon" title="Категории" :count="0" :is-active="false" />
-      </li>
-      <li class="item">
-        <Tab :icon="HistoryIcon" title="Архив" :count="0" :is-active="false" />
-      </li>
-      <li class="item">
-        <Tab :icon="DynamicIcon" title="Динамика" :count="0" :is-active="false" />
+      <li class="item" v-for="tab in tabs">
+        <Tab :key="tab.title" :icon="tab.icon" :title="tab.title" :count="tab.count" :is-active="tab.active" />
       </li>
     </ul>
   </div>
