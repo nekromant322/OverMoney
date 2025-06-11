@@ -6,6 +6,11 @@ import SettingsIcon from '@/assets/images/Settings.svg';
 import LinkIcon from '@/assets/images/Link.svg';
 import EmailIcon from '@/assets/images/Email.svg';
 import LogoutIcon from '@/assets/images/Logout.svg';
+import { setCookie } from '@/utils/cookie';
+import { useRouter } from 'vue-router';
+import routes from '@/router/routes';
+
+const router = useRouter();
 
 const props = defineProps<{
   avatar: string,
@@ -15,7 +20,9 @@ const props = defineProps<{
 const emits = defineEmits(['closeSidebar']);
 
 const logout = () => {
- // TODO Remove coockie
+ setCookie('accessToken', '', 0);
+ router.push(routes.login.path)
+
 }
 </script>
 
@@ -41,7 +48,7 @@ const logout = () => {
       </ul>
       <div class="divider"></div>
       <ul>
-        <SettingsItem :icon="LogoutIcon" text="Выйти" />
+        <SettingsItem :icon="LogoutIcon" text="Выйти" @click="logout" />
       </ul>
     </nav>
   </div>
