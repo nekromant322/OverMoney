@@ -18,7 +18,9 @@ const isSidebarVisible = ref<boolean>(false);
     <slot></slot>
   </div>
   <ProfileSidebar :class="{ visible: isSidebarVisible }" :avatar="props.avatar" :username="props.username" @close-sidebar="isSidebarVisible = false" />
-  <Overlay v-if="isSidebarVisible" @click="isSidebarVisible = false" />
+  <transition name="fade">
+    <Overlay v-if="isSidebarVisible" @click="isSidebarVisible = false" />
+  </transition>
 </template>
 
 <style scoped>
@@ -28,5 +30,15 @@ const isSidebarVisible = ref<boolean>(false);
   margin: 0 auto;
   min-height: calc(100% - 60px);
   padding: 0 32px;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-to, .fade-leave-from {
+  opacity: 0.4;
 }
 </style>
