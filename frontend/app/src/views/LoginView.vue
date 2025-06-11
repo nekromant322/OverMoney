@@ -58,7 +58,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <ViewWrapper>
+  <div class="wrapper">
     <header class="header">
       <a href="%VITE_LANDING_URL%">
         <img class="logo" :src="logo" width="32" height="32" alt="app logo">
@@ -79,9 +79,17 @@ onMounted(() => {
       </a>
       <span class="copyright">© 2024 OverMoney</span>
     </footer>
-  </ViewWrapper>
+  </div>
 </template>
 <style scoped>
+.wrapper {
+  position: relative;
+  background-color: #0D1117;
+  margin: 0 auto;
+  min-height: calc(100% - 60px);
+  padding: 0 32px;
+}
+
 .header {
   padding: 14px 0;
   box-sizing: border-box;
