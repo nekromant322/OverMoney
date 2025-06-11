@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import logo from '@/assets/images/logo.svg';
+import LogoIcon from '@/assets/images/logo.svg';
 import { RouterLink } from 'vue-router';
 import Avatar from './Avatar.vue';
 
@@ -13,7 +13,7 @@ const emits = defineEmits(['showSidebar']);
 <template>
   <header class="header">
     <RouterLink to="/" class="home-link">
-      <Avatar :src="logo" alt="logo" />
+      <Avatar :src="LogoIcon" alt="logo" />
     </RouterLink>
     <button class="profile-button" @click="emits('showSidebar')">
       <!-- TODO Replace src to user avatar -->

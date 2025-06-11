@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import logo from '@/assets/images/logo.svg';
-import ViewWrapper from '@/components/ViewWrapper.vue';
+import LogoIcon from '@/assets/images/logo.svg';
 import { onMounted } from 'vue';
 import type { TelegramUser } from '../../global';
 import { toast, type ToastOptions } from 'vue3-toastify';
@@ -61,7 +60,7 @@ onMounted(() => {
   <div class="wrapper">
     <header class="header">
       <a href="%VITE_LANDING_URL%">
-        <img class="logo" :src="logo" width="32" height="32" alt="app logo">
+        <img class="logo" :src="LogoIcon" width="32" height="32" alt="app logo">
       </a>
     </header>
     <main class="content">
@@ -75,7 +74,7 @@ onMounted(() => {
     </main>
     <footer class="footer">
       <a href="/">
-        <img class="logo" :src="logo" width="32" height="32" alt="app logo">
+        <img class="logo" :src="LogoIcon" width="32" height="32" alt="app logo">
       </a>
       <span class="copyright">© 2024 OverMoney</span>
     </footer>

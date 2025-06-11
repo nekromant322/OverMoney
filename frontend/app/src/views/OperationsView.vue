@@ -2,6 +2,7 @@
 import { ref, onMounted, Fragment } from 'vue';
 import ViewWrapper from '@/components/ViewWrapper.vue';
 import ExampleAvatar from '@/assets/images/example-avatar.jpg';
+import Tabs from '@/components/Tabs.vue';
 
 const data = ref(null);
 
@@ -30,6 +31,6 @@ onMounted(async () => {
 
 <template>
   <ViewWrapper :avatar="ExampleAvatar" :username="username">
-    Operations
+    <Tabs />
   </ViewWrapper>
 </template>
