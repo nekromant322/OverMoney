@@ -22,6 +22,7 @@ const username = 'nekromant322';
 
 const activeTab = ref(0);
 
+// TODO Add URL tab GET parameter
 const tabs = [
   { icon: ArrowUpDownIcon, title: 'Операции', count: 12, component: OperationsTab },
   { icon: CategoriesIcon, title: 'Категории', count: 0, component: CategoriesTab },
