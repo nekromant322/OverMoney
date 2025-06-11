@@ -3,8 +3,8 @@ const routes = {
     name: 'login',
     path: '/login'
   },
-  operations: {
-    name: 'operations',
+  dashboard: {
+    name: 'dashboard',
     path: '/'
   }
 }

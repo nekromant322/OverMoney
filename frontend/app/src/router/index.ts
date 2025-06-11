@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import OperationsView from '../views/OperationsView.vue'
+import DashboardView from '../views/DashboardView.vue'
 import { getCookie } from '@/utils/cookie';
 import routes from './routes';
 
@@ -7,9 +7,9 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: routes.operations.path,
-      name: routes.operations.name,
-      component: OperationsView,
+      path: routes.dashboard.path,
+      name: routes.dashboard.name,
+      component: DashboardView,
       meta: {
         requiresAuthorization: true
       }
@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
       next();
     }
   } else if (to.name === routes.login.name && token) {
-    next(routes.operations.path);
+    next(routes.dashboard.path);
   } else {
     next();
   }
