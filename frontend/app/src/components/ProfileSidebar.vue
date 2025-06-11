@@ -100,7 +100,7 @@ const logout = () => {
   margin-left: 8px;
   line-height: 32px;
   color: #C9D1D9;
-  font-family: 'NotoSans', Arial, Helvetica, sans-serif;
+  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
   font-size: 14px;
   font-weight: 600;
 }

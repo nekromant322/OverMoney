@@ -12,7 +12,7 @@
   justify-content: center;
   align-items: center;
   color: #fff;
-  font-family: 'NotoSans', Arial, Helvetica, sans-serif;
+  font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
   font-size: 10px;
   line-height: 10px;
   background-color: #343942;
