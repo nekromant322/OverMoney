@@ -2,8 +2,11 @@
 </script>
 
 <template>
-  <div>Dynamic</div>
+  <div class="tab">Dynamic</div>
 </template>
 
 <style scoped>
+.tab {
+  color: #fff;
+}
 </style>

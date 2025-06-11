@@ -2,8 +2,11 @@
 </script>
 
 <template>
-  <div>Operations</div>
+  <div class="tab">Operations</div>
 </template>
 
 <style scoped>
+.tab {
+  color: #fff;
+}
 </style>
