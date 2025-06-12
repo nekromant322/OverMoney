@@ -1,20 +1,16 @@
 package com.override.dto.constants;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@Getter
+@RequiredArgsConstructor
 public enum PaymentStatus {
     SUCCESS("success"),
     FAILED("failed"),
     PENDING("pending");
 
-    private final String status;
-
-    PaymentStatus(String status) {
-        this.status = status;
-    }
-
     @JsonValue
-    public String getStatus() {
-        return status;
-    }
+    private final String status;
 }

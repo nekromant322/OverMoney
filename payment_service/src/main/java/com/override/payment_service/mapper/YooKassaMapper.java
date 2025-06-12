@@ -13,31 +13,26 @@ import java.util.UUID;
 public class YooKassaMapper {
 
     public YooKassaRequestDTO mapToYooKassaRequest(PaymentRequestDTO request) {
-        YooKassaRequestDTO yooKassaRequest = new YooKassaRequestDTO();
-
-        YooKassaRequestDTO.Amount amount = new YooKassaRequestDTO.Amount();
-        amount.setValue(request.getAmount().toPlainString());
-        amount.setCurrency(request.getCurrency());
-        yooKassaRequest.setAmount(amount);
-
-        yooKassaRequest.setDescription(request.getDescription());
-
-        YooKassaRequestDTO.Confirmation confirmation = new YooKassaRequestDTO.Confirmation();
-        confirmation.setReturnUrl(request.getReturnUrl());
-        yooKassaRequest.setConfirmation(confirmation);
-
-        return yooKassaRequest;
+        return YooKassaRequestDTO.builder()
+                .capture(true)
+                .description(request.getDescription())
+                .amount(YooKassaRequestDTO.Amount.builder()
+                        .value(request.getAmount().toPlainString())
+                        .currency(request.getCurrency())
+                        .build())
+                .confirmation(YooKassaRequestDTO.Confirmation.builder()
+                        .returnUrl(request.getReturnUrl())
+                        .build())
+                .build();
     }
 
-    public PaymentResponseDTO mapToPaymentResponse(
-            YooKassaResponseDTO yooKassaResponse,
-            PaymentRequestDTO paymentRequest
-    ) {
-        PaymentResponseDTO paymentResponse = new PaymentResponseDTO();
-        paymentResponse.setOrderId(paymentRequest.getOrderId());
-        paymentResponse.setPaymentUrl(yooKassaResponse.getConfirmation().getConfirmationUrl());
-        paymentResponse.setStatus(PaymentStatus.PENDING);
-        return paymentResponse;
+    public PaymentResponseDTO mapToPaymentResponse(YooKassaResponseDTO yooKassaResponse,
+                                                   PaymentRequestDTO paymentRequest) {
+        return PaymentResponseDTO.builder()
+                .orderId(paymentRequest.getOrderId())
+                .paymentUrl(yooKassaResponse.getConfirmation().getConfirmationUrl())
+                .status(PaymentStatus.PENDING)
+                .build();
     }
 
     public String generateIdempotenceKey() {

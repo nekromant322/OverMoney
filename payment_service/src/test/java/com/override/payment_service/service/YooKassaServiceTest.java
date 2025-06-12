@@ -20,37 +20,47 @@ import static org.mockito.Mockito.eq;
 
 public class YooKassaServiceTest {
 
+    private static final String TEST_ORDER_ID = "order123";
+    private static final String TEST_IDEMPOTENCE_KEY = "test-key";
+    private static final String TEST_CONFIRM_URL = "https://payment.com/confirm";
+    private static final String TEST_RETURN_URL = "https://example.com/success";
+    private static final BigDecimal TEST_AMOUNT = BigDecimal.valueOf(100);
+
     @Test
     public void testCreatePayment_success() {
         YooKassaClient mockClient = mock(YooKassaClient.class);
         YooKassaMapper mockMapper = mock(YooKassaMapper.class);
         YooKassaService service = new YooKassaService(mockClient, mockMapper);
 
-        PaymentRequestDTO request = new PaymentRequestDTO();
-        request.setOrderId("order123");
-        request.setAmount(BigDecimal.valueOf(100));
-        request.setCurrency(Currency.RUB);
-        request.setDescription("Test payment");
-        request.setReturnUrl("https://example.com/success");
+        PaymentRequestDTO request = PaymentRequestDTO.builder()
+                .orderId(TEST_ORDER_ID)
+                .amount(TEST_AMOUNT)
+                .currency(Currency.RUB)
+                .description("Test payment")
+                .returnUrl(TEST_RETURN_URL)
+                .build();
 
-        YooKassaRequestDTO mappedRequest = new YooKassaRequestDTO();
+        YooKassaRequestDTO mappedRequest = YooKassaRequestDTO.builder().build();
         when(mockMapper.mapToYooKassaRequest(request)).thenReturn(mappedRequest);
-        when(mockMapper.generateIdempotenceKey()).thenReturn("test-key");
+        when(mockMapper.generateIdempotenceKey()).thenReturn(TEST_IDEMPOTENCE_KEY);
 
-        YooKassaResponseDTO.Confirmation confirmation = new YooKassaResponseDTO.Confirmation();
-        confirmation.setConfirmationUrl("https://payment.com/confirm");
+        YooKassaResponseDTO.Confirmation confirmation = YooKassaResponseDTO.Confirmation.builder()
+                .confirmationUrl(TEST_CONFIRM_URL)
+                .build();
 
-        YooKassaResponseDTO yooKassaResponse = new YooKassaResponseDTO();
-        yooKassaResponse.setStatus(PaymentStatus.PENDING);
-        yooKassaResponse.setConfirmation(confirmation);
+        YooKassaResponseDTO yooKassaResponse = YooKassaResponseDTO.builder()
+                .status(PaymentStatus.PENDING)
+                .confirmation(confirmation)
+                .build();
 
-        when(mockClient.createPayment(eq("test-key"), eq(mappedRequest)))
+        when(mockClient.createPayment(eq(TEST_IDEMPOTENCE_KEY), eq(mappedRequest)))
                 .thenReturn(yooKassaResponse);
 
-        PaymentResponseDTO expectedResponse = new PaymentResponseDTO();
-        expectedResponse.setOrderId("order123");
-        expectedResponse.setPaymentUrl("https://payment.com/confirm");
-        expectedResponse.setStatus(PaymentStatus.PENDING);
+        PaymentResponseDTO expectedResponse = PaymentResponseDTO.builder()
+                .orderId(TEST_ORDER_ID)
+                .paymentUrl(TEST_CONFIRM_URL)
+                .status(PaymentStatus.PENDING)
+                .build();
 
         when(mockMapper.mapToPaymentResponse(yooKassaResponse, request))
                 .thenReturn(expectedResponse);
@@ -58,13 +68,12 @@ public class YooKassaServiceTest {
         PaymentResponseDTO result = service.createPayment(request);
 
         assertThat(result)
-                .hasFieldOrPropertyWithValue("orderId", "order123")
-                .hasFieldOrPropertyWithValue("paymentUrl", "https://payment.com/confirm")
-                .hasFieldOrPropertyWithValue("status", PaymentStatus.PENDING);
+                .usingRecursiveComparison()
+                .isEqualTo(expectedResponse);
 
         verify(mockMapper).mapToYooKassaRequest(request);
         verify(mockMapper).generateIdempotenceKey();
-        verify(mockClient).createPayment("test-key", mappedRequest);
+        verify(mockClient).createPayment(TEST_IDEMPOTENCE_KEY, mappedRequest);
         verify(mockMapper).mapToPaymentResponse(yooKassaResponse, request);
     }
 }

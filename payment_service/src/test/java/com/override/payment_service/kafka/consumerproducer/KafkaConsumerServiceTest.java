@@ -18,30 +18,37 @@ import static org.mockito.Mockito.times;
 
 public class KafkaConsumerServiceTest {
 
+    private static final String TEST_ORDER_ID = "order456";
+    private static final String TEST_KEY = "key123";
+    private static final String TEST_CORRELATION_ID = "correlationId123";
+    private static final String TEST_PAYMENT_URL = "payment-url";
+    private static final BigDecimal TEST_AMOUNT = BigDecimal.valueOf(200);
+
     @Test
     public void testListenForPaymentRequests_success() {
         YooKassaService yooKassaService = mock(YooKassaService.class);
         KafkaProducerService kafkaProducerService = mock(KafkaProducerService.class);
-
         KafkaConsumerService consumerService = new KafkaConsumerService(yooKassaService, kafkaProducerService);
 
-        PaymentRequestDTO request = new PaymentRequestDTO();
-        request.setOrderId("order456");
-        request.setAmount(BigDecimal.valueOf(200));
-        request.setCurrency(Currency.RUB);
-        request.setDescription("test");
-        request.setReturnUrl("url");
+        PaymentRequestDTO request = PaymentRequestDTO.builder()
+                .orderId(TEST_ORDER_ID)
+                .amount(TEST_AMOUNT)
+                .currency(Currency.RUB)
+                .description("test")
+                .returnUrl("url")
+                .build();
 
-        PaymentResponseDTO responseDTO = new PaymentResponseDTO();
-        responseDTO.setOrderId("order456");
-        responseDTO.setPaymentUrl("payment-url");
-        responseDTO.setStatus(PaymentStatus.SUCCESS);
+        PaymentResponseDTO expectedResponse = PaymentResponseDTO.builder()
+                .orderId(TEST_ORDER_ID)
+                .paymentUrl(TEST_PAYMENT_URL)
+                .status(PaymentStatus.SUCCESS)
+                .build();
 
-        when(yooKassaService.createPayment(any())).thenReturn(responseDTO);
+        when(yooKassaService.createPayment(any(PaymentRequestDTO.class))).thenReturn(expectedResponse);
 
-        consumerService.listenForPaymentRequests(request, "key123", "correlationId123");
+        consumerService.listenForPaymentRequests(request, TEST_KEY, TEST_CORRELATION_ID);
 
-        verify(kafkaProducerService, times(1)).sendPaymentResponse(eq("key123"),
-                eq("correlationId123"), any());
+        verify(kafkaProducerService, times(1))
+                .sendPaymentResponse(eq(TEST_KEY), eq(TEST_CORRELATION_ID), any(PaymentResponseDTO.class));
     }
 }

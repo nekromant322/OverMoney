@@ -23,6 +23,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest
 public class PaymentControllerTest {
 
+    private static final String TEST_ORDER_ID = "abc";
+    private static final String TEST_RETURN_URL = "https://return.url";
+    private static final String TEST_CONFIRM_URL = "https://confirm.url";
+    private static final BigDecimal TEST_AMOUNT = BigDecimal.valueOf(123);
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -34,26 +39,28 @@ public class PaymentControllerTest {
 
     @Test
     public void testCreatePayment() throws Exception {
-        PaymentRequestDTO request = new PaymentRequestDTO();
-        request.setOrderId("abc");
-        request.setAmount(BigDecimal.valueOf(123));
-        request.setCurrency(Currency.RUB);
-        request.setReturnUrl("https://return.url");
-        request.setDescription("Test");
+        PaymentRequestDTO request = PaymentRequestDTO.builder()
+                .orderId(TEST_ORDER_ID)
+                .amount(TEST_AMOUNT)
+                .currency(Currency.RUB)
+                .returnUrl(TEST_RETURN_URL)
+                .description("Test")
+                .build();
 
-        PaymentResponseDTO response = new PaymentResponseDTO();
-        response.setOrderId(request.getOrderId());
-        response.setPaymentUrl("https://confirm.url");
-        response.setStatus(PaymentStatus.PENDING);
+        PaymentResponseDTO response = PaymentResponseDTO.builder()
+                .orderId(TEST_ORDER_ID)
+                .paymentUrl(TEST_CONFIRM_URL)
+                .status(PaymentStatus.PENDING)
+                .build();
 
-        when(yooKassaService.createPayment(any())).thenReturn(response);
+        when(yooKassaService.createPayment(any(PaymentRequestDTO.class))).thenReturn(response);
 
         mockMvc.perform(post("/payments")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.orderId").value(response.getOrderId()))
-                .andExpect(jsonPath("$.paymentUrl").value(response.getPaymentUrl()))
+                .andExpect(jsonPath("$.orderId").value(TEST_ORDER_ID))
+                .andExpect(jsonPath("$.paymentUrl").value(TEST_CONFIRM_URL))
                 .andExpect(jsonPath("$.status").value(response.getStatus().getStatus()));
     }
 }

@@ -1,7 +1,11 @@
 package com.override.dto.constants;
 
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
+@Getter
+@RequiredArgsConstructor
 public enum Currency {
     RUB("RUB"),
     USD("USD"),
@@ -9,14 +13,6 @@ public enum Currency {
     CNY("CNY"),
     KZT("KZT");
 
-    private final String code;
-
-    Currency(String code) {
-        this.code = code;
-    }
-
     @JsonValue
-    public String getCode() {
-        return code;
-    }
+    private final String code;
 }

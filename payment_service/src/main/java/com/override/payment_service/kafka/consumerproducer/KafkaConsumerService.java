@@ -30,23 +30,31 @@ public class KafkaConsumerService {
             @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key,
             @Header(KafkaHeaders.CORRELATION_ID) String correlationId) {
 
-        String orderId = paymentRequest.getOrderId();
+        final String orderId = paymentRequest.getOrderId();
         log.info("Получен запрос на оплату заказа: {}", orderId);
-
-        PaymentResponseDTO response = new PaymentResponseDTO();
-        response.setOrderId(paymentRequest.getOrderId());
 
         try {
             PaymentResponseDTO yooKassaResponse = yooKassaService.createPayment(paymentRequest);
-            response.setPaymentUrl(yooKassaResponse.getPaymentUrl());
-            response.setStatus(PaymentStatus.SUCCESS);
+
+            PaymentResponseDTO response = PaymentResponseDTO.builder()
+                    .orderId(orderId)
+                    .paymentUrl(yooKassaResponse.getPaymentUrl())
+                    .status(PaymentStatus.SUCCESS)
+                    .build();
+
             log.info("Платеж успешно создан для заказа: {}", orderId);
+            kafkaProducerService.sendPaymentResponse(key, correlationId, response);
+
         } catch (Exception e) {
             log.error("Ошибка обработки платежа за заказ: {}", orderId, e);
-            response.setStatus(PaymentStatus.FAILED);
-            response.setPaymentUrl(null);
-        }
 
-        kafkaProducerService.sendPaymentResponse(key, correlationId, response);
+            PaymentResponseDTO errorResponse = PaymentResponseDTO.builder()
+                    .orderId(orderId)
+                    .status(PaymentStatus.FAILED)
+                    .paymentUrl(null)
+                    .build();
+
+            kafkaProducerService.sendPaymentResponse(key, correlationId, errorResponse);
+        }
     }
 }
