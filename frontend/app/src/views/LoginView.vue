@@ -77,7 +77,7 @@ onMounted(() => {
       <a href="/">
         <img class="logo" :src="logo" width="32" height="32" alt="app logo">
       </a>
-      <span class="copyright">© 2024 OverMoney</span>
+      <span class="copyright">© 2025 OverMoney</span>
     </footer>
   </div>
 </template>
