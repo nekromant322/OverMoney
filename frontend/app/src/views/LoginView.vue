@@ -4,6 +4,7 @@ import { onMounted } from 'vue';
 import type { TelegramUser } from '../../global';
 import { toast, type ToastOptions } from 'vue3-toastify';
 
+const LANDING_URL = import.meta.env.VITE_LANDING_URL;
 const LOGIN_URL = `${import.meta.env.VITE_BASE_URL}/auth/login`;
 const TELEGRAM_WIDGET_SRC = `https://telegram.org/js/telegram-widget.js?${import.meta.env.VITE_TELEGRAM_WIDGET_VERSION}`;
 
@@ -59,7 +60,7 @@ onMounted(() => {
 <template>
   <div class="wrapper">
     <header class="header">
-      <a href="%VITE_LANDING_URL%">
+      <a :href="LANDING_URL">
         <img class="logo" :src="logo" width="32" height="32" alt="app logo">
       </a>
     </header>
