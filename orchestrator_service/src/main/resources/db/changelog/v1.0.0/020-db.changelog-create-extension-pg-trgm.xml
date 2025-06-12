@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="30.03.2025-create-extension-pg-tgrm" author="Veiiev">
+        <preConditions onFail="WARN">
+            <dbms type="postgresql"/>
+        </preConditions>
+        <sql>
+            CREATE
+            EXTENSION IF NOT EXISTS pg_trgm;
+        </sql>
+    </changeSet>
+
+    <changeSet id="30.03.2025-create-tgrm-index" author="Veiiev">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <indexExists indexName="idx_transactions_message_trgm" tableName="transactions"/>
+            </not>
+        </preConditions>
+        <sql>
+            CREATE INDEX idx_transactions_message_trgm
+            ON transactions USING gin (lower (message) gin_trgm_ops);
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -20,7 +20,7 @@ rules:
             name: frontend-landing-service
             port:
               number: 80
-      - path: /front
+      - path: /app/
         pathType: Prefix
         backend:
           service:

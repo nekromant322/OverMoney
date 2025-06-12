@@ -26,6 +26,7 @@ export default ({ mode }: { mode: string }) => {
           rewrite: path => path.replace(/^\/api/, '')
         }
       }
-    }
+    },
+    base: '/app/',
   });
 };
