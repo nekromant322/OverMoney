@@ -1,6 +1,6 @@
 FROM node:22-alpine as build
 
-ARG BUILD_CMD=build
+ARG BUILD_CMD=build-staging
 WORKDIR /app
 
 COPY /frontend/app/package.json /frontend/app/package-lock.json ./
