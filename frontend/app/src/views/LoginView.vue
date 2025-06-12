@@ -5,7 +5,7 @@ import type { TelegramUser } from '../../global';
 import { toast, type ToastOptions } from 'vue3-toastify';
 
 const LANDING_URL = import.meta.env.VITE_LANDING_URL;
-const LOGIN_URL = `${import.meta.env.VITE_BASE_URL}/auth/login`;
+const LOGIN_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
 const TELEGRAM_WIDGET_SRC = `https://telegram.org/js/telegram-widget.js?${import.meta.env.VITE_TELEGRAM_WIDGET_VERSION}`;
 
 window.onTelegramAuth = async (user: TelegramUser) => {

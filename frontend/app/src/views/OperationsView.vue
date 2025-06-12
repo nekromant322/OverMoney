@@ -12,7 +12,7 @@ const username = 'nekromant322';
 
 onMounted(async () => {
   try {
-    const response = await fetch('/api/transactions', {
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions`, {
       method: 'GET',
       headers: {
       'Content-Type': 'application/json',
