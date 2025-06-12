@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import logo from '@/assets/images/logo.svg';
-import ViewWrapper from '@/components/ViewWrapper.vue';
 import { onMounted } from 'vue';
 import type { TelegramUser } from '../../global';
 import { toast, type ToastOptions } from 'vue3-toastify';
