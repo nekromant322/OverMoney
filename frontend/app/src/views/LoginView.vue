@@ -74,7 +74,7 @@ onMounted(() => {
       </div>
     </main>
     <footer class="footer">
-      <a href="/">
+      <a :href="LANDING_URL">
         <img class="logo" :src="logo" width="32" height="32" alt="app logo">
       </a>
       <span class="copyright">© 2025 OverMoney</span>
