@@ -3,7 +3,6 @@ import logo from '@/assets/images/logo.svg';
 import { onMounted } from 'vue';
 import type { TelegramUser } from '../../global';
 import { toast, type ToastOptions } from 'vue3-toastify';
-import { setCookie } from '@/utils/cookie';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
@@ -27,8 +26,7 @@ window.onTelegramAuth = async (user: TelegramUser) => {
       return;
     }
 
-    const cookie: { accessToken: string } = await response.json();
-    setCookie('accessToken', cookie.accessToken, 3);
+    // TODO Set authentication true in a store
     router.push('/');
   } catch (err) {
     showLoginError();

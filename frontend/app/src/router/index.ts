@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import OperationsView from '../views/OperationsView.vue'
-import { getCookie } from '@/utils/cookie';
 import routes from './routes';
+import { ref } from 'vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,17 +26,16 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const token = getCookie('accessToken');
-  console.log(token);
-  debugger;
+  // TODO Send check auth request
+  const isAuthenticated = ref(false); // TODO Move it to store
 
   if (to.matched.some(record => record.meta.requiresAuthorization)) {
-    if (!token) {
+    if (!isAuthenticated.value) {
       next(routes.login.path);
     } else {
       next();
     }
-  } else if (to.name === routes.login.name && token) {
+  } else if (to.name === routes.login.name && isAuthenticated.value) {
     next(routes.operations.path);
   } else {
     next();
