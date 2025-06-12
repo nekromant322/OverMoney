@@ -27,6 +27,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const token = getCookie('accessToken');
+  console.log(token);
+  debugger;
 
   if (to.matched.some(record => record.meta.requiresAuthorization)) {
     if (!token) {
