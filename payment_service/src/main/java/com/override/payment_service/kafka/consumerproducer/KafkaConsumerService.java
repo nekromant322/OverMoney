@@ -44,7 +44,6 @@ public class KafkaConsumerService {
 
             log.info("Платеж успешно создан для заказа: {}", orderId);
             kafkaProducerService.sendPaymentResponse(key, correlationId, response);
-
         } catch (Exception e) {
             log.error("Ошибка обработки платежа за заказ: {}", orderId, e);
 
