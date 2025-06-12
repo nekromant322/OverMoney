@@ -4,6 +4,9 @@ import { onMounted } from 'vue';
 import type { TelegramUser } from '../../global';
 import { toast, type ToastOptions } from 'vue3-toastify';
 import { setCookie } from '@/utils/cookie';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const LANDING_URL = import.meta.env.VITE_LANDING_URL;
 const LOGIN_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
@@ -24,9 +27,9 @@ window.onTelegramAuth = async (user: TelegramUser) => {
       return;
     }
 
-    const cookie = await response.json();
-    setCookie('accessToken', cookie, 3);
-    window.location.href = `${import.meta.env.VITE_BASE_URL}/app/`;
+    const cookie: { accessToken: string } = await response.json();
+    setCookie('accessToken', cookie.accessToken, 3);
+    router.push('/app/');
   } catch (err) {
     showLoginError();
   }
