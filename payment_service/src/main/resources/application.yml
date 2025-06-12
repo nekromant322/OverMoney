@@ -29,7 +29,7 @@ spring:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 
   liquibase:
-    enabled: true
+    enabled: false
     change-log: /db/changelog/db.changelog-master.xml
 
   profiles:
@@ -37,6 +37,8 @@ spring:
 
   kafka:
     topics:
+      payment-request: payment-requests
+      payment-response: payment-responses
       subscription-request: subscription-request-topic
       subscription-response: subscription-response-topic
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
@@ -61,6 +63,7 @@ spring:
 logging:
   level:
     org.zalando.logbook: TRACE
+    org.springframework.kafka: INFO
 
 management:
   endpoints:
@@ -81,3 +84,7 @@ authorization-header:
 mask-log-spring-boot-starter:
   maskedFields:
     - x-internal-key
+
+yookassa:
+  shop-id: ${YOOKASSA_SHOP_ID}
+  secret-key: ${YOOKASSA_SECRET_KEY}
