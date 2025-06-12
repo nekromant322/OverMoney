@@ -29,7 +29,7 @@ window.onTelegramAuth = async (user: TelegramUser) => {
 
     const cookie: { accessToken: string } = await response.json();
     setCookie('accessToken', cookie.accessToken, 3);
-    router.push('/app/');
+    router.push('/');
   } catch (err) {
     showLoginError();
   }
