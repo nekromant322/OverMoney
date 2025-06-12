@@ -24,7 +24,7 @@ window.onTelegramAuth = async (user: TelegramUser) => {
     }
 
     document.cookie = `accessToken=${response.json()}`;
-    window.location.href = '/';
+    window.location.href = `${import.meta.env.VITE_BASE_URL}/app/`;
   } catch (err) {
     showLoginError();
   }
