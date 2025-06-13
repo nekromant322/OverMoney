@@ -8,8 +8,10 @@ import EmailIcon from '@/assets/images/Email.svg';
 import LogoutIcon from '@/assets/images/Logout.svg';
 import { useRouter } from 'vue-router';
 import routes from '@/router/routes';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const props = defineProps<{
   avatar: string,
@@ -18,8 +20,8 @@ const props = defineProps<{
 
 const emits = defineEmits(['closeSidebar']);
 
-const logout = () => {
-  // TODO Send logout request
+const logout = async () => {
+  await authStore.logout();
   router.push(routes.login.path)
 }
 </script>

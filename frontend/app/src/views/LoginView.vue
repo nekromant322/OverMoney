@@ -4,42 +4,26 @@ import { onMounted } from 'vue';
 import type { TelegramUser } from '../../global';
 import { toast, type ToastOptions } from 'vue3-toastify';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
+const authStore = useAuthStore();
 
 const LANDING_URL = import.meta.env.VITE_LANDING_URL;
-const LOGIN_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
 const TELEGRAM_WIDGET_SRC = `https://telegram.org/js/telegram-widget.js?${import.meta.env.VITE_TELEGRAM_WIDGET_VERSION}`;
 
 window.onTelegramAuth = async (user: TelegramUser) => {
   try {
-    const response = await fetch(LOGIN_URL, {
-      method: 'POST',
-      body: JSON.stringify(user),
-      headers: {
-        'Content-Type': 'application/json; charset=utf-8',
-      },
-    });
-
-    if (!response.ok) {
-      showLoginError();
-      return;
-    }
-
-    // TODO Set authentication true in a store
+    await authStore.login(user);
     router.push('/');
-  } catch {
-    showLoginError();
+  } catch (err) {
+    toast(`${err}`, {
+      type: 'error',
+      autoClose: 2000,
+      position: toast.POSITION.BOTTOM_RIGHT,
+    } as ToastOptions);
   }
 };
-
-const showLoginError = () => {
-  toast("Ошибка авторизации. Повторите попытку позже.", {
-    type: 'error',
-    autoClose: 2000,
-    position: toast.POSITION.BOTTOM_RIGHT,
-  } as ToastOptions);
-}
 
 onMounted(() => {
   const element = document.getElementById('login-button');

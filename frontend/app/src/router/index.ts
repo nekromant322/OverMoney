@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import DashboardView from '@/views/DashboardView.vue';
 import routes from './routes';
-import { ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,17 +25,23 @@ const router = createRouter({
   ],
 })
 
-router.beforeEach((to, from, next) => {
-  // TODO Send check auth request
-  const isAuthenticated = ref(false); // TODO Move it to store
+router.beforeEach(async (to, from, next) => {
+  const authStore = useAuthStore();
+  
+  try {
+    // Checks if user is authenticated
+    await authStore.check();
+  } catch (err) {
+    console.error(err);
+  }
 
   if (to.matched.some(record => record.meta.requiresAuthorization)) {
-    if (!isAuthenticated.value) {
+    if (!authStore.isAuthenticated) {
       next(routes.login.path);
     } else {
       next();
     }
-  } else if (to.name === routes.login.name && isAuthenticated.value) {
+  } else if (to.name === routes.login.name && authStore.isAuthenticated) {
     next(routes.dashboard.path);
   } else {
     next();
