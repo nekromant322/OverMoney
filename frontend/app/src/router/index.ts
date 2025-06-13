@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import DashboardView from '../views/DashboardView.vue'
-import { getCookie } from '@/utils/cookie';
+import DashboardView from '@/views/DashboardView.vue';
 import routes from './routes';
+import { ref } from 'vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,15 +26,16 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  const token = getCookie('accessToken');
+  // TODO Send check auth request
+  const isAuthenticated = ref(false); // TODO Move it to store
 
   if (to.matched.some(record => record.meta.requiresAuthorization)) {
-    if (!token) {
+    if (!isAuthenticated.value) {
       next(routes.login.path);
     } else {
       next();
     }
-  } else if (to.name === routes.login.name && token) {
+  } else if (to.name === routes.login.name && isAuthenticated.value) {
     next(routes.dashboard.path);
   } else {
     next();

@@ -6,7 +6,6 @@ import SettingsIcon from '@/assets/images/Settings.svg';
 import LinkIcon from '@/assets/images/Link.svg';
 import EmailIcon from '@/assets/images/Email.svg';
 import LogoutIcon from '@/assets/images/Logout.svg';
-import { setCookie } from '@/utils/cookie';
 import { useRouter } from 'vue-router';
 import routes from '@/router/routes';
 
@@ -20,8 +19,8 @@ const props = defineProps<{
 const emits = defineEmits(['closeSidebar']);
 
 const logout = () => {
- setCookie('accessToken', '', 0);
- router.push(routes.login.path)
+  // TODO Send logout request
+  router.push(routes.login.path)
 }
 </script>
 

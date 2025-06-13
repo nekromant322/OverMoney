@@ -3,8 +3,12 @@ import LogoIcon from '@/assets/images/logo.svg';
 import { onMounted } from 'vue';
 import type { TelegramUser } from '../../global';
 import { toast, type ToastOptions } from 'vue3-toastify';
+import { useRouter } from 'vue-router';
 
-const LOGIN_URL = `${import.meta.env.VITE_BASE_URL}/auth/login`;
+const router = useRouter();
+
+const LANDING_URL = import.meta.env.VITE_LANDING_URL;
+const LOGIN_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
 const TELEGRAM_WIDGET_SRC = `https://telegram.org/js/telegram-widget.js?${import.meta.env.VITE_TELEGRAM_WIDGET_VERSION}`;
 
 window.onTelegramAuth = async (user: TelegramUser) => {
@@ -22,8 +26,8 @@ window.onTelegramAuth = async (user: TelegramUser) => {
       return;
     }
 
-    document.cookie = `accessToken=${response.json()}`;
-    window.location.href = '/';
+    // TODO Set authentication true in a store
+    router.push('/');
   } catch (err) {
     showLoginError();
   }
@@ -59,7 +63,7 @@ onMounted(() => {
 <template>
   <div class="wrapper">
     <header class="header">
-      <a href="%VITE_LANDING_URL%">
+      <a :href="LANDING_URL">
         <img class="logo" :src="LogoIcon" width="32" height="32" alt="app logo">
       </a>
     </header>
@@ -73,10 +77,10 @@ onMounted(() => {
       </div>
     </main>
     <footer class="footer">
-      <a href="/">
+      <a :href="LANDING_URL">
         <img class="logo" :src="LogoIcon" width="32" height="32" alt="app logo">
       </a>
-      <span class="copyright">© 2024 OverMoney</span>
+      <span class="copyright">© 2025 OverMoney</span>
     </footer>
   </div>
 </template>

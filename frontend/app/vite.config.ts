@@ -5,6 +5,7 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 export default ({ mode }: { mode: string }) => {
   const env = loadEnv(mode, process.cwd());
+  const isDevMode = mode === 'development';
 
   return defineConfig({
     plugins: [
@@ -18,14 +19,16 @@ export default ({ mode }: { mode: string }) => {
     },
     server: {
       allowedHosts: [env.VITE_ALLOWED_HOSTS],
-      proxy: {
-        '/api': {
-          target: 'https://overmoneytest.online',
-          changeOrigin: true,
-          secure: false,
-          rewrite: path => path.replace(/^\/api/, '')
+      ...(isDevMode && {
+        proxy: {
+          '/api': {
+            target: 'https://overmoneytest.online',
+            changeOrigin: true,
+            secure: false,
+            rewrite: path => path.replace(/^\/api/, ''),
+          }
         }
-      }
+      })
     },
     base: '/app/',
   });
