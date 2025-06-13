@@ -28,7 +28,7 @@ window.onTelegramAuth = async (user: TelegramUser) => {
 
     // TODO Set authentication true in a store
     router.push('/');
-  } catch (err) {
+  } catch {
     showLoginError();
   }
 };

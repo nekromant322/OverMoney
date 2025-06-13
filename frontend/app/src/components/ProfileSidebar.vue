@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Avatar from './Avatar.vue';
+import UserAvatar from './UserAvatar.vue';
 import CloseIcon from '@/assets/images/Close.svg';
 import SettingsItem from './SettingsItem.vue';
 import SettingsIcon from '@/assets/images/Settings.svg';
@@ -28,7 +28,7 @@ const logout = () => {
   <div class="sidebar">
     <header class="header">
       <div class="user">
-        <Avatar :src="props.avatar" alt="avatar" />
+        <UserAvatar :src="props.avatar" alt="avatar" />
         <div class="username">{{ props.username }}</div>
       </div>
       <button class="close-button" @click="emits('closeSidebar')">

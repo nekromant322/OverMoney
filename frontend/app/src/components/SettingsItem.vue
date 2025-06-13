@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Icon from './Icon.vue';
+import AppIcon from './AppIcon.vue';
 
-const props = defineProps<{
+defineProps<{
   icon: string,
   text: string,
 }>();
@@ -10,7 +10,7 @@ const props = defineProps<{
 <template>
   <li class="item">
       <button class="button">
-        <Icon :src="icon" :alt="text" />
+        <AppIcon :src="icon" :alt="text" />
         <span class="text">{{ text }}</span>
       </button>
   </li>

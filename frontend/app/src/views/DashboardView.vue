@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import ViewWrapper from '@/components/ViewWrapper.vue';
 import ExampleAvatar from '@/assets/images/example-avatar.jpg';
-import Tabs from '@/components/Tabs.vue';
+import AppTabs from '@/components/AppTabs.vue';
 import ArrowUpDownIcon from '@/assets/images/ArrowsUpDown.svg';
 import CategoriesIcon from '@/assets/images/Categories.svg'
 import HistoryIcon from '@/assets/images/History.svg';
@@ -15,8 +15,6 @@ import DynamicTab from '@/components/DynamicTab.vue';
 
 const data = ref(null);
 
-// TODO Get data from an endpoint
-const avatar = '';
 // TODO Get data from an endpoint
 const username = 'nekromant322';
 
@@ -50,7 +48,7 @@ onMounted(async () => {
 
 <template>
   <ViewWrapper :avatar="ExampleAvatar" :username="username">
-    <Tabs>
+    <AppTabs>
       <TabButton 
         v-for="tab, index in tabs" 
         :key="tab.title" 
@@ -59,7 +57,7 @@ onMounted(async () => {
         :count="tab.count" 
         :is-active="tab.title === tabs[activeTab].title"
         @click="activeTab = index" />
-    </Tabs>
+    </AppTabs>
     <KeepAlive>
       <component :is="tabs[activeTab].component" />
     </KeepAlive>

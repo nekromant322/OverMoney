@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Count from './Count.vue';
+import CountItem from './CountItem.vue';
 
 defineProps<{
   icon: string,
@@ -16,7 +16,7 @@ defineProps<{
         <img class="icon" :src="icon" :alt="title">
         <div class="title">{{ title }}</div>
         <div class="title-place">{{ title }}</div>
-        <Count v-if="count > 0" class="count" :count="count" />
+        <CountItem v-if="count > 0" class="count" :count="count" />
       </div>
       <div class="highlight"></div>
     </button>
