@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.telegram.telegrambots.meta.api.objects.ApiResponse;
 import org.telegram.telegrambots.meta.api.objects.File;
+import org.telegram.telegrambots.meta.api.objects.UserProfilePhotos;
 
 @FeignClient(name = "TelegramBotApiFeign", url = "${bot.api.url}")
 public interface TelegramBotApiFeign {
@@ -15,4 +16,7 @@ public interface TelegramBotApiFeign {
 
     @GetMapping("/file/bot${bot.token}/{filePath}")
     ResponseEntity<byte[]> getVoiceMessage(@PathVariable String filePath);
+
+    @GetMapping("/bot${bot.token}/getUserProfilePhotos?user_id={userId}")
+    ResponseEntity<ApiResponse<UserProfilePhotos>> getUserProfilePhotos(@PathVariable Long userId);
 }
