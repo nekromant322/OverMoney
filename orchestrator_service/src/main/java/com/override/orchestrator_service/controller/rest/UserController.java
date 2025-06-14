@@ -32,8 +32,7 @@ public class UserController {
             description = "Получает username и фото авторизированного пользователя в формате строки" +
                     " data:image:<тип фотографии>;base64,<base64url> ")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Информация о пользователе передана успешно"),
-            @ApiResponse(responseCode = "400", description = "У пользователя нет фотографии"),
+            @ApiResponse(responseCode = "200", description = "Информация о пользователе передана успешно")
     })
     @GetMapping("/current")
     public ResponseEntity<UserInfoResponseDTO> getUserInfo(Principal principal) {

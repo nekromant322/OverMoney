@@ -1,5 +1,6 @@
 package com.override.payment_service.kafka.config;
 
+import com.override.payment_service.constants.KafkaConstants;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -11,16 +12,32 @@ import org.springframework.kafka.config.TopicBuilder;
 public class KafkaConfig {
 
     @Bean
-    public NewTopic subscriptionRequestTopic() {
-        return TopicBuilder.name("subscription-request-topic")
+    NewTopic paymentRequestsTopic() {
+        return TopicBuilder.name(KafkaConstants.PAYMENT_REQUESTS_TOPIC)
                 .partitions(3)
                 .replicas(1)
                 .build();
     }
 
     @Bean
-    public NewTopic subscriptionResponseTopic() {
-        return TopicBuilder.name("subscription-response-topic")
+    NewTopic paymentResponsesTopic() {
+        return TopicBuilder.name(KafkaConstants.PAYMENT_RESPONSES_TOPIC)
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    NewTopic subscriptionRequestsTopic() {
+        return TopicBuilder.name("subscription-requests")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
+
+    @Bean
+    NewTopic subscriptionResponsesTopic() {
+        return TopicBuilder.name("subscription-responses")
                 .partitions(3)
                 .replicas(1)
                 .build();

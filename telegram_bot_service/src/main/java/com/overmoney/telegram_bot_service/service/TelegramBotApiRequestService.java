@@ -4,6 +4,8 @@ import com.overmoney.telegram_bot_service.feign.TelegramBotApiFeign;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
+
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -11,8 +13,6 @@ public class TelegramBotApiRequestService {
 
     @Autowired
     private TelegramBotApiFeign telegramBotApiFeign;
-
-
 
     public byte[] getVoiceMessageBytes(String fileId) {
         return telegramBotApiFeign.getVoiceMessage(getTelegramFileUrl(fileId)).getBody();
@@ -29,12 +29,13 @@ public class TelegramBotApiRequestService {
                 .getResult()
                 .getPhotos();
 
-        if (photos == null || photos.isEmpty()) {
+        if (photos == null || photos.isEmpty() || photos.get(0) == null || photos.get(0).isEmpty()) {
             return null;
         }
-        return photos
-                .get(0)
-                .get(0)
-                .getFileId();
+        List<PhotoSize> profilePhotos = photos.get(0);
+        return profilePhotos.stream()
+                .min(Comparator.comparingInt(photo -> photo.getHeight() * photo.getWidth()))
+                .map(PhotoSize::getFileId)
+                .orElse(null);
     }
 }
