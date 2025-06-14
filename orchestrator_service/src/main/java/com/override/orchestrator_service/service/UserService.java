@@ -1,6 +1,8 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.AccountDataDTO;
+import com.override.orchestrator_service.exception.InvalidDataException;
+import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.TelegramAuthRequest;
 import com.override.orchestrator_service.model.User;
@@ -24,6 +26,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    TelegramBotFeign telegramBotFeign;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -97,5 +102,18 @@ public class UserService {
 
     public List<User> getUsersByIds(List<Long> userIds) {
         return userRepository.findAllUsersByIds(userIds);
+    }
+
+    public String getUserNameById(Long userId) {
+        try {
+
+            return getUserById(userId).getUsername();
+        } catch (InstanceNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String getBase64EncodedProfilePhotoUrlById(Long userId) {
+        return telegramBotFeign.getBase64EncodedProfilePhoto(userId);
     }
 }
