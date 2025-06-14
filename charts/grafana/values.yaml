@@ -24,16 +24,16 @@ deployment:
         volumeMountPath: "/mnt/secrets-store"
         readOnly: true
       - name: grafana-datasources
-        mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
+        volumeMountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
         subPath: datasources.yaml
       - name: grafana-alerting
-        mountPath: "/etc/grafana/provisioning/alerting/default-alert-rules.yaml"
+        volumeMountPath: "/etc/grafana/provisioning/alerting/default-alert-rules.yaml"
         subPath: default-alert-rules.yaml
       - name: grafana-notifiers
-        mountPath: "/etc/grafana/provisioning/notifiers/default-contact-points.yaml"
+        volumeMountPath: "/etc/grafana/provisioning/notifiers/default-contact-points.yaml"
         subPath: default-contact-points.yaml
       - name: grafana-notification-templates
-        mountPath: "/etc/grafana/notification-templates/telegram-template.tmpl"
+        volumeMountPath: "/etc/grafana/notification-templates/telegram-template.tmpl"
         subPath: telegram-template.tmpl
   priorityClassName: prod-priority-class
 

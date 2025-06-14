@@ -30,6 +30,7 @@ public class TelegramFileService {
         String filePath = telegramBotApiRequestService.getTelegramFileUrl(fileId);
         filePath = String.format("%s/file/bot%s/%s", botApiUrl, botToken, filePath);
         BufferedImage image = fileUtils.downloadImage(filePath);
+        image = fileUtils.resizeImage(image, 32, 32);
         String imageType = fileUtils.getImageFormatFromUrl(filePath);
         if (image == null || imageType == null) {
             return null;

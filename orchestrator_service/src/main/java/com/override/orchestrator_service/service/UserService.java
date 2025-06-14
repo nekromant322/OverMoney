@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.AccountDataDTO;
-import com.override.orchestrator_service.exception.InvalidDataException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.TelegramAuthRequest;
