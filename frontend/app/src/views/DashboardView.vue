@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import ViewWrapper from '@/components/ViewWrapper.vue';
-import ExampleAvatar from '@/assets/images/example-avatar.jpg';
 import AppTabs from '@/components/AppTabs.vue';
 import ArrowUpDownIcon from '@/assets/images/ArrowsUpDown.svg';
 import CategoriesIcon from '@/assets/images/Categories.svg'
@@ -12,11 +11,12 @@ import OperationsTab from '@/components/OperationsTab.vue';
 import CategoriesTab from '@/components/CategoriesTab.vue';
 import ArchiveTab from '@/components/ArchiveTab.vue';
 import DynamicTab from '@/components/DynamicTab.vue';
+import { useAuthStore } from '@/stores/auth';
+import { toast, type ToastOptions } from 'vue3-toastify';
+
+const authStore = useAuthStore();
 
 const data = ref(null);
-
-// TODO Get data from an endpoint
-const username = 'nekromant322';
 
 const activeTab = ref(0);
 
@@ -29,6 +29,16 @@ const tabs = [
 ]
 
 onMounted(async () => {
+  try {
+    await authStore.getUserInfo();
+  } catch (err) {
+    toast(`${err}`, {
+      type: 'error',
+      autoClose: 2000,
+      position: toast.POSITION.BOTTOM_RIGHT,
+    } as ToastOptions);
+  }
+
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions`, {
       method: 'GET',
@@ -47,7 +57,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <ViewWrapper :avatar="ExampleAvatar" :username="username">
+  <ViewWrapper v-if="authStore.user" :avatar="authStore.user.photoBase64Format" :username="authStore.user.username">
     <AppTabs>
       <TabButton 
         v-for="tab, index in tabs" 
