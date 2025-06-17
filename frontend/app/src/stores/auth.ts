@@ -6,7 +6,7 @@ import type { TelegramUser } from "../../global";
 const LOGIN_URL = `${import.meta.env.VITE_API_URL}/auth/login`;
 const LOGOUT_URL = `${import.meta.env.VITE_API_URL}/auth/logout`;
 const CHECK_URL = `${import.meta.env.VITE_API_URL}/auth/check`;
-const USER_INFO_URL = `${import.meta.env.VITE_API_URL}/users/count`;
+const USER_INFO_URL = `${import.meta.env.VITE_API_URL}/users/current`;
 
 interface User {
   username: string,
