@@ -5,7 +5,7 @@ import ProfileSidebar from './ProfileSidebar.vue';
 import AppOverlay from './AppOverlay.vue';
 
 const props = defineProps<{
-  avatar: string,
+  avatar: string | null,
   username: string
 }>()
 
@@ -13,7 +13,7 @@ const isSidebarVisible = ref<boolean>(false);
 </script>
 
 <template>
-  <AppHeader :avatar="props.avatar" @show-sidebar="isSidebarVisible = true" />
+  <AppHeader :avatar="props.avatar" :username="username" @show-sidebar="isSidebarVisible = true" />
   <div class="wrapper">
     <slot></slot>
   </div>

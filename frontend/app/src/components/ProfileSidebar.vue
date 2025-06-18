@@ -14,7 +14,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const props = defineProps<{
-  avatar: string,
+  avatar: string | null,
   username: string
 }>();
 
@@ -30,7 +30,7 @@ const logout = async () => {
   <div class="sidebar">
     <header class="header">
       <div class="user">
-        <UserAvatar :src="props.avatar" alt="avatar" />
+        <UserAvatar :src="props.avatar" :username="username" alt="avatar" />
         <div class="username">{{ props.username }}</div>
       </div>
       <button class="close-button" @click="emits('closeSidebar')">

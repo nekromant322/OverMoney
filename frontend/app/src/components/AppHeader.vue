@@ -4,7 +4,8 @@ import { RouterLink } from 'vue-router';
 import UserAvatar from './UserAvatar.vue';
 
 const props = defineProps<{
-  avatar: string
+  username: string
+  avatar: string | null
 }>();
 
 const emits = defineEmits(['showSidebar']);
@@ -13,11 +14,11 @@ const emits = defineEmits(['showSidebar']);
 <template>
   <header class="header">
     <RouterLink to="/" class="home-link">
-      <UserAvatar :src="LogoIcon" alt="logo" />
+      <UserAvatar :src="LogoIcon" :username="username" alt="logo" />
     </RouterLink>
     <button class="profile-button" @click="emits('showSidebar')">
       <!-- TODO Replace src to user avatar -->
-      <UserAvatar :src="props.avatar" alt="avatar" />
+      <UserAvatar :src="props.avatar" :username="username" alt="avatar" />
     </button> 
   </header>
 </template>
