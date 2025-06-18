@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { toast, type ToastOptions } from 'vue3-toastify';
 import ViewWrapper from '@/components/ViewWrapper.vue';
 import AppTabs from '@/components/AppTabs.vue';
 import ArrowUpDownIcon from '@/assets/images/ArrowsUpDown.svg';
@@ -11,21 +13,16 @@ import OperationsTab from '@/components/OperationsTab.vue';
 import CategoriesTab from '@/components/CategoriesTab.vue';
 import ArchiveTab from '@/components/ArchiveTab.vue';
 import DynamicTab from '@/components/DynamicTab.vue';
-import { useAuthStore } from '@/stores/auth';
-import { toast, type ToastOptions } from 'vue3-toastify';
 
 const authStore = useAuthStore();
-
 const data = ref(null);
-
 const activeTab = ref(0);
 
-// TODO Add URL tab GET parameter
 const tabs = [
-  { icon: ArrowUpDownIcon, title: 'Операции', count: 12, component: OperationsTab },
-  { icon: CategoriesIcon, title: 'Категории', count: 0, component: CategoriesTab },
-  { icon: HistoryIcon, title: 'Архив', count: 0, component: ArchiveTab },
-  { icon: DynamicIcon, title: 'Динамика', count: 0, component: DynamicTab }
+  { id: 'operations', icon: ArrowUpDownIcon, title: 'Операции', count: 12, component: OperationsTab },
+  { id: 'categories', icon: CategoriesIcon, title: 'Категории', count: 0, component: CategoriesTab },
+  { id: 'archive', icon: HistoryIcon, title: 'Архив', count: 0, component: ArchiveTab },
+  { id: 'dynamic', icon: DynamicIcon, title: 'Динамика', count: 0, component: DynamicTab }
 ]
 
 onMounted(async () => {
@@ -37,21 +34,6 @@ onMounted(async () => {
       autoClose: 2000,
       position: toast.POSITION.BOTTOM_RIGHT,
     } as ToastOptions);
-  }
-
-  try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/transactions`, {
-      method: 'GET',
-      headers: {
-      'Content-Type': 'application/json',
-    },
-    });
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    data.value = await response.json();
-  } catch (error) {
-    console.error('Error fetching data:', error);
   }
 });
 </script>
