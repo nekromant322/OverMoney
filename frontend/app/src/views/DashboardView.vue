@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, defineAsyncComponent } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { toast, type ToastOptions } from 'vue3-toastify';
 import ViewWrapper from '@/components/ViewWrapper.vue';
@@ -9,10 +9,22 @@ import CategoriesIcon from '@/assets/images/Categories.svg'
 import HistoryIcon from '@/assets/images/History.svg';
 import DynamicIcon from '@/assets/images/Dynamic.svg';
 import TabButton from '@/components/TabButton.vue';
-import OperationsTab from '@/components/OperationsTab.vue';
-import CategoriesTab from '@/components/CategoriesTab.vue';
-import ArchiveTab from '@/components/ArchiveTab.vue';
-import DynamicTab from '@/components/DynamicTab.vue';
+
+const OperationsTab = defineAsyncComponent(() =>
+  import('@/components/OperationsTab.vue')
+);
+
+const CategoriesTab = defineAsyncComponent(() =>
+  import('@/components/CategoriesTab.vue')
+);
+
+const ArchiveTab = defineAsyncComponent(() =>
+  import('@/components/ArchiveTab.vue')
+);
+
+const DynamicTab = defineAsyncComponent(() =>
+  import('@/components/DynamicTab.vue')
+);
 
 const authStore = useAuthStore();
 const data = ref(null);
