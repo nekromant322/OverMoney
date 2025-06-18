@@ -47,6 +47,10 @@ defineProps<{
   opacity: 1;
 }
 
+.button:hover .title {
+  color: #fff;
+}
+
 .info {
   display: flex;
   align-items: center;
