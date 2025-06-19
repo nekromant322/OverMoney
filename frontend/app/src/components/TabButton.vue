@@ -15,7 +15,6 @@ defineProps<{
       <div class="info">
         <img class="icon" :src="icon" :alt="title">
         <div class="title">{{ title }}</div>
-        <div class="title-place">{{ title }}</div>
         <CountItem v-if="count > 0" class="count" :count="count" />
       </div>
       <div class="highlight"></div>
@@ -56,20 +55,13 @@ defineProps<{
   align-items: center;
 }
 
-.title, .title-place {
+.title {
   margin-left: 8px;
   line-height: 32px;
   color: #C9D1D9;
   font-family: 'Noto Sans', Arial, Helvetica, sans-serif;
   font-size: 14px;
   transition: color 0.3s ease;
-}
-
-.title-place {
-  visibility: hidden;
-  position: absolute;
-  margin-left: 24px;
-  white-space: nowrap;
 }
 
 .count {
