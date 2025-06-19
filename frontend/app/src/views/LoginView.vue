@@ -111,6 +111,12 @@ onMounted(() => {
   margin: 0;
 }
 
+@media (max-width: 460px) {
+  .title {
+    font-size: 40px;
+  }
+}
+
 .subtitle {
   line-height: normal;
   font-size: 32px;
@@ -121,6 +127,13 @@ onMounted(() => {
   display: inline-block;
   margin: 16px 0 0 0;
 }
+
+@media screen and (max-width: 460px) {
+  .subtitle {
+    font-size: 24px;
+  }
+}
+
 
 .footer {
   margin-top: 80px;
