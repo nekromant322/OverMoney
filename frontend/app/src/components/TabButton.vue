@@ -28,6 +28,12 @@ defineProps<{
   margin-left: 8px;
   user-select: none;
 }
+
+@container (max-width: 466px) {
+  .item .title {
+    display: none;
+  }
+}
  
 .item:first-child {
   margin-left: 0;
@@ -36,6 +42,9 @@ defineProps<{
 .button {
   padding: 5px 8px;
   position: relative;
+  display: flex;
+  align-items: stretch;
+  height: 42px;
 }
 
 .button.active .title {
