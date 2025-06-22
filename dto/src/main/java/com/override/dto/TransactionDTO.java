@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -28,6 +29,7 @@ public class TransactionDTO {
     private String message;
 
     @Schema(description = "Сумма транзакции")
+    @Max(value = 999999999999999L, message = "Число больше 15 разрядов")
     private Double amount;
 
     @Schema(description = "Дата транзакции")

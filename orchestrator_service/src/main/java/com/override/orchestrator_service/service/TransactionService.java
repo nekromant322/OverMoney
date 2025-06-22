@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
+import com.override.orchestrator_service.exception.InvalidDataException;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.filter.TransactionFilter;
@@ -219,9 +220,23 @@ public class TransactionService {
         }
 
         if (transactionDTO.getDate() != null && !transactionDTO.getDate().equals(transactionUpdate.getDate())) {
-            transactionUpdate.setDate(transactionDTO.getDate());
+            LocalDateTime newDate = transactionDTO.getDate();
+            LocalDateTime currentDate = LocalDateTime.now();
+            Optional<LocalDateTime> firstTransactionDateOpt = transactionRepository
+                    .findAllByAccountId(transactionUpdate.getAccount().getId())
+                    .stream()
+                    .map(Transaction::getDate)
+                    .min(Comparator.naturalOrder());
+            if (firstTransactionDateOpt.isPresent()) {
+                LocalDateTime firstTransactionDate = firstTransactionDateOpt.get();
+                LocalDateTime validMinData = LocalDateTime.of(firstTransactionDate.getYear(), 1, 1, 0, 0);
+                if (!newDate.isAfter(currentDate) && !newDate.isBefore(validMinData)) {
+                    transactionUpdate.setDate(transactionDTO.getDate());
+                } else {
+                    throw new InvalidDataException("Неверная дата. Дата должна в диапазоне между " + firstTransactionDate + "и " + LocalDateTime.now());
+                }
+            }
         }
-
         transactionRepository.save(transactionUpdate);
     }
 
