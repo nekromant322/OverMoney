@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.management.InstanceNotFoundException;
+import javax.validation.Valid;
 import java.security.Principal;
 import java.util.Comparator;
 import java.util.List;
@@ -199,7 +200,7 @@ public class TransactionController {
             @ApiResponse(responseCode = "400", description = "Некорректные данные транзакции")
     })
     public void updateTransaction(
-            @Parameter(description = "Данные транзакции") @RequestBody TransactionDTO transactionDTO) {
+            @Parameter(description = "Данные транзакции") @RequestBody @Valid TransactionDTO transactionDTO) {
         transactionService.editTransaction(transactionDTO);
     }
 
