@@ -17,4 +17,9 @@ public class PaymentController {
     public PaymentResponseDTO createPayment(@RequestBody PaymentRequestDTO paymentRequest) {
         return yooKassaService.createPayment(paymentRequest);
     }
+
+    @GetMapping("/{paymentId}/status")
+    public PaymentResponseDTO checkPaymentStatus(@PathVariable String paymentId) {
+        return yooKassaService.checkPaymentStatus(paymentId);
+    }
 }

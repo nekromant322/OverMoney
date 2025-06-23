@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum PaymentStatus {
-    SUCCESS("success"),
-    FAILED("failed"),
-    PENDING("pending");
+    SUCCESS("succeeded"),
+    CANCELED("canceled"),
+    PENDING("pending"),
+    WAITING("waiting_for_capture");
 
     @JsonValue
     private final String status;
