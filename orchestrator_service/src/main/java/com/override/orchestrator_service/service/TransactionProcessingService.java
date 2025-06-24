@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
+import com.override.orchestrator_service.exception.InvalidDataException;
 import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.service.calc.*;
@@ -18,6 +19,7 @@ import java.util.regex.*;
 
 @Service
 public class TransactionProcessingService {
+    private static final double MAX_ALLOWED_AMOUNT = 999_999_999_999_999.0;
 
     private final ZoneOffset MOSCOW_OFFSET = ZoneOffset.ofHours(3);
 
@@ -77,6 +79,8 @@ public class TransactionProcessingService {
             Pattern pattern = Pattern.compile(t.getRegExp());
             Matcher matcher = pattern.matcher(transactionMessage);
             if (matcher.find()) {
+                double amount = t.calculateAmount(transactionMessage);
+                validateAmount(amount);
                 transactionDetails.setAmount(t.calculateAmount(transactionMessage));
                 transactionDetails.setComment(t.getTransactionComment(transactionMessage));
                 break;
@@ -172,5 +176,11 @@ public class TransactionProcessingService {
             }
         }
         return matchingKeyword;
+    }
+
+    private void validateAmount(double amount) {
+        if (amount > MAX_ALLOWED_AMOUNT) {
+            throw new InvalidDataException("Сумма транзакции не может быть больше " + MAX_ALLOWED_AMOUNT);
+        }
     }
 }
