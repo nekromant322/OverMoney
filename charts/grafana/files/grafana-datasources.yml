@@ -1,0 +1,10 @@
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    url: http://prometheus-service:9090
+    access: proxy
+    isDefault: true
+    jsonData:
+      timeInterval: "5s"
+      httpMethod: "POST"
