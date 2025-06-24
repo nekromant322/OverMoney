@@ -1,5 +1,6 @@
 package com.overmoney.telegram_bot_service.kafka.config;
 
+import com.overmoney.telegram_bot_service.constants.KafkaConstants;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -19,16 +20,16 @@ public class KafkaConfig {
     }
 
     @Bean
-    NewTopic requestSubscriptionTopic() {
-        return TopicBuilder.name("subscription-request-events-topic")
+    public NewTopic paymentRequestsTopic() {
+        return TopicBuilder.name(KafkaConstants.PAYMENT_REQUESTS_TOPIC)
                 .partitions(3)
                 .replicas(1)
                 .build();
     }
 
     @Bean
-    NewTopic responseSubscriptionTopic() {
-        return TopicBuilder.name("subscription-response-events-topic")
+    public NewTopic paymentResponsesTopic() {
+        return TopicBuilder.name(KafkaConstants.PAYMENT_RESPONSES_TOPIC)
                 .partitions(3)
                 .replicas(1)
                 .build();
