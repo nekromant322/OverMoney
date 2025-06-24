@@ -51,7 +51,7 @@ public class InlineKeyboardMarkupUtil {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
 
         InlineKeyboardButton payButton = new InlineKeyboardButton();
-        payButton.setText(InlineKeyboardCallback.PAY.getText());
+        payButton.setText(InlineKeyboardCallback.PAY_FOR_SUB.getText());
         payButton.setUrl(paymentUrl);
 
         List<InlineKeyboardButton> row = new ArrayList<>();

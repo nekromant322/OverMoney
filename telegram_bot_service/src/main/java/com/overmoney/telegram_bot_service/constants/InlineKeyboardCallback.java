@@ -7,7 +7,7 @@ public enum InlineKeyboardCallback {
     DEFAULT("Нет", "default"),
     MERGE_CATEGORIES("Перенести категории", "mergeWithCategories"),
     MERGE_CATEGORIES_AND_TRANSACTIONS("Перенести категории и транзакции", "mergeWithCategoriesAndTransactions"),
-    PAY("Оплатить", "PAY");;
+    PAY_FOR_SUB("Оплатить", "pay");
 
     private final String text;
     private final String data;

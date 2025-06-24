@@ -4,6 +4,7 @@ import com.overmoney.telegram_bot_service.constants.KafkaConstants;
 import com.overmoney.telegram_bot_service.service.PaymentResponseHandler;
 import com.override.dto.PaymentResponseDTO;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
@@ -16,11 +17,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class KafkaSubscriptionConsumer {
 
-    private final PaymentResponseHandler paymentResponseHandler;
-
-    public KafkaSubscriptionConsumer(PaymentResponseHandler paymentResponseHandler) {
-        this.paymentResponseHandler = paymentResponseHandler;
-    }
+    @Autowired
+    private PaymentResponseHandler paymentResponseHandler;
 
     @KafkaListener(
             topics = KafkaConstants.PAYMENT_RESPONSES_TOPIC,

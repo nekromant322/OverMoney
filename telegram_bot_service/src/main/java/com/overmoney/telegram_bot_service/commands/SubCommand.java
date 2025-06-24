@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Chat;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
@@ -45,8 +47,7 @@ public class SubCommand extends OverMoneyCommand {
     }
 
     @Override
-    public void execute(AbsSender absSender, org.telegram.telegrambots.meta.api.objects.User user,
-                        org.telegram.telegrambots.meta.api.objects.Chat chat, String[] arguments) {
+    public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         Long chatId = chat.getId();
 
         // Заглушка для проверки подписки
@@ -56,10 +57,6 @@ public class SubCommand extends OverMoneyCommand {
         String messageText = isActive
                 ? String.format("Подписка активна до %s", endDate.format(formatter))
                 : "Подписка не активна";
-
-        SendMessage message = new SendMessage();
-        message.setChatId(chatId.toString());
-        message.setText(messageText);
 
         if (!isActive) {
             PaymentRequestDTO request = PaymentRequestDTO.builder()
@@ -74,17 +71,19 @@ public class SubCommand extends OverMoneyCommand {
 
             if (paymentUrl != null) {
                 InlineKeyboardMarkup markup = keyboardMarkupUtil.generatePaymentKeyboard(paymentUrl);
+                SendMessage message = new SendMessage(chatId.toString(), messageText);
                 message.setReplyMarkup(markup);
-            } else {
-                log.error("Failed to create payment for chatId: {}", chatId);
+                try {
+                    absSender.execute(message);
+                } catch (TelegramApiException e) {
+                    log.error("Ошибка отправки сообщения о подписке", e);
+                }
                 return;
+            } else {
+                log.error("Не удалось создать платеж. NULL в paymentUrl для chatId: {}", chatId);
+                messageText = "Произошла ошибка при создании платежа";
             }
         }
-
-        try {
-            absSender.execute(message);
-        } catch (TelegramApiException e) {
-            log.error("Error sending subscription message", e);
-        }
+        sendMessage(absSender, chatId, messageText);
     }
 }
