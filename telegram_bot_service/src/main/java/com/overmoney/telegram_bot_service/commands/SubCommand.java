@@ -26,16 +26,16 @@ public class SubCommand extends OverMoneyCommand {
     private final InlineKeyboardMarkupUtil keyboardMarkupUtil;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-    @Value("${payment.amount}")
+    @Value("${subscription.price}")
     private String amount;
 
-    @Value("${payment.currency}")
+    @Value("${subscription.currency}")
     private String currency;
 
-    @Value("${payment.description}")
+    @Value("${subscription.payment.description}")
     private String description;
 
-    @Value("${payment.return-url}")
+    @Value("${subscription.payment.return-url}")
     private String returnUrl;
 
     public SubCommand(PaymentService paymentService, InlineKeyboardMarkupUtil keyboardMarkupUtil) {

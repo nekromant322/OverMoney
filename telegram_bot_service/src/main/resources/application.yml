@@ -23,14 +23,9 @@
 
   environment: ${ENVIRONMENT:dev}
 
-  payment:
-    amount: 1000.00
-    currency: RUB
-    description: "Подписка на сервис OverMoney123"
-    return-url: "https://overmoney.tech/"
-
   subscription:
     price: 1000.00
+    currency: RUB
     duration:
       days: 0
     payment:
