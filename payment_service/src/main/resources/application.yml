@@ -39,8 +39,6 @@ spring:
     topics:
       payment-request: payment-requests
       payment-response: payment-responses
-      subscription-request: subscription-request-topic
-      subscription-response: subscription-response-topic
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer

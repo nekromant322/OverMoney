@@ -49,7 +49,7 @@ public class KafkaConsumerService {
 
             PaymentResponseDTO errorResponse = PaymentResponseDTO.builder()
                     .orderId(orderId)
-                    .status(PaymentStatus.FAILED)
+                    .status(PaymentStatus.CANCELED)
                     .paymentUrl(null)
                     .build();
 

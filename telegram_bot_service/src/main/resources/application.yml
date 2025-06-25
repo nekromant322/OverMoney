@@ -23,6 +23,15 @@
 
   environment: ${ENVIRONMENT:dev}
 
+  subscription:
+    price: 200.00
+    currency: RUB
+    duration:
+      days: 0
+    payment:
+      return-url: "https://overmoney.tech/"
+      description: "Подписка на сервис OverMoney"
+
   server:
     port: 8080
 # Используется для переключения получения транзакций через kafka или через http
@@ -64,8 +73,6 @@
       topics:
         request: transaction-request-events-topic
         response: transaction-response-events-topic
-        subscription-request: subscription-request-topic
-        subscription-response: subscription-response-topic
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer
