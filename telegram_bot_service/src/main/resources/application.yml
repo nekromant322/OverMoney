@@ -24,7 +24,7 @@
   environment: ${ENVIRONMENT:dev}
 
   subscription:
-    price: 1000.00
+    price: 200.00
     currency: RUB
     duration:
       days: 0
