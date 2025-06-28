@@ -1,18 +1,23 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.AccountDataDTO;
+import com.override.dto.UserInfoResponseDTO;
 import com.override.orchestrator_service.mapper.UserMapper;
+import com.override.orchestrator_service.model.ProfilePhoto;
 import com.override.orchestrator_service.model.TelegramAuthRequest;
 import com.override.orchestrator_service.model.User;
 import com.override.orchestrator_service.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.management.InstanceNotFoundException;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -24,6 +29,9 @@ public class UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private ProfilePhotoService profilePhotoService;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -97,5 +105,27 @@ public class UserService {
 
     public List<User> getUsersByIds(List<Long> userIds) {
         return userRepository.findAllUsersByIds(userIds);
+    }
+
+    public UserInfoResponseDTO getUserInfo(Long userId) {
+        try {
+            User user = getUserById(userId);
+            String username = user.getUsername();
+            String photoBase64Format = getUserPhoto(user).orElse(null);
+            return UserInfoResponseDTO.builder()
+                    .username(username)
+                    .photoBase64Format(photoBase64Format)
+                    .build();
+        } catch (InstanceNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Пользвователь с id " + userId + " не найден");
+        }
+    }
+
+    public Optional<String> getUserPhoto(User user) {
+        ProfilePhoto photo = user.getProfilePhoto();
+        if (photo == null || photo.getPhotoData() == null) {
+            return Optional.empty();
+        }
+        return profilePhotoService.getProfilePhotoBase64(photo.getPhotoData());
     }
 }

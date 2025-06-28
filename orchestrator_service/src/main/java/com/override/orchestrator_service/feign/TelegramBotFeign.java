@@ -26,4 +26,7 @@ public interface TelegramBotFeign {
 
     @DeleteMapping("/telegram-message/ids")
     void deleteTelegramMessageByIds(@RequestParam List<UUID> ids);
+
+    @GetMapping("/telegram-files/user/{userId}/photo")
+    byte[] getTelegramPhoto(@PathVariable("userId") Long userId);
 }
