@@ -4,7 +4,6 @@ import com.override.dto.PaymentRequestDTO;
 import com.override.dto.PaymentResponseDTO;
 import com.override.dto.YooKassaRequestDTO;
 import com.override.dto.YooKassaResponseDTO;
-import com.override.dto.constants.PaymentStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
@@ -31,7 +30,8 @@ public class YooKassaMapper {
         return PaymentResponseDTO.builder()
                 .orderId(paymentRequest.getOrderId())
                 .paymentUrl(yooKassaResponse.getConfirmation().getConfirmationUrl())
-                .status(PaymentStatus.PENDING)
+                .status(yooKassaResponse.getStatus())
+                .paymentId(yooKassaResponse.getId())
                 .build();
     }
 

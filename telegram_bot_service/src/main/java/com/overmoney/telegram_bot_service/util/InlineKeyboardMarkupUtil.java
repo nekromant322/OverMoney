@@ -46,4 +46,22 @@ public class InlineKeyboardMarkupUtil {
 
         return inlineKeyboardMarkup;
     }
+
+    public InlineKeyboardMarkup generatePaymentKeyboard(String paymentUrl) {
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+
+        InlineKeyboardButton payButton = new InlineKeyboardButton();
+        payButton.setText(InlineKeyboardCallback.PAY_FOR_SUB.getText());
+        payButton.setUrl(paymentUrl);
+
+        List<InlineKeyboardButton> row = new ArrayList<>();
+        row.add(payButton);
+
+        List<List<InlineKeyboardButton>> rows = new ArrayList<>();
+        rows.add(row);
+
+        inlineKeyboardMarkup.setKeyboard(rows);
+
+        return inlineKeyboardMarkup;
+    }
 }

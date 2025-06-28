@@ -1,0 +1,14 @@
+{{ define "alert_list" }}
+  {{ range . }}
+  {{ if eq .Status "firing" }}🔴{{ else }}🟢{{ end }} <b>{{ .Labels.alertname }}</b>
+  {{ if .Labels.instance }}• <b>Инстанс:</b> {{ .Labels.instance }}{{ end }}
+  {{ if .Labels.job }}• <b>Сервис:</b> {{ .Labels.job }}{{ end }}
+  {{ range .Annotations.SortedPairs }}• <b>{{ .Name }}:</b> {{ .Value }}
+  {{ end }}{{ end }}{{ end }}
+  
+  {{ define "telegram.message" }}
+  {{ if gt (len .Alerts.Firing) 0 }}<b>🚨 КРИТИЧЕСКИЕ АЛЕРТЫ</b>
+  {{ template "alert_list" .Alerts.Firing }}{{ end }}
+  {{ if gt (len .Alerts.Resolved) 0 }}<b>✅ РЕШЕННЫЕ АЛЕРТЫ</b>
+  {{ template "alert_list" .Alerts.Resolved }}{{ end }}
+  {{ end }}
