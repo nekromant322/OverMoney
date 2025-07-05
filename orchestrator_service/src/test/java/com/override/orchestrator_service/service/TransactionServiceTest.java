@@ -352,6 +352,7 @@ public class TransactionServiceTest {
         when(transactionRepository.findById(any())).thenReturn(Optional.ofNullable(transaction));
         when(keywordRepository.findByKeywordId(any())).thenReturn(keyword);
         when(categoryRepository.findCategoryByNameAndAccountId(any(), any())).thenReturn(category);
+        when(transactionRepository.findFirstTransactionByAccountIdOrderByDate(any())).thenReturn(transaction);
 
         transactionService.editTransaction(transactionDTO);
 
@@ -375,6 +376,7 @@ public class TransactionServiceTest {
         when(transactionRepository.findById(any())).thenReturn(Optional.ofNullable(transaction));
         when(keywordRepository.findByKeywordId(any())).thenReturn(keyword);
         when(categoryRepository.findCategoryByNameAndAccountId(any(), any())).thenReturn(category);
+        when(transactionRepository.findFirstTransactionByAccountIdOrderByDate(any())).thenReturn(transaction);
 
         transactionService.editTransaction(transactionDTO);
 
@@ -398,6 +400,7 @@ public class TransactionServiceTest {
         when(transactionRepository.findById(any())).thenReturn(Optional.ofNullable(transaction));
         when(keywordRepository.findByKeywordId(any())).thenReturn(keyword);
         when(categoryRepository.findCategoryByNameAndAccountId(any(), any())).thenReturn(category);
+        when(transactionRepository.findFirstTransactionByAccountIdOrderByDate(any())).thenReturn(transaction);
 
         transactionService.editTransaction(transactionDTO);
 
