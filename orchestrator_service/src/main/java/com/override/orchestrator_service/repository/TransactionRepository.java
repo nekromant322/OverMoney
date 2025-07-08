@@ -29,6 +29,8 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
 
     List<Transaction> findAllByAccountId(Long accountId);
 
+    Transaction findFirstTransactionByAccountIdOrderByDate(Long accountId);
+
     @Modifying
     @Query("UPDATE Transaction t SET t.category.id = :newCategory WHERE t.category.id= :oldCategory")
     void updateCategoryId(@Param("oldCategory") Long oldCategoryId, @Param("newCategory") Long newCategoryId);

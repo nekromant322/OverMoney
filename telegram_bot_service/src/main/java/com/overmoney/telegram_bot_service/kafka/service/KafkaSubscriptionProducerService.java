@@ -1,50 +1,40 @@
 package com.overmoney.telegram_bot_service.kafka.service;
 
-import com.override.dto.AccountDataDTO;
+import com.overmoney.telegram_bot_service.constants.KafkaConstants;
+import com.override.dto.PaymentRequestDTO;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.UUID;
 
 @Service
 @ConditionalOnProperty(name = "service.transaction.processing", havingValue = "kafka")
 @Slf4j
+@RequiredArgsConstructor
 public class KafkaSubscriptionProducerService {
 
-    @Autowired
-    private KafkaTemplate<String, AccountDataDTO> kafkaTemplate;
+    private final KafkaTemplate<String, PaymentRequestDTO> kafkaTemplate;
 
-    private final Map<Long, CompletableFuture<String>> futures = new ConcurrentHashMap<>();
+    public String sendPaymentRequest(PaymentRequestDTO request) {
+        Message<PaymentRequestDTO> message = MessageBuilder
+                .withPayload(request)
+                .setHeader(KafkaHeaders.TOPIC, KafkaConstants.PAYMENT_REQUESTS_TOPIC)
+                .setHeader(KafkaHeaders.MESSAGE_KEY, request.getOrderId())
+                .setHeader(KafkaHeaders.CORRELATION_ID, UUID.randomUUID().toString())
+                .build();
 
-    @Value("${spring.kafka.topics.subscription-request}")
-    private String requestTopic;
-
-    public CompletableFuture<String> send(AccountDataDTO dto) {
-        CompletableFuture<String> future = new CompletableFuture<>();
-        futures.put(dto.getUserId(), future);
-
-        kafkaTemplate.send(requestTopic, dto.getUserId().toString(), dto)
+        kafkaTemplate.send(message)
                 .addCallback(
-                        result -> log.info("Sent subscription request: {}", dto),
-                        ex -> {
-                            log.error("Failed to send subscription request", ex);
-                            future.completeExceptionally(ex);
-                        }
+                        result -> log.info("Успешно отправлен ответ на оплату подписки: {}", request.getOrderId()),
+                        ex -> log.error("Не удалось отправить ответ на оплату подписки: {}", request.getOrderId(), ex)
                 );
 
-        return future;
-    }
-
-    public void complete(Long userId, String message) {
-        CompletableFuture<String> future = futures.remove(userId);
-        if (future != null) {
-            future.complete(message);
-        }
+        return request.getOrderId();
     }
 }

@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
+import com.override.orchestrator_service.exception.InvalidDataException;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
 import com.override.orchestrator_service.filter.TransactionFilter;
@@ -67,6 +68,10 @@ public class TransactionService {
         transactionList.forEach(transaction -> transactionDTOS.add(transactionMapper.mapTransactionToDTO(transaction)));
 
         return transactionDTOS;
+    }
+
+    public Transaction getFirstAccountTransaction(Long accountId) {
+        return transactionRepository.findFirstTransactionByAccountIdOrderByDate(accountId);
     }
 
     public void saveTransaction(Transaction transaction) {
@@ -219,9 +224,11 @@ public class TransactionService {
         }
 
         if (transactionDTO.getDate() != null && !transactionDTO.getDate().equals(transactionUpdate.getDate())) {
+            LocalDateTime newDate = transactionDTO.getDate();
+            Long accountId = transactionUpdate.getAccount().getId();
+            validateTransactionDate(newDate, accountId);
             transactionUpdate.setDate(transactionDTO.getDate());
         }
-
         transactionRepository.save(transactionUpdate);
     }
 
@@ -389,5 +396,19 @@ public class TransactionService {
     public int getTransactionsCountLastDays(int numberDays) {
         LocalDateTime numberDaysAgo = LocalDateTime.now().minusDays(numberDays);
         return transactionRepository.findCountTransactionsLastDays(numberDaysAgo);
+    }
+
+    private void validateTransactionDate(LocalDateTime newDate, Long accountId) {
+        LocalDateTime currentDate = LocalDateTime.now();
+        LocalDateTime firstTransactionDate = transactionRepository
+                .findFirstTransactionByAccountIdOrderByDate(accountId)
+                .getDate();
+        LocalDateTime validMinData = LocalDateTime.of(firstTransactionDate.getYear(), 1, 1, 0, 0);
+        if (newDate.isAfter(currentDate) || newDate.isBefore(validMinData)) {
+            throw new InvalidDataException("Неверная дата. Дата должна в диапазоне между "
+                    + validMinData
+                    + "и "
+                    + currentDate);
+        }
     }
 }

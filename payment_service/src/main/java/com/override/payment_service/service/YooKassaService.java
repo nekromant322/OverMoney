@@ -27,4 +27,12 @@ public class YooKassaService {
 
         return yooKassaMapper.mapToPaymentResponse(response, request);
     }
+
+    public PaymentResponseDTO checkPaymentStatus(String paymentId) {
+        YooKassaResponseDTO response = yooKassaClient.getPaymentStatus(paymentId);
+        return PaymentResponseDTO.builder()
+                .paymentId(response.getId())
+                .status(response.getStatus())
+                .build();
+    }
 }
