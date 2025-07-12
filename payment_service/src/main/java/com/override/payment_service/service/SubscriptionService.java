@@ -33,7 +33,6 @@ public class SubscriptionService {
         Optional<Subscription> existingSubscription = subscriptionRepository.findByChatId(chatId);
 
         if (existingSubscription.isPresent() &&
-                existingSubscription.get().getPaymentUrlExpires() != null &&
                 existingSubscription.get().getPaymentUrlExpires().isAfter(LocalDateTime.now())) {
 
             return PaymentResponseDTO.builder()
@@ -55,7 +54,6 @@ public class SubscriptionService {
         subscription.setPaymentUrl(paymentResponse.getPaymentUrl());
         subscription.setPaymentUrlExpires(LocalDateTime.now().plusMinutes(paymentTimeoutMinutes));
         subscription.setPaymentId(paymentResponse.getPaymentId());
-        log.info("Сохранение подписки: {}", subscription);
         subscriptionRepository.save(subscription);
         log.info("Подписка сохранена, ID: {}", subscription.getId());
 
@@ -64,6 +62,11 @@ public class SubscriptionService {
 
     @Transactional
     public void updateSubscriptionStatus(String paymentId, PaymentStatus status) {
+        if (paymentId == null || status == null) {
+            log.warn("Попытка обновить подписку с null идентификатором платежа или статусом");
+            return;
+        }
+
         subscriptionRepository.findByPaymentId(paymentId).ifPresent(subscription -> {
             if (status == PaymentStatus.SUCCESS) {
                 subscription.setStartDate(LocalDateTime.now());

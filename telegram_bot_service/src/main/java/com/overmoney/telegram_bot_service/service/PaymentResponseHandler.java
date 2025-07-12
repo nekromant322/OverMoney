@@ -29,11 +29,11 @@ public class PaymentResponseHandler {
         try {
             PaymentResponseDTO response = future.get(PAYMENT_URL_TIMEOUT_SECONDS, TimeUnit.SECONDS);
             return response.getPaymentUrl();
-        } catch (TimeoutException e) {
+        } catch (Exception e) {
             pendingPayments.remove(orderId);
-            return null;
-        } catch (InterruptedException | ExecutionException e) {
-            Thread.currentThread().interrupt();
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
             return null;
         }
     }

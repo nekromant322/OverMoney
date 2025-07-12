@@ -59,7 +59,7 @@ public class SubCommand extends OverMoneyCommand {
 
         SubscriptionDTO subscription = paymentService.getSubscriptionStatus(chatId);
 
-        String messageText = subscription.isActive()
+        String messageText = subscription.isActive() && subscription.getEndDate() != null
                 ? String.format("Подписка активна до %s", subscription.getEndDate().format(formatter))
                 : "Подписка не активна";
 
