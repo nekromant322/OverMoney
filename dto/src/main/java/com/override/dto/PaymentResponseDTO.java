@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class PaymentResponseDTO {
+    private Long chatId;
     private String orderId;
     private String paymentUrl;
     private PaymentStatus status;

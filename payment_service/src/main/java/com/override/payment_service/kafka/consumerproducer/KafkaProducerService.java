@@ -31,4 +31,17 @@ public class KafkaProducerService {
                         ex -> log.error("Не удалось отправить ответ на оплату заказа: {}", response.getOrderId(), ex)
                 );
     }
+
+    public void sendSubscriptionNotification(PaymentResponseDTO response) {
+        Message<PaymentResponseDTO> message = MessageBuilder
+                .withPayload(response)
+                .setHeader(KafkaHeaders.TOPIC, KafkaConstants.SUBSCRIPTION_NOTIFICATION_TOPIC)
+                .build();
+
+        kafkaTemplate.send(message)
+                .addCallback(
+                        result -> log.info("Уведомление о подписке отправлено для paymentId: {}", response.getPaymentId()),
+                        ex -> log.error("Не удалось отправить уведомление о подписке", ex)
+                );
+    }
 }
