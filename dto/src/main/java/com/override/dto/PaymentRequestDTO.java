@@ -13,6 +13,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class PaymentRequestDTO {
+    private Long chatId;
     private String orderId;
     private BigDecimal amount;
     private Currency currency;

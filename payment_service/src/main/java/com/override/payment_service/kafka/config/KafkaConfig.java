@@ -26,4 +26,12 @@ public class KafkaConfig {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    NewTopic subscriptionUpdateTopic() {
+        return TopicBuilder.name(KafkaConstants.SUBSCRIPTION_UPDATE_TOPIC)
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
 }

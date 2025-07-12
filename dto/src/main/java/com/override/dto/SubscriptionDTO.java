@@ -13,6 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SubscriptionDTO {
     private Long chatId;
-    private LocalDateTime expirationDate;
+    private LocalDateTime endDate;
     private boolean isActive;
 }
