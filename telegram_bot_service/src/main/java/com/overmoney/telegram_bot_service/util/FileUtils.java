@@ -1,14 +1,18 @@
 package com.overmoney.telegram_bot_service.util;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
+
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 @Component
+@Slf4j
 public class FileUtils {
 
     public byte[] convertImageToByteArray(BufferedImage image, String imageType) throws IOException {
@@ -34,10 +38,15 @@ public class FileUtils {
         return null;
     }
 
-    public BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) {
-        Image resultingImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_DEFAULT);
-        BufferedImage outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-        outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
-        return outputImage;
+    public byte[] loadImageFromResources(String imageName) {
+        try {
+            ClassPathResource imgFile = new ClassPathResource("images/" + imageName);
+            try (InputStream is = imgFile.getInputStream()) {
+                return is.readAllBytes();
+            }
+        } catch (IOException e) {
+            log.error("При установке фокти из ресурсова возникла ошибка: {}", e.getMessage());
+            return null;
+        }
     }
 }

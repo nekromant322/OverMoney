@@ -26,4 +26,5 @@
     <include file="v1.0.0/019-db.changelog-create-suggestions-table.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/020-db.changelog-create-extension-pg-trgm.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/021-db.changelog-create-profile-photo-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/022-db.changelog-add-user-colum.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
