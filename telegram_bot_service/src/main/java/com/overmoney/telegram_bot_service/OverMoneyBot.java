@@ -9,10 +9,7 @@ import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
 import com.overmoney.telegram_bot_service.model.TelegramMessage;
 import com.overmoney.telegram_bot_service.service.*;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
-import com.override.dto.AccountDataDTO;
-import com.override.dto.TransactionDTO;
-import com.override.dto.TransactionMessageDTO;
-import com.override.dto.TransactionResponseDTO;
+import com.override.dto.*;
 import com.override.dto.constants.StatusMailing;
 import feign.FeignException;
 import lombok.SneakyThrows;
@@ -23,18 +20,18 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.*;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -209,6 +206,7 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             sendMessage(chatId, errorMessage);
             return;
         }
+
         Message replyToMessage = receivedMessage.getReplyToMessage();
         LocalDateTime date = Instant.ofEpochMilli((long) receivedMessage.getDate() * MILLISECONDS_CONVERSION)
                 .atOffset(MOSCOW_OFFSET).toLocalDateTime();
@@ -248,16 +246,14 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
                 return;
             }
         }
-        switch (receivedMessageText) {
-            case COMMAND_TO_DELETE_TRANSACTION:
-                if (replyToMessage != null) {
-                    deleteTransaction(replyToMessage, chatId);
-                    break;
-                }
-            default:
-                processTransaction(chatId, messageId, transactionMessageDTO);
-                break;
+
+        if (receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION)) {
+            if (replyToMessage != null) {
+                deleteTransaction(replyToMessage, chatId);
+                return;
+            }
         }
+        processTransaction(chatId, messageId, transactionMessageDTO);
     }
 
     public StatusMailing sendMessage(Long chatId, String messageText) {
@@ -269,6 +265,23 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
         } catch (TelegramApiException e) {
             log.error(e.getMessage(), e);
             return StatusMailing.ERROR;
+        }
+    }
+
+    public void sendPhotoWithCaption(Long chatId, byte[] photoBytes, String caption) {
+        InputStream photoStream = new ByteArrayInputStream(photoBytes);
+        InputFile inputFile = new InputFile(photoStream, "onboarding.jpg");
+
+        SendPhoto sendPhotoRequest = new SendPhoto();
+        sendPhotoRequest.setChatId(chatId);
+        sendPhotoRequest.setPhoto(inputFile);
+        sendPhotoRequest.setCaption(caption);
+
+        try {
+            execute(sendPhotoRequest);
+        } catch (TelegramApiException e) {
+            log.error("Ошибка при отправке фото", e);
+            sendMessage(chatId, "Не удалось загрузить фотографию");
         }
     }
 

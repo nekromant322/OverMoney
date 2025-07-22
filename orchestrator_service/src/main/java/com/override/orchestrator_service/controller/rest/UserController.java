@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.UserInfoResponseDTO;
+import com.override.dto.UserRegistrationInfoDto;
 import com.override.orchestrator_service.service.UserService;
 import com.override.orchestrator_service.util.TelegramUtils;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,7 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import org.springframework.web.bind.annotation.*;
+
 import java.security.Principal;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -44,5 +49,10 @@ public class UserController {
         }
         Long userId = telegramUtils.getTelegramId(principal);
         return ResponseEntity.ok(userService.getUserInfo(userId));
+    }
+
+    @PostMapping("/missing-or-unregistered")
+    public List<UserRegistrationInfoDto> getMissingUsers(@RequestBody Set<Long> ids) {
+        return userService.findByNotInAndRegistrationDateIsNotNull(ids);
     }
 }
