@@ -35,4 +35,8 @@ public class User {
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
     private OverMoneyAccount account;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "profile_photo_id", referencedColumnName = "id")
+    private ProfilePhoto profilePhoto;
 }
