@@ -2,11 +2,13 @@
 </script>
 
 <template>
-  <div :class="$style.tab">Categories</div>
+  <div :class="$style.tab">
+    Income
+  </div>
 </template>
 
 <style module>
 .tab {
-  color: #fff;
+    color: white;
 }
 </style>

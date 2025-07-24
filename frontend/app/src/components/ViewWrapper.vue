@@ -14,16 +14,16 @@ const isSidebarVisible = ref<boolean>(false);
 
 <template>
   <AppHeader :avatar="props.avatar" :username="username" @show-sidebar="isSidebarVisible = true" />
-  <div class="wrapper">
+  <div :class="$style.wrapper">
     <slot></slot>
   </div>
-  <ProfileSidebar :class="{ visible: isSidebarVisible }" :avatar="props.avatar" :username="props.username" @close-sidebar="isSidebarVisible = false" />
+  <ProfileSidebar :class="[$style.sidebar, { [$style.visible]: isSidebarVisible }]" :avatar="props.avatar" :username="props.username" @close-sidebar="isSidebarVisible = false" />
   <transition name="fade">
     <AppOverlay v-if="isSidebarVisible" @click="isSidebarVisible = false" />
   </transition>
 </template>
 
-<style scoped>
+<style module>
 .wrapper {
   position: relative;
   background-color: #0D1117;
@@ -31,13 +31,12 @@ const isSidebarVisible = ref<boolean>(false);
   min-height: calc(100% - 60px);
 }
 
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.3s ease;
+.sidebar {
+  right: -320px;
+  transition: right 0.3s ease-in-out;
 }
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
-.fade-enter-to, .fade-leave-from {
-  opacity: 0.4;
+
+.visible {
+  right: 0;
 }
 </style>

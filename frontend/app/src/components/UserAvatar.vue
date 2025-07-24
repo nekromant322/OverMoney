@@ -13,11 +13,11 @@ const firstLetter = computed(() => {
 </script>
 
 <template>
-  <img v-if="src" class="avatar" :src="src" width="32" height="32" :alt="alt">
-  <div v-else class="plug">{{ firstLetter }}</div>
+  <img v-if="src" :class="$style.avatar" :src="src" width="32" height="32" :alt="alt">
+  <div v-else :class="$style.plug">{{ firstLetter }}</div>
 </template>
 
-<style scoped>
+<style module>
 .avatar {
   display: block;
   border-radius: 50%;

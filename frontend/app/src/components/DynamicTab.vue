@@ -2,10 +2,10 @@
 </script>
 
 <template>
-  <div class="tab">Dynamic</div>
+  <div :class="$style.tab">Dynamic</div>
 </template>
 
-<style scoped>
+<style module>
 .tab {
   color: #fff;
 }

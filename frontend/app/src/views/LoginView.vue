@@ -45,30 +45,30 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="wrapper">
-    <header class="header">
+  <div :class="$style.wrapper">
+    <header :class="$style.header">
       <a :href="LANDING_URL">
-        <img class="logo" :src="LogoIcon" width="32" height="32" alt="app logo">
+        <img :class="$style.logo" :src="LogoIcon" width="32" height="32" alt="app logo">
       </a>
     </header>
-    <main class="content">
-      <div class="login-form">
-        <h1 class="title">OverMoney</h1>
-        <h2 class="subtitle">Твой трекер финансов</h2>
-        <div id="login-button" class="login-button-wrapper">
+    <main :class="$style.content">
+      <div :class="$style.loginForm">
+        <h1 :class="$style.title">OverMoney</h1>
+        <h2 :class="$style.subtitle">Твой трекер финансов</h2>
+        <div id="login-button" :class="$style.loginButtonWrapper">
           <!-- Telegram login widget will be appended here -->
         </div>
       </div>
     </main>
-    <footer class="footer">
+    <footer :class="$style.footer">
       <a :href="LANDING_URL">
-        <img class="logo" :src="LogoIcon" width="32" height="32" alt="app logo">
+        <img :class="$style.logo" :src="LogoIcon" width="32" height="32" alt="app logo">
       </a>
-      <span class="copyright">© 2025 OverMoney</span>
+      <span :class="$style.copyright">© 2025 OverMoney</span>
     </footer>
   </div>
 </template>
-<style scoped>
+<style module>
 .wrapper {
   position: relative;
   background-color: #0D1117;
@@ -93,7 +93,7 @@ onMounted(() => {
   height: calc(100vh - 160px - 60px);
 }
 
-.login-form {
+.loginForm {
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -152,7 +152,7 @@ onMounted(() => {
   margin-left: 8px;
 }
 
-.login-button-wrapper {
+.loginButtonWrapper {
   margin-top: 60px;
 }
 </style>

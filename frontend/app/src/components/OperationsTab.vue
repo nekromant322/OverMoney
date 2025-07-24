@@ -2,25 +2,51 @@
 import AppIcon from '@/components/AppIcon.vue';
 import AppInput from '@/components/AppInput.vue';
 import SearchIcon from '@/assets/images/Search.svg';
-import { ref } from 'vue';
+import { defineAsyncComponent, ref } from 'vue';
+import TextTabButton from './TextTabButton.vue';
+
+const ExpensesTab = defineAsyncComponent(() =>
+  import('@/components/ExpensesTab.vue')
+);
+
+const IncomeTab = defineAsyncComponent(() =>
+  import('@/components/IncomeTab.vue')
+);
 
 const category = ref('');
+const activeTab = ref(0);
+const tabs = [
+  { id: 'expenses', title: 'Расходы', component: ExpensesTab },
+  { id: 'income', title: 'Доходы', component: IncomeTab }
+];
 </script>
 
 <template>
-  <div class="tab">
-    <aside class="categories">
+  <div :class="$style.tab">
+    <aside :class="$style.categories">
       <AppInput v-model="category" placeholder="Найти категорию...">
         <AppIcon :src="SearchIcon" alt="search" />
       </AppInput>
+      <div :class="$style.filters">
+        <TextTabButton 
+          v-for="(tab, index) in tabs" 
+          :key="tab.id" 
+          :title="tab.title" 
+          :class="$style.textTabButton"
+          :selected="activeTab === index"
+          @click="activeTab = index" />
+      </div>
+      <KeepAlive>
+        <component :is="tabs[activeTab].component" />
+      </KeepAlive>
     </aside>
-    <main class="operations">
+    <main :class="$style.operations">
       Operations
     </main>
   </div>
 </template>
 
-<style scoped>
+<style module>
 .tab {
   display: flex;
   color: #fff;
@@ -31,6 +57,18 @@ const category = ref('');
 .categories {
   padding: 24px 24px 24px 0;
   border-right: 1px solid #30363D;
+}
+
+.filters {
+  margin-top: 24px;
+} 
+
+.textTabButton {
+  margin-left: 8px;
+}
+
+.textTabButton:first-child {
+  margin-left: 0;
 }
 
 .operations {

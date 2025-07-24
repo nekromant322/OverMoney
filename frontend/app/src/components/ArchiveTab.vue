@@ -2,10 +2,10 @@
 </script>
 
 <template>
-  <div class="tab">Archive</div>
+  <div :class="$style.tab">Archive</div>
 </template>
 
-<style scoped>
+<style module>
 .tab {
   color: #fff;
 }

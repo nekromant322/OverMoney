@@ -12,18 +12,17 @@ const emits = defineEmits(['showSidebar']);
 </script>
 
 <template>
-  <header class="header">
-    <RouterLink to="/" class="home-link">
+  <header :class="$style.header">
+    <RouterLink to="/" :class="$style.homeLink">
       <UserAvatar :src="LogoIcon" :username="username" alt="logo" />
     </RouterLink>
-    <button class="profile-button" @click="emits('showSidebar')">
-      <!-- TODO Replace src to user avatar -->
+    <button :class="$style.profileButton" @click="emits('showSidebar')">
       <UserAvatar :src="props.avatar" :username="username" alt="avatar" />
     </button> 
   </header>
 </template>
 
-<style scoped>
+<style module>
 .header {
   padding: 14px 32px;
   box-sizing: border-box;
@@ -32,7 +31,7 @@ const emits = defineEmits(['showSidebar']);
   background-color: #010409;
 }
 
-.home-link {
+.homeLink {
   width: 32px;
   height: 32px;
 }
@@ -41,7 +40,7 @@ const emits = defineEmits(['showSidebar']);
   display: block;
 }
 
-.profile-button {
+.profileButton {
   background-color: transparent;
   border: none;
   display: flex;

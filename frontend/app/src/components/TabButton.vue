@@ -10,19 +10,19 @@ defineProps<{
 </script>
 
 <template>
-  <li class="item">
-    <button :class="['button', {'active': isActive }]">
-      <div class="info">
-        <img class="icon" :src="icon" :alt="title">
-        <div class="title">{{ title }}</div>
-        <CountItem v-if="count > 0" class="count" :count="count" />
+  <li :class="$style.item">
+    <button :class="[$style.button, {[$style.active]: isActive }]">
+      <div :class="$style.info">
+        <img :class="$style.icon" :src="icon" :alt="title">
+        <div :class="[$style.title, { [$style.activeTitle]: isActive }]">{{ title }}</div>
+        <CountItem v-if="count > 0" :class="$style.count" :count="count" />
       </div>
-      <div class="highlight"></div>
+      <div :class="[$style.highlight, { [$style.activeHighlight]: isActive }]"></div>
     </button>
   </li>
 </template>
 
-<style scoped>
+<style module>
 .item {
   width: fit-content;
   margin-left: 8px;
@@ -45,14 +45,6 @@ defineProps<{
   display: flex;
   align-items: stretch;
   height: 42px;
-}
-
-.button.active .title {
-  color: #fff;
-}
-
-.button.active .highlight {
-  opacity: 1;
 }
 
 .button:hover .title {
@@ -87,5 +79,13 @@ defineProps<{
   lefT: 0;
   opacity: 0;
   transition: opacity 0.3s ease;
+}
+
+.activeTitle {
+  color: #fff;
+}
+
+.activeHighlight {
+  opacity: 1;
 }
 </style>

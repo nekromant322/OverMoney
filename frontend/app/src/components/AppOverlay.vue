@@ -2,10 +2,10 @@
 </script>
 
 <template>
-    <div class="overlay"></div>
+    <div :class="$style.overlay"></div>
 </template>
 
-<style scoped>
+<style module>
 .overlay {
   position: fixed;
   top: 0;

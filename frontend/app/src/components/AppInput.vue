@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppIcon from '@/components/AppIcon.vue';
 import ClearIcon from '@/assets/images/Clear.svg';
-import { useTemplateRef } from 'vue';
 
 const props = defineProps<{
   modelValue: string,
@@ -21,14 +20,14 @@ const handleInput = (event: Event) => {
 </script>
 
 <template>
-  <div class="wrapper">
-    <div class="icon-wrapper">
+  <div :class="$style.wrapper">
+    <div :class="$style.iconWrapper">
       <slot></slot>
     </div>
     <input 
       ref="category-search" 
       name="category-search" 
-      class="input" 
+      :class="$style.input" 
       type="text" 
       :value="props.modelValue" 
       :placeholder="props.placeholder" 
@@ -36,14 +35,14 @@ const handleInput = (event: Event) => {
     <button
       name="clear-button"
       type="reset"
-      :class="['clear-button', { 'hidden': !modelValue }]"
+      :class="[$style.clearButton, { [$style.hidden]: !modelValue }]"
       @click="clear">
       <AppIcon :src="ClearIcon" alt="clear" />
     </button>
   </div>
 </template>
 
-<style scoped>
+<style module>
 .wrapper {
   border: 1px solid #30363D;
   border-radius: 6px;
@@ -60,7 +59,7 @@ const handleInput = (event: Event) => {
   padding: 7px 11px;
 }
 
-.icon-wrapper {
+.iconWrapper {
   width: 16px;
   height: 16px;
 }
@@ -80,7 +79,7 @@ const handleInput = (event: Event) => {
   color: #6E7681;
 }
 
-.clear-button {
+.clearButton {
   width: 16px;
   height: 16px;
   padding: 0;
@@ -92,7 +91,7 @@ const handleInput = (event: Event) => {
   right: 7px;
 }
 
-.clear-button.hidden {
+.hidden {
   visibility: hidden;
 }
 </style>

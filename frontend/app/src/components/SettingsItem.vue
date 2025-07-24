@@ -8,15 +8,15 @@ defineProps<{
 </script>
 
 <template>
-  <li class="item">
-      <button class="button">
+  <li :class="$style.item">
+      <button :class="$style.button">
         <AppIcon :src="icon" :alt="text" />
-        <span class="text">{{ text }}</span>
+        <span :class="$style.text">{{ text }}</span>
       </button>
   </li>
 </template>
 
-<style scoped>
+<style module>
 .item {
   padding: 8px;
   border-radius: 6px;

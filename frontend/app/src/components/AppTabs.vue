@@ -1,12 +1,12 @@
 <template>
-  <div class="container">
-    <ul class="list">
+  <div :class="$style.container">
+    <ul :class="$style.list">
       <slot></slot>
     </ul>
   </div>
 </template>
 
-<style scoped>
+<style module>
 .list {
   display: flex;
   justify-content: center;

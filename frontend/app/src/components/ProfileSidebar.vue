@@ -27,26 +27,26 @@ const logout = async () => {
 </script>
 
 <template>
-  <div class="sidebar">
-    <header class="header">
-      <div class="user">
+  <div :class="$style.sidebar">
+    <header :class="$style.header">
+      <div :class="$style.user">
         <UserAvatar :src="props.avatar" :username="username" alt="avatar" />
-        <div class="username">{{ props.username }}</div>
+        <div :class="$style.username">{{ props.username }}</div>
       </div>
-      <button class="close-button" @click="emits('closeSidebar')">
+      <button :class="$style.closeButton" @click="emits('closeSidebar')">
         <img :src="CloseIcon" alt="close">
       </button>
     </header>
-    <nav class="settings">
+    <nav :class="$style.settings">
       <ul>
         <SettingsItem :icon="SettingsIcon" text="Настройки" />
       </ul>
-      <div class="divider"></div>
+      <div :class="$style.divider"></div>
       <ul>
         <SettingsItem :icon="LinkIcon" text="Политика конфиденциальности" />
         <SettingsItem :icon="EmailIcon" text="Написать в поддержку" />
       </ul>
-      <div class="divider"></div>
+      <div :class="$style.divider"></div>
       <ul>
         <SettingsItem :icon="LogoutIcon" text="Выйти" @click="logout" />
       </ul>
@@ -54,7 +54,7 @@ const logout = async () => {
   </div>
 </template>
 
-<style scoped>
+<style module>
 .sidebar {
   height: 100%;
   min-width: 320px;
@@ -68,13 +68,7 @@ const logout = async () => {
   border-bottom: #30363D 1px solid;
   border-top-left-radius: 6px;
   border-bottom-left-radius: 6px;
-  right: -320px;
-  transition: right 0.3s ease-in-out;
   z-index: 2;
-}
-
-.sidebar.visible {
-  right: 0;
 }
 
 .settings {
@@ -106,7 +100,7 @@ const logout = async () => {
   font-weight: 600;
 }
 
-.close-button {
+.closeButton {
   width: 32px;
   height: 32px;
   display: flex;
@@ -117,7 +111,7 @@ const logout = async () => {
   padding: 0;
 }
 
-.close-button:hover {
+.closeButton:hover {
   background-color: #21262D;
 }
 </style>

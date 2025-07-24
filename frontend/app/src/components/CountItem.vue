@@ -2,10 +2,10 @@
 </script>
 
 <template>
-  <div class="count">12</div>
+  <div :class="$style.count">12</div>
 </template>
 
-<style scoped>
+<style module>
 .count {
   display: flex;
   height: 20px;

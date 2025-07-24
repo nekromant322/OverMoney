@@ -6,10 +6,10 @@ const { src } = defineProps<{
 </script>
 
 <template>
-  <img :src="src" class="icon" width="16" height="16" :alt="alt">
+  <img :src="src" :class="$style.icon" width="16" height="16" :alt="alt">
 </template>
 
-<style scoped>
+<style module>
 .icon {
   display: block;
 }
