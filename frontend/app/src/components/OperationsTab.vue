@@ -10,7 +10,7 @@ const category = ref('');
 <template>
   <div class="tab">
     <aside class="categories">
-      <AppInput v-model="category" placeholder="Search something...">
+      <AppInput v-model="category" placeholder="Найти категорию...">
         <AppIcon :src="SearchIcon" alt="search" />
       </AppInput>
     </aside>
