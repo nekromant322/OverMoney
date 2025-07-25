@@ -41,6 +41,10 @@ export { TimePeriod }
   padding: 0 8px;
 }
 
+.button:hover {
+  color: #fff;
+}
+
 .selectedButton {
   background: #30363D;
 }
