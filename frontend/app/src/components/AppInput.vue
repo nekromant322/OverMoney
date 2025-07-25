@@ -54,6 +54,10 @@ const handleInput = (event: Event) => {
   position: relative;
 }
 
+.wrapper:hover {
+  border: 1px solid #3D444D;
+}
+
 .wrapper:focus-within {
   border: 2px solid #4493F8;
   padding: 7px 11px;

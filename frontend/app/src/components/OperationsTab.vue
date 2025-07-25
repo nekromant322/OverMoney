@@ -4,6 +4,7 @@ import AppInput from '@/components/AppInput.vue';
 import SearchIcon from '@/assets/images/Search.svg';
 import { defineAsyncComponent, ref } from 'vue';
 import TextTabButton from './TextTabButton.vue';
+import TimeFilter, { TimePeriod } from './TimeFilter.vue';
 
 const ExpensesTab = defineAsyncComponent(() =>
   import('@/components/ExpensesTab.vue')
@@ -14,6 +15,7 @@ const IncomeTab = defineAsyncComponent(() =>
 );
 
 const category = ref('');
+const period = ref(TimePeriod.M);
 const activeTab = ref(0);
 const tabs = [
   { id: 'expenses', title: 'Расходы', component: ExpensesTab },
@@ -28,13 +30,16 @@ const tabs = [
         <AppIcon :src="SearchIcon" alt="search" />
       </AppInput>
       <div :class="$style.filters">
-        <TextTabButton 
-          v-for="(tab, index) in tabs" 
-          :key="tab.id" 
-          :title="tab.title" 
-          :class="$style.textTabButton"
-          :selected="activeTab === index"
-          @click="activeTab = index" />
+        <div>
+          <TextTabButton 
+            v-for="(tab, index) in tabs" 
+            :key="tab.id" 
+            :title="tab.title" 
+            :class="$style.textTabButton"
+            :selected="activeTab === index"
+            @click="activeTab = index" />
+        </div>
+        <TimeFilter :class="$style.timeFilter" v-model="period" />
       </div>
       <KeepAlive>
         <component :is="tabs[activeTab].component" />
@@ -61,6 +66,8 @@ const tabs = [
 
 .filters {
   margin-top: 24px;
+  display: flex;
+  align-items: center;
 } 
 
 .textTabButton {
@@ -69,6 +76,10 @@ const tabs = [
 
 .textTabButton:first-child {
   margin-left: 0;
+}
+
+.timeFilter {
+  margin-left: 16px;
 }
 
 .operations {
