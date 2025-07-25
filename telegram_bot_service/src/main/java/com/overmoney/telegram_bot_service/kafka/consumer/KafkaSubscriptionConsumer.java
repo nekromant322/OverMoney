@@ -3,10 +3,12 @@ package com.overmoney.telegram_bot_service.kafka.consumer;
 import com.overmoney.telegram_bot_service.constants.KafkaConstants;
 import com.overmoney.telegram_bot_service.service.PaymentResponseHandler;
 import com.override.dto.PaymentResponseDTO;
+import com.override.dto.constants.PaymentStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -20,6 +22,9 @@ public class KafkaSubscriptionConsumer {
     @Autowired
     private PaymentResponseHandler paymentResponseHandler;
 
+    @Autowired
+    private KafkaTemplate<String, PaymentResponseDTO> kafkaTemplate;
+
     @KafkaListener(
             topics = KafkaConstants.PAYMENT_RESPONSES_TOPIC,
             groupId = KafkaConstants.TELEGRAM_BOT_GROUP
@@ -30,5 +35,10 @@ public class KafkaSubscriptionConsumer {
 
         log.info("Получен ответ об оплате подписки: {}", paymentResponse.getOrderId());
         paymentResponseHandler.handlePaymentResponse(paymentResponse);
+        log.info("Payment status: {}", paymentResponse.getStatus());
+
+        if (paymentResponse.getStatus() != PaymentStatus.PENDING) {
+            kafkaTemplate.send(KafkaConstants.SUBSCRIPTION_UPDATE_TOPIC, paymentResponse);
+        }
     }
 }

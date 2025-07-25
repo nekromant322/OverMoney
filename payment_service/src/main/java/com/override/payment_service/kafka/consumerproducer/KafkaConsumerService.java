@@ -4,7 +4,7 @@ import com.override.dto.PaymentRequestDTO;
 import com.override.dto.PaymentResponseDTO;
 import com.override.dto.constants.PaymentStatus;
 import com.override.payment_service.constants.KafkaConstants;
-import com.override.payment_service.service.YooKassaService;
+import com.override.payment_service.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class KafkaConsumerService {
 
-    private final YooKassaService yooKassaService;
     private final KafkaProducerService kafkaProducerService;
+    private final SubscriptionService subscriptionService;
 
     @KafkaListener(
             topics = KafkaConstants.PAYMENT_REQUESTS_TOPIC,
@@ -32,16 +32,21 @@ public class KafkaConsumerService {
 
         final String orderId = paymentRequest.getOrderId();
         log.info("Получен запрос на оплату заказа: {}", orderId);
+        log.info("Получен запрос на подписку, chatId={}", paymentRequest.getChatId());
 
         try {
-            PaymentResponseDTO yooKassaResponse = yooKassaService.createPayment(paymentRequest);
+            PaymentResponseDTO yooKassaResponse = subscriptionService.createOrGetExistingPayment(
+                    paymentRequest.getChatId(),
+                    paymentRequest
+            );
 
             PaymentResponseDTO response = PaymentResponseDTO.builder()
                     .orderId(orderId)
                     .paymentUrl(yooKassaResponse.getPaymentUrl())
-                    .status(PaymentStatus.SUCCESS)
+                    .status(yooKassaResponse.getStatus())
                     .build();
 
+            log.info("Отправка в Kafka. Статус: {}", response.getStatus());
             log.info("Платеж успешно создан для заказа: {}", orderId);
             kafkaProducerService.sendPaymentResponse(key, correlationId, response);
         } catch (Exception e) {
@@ -55,5 +60,16 @@ public class KafkaConsumerService {
 
             kafkaProducerService.sendPaymentResponse(key, correlationId, errorResponse);
         }
+    }
+
+    @KafkaListener(
+            topics = KafkaConstants.SUBSCRIPTION_UPDATE_TOPIC,
+            groupId = KafkaConstants.PAYMENT_SERVICE_GROUP
+    )
+    public void listenForSubscriptionStatusUpdates(
+            @Payload PaymentResponseDTO paymentResponse) {
+        subscriptionService.updateSubscriptionStatus(
+                paymentResponse.getPaymentId(),
+                paymentResponse.getStatus());
     }
 }
