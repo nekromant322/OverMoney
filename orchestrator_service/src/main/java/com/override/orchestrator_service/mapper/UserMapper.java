@@ -22,7 +22,6 @@ public class UserMapper {
         user.setUsername(telegramAuthRequest.getUsername());
         user.setFirstName(telegramAuthRequest.getFirst_name());
         user.setLastName(telegramAuthRequest.getLast_name());
-        user.setPhotoUrl(telegramAuthRequest.getPhoto_url());
         user.setAuthDate(telegramAuthRequest.getAuth_date());
         return user;
     }

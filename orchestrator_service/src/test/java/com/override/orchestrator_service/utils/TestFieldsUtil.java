@@ -145,7 +145,6 @@ public class TestFieldsUtil {
                 .firstName("Vasilii")
                 .lastName("Matveev")
                 .username("kyomexd")
-                .photoUrl("")
                 .authDate("")
                 .build();
     }
