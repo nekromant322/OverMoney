@@ -6,6 +6,7 @@ metadata:
   labels:
     app: {{ .Chart.Name }}
 spec:
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit | default 10 }}
   selector:
     matchLabels:
       app: {{ .Chart.Name }}

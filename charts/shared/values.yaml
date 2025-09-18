@@ -3,6 +3,7 @@ exports:
     servicePort: 80
     serviceTargetPort: 8080
     deployment:
+      revisionHistoryLimit: 2
       replicas: 1
       minReadySeconds: 15
       strategy:
