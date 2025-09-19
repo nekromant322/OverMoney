@@ -27,9 +27,6 @@ public class User {
     private String lastName;
 
     @Column
-    private String photoUrl;
-
-    @Column
     private String authDate;
 
     @ManyToOne(fetch = FetchType.LAZY)

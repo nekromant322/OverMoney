@@ -8,4 +8,5 @@
     <include file="v1.0.0/001-db.changelog-createAnnounceAndMailModel.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/002-db.changelog-createTableMergeRequests.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/003-db.changelog-createTableTelegramMessageOrRenameIdToMessageIdAndAddColumnIdAndChatId.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/004-db.changelog-deleteColumnPhotoUrlFromUsers.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

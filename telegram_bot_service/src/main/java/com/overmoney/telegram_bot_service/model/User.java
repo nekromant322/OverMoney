@@ -27,9 +27,6 @@ public class User {
     @Column(name = "username")
     private String username;
 
-    @Column(name = "photo_url")
-    private String photoUrl;
-
     @Column(name = "auth_date")
     private Date authDate;
 }
