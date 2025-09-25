@@ -62,15 +62,12 @@ public class UserService {
             boolean isRegistered = user.getRegistrationDate() != null;
             boolean userDetailsChanged = !(Objects.equals(user.getUsername(), telegramAuthRequest.getUsername()) &&
                     Objects.equals(user.getFirstName(), telegramAuthRequest.getFirst_name()) &&
-                    Objects.equals(user.getLastName(), telegramAuthRequest.getLast_name()) &&
-                    Objects.equals(user.getPhotoUrl(), telegramAuthRequest.getPhoto_url()));
-
+                    Objects.equals(user.getLastName(), telegramAuthRequest.getLast_name()));
             if (userDetailsChanged || !isRegistered) {
                 userRepository.updateUserDetailsByUserId(telegramAuthRequest.getId(),
                         telegramAuthRequest.getUsername(),
                         telegramAuthRequest.getFirst_name(),
                         telegramAuthRequest.getLast_name(),
-                        telegramAuthRequest.getPhoto_url(),
                         telegramAuthRequest.getAuth_date(),
                         LocalDateTime.now()
                 );

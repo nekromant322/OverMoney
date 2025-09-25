@@ -27,14 +27,13 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Modifying
     @Query("UPDATE User u SET u.username = :username, u.firstName = :firstName, " +
-            "u.lastName = :lastName, u.photoUrl = :photoUrl, u.authDate = :authDate, " +
+            "u.lastName = :lastName, u.authDate = :authDate, " +
             "u.registrationDate = :registrationDate " +
             "WHERE u.id= :userId")
     void updateUserDetailsByUserId(@Param("userId") Long userId,
                                    @Param("username") String username,
                                    @Param("firstName") String firstName,
                                    @Param("lastName") String lastName,
-                                   @Param("photoUrl") String photoUrl,
                                    @Param("authDate") String authDate,
                                    @Param("registrationDate") LocalDateTime registrationDate);
 

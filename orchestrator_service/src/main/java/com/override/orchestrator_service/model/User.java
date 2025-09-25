@@ -28,9 +28,6 @@ public class User {
     private String lastName;
 
     @Column
-    private String photoUrl;
-
-    @Column
     private String authDate;
 
     @Column
