@@ -93,7 +93,6 @@ public class UserService {
         foundUser.setFirstName(user.getFirstName());
         foundUser.setLastName(user.getLastName());
         foundUser.setUsername(user.getUsername());
-        foundUser.setPhotoUrl(user.getPhotoUrl());
         foundUser.setAuthDate(user.getAuthDate());
         userRepository.save(foundUser);
     }

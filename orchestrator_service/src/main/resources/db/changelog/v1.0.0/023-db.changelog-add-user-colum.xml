@@ -4,6 +4,11 @@
                                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
     <changeSet id="04.08.2025-add-registration-date-to-users" author="suprimi4">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="users" columnName="registration_date"/>
+            </not>
+        </preConditions>
         <addColumn tableName="users">
             <column name="registration_date" type="timestamp">
                 <constraints nullable="true"/>
