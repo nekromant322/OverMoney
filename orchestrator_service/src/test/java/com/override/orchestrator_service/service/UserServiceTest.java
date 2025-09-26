@@ -106,7 +106,7 @@ public class UserServiceTest {
 
         userService.saveUser(telegramAuthRequest);
 
-        verify(userRepository, times(1)).updateUserDetailsByUserId(any(), any(), any(), any(), any());
+        verify(userRepository, times(1)).updateUserDetailsByUserId(any(), any(), any(), any(), any(), any());
     }
 
     @Test

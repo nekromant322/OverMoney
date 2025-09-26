@@ -6,6 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @FeignClient(value = "orchestrator", url = "${integration.internal.host.orchestrator}",
@@ -51,4 +52,7 @@ public interface OrchestratorFeign {
 
     @GetMapping("/history/{id}")
     TransactionDTO getTransactionById(@PathVariable("id") UUID id);
+
+    @PostMapping("/users/missing-or-unregistered")
+    List<UserRegistrationInfoDto> getUserRegistrationInfo(@RequestBody Set<Long> idsWithRegistrationDate);
 }

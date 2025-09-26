@@ -2,6 +2,7 @@ package com.override.orchestrator_service.service;
 
 import com.override.dto.AccountDataDTO;
 import com.override.dto.UserInfoResponseDTO;
+import com.override.dto.UserRegistrationInfoDto;
 import com.override.orchestrator_service.mapper.UserMapper;
 import com.override.orchestrator_service.model.ProfilePhoto;
 import com.override.orchestrator_service.model.TelegramAuthRequest;
@@ -15,15 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.management.InstanceNotFoundException;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class UserService {
-
     @Autowired
     private UserRepository userRepository;
 
@@ -60,17 +59,23 @@ public class UserService {
     public void saveUser(TelegramAuthRequest telegramAuthRequest) {
         try {
             User user = getUserById(telegramAuthRequest.getId());
-            if (!(Objects.equals(user.getUsername(), telegramAuthRequest.getUsername()) &&
+            boolean isRegistered = user.getRegistrationDate() != null;
+            boolean userDetailsChanged = !(Objects.equals(user.getUsername(), telegramAuthRequest.getUsername()) &&
                     Objects.equals(user.getFirstName(), telegramAuthRequest.getFirst_name()) &&
-                    Objects.equals(user.getLastName(), telegramAuthRequest.getLast_name()))) {
+                    Objects.equals(user.getLastName(), telegramAuthRequest.getLast_name()));
+            if (userDetailsChanged || !isRegistered) {
                 userRepository.updateUserDetailsByUserId(telegramAuthRequest.getId(),
                         telegramAuthRequest.getUsername(),
                         telegramAuthRequest.getFirst_name(),
                         telegramAuthRequest.getLast_name(),
-                        telegramAuthRequest.getAuth_date());
+                        telegramAuthRequest.getAuth_date(),
+                        LocalDateTime.now()
+                );
             }
         } catch (InstanceNotFoundException e) {
-            userRepository.save(userMapper.mapTelegramAuthToUser(telegramAuthRequest));
+            User user = userMapper.mapTelegramAuthToUser(telegramAuthRequest);
+            user.setRegistrationDate(LocalDateTime.now());
+            userRepository.save(user);
         }
     }
 
@@ -124,5 +129,20 @@ public class UserService {
             return Optional.empty();
         }
         return profilePhotoService.getProfilePhotoBase64(photo.getPhotoData());
+    }
+
+    public List<UserRegistrationInfoDto> findByNotInAndRegistrationDateIsNotNull(Set<Long> ids) {
+        List<User> users;
+        if (ids.isEmpty()) {
+            users = userRepository.findByRegistrationDateIsNotNull();
+        } else {
+            users = userRepository.findByNotInAndRegistrationDateIsNotNull(ids);
+        }
+        return users.stream()
+                .map(user -> UserRegistrationInfoDto.builder()
+                        .id(user.getId())
+                        .registerDate(user.getRegistrationDate())
+                        .build())
+                .collect(Collectors.toList());
     }
 }

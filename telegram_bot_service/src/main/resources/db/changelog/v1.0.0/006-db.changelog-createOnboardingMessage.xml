@@ -1,0 +1,56 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+           http://www.liquibase.org/xml/ns/dbchangelog
+           http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+
+    <changeSet id="04.08.2025-create-onboarding-messages" author="Suprimi4">
+        <createTable tableName="onboarding_messages">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="message" type="VARCHAR(1000)"/>
+            <column name="image" type="BYTEA"/>
+            <column name="day_delay" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="04.08.2025-create-user-onboarding-messages" author="Suprimi4">
+        <createTable tableName="user_onboarding_messages">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="onboarding_message_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sent_at" type="TIMESTAMP"/>
+        </createTable>
+
+        <addUniqueConstraint
+                tableName="user_onboarding_messages"
+                columnNames="user_id,onboarding_message_id"
+                constraintName="uq_user_onboarding"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_uom_user"
+                baseTableName="user_onboarding_messages"
+                baseColumnNames="user_id"
+                referencedTableName="users"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                constraintName="fk_uom_onboarding_message"
+                baseTableName="user_onboarding_messages"
+                baseColumnNames="onboarding_message_id"
+                referencedTableName="onboarding_messages"
+                referencedColumnNames="id"
+                onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>

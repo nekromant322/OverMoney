@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -28,6 +29,9 @@ public class User {
 
     @Column
     private String authDate;
+
+    @Column
+    private LocalDateTime registrationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonBackReference
