@@ -86,6 +86,7 @@
       topics:
         request: transaction-request-events-topic
         response: transaction-response-events-topic
+        sse: transaction-sse-events-topic
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer

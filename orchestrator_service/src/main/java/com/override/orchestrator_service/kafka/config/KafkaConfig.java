@@ -17,4 +17,12 @@ public class KafkaConfig {
                 .replicas(1)
                 .build();
     }
+
+    @Bean
+    NewTopic sseTopic() {
+        return TopicBuilder.name("transaction-sse-events-topic")
+                .partitions(3)
+                .replicas(1)
+                .build();
+    }
 }
