@@ -41,6 +41,7 @@ public class CategoryRecognizerService {
     public void sendTransactionWithSuggestedCategory(String message, List<CategoryDTO> categories, UUID transactionId) {
         RecognizerResult recognizerResult;
         SuggestionAlgorithm selectedAlgorithm;
+        boolean categoryFind = false;
         for (CategoryRecognizer recognizer : recognizers) {
             selectedAlgorithm = recognizer.getAlgorithm();
             try {
@@ -64,6 +65,9 @@ public class CategoryRecognizerService {
             } catch (Exception e) {
                 log.error("Algorithm {} failed with error: {}", recognizer.getClass().getSimpleName(), e.getMessage());
             }
+        }
+        if (!categoryFind){
+            orchestratorFeign.notifyUncategorizedTransaction(transactionId);
         }
     }
 }
