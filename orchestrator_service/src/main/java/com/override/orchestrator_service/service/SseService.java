@@ -6,6 +6,7 @@ import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.FluxSink;
@@ -24,6 +25,9 @@ public class SseService {
     @Autowired
     private TransactionMapper transactionMapper;
 
+    @Value("${HOSTNAME:local}")
+    private String instanceId;
+
     private Map<Long, FluxSink<ServerSentEvent>> subscriptions = new ConcurrentHashMap<>();
 
     public void addSubscription(User user, FluxSink<ServerSentEvent> fluxSink) {
@@ -33,6 +37,7 @@ public class SseService {
                 }
         );
         subscriptions.put(user.getId(), fluxSink);
+        log.info("Под {} добавил подписку для {}", instanceId, user.getUsername());
     }
 
     public void sendInitData(Long id, FluxSink<ServerSentEvent> fluxSink) {

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-@KafkaListener(topics = "${spring.kafka.topics.sse}")
+@KafkaListener(topics = "${spring.kafka.topics.sse}", groupId = "${HOSTNAME}")
 public class SseTransactionListener {
     @Autowired
     private SseService sseService;

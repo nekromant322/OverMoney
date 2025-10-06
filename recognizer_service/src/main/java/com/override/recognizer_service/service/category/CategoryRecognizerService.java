@@ -57,6 +57,7 @@ public class CategoryRecognizerService {
                             .suggestionAlgorithm(selectedAlgorithm)
                             .build();
                     orchestratorFeign.editTransaction(transactionDTO);
+                    categoryFind = true;
                     break;
                 } else {
                     log.warn("No suggested category for message: {}, used algorithm {}",
