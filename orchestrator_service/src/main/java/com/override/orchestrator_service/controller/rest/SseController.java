@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -40,7 +42,7 @@ public class SseController {
             return Flux.error(new RuntimeException("Not authenticated"));
         }
         String username = (String) authentication.getPrincipal();
-        return Flux.create(fluxSink -> {
+        Flux<ServerSentEvent> dataStream = Flux.create(fluxSink -> {
             try {
                 User user = userService.getUserByUsername(username);
                 log.info("create subscription for " + username);
@@ -51,6 +53,12 @@ public class SseController {
                 fluxSink.error(e);
             }
         });
+        Flux<ServerSentEvent> hertbeatStream = Flux.interval(Duration.ofSeconds(5))
+                .map(tick -> ServerSentEvent.builder()
+                        .event("ping")
+                        .data("{\"timestamp\":\"" + Instant.now() + "\"}")
+                        .build());
+        return Flux.merge(dataStream, hertbeatStream);
     }
 
     @PostMapping("/uncategorized-notify")

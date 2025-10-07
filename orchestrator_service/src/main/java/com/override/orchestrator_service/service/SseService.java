@@ -31,6 +31,11 @@ public class SseService {
     private Map<Long, FluxSink<ServerSentEvent>> subscriptions = new ConcurrentHashMap<>();
 
     public void addSubscription(User user, FluxSink<ServerSentEvent> fluxSink) {
+        fluxSink.onDispose(() -> {
+                    subscriptions.remove(user.getId());
+                    log.info("subscription " + user.getUsername() + " was closed");
+                }
+        );
         fluxSink.onCancel(() -> {
                     subscriptions.remove(user.getId());
                     log.info("subscription " + user.getUsername() + " was closed");
@@ -45,7 +50,7 @@ public class SseService {
             List<TransactionDTO> transactionsDTO = transactionService.findTransactionsListByUserIdWithoutCategories(id).stream()
                     .map(transaction -> transactionMapper.mapTransactionToDTO(transaction))
                     .collect(Collectors.toList());
-            ServerSentEvent<List<TransactionDTO>> event = ServerSentEvent.builder(transactionsDTO).build();
+            ServerSentEvent<List<TransactionDTO>> event = ServerSentEvent.builder(transactionsDTO).event("transactions").build();
             fluxSink.next(event);
         } catch (InstanceNotFoundException e) {
             log.error("Error sending init data to user {}: {}", id, e.getMessage());
