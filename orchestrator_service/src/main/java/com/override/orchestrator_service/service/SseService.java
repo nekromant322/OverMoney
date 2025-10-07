@@ -48,7 +48,7 @@ public class SseService {
             ServerSentEvent<List<TransactionDTO>> event = ServerSentEvent.builder(transactionsDTO).build();
             fluxSink.next(event);
         } catch (InstanceNotFoundException e) {
-            throw new RuntimeException(e);
+            log.error("Error sending init data to user {}: {}", id, e.getMessage());
         }
     }
 

@@ -55,9 +55,9 @@ spec:
           {{- if or .Values.deployment.containers.env .Values.deployment.containers.envFrom }}
           env:
             - name: HOSTNAME
-                valueFrom:
-                  fieldRef:
-                    fieldPath: metadata.name
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             {{- range .Values.deployment.containers.env }}
             - name: {{ .name }}
               value: {{ .value | quote }}

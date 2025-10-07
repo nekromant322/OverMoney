@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 @RestController
@@ -39,11 +40,16 @@ public class SseController {
             return Flux.error(new RuntimeException("Not authenticated"));
         }
         String username = (String) authentication.getPrincipal();
-        User user = userService.getUserByUsername(username);
         return Flux.create(fluxSink -> {
-            log.info("create subscription for " + username);
-            sseService.addSubscription(user, fluxSink);
-            sseService.sendInitData(user.getId(), fluxSink);
+            try {
+                User user = userService.getUserByUsername(username);
+                log.info("create subscription for " + username);
+                sseService.addSubscription(user, fluxSink);
+                CompletableFuture.runAsync(()-> sseService.sendInitData(user.getId(), fluxSink));
+            } catch (Exception e){
+                log.error("Error creating SSE for {}", username, e);
+                fluxSink.error(e);
+            }
         });
     }
 
