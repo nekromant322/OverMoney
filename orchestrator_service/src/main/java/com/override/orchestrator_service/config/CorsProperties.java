@@ -11,7 +11,6 @@ import java.util.List;
 public class CorsProperties {
     private List<String> allowedOrigins = new ArrayList<>();
 
-
     public List<String> getAllowedOrigins() {
         return allowedOrigins;
     }

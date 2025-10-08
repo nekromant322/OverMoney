@@ -80,6 +80,7 @@ public class TransactionService {
         keywordService.updateLastUsed(keywordText, accountId);
         transactionRepository.save(transaction);
     }
+
     @Transactional(readOnly = true)
     public List<Transaction> findTransactionsListByUserIdWithoutCategories(Long id) throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();

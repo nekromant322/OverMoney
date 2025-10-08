@@ -67,7 +67,7 @@ public class CategoryRecognizerService {
                 log.error("Algorithm {} failed with error: {}", recognizer.getClass().getSimpleName(), e.getMessage());
             }
         }
-        if (!categoryFind){
+        if (!categoryFind) {
             orchestratorFeign.notifyUncategorizedTransaction(transactionId);
         }
     }
