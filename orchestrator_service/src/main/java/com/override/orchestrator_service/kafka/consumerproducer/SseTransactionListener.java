@@ -1,0 +1,24 @@
+package com.override.orchestrator_service.kafka.consumerproducer;
+
+
+import com.override.orchestrator_service.service.SseService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.annotation.KafkaHandler;
+import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.stereotype.Component;
+
+import java.util.UUID;
+
+@Component
+@Slf4j
+@KafkaListener(topics = "${spring.kafka.topics.sse}", groupId = "${HOSTNAME:localname}")
+public class SseTransactionListener {
+    @Autowired
+    private SseService sseService;
+
+    @KafkaHandler
+    public void processTransaction(UUID transactionId) {
+        sseService.sendNewTransactionToUser(transactionId);
+    }
+}

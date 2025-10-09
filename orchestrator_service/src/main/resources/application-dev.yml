@@ -12,3 +12,10 @@
   spring:
     kafka:
       bootstrap-servers: http://localhost:9092
+
+  app:
+    cors:
+      allowed-origins:
+        - "https://ez4x60-109-68-119-186.ru.tuna.am"
+        - "http://localhost:8080"
+        - "http://localhost:8081"
