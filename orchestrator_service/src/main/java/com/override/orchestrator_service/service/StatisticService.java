@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class StatisticService {
@@ -58,7 +57,8 @@ public class StatisticService {
             }
         });
         Map<String, Double> groupsByPercent = new HashMap<>();
-        groups.forEach((range, quantity) -> groupsByPercent.put(range, (double) quantity / suggestionList.size() * 100));
+        groups.forEach((range, quantity) -> groupsByPercent.put(range,
+                (double) quantity / suggestionList.size() * 100));
         return groupsByPercent;
     }
 }

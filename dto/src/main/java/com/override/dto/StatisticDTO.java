@@ -14,6 +14,6 @@ import java.util.Map;
 public class StatisticDTO {
     private int quantitySuggestion;
     private int quantityCorrectSuggestion;
-    private Map<String,Double> suggestionGroupsByAccuracy;
+    private Map<String, Double> suggestionGroupsByAccuracy;
     private double overallPredictionAccuracy;
 }
