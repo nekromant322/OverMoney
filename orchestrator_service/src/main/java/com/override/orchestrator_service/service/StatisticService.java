@@ -34,7 +34,7 @@ public class StatisticService {
         long countAllSuggestion = suggestionList.stream()
                 .filter(suggestion -> suggestion.getIsCorrect() != null)
                 .count();
-        return ((double) countCorrectSuggestion / countAllSuggestion * 100);
+        return countAllSuggestion == 0.0 ? 0.0 : (double) countCorrectSuggestion / countAllSuggestion * 100;
     }
 
     private Map<String, Double> getSuggestionGroupsByAccuracy(List<Suggestion> suggestionList) {
@@ -57,8 +57,13 @@ public class StatisticService {
             }
         });
         Map<String, Double> groupsByPercent = new HashMap<>();
-        groups.forEach((range, quantity) -> groupsByPercent.put(range,
-                (double) quantity / suggestionList.size() * 100));
+        groups.forEach((range, quantity) -> {
+            if (suggestionList.isEmpty()) {
+                groupsByPercent.put(range, 0.0);
+            } else {
+                groupsByPercent.put(range, (double) quantity / suggestionList.size() * 100);
+            }
+        });
         return groupsByPercent;
     }
 }
