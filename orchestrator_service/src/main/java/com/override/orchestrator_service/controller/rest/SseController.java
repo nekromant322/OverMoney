@@ -27,5 +27,4 @@ public class SseController {
         JwtAuthentication jwt = (JwtAuthentication) authentication;
         return sseService.createSseStream(jwt.getTelegramId());
     }
-
 }
