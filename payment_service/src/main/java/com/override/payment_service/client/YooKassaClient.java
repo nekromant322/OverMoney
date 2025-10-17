@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(name = "yookassa-client", url = "https://api.yookassa.ru/v3", configuration = YooKassaFeignConfig.class)
+@FeignClient(name = "yookassa-client", url = "${yookassa.url}", configuration = YooKassaFeignConfig.class)
 public interface YooKassaClient {
     @PostMapping("/payments")
     YooKassaResponseDTO createPayment(
