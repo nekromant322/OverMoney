@@ -4,6 +4,7 @@ import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.service.SseService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,8 @@ public class TransactionListener {
 
     @Value("${spring.kafka.topics.response}")
     private String responseTopic;
+    @Autowired
+    private SseService sseService;
 
     @KafkaHandler
     public void processTransaction(TransactionMessageDTO transaction) {
@@ -62,6 +65,7 @@ public class TransactionListener {
     public Transaction preProcessTransaction(TransactionMessageDTO transaction) throws InstanceNotFoundException {
         Transaction currentTransactional = transactionProcessingService.processTransaction(transaction);
         transactionService.saveTransaction(currentTransactional);
+        sseService.checkUncategorizedTransaction(currentTransactional);
         return currentTransactional;
     }
 }
