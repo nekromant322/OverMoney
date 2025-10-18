@@ -62,7 +62,8 @@
       SadWalther,
       bahertylop,
       Megokolos,
-      KGrach
+      KGrach,
+      akash1gg
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
