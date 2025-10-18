@@ -47,8 +47,7 @@ public class CategoryRecognizerService {
                 recognizerResult = recognizer.recognizeCategoryAndAccuracy(message, categories);
 
                 if (recognizerResult != null
-                        && recognizerResult.getCategory() != null
-                        && recognizerResult.getAccuracy() >= minAccuracy) {
+                        && recognizerResult.getCategory() != null) {
                     TransactionDTO transactionDTO = TransactionDTO.builder()
                             .accuracy(recognizerResult.getAccuracy())
                             .id(transactionId)
