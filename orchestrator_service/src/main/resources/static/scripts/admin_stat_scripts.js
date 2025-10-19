@@ -139,7 +139,7 @@ function getDeepSeekStats() {
     $.ajax({
         url: "/admin/deepseek/stat",
         type: "GET",
-        async: false,
+        async: true,
         success: function (data) {
             if (data) {
                 const suggestions = data.suggestionGroupsByAccuracy;

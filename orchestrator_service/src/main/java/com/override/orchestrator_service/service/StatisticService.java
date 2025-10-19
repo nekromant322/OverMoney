@@ -4,6 +4,7 @@ import com.override.dto.StatisticDTO;
 import com.override.orchestrator_service.model.Suggestion;
 import com.override.orchestrator_service.repository.SuggestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -15,6 +16,7 @@ public class StatisticService {
     @Autowired
     private SuggestionRepository suggestionRepository;
 
+    @Cacheable(value = "statistics")
     public StatisticDTO calculateStatistic() {
         List<Suggestion> suggestionList = suggestionRepository.findAllByAlgorithm("DEEPSEEK");
         return StatisticDTO.builder()
