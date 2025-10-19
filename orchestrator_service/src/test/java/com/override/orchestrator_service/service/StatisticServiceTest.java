@@ -27,7 +27,7 @@ public class StatisticServiceTest {
 
 
     @Test
-    void calculateStatistic_WithMixedSuggestions_ReturnsCorrectStatistics() {
+    void calculateSuggestionsStatistic_WithMixedSuggestions_ReturnsCorrectStatistics() {
         List<Suggestion> suggestions = Arrays.asList(
             createSuggestion(0.8f, true),
             createSuggestion(0.7f, true),
@@ -37,7 +37,7 @@ public class StatisticServiceTest {
         when(suggestionRepository.findAllByAlgorithm("DEEPSEEK")).thenReturn(suggestions);
 
 
-        StatisticDTO result = statisticService.calculateStatistic();
+        StatisticDTO result = statisticService.calculateSuggestionsStatistic();
 
         assertNotNull(result);
         assertEquals(2, result.getQuantityCorrectSuggestion());
@@ -47,10 +47,10 @@ public class StatisticServiceTest {
     }
 
     @Test
-    void calculateStatistic_WithEmptyList_ReturnsZeroStatistics() {
+    void calculateSuggestionsStatistic_WithEmptyList_ReturnsZeroStatistics() {
         when(suggestionRepository.findAllByAlgorithm("DEEPSEEK")).thenReturn(List.of());
 
-        StatisticDTO result = statisticService.calculateStatistic();
+        StatisticDTO result = statisticService.calculateSuggestionsStatistic();
 
         assertNotNull(result);
         assertEquals(0, result.getQuantitySuggestion());

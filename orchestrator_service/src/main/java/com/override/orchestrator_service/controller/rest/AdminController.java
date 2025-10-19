@@ -75,6 +75,6 @@ public class AdminController {
 
     @GetMapping("/deepseek/stat")
     public StatisticDTO getSuggestionStatistic() {
-        return statisticService.calculateStatistic();
+        return statisticService.calculateSuggestionsStatistic();
     }
 }
