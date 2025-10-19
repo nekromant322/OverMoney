@@ -16,8 +16,8 @@ public class StatisticService {
     @Autowired
     private SuggestionRepository suggestionRepository;
 
-    @Cacheable(value = "statistics")
-    public StatisticDTO calculateStatistic() {
+    @Cacheable(value = "suggestionsStatistic")
+    public StatisticDTO calculateSuggestionsStatistic() {
         List<Suggestion> suggestionList = suggestionRepository.findAllByAlgorithm("DEEPSEEK");
         return StatisticDTO.builder()
                 .quantitySuggestion(suggestionList.size())
