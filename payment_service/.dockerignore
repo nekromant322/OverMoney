@@ -1,0 +1,31 @@
+#Root files
+charts/
+argocd/
+grafana_on_Boris_VM/
+README.md
+LICENSE
+infra.svg
+checkstyle.xml
+docker-compose.yaml
+docker-compose.dev.yaml
+
+#Git
+.gitignore
+.idea
+
+#Maven
+.mvn/
+mvnw
+mvnw.cmd
+target/
+
+#Microservices files
+**/target/
+**/.mvn/
+**/mvnw
+**/mvnw.cmd
+**/.gitignore
+frontend/app
+
+
+
