@@ -1,0 +1,31 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet id="28.06.2025-create-profile-photo-table" author="Suprimi4">
+        <createTable tableName="profile_photos" schemaName="public">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="profile_photo" type="bytea"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="28.06.2025-add-profile-photo-id-column" author="Suprimi4">
+        <addColumn tableName="users" schemaName="public">
+            <column name="profile_photo_id" type="BIGINT"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="28.06.2025-add-fk-profile-photo" author="Suprimi4">
+        <addForeignKeyConstraint
+                baseTableName="users"
+                baseColumnNames="profile_photo_id"
+                constraintName="fk_users_profile_photo"
+                referencedTableName="profile_photos"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+
+</databaseChangeLog>

@@ -2,6 +2,7 @@ package com.override.orchestrator_service;
 
 import com.opentable.db.postgres.embedded.EmbeddedPostgres;
 import com.override.orchestrator_service.kafka.config.KafkaConfig;
+import com.override.orchestrator_service.kafka.consumerproducer.SseTransactionListener;
 import com.override.orchestrator_service.kafka.consumerproducer.TransactionListener;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
@@ -36,6 +37,9 @@ public class MigrationTest {
 
     @MockBean(TransactionListener.class)
     private TransactionListener transactionListener;
+
+    @MockBean(SseTransactionListener.class)
+    private SseTransactionListener sseTransactionListener;
 
     @Test
     @DisplayName("Схема бд в миграции совпадает с моделями в коде")

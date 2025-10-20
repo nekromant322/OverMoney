@@ -2,11 +2,9 @@ package com.override.orchestrator_service.controller.rest;
 
 import com.override.dto.BugReportDTO;
 import com.override.dto.MailDTO;
+import com.override.dto.StatisticDTO;
 import com.override.orchestrator_service.feign.RecognizerFeign;
-import com.override.orchestrator_service.service.BugReportService;
-import com.override.orchestrator_service.service.OverMoneyAccountService;
-import com.override.orchestrator_service.service.TelegramBotRequestService;
-import com.override.orchestrator_service.service.TransactionService;
+import com.override.orchestrator_service.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +28,9 @@ public class AdminController {
 
     @Autowired
     private RecognizerFeign recognizerFeign;
+
+    @Autowired
+    private StatisticService statisticService;
 
     @PostMapping("/announce")
     public void sendAnnounce(@RequestBody String text) {
@@ -70,5 +71,10 @@ public class AdminController {
     public String getDeepSeekBalance() {
         String balance = recognizerFeign.getBalance();
         return balance;
+    }
+
+    @GetMapping("/deepseek/stat")
+    public StatisticDTO getSuggestionStatistic() {
+        return statisticService.calculateSuggestionsStatistic();
     }
 }

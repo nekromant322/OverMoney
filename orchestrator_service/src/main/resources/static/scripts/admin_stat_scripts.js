@@ -20,6 +20,7 @@ window.onload = function () {
     getStat();
     getStatLastLastThirtyDays();
     getDeepSeekBalance();
+    getDeepSeekStats()
 
 }
 
@@ -122,7 +123,6 @@ function updateTableHeader() {
     header.textContent = `Статистика использования трекера с ${dateString}:`;
 }
 
-
 function getDeepSeekBalance() {
     $.ajax({
         url: "/admin/deepseek/balance",
@@ -131,6 +131,31 @@ function getDeepSeekBalance() {
         success: function (data) {
             const row = "<tr><td>" + (data ?? "н/д") + "</td></tr>";
             $('#deepseek-table-body').html(row);
+        }
+    });
+}
+
+function getDeepSeekStats() {
+    $.ajax({
+        url: "/admin/deepseek/stat",
+        type: "GET",
+        async: true,
+        success: function (data) {
+            if (data) {
+                const suggestions = data.suggestionGroupsByAccuracy;
+                $('#total-suggestions').text(data.quantitySuggestion);
+                $('#correct-suggestions').text(data.quantityCorrectSuggestion);
+                $('#overall-accuracy').text(Number(data.overallPredictionAccuracy).toFixed(2) + '%');
+                $('#confidence-0-5').text(Number(suggestions["0-0.5"]).toFixed(2) + '%');
+                $('#confidence-0-7').text(Number(suggestions["0.5-0.7"]).toFixed(2) + '%');
+                $('#confidence-0-9').text(Number(suggestions["0.7-0.9"]).toFixed(2) + '%');
+                $('#confidence-1-0').text(Number(suggestions["0.9-1.0"]).toFixed(2) + '%');
+            } else {
+                $('td[id]').text('н/д');
+            }
+        },
+        error: function () {
+            $('td[id]').text('н/д');
         }
     });
 }

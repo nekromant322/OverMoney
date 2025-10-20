@@ -4,6 +4,7 @@ import com.override.dto.TransactionMessageDTO;
 import com.override.dto.TransactionResponseDTO;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.service.SseService;
 import com.override.orchestrator_service.service.TransactionProcessingService;
 import com.override.orchestrator_service.service.TransactionService;
 import org.junit.jupiter.api.Test;
@@ -41,6 +42,9 @@ public class TransactionListenerTest {
 
     @Mock
     private KafkaTemplate<String, TransactionResponseDTO> kafkaTemplate;
+
+    @Mock
+    private SseService sseService;
 
     @InjectMocks
     private TransactionListener transactionTestReceiver;
@@ -82,7 +86,7 @@ public class TransactionListenerTest {
         doNothing().when(transactionService).saveTransaction(transaction);
         doNothing().when(transactionProcessingService)
                 .suggestCategoryToProcessedTransaction(transaction);
-
+        doNothing().when(sseService).checkUncategorizedTransaction(transaction);
 
         when(transactionMapper.mapTransactionToTelegramResponse(transaction, null)).thenReturn(responseDTO);
 
@@ -97,6 +101,7 @@ public class TransactionListenerTest {
         verify(kafkaTemplate).send(eq(responseTopic), responseCaptor.capture());
         assertEquals(responseDTO, responseCaptor.getValue());
     }
+
     @Test
     public void testProcessTransactionError() {
         TransactionMessageDTO transactionMessageDTO = new TransactionMessageDTO();

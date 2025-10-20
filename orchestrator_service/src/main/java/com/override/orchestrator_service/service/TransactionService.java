@@ -81,6 +81,7 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
+    @Transactional(readOnly = true)
     public List<Transaction> findTransactionsListByUserIdWithoutCategories(Long id) throws InstanceNotFoundException {
         Long accID = userService.getUserById(id).getAccount().getId();
         return transactionRepository.findAllWithoutCategoriesByAccountId(accID)

@@ -13,6 +13,13 @@ rules:
             name: orchestrator-service
             port:
               number: 80
+      - path: /sse/open-stream
+        pathType: Prefix
+        backend:
+          service:
+            name: orchestrator-service
+            port:
+              number: 80
       - path: /landing
         pathType: Prefix
         backend:
@@ -41,3 +48,7 @@ annotations:
   nginx.ingress.kubernetes.io/cors-allow-methods: "*"
   nginx.ingress.kubernetes.io/cors-allow-headers: "*"
   nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+  nginx.ingress.kubernetes.io/affinity: "cookie"
+  nginx.ingress.kubernetes.io/session-cookie-name: "sse-affinity"
+  nginx.ingress.kubernetes.io/session-cookie-expires: "172800"
+  nginx.ingress.kubernetes.io/session-cookie-max-age: "172800"
