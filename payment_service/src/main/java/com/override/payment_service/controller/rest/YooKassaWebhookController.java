@@ -1,7 +1,6 @@
 package com.override.payment_service.controller.rest;
 
 import com.override.dto.YooKassaWebhookDTO;
-import com.override.payment_service.kafka.consumerproducer.KafkaProducerService;
 import com.override.payment_service.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
