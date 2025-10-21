@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -21,13 +22,17 @@ public class SuggestionService {
 
     public void createSuggestion(TransactionDTO transactionDTO) {
         Transaction transaction = transactionService.getTransactionById(transactionDTO.getId());
-
+        Boolean isCorrect = null;
+        if (Objects.nonNull(transaction.getCategory())
+                && transaction.getCategory().getId().equals(transactionDTO.getSuggestedCategoryId())) {
+            isCorrect = true;
+        }
         Suggestion suggestion = Suggestion.builder()
                 .suggestedCategoryId(transactionDTO.getSuggestedCategoryId())
                 .transaction(transaction)
                 .accuracy(transactionDTO.getAccuracy())
                 .algorithm(transactionDTO.getSuggestionAlgorithm().getName())
-                .isCorrect(null)
+                .isCorrect(isCorrect)
                 .build();
         suggestionRepository.save(suggestion);
     }

@@ -3,9 +3,13 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
-  
+
     <include file="v1.0.0/db.changelog-1.0.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/001-db.changelog-createAnnounceAndMailModel.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/002-db.changelog-createTableMergeRequests.xml" relativeToChangelogFile="true"/>
     <include file="v1.0.0/003-db.changelog-createTableTelegramMessageOrRenameIdToMessageIdAndAddColumnIdAndChatId.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/004-db.changelog-deleteColumnPhotoUrlFromUsers.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/005-db.changelog-createUserTable.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/006-db.changelog-createOnboardingMessage.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/007-db.changelog-add-shedlock-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

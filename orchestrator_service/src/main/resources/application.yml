@@ -4,6 +4,13 @@
       encoding:
         charset: UTF-8
         force-response: true
+  app:
+    cors:
+      allowed-origins:
+        - "https://overmoney.tech"
+        - "https://www.overmoney.tech"
+        - "https://overmoneytest.online"
+
   # Используется для переключения получения транзакций через kafka или через http
   # Необходимо поменять и в orchestrator_service и в telegram_bot_service
   # Для выбора http необходимо установить значение processing: orchestrator
@@ -55,7 +62,8 @@
       SadWalther,
       bahertylop,
       Megokolos,
-      KGrach
+      KGrach,
+      akash1gg
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
@@ -86,6 +94,7 @@
       topics:
         request: transaction-request-events-topic
         response: transaction-response-events-topic
+        sse: transaction-sse-events-topic
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer

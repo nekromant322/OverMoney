@@ -75,6 +75,44 @@
             <tbody id="deepseek-table-body">
             </tbody>
         </table>
+        <table class="table table-bordered" id="deepseek-stats">
+            <thead class="table-dark">
+            <tr>
+                <th>Статистика подсказок</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody id="deepseek-stats-table-body">
+            <tr>
+                <td>Всего предположений</td>
+                <td id="total-suggestions">-</td>
+            </tr>
+            <tr>
+                <td>Корректных предположений</td>
+                <td id="correct-suggestions">-</td>
+            </tr>
+            <tr>
+                <td>Общая точность предположений</td>
+                <td id="overall-accuracy">-</td>
+            </tr>
+            <tr>
+                <td>Предположения с уверенностью 0-0.5</td>
+                <td id="confidence-0-5">-</td>
+            </tr>
+            <tr>
+                <td>Предположения с уверенностью 0.5-0.7</td>
+                <td id="confidence-0-7">-</td>
+            </tr>
+            <tr>
+                <td>Предположения с уверенностью 0.7-0.9</td>
+                <td id="confidence-0-9">-</td>
+            </tr>
+            <tr>
+                <td>Предположения с уверенностью 0.9-1.0</td>
+                <td id="confidence-1-0">-</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

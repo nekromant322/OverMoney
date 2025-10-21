@@ -15,4 +15,6 @@ public interface SuggestionRepository extends JpaRepository<Suggestion, UUID> {
     @Modifying
     @Query(value = "DELETE FROM suggestions s WHERE s.transaction_id IN (:ids)", nativeQuery = true)
     void deleteByTransactionIds(@Param("ids") List<UUID> ids);
+
+    List<Suggestion> findAllByAlgorithm(String algorithm);
 }

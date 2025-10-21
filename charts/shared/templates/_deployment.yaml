@@ -6,6 +6,7 @@ metadata:
   labels:
     app: {{ .Chart.Name }}
 spec:
+  revisionHistoryLimit: {{ .Values.deployment.revisionHistoryLimit | default 10 }}
   selector:
     matchLabels:
       app: {{ .Chart.Name }}
@@ -53,6 +54,10 @@ spec:
               memory: {{ .Values.deployment.containers.limitsMemory }}
           {{- if or .Values.deployment.containers.env .Values.deployment.containers.envFrom }}
           env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             {{- range .Values.deployment.containers.env }}
             - name: {{ .name }}
               value: {{ .value | quote }}

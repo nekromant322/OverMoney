@@ -124,3 +124,8 @@
   mask-log-spring-boot-starter:
     maskedFields:
       - x-internal-key
+  onboarding:
+    steps:
+      - dayOffset: 0
+        text: "Ты можешь отправить боту голосовые сообщения и он сам распознает сумму и комментарий"
+        image: "voice_message_example.jpg"

@@ -4,10 +4,7 @@ import com.override.dto.*;
 import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
-import com.override.orchestrator_service.service.DefineService;
-import com.override.orchestrator_service.service.SuggestionService;
-import com.override.orchestrator_service.service.TransactionProcessingService;
-import com.override.orchestrator_service.service.TransactionService;
+import com.override.orchestrator_service.service.*;
 import com.override.orchestrator_service.util.TelegramUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -49,6 +46,9 @@ public class TransactionController {
     @Autowired
     private SuggestionService suggestionService;
 
+    @Autowired
+    private SseService sseService;
+
     @GetMapping("/transactions/count")
     @Operation(summary = "Получить количество транзакций", description = "Возвращает общее количество транзакций")
     @ApiResponses(value = {
@@ -73,6 +73,7 @@ public class TransactionController {
                 transactionProcessingService.validateAndProcessTransaction(transactionMessage, principal);
         transactionService.saveTransaction(transaction);
         transactionProcessingService.suggestCategoryToProcessedTransaction(transaction);
+        sseService.checkUncategorizedTransaction(transaction);
         return transactionMapper.mapTransactionToTelegramResponse(transaction);
     }
 
