@@ -27,10 +27,12 @@
     price: 200.00
     currency: RUB
     duration:
+      months: 1
       days: 0
     payment:
       return-url: "https://overmoney.tech/"
       description: "Подписка на сервис OverMoney"
+      timeout-minutes: 10
 
   server:
     port: 8080
@@ -73,6 +75,10 @@
       topics:
         request: transaction-request-events-topic
         response: transaction-response-events-topic
+        payment-request: payment-requests
+        payment-response: payment-responses
+        subscription-status-updates: subscription-status-updates
+        subscription-notification: subscription-notification
       bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer

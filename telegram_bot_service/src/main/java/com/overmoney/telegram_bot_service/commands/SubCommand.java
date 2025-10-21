@@ -5,6 +5,7 @@ import com.overmoney.telegram_bot_service.exception.InvalidPaymentUrlException;
 import com.overmoney.telegram_bot_service.service.PaymentService;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
 import com.override.dto.PaymentRequestDTO;
+import com.override.dto.SubscriptionDTO;
 import com.override.dto.constants.Currency;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +19,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.math.BigDecimal;
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 import java.util.regex.Pattern;
@@ -57,21 +57,20 @@ public class SubCommand extends OverMoneyCommand {
     public void execute(AbsSender absSender, User user, Chat chat, String[] arguments) {
         Long chatId = chat.getId();
 
-        // Заглушка для проверки подписки
-        boolean isActive = false;
-        LocalDateTime endDate = LocalDateTime.now().plusMonths(1);
+        SubscriptionDTO subscription = paymentService.getSubscriptionStatus(chatId);
 
-        String messageText = isActive
-                ? String.format("Подписка активна до %s", endDate.format(formatter))
+        String messageText = subscription.isActive() && subscription.getEndDate() != null
+                ? String.format("Подписка активна до %s", subscription.getEndDate().format(formatter))
                 : "Подписка не активна";
 
-        if (!isActive) {
+        if (!subscription.isActive()) {
             PaymentRequestDTO request = PaymentRequestDTO.builder()
                     .orderId(UUID.randomUUID().toString())
                     .amount(new BigDecimal(amount))
                     .currency(Currency.valueOf(currency))
                     .returnUrl(returnUrl)
                     .description(description)
+                    .chatId(chatId)
                     .build();
 
             String paymentUrl = paymentService.createPayment(request);

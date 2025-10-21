@@ -29,7 +29,7 @@ spring:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 
   liquibase:
-    enabled: false
+    enabled: true
     change-log: /db/changelog/db.changelog-master.xml
 
   profiles:
@@ -39,6 +39,8 @@ spring:
     topics:
       payment-request: payment-requests
       payment-response: payment-responses
+      subscription-status-updates: subscription-status-updates
+      subscription-notification: subscription-notification
     bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -86,3 +88,10 @@ mask-log-spring-boot-starter:
 yookassa:
   shop-id: ${YOOKASSA_SHOP_ID}
   secret-key: ${YOOKASSA_SECRET_KEY}
+  url: https://api.yookassa.ru/v3
+
+subscription:
+  duration:
+    months: 1
+  payment:
+    timeout-minutes: 10

@@ -26,6 +26,12 @@ spring:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
   liquibase:
     change-log: classpath:db/changelog/db.changelog-master.xml
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: test-group
+      auto-offset-reset: earliest
+      enable-auto-commit: false
 
 
 bot:

@@ -10,6 +10,7 @@ integration:
     host:
       orchestrator: http://localhost:8081
       recognizer: http://localhost:8080
+      payment: http://localhost:8084
 
 spring:
   kafka:

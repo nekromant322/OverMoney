@@ -5,50 +5,36 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 @Slf4j
 @Service
 public class PaymentResponseHandler {
 
-    private final Map<String, String> paymentUrls = new ConcurrentHashMap<>();
-    private final Map<String, CountDownLatch> latches = new ConcurrentHashMap<>();
+    private final Map<String, CompletableFuture<PaymentResponseDTO>> pendingPayments = new ConcurrentHashMap<>();
 
     private static final int PAYMENT_URL_TIMEOUT_SECONDS = 10;
 
     public void handlePaymentResponse(PaymentResponseDTO paymentResponse) {
-        if (paymentResponse == null || paymentResponse.getOrderId() == null) {
-            log.error("Получен null в handlePaymentResponse");
-            return;
+        CompletableFuture<PaymentResponseDTO> future = pendingPayments.remove(paymentResponse.getOrderId());
+        if (future != null) {
+            future.complete(paymentResponse);
         }
-
-        if (paymentResponse.getPaymentUrl() != null) {
-            paymentUrls.put(paymentResponse.getOrderId(), paymentResponse.getPaymentUrl());
-            CountDownLatch latch = latches.get(paymentResponse.getOrderId());
-            if (latch != null) {
-                latch.countDown();
-            }
-        }
-        log.info("Обработка ответа на платеж: {}, статус: {}",
-                paymentResponse.getOrderId(), paymentResponse.getStatus());
     }
 
     public String waitForPaymentUrl(String orderId) {
-        CountDownLatch latch = new CountDownLatch(1);
-        latches.put(orderId, latch);
+        CompletableFuture<PaymentResponseDTO> future = new CompletableFuture<>();
+        pendingPayments.put(orderId, future);
 
         try {
-            if (latch.await(PAYMENT_URL_TIMEOUT_SECONDS, TimeUnit.SECONDS)) {
-                return paymentUrls.remove(orderId);
+            PaymentResponseDTO response = future.get(PAYMENT_URL_TIMEOUT_SECONDS, TimeUnit.SECONDS);
+            return response.getPaymentUrl();
+        } catch (Exception e) {
+            pendingPayments.remove(orderId);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            log.error("Ожидание paymentUrl прервано для orderId: {}", orderId);
-        } finally {
-            latches.remove(orderId);
+            return null;
         }
-        return null;
     }
 }
