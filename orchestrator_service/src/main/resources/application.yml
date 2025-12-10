@@ -83,7 +83,6 @@
       refresh: ${JWT_REFRESH_KEY:zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==}
     token:
       lifetime-in-hours: 24
-
   spring:
     servlet:
       multipart:
@@ -116,11 +115,14 @@
                   class: org.springframework.kafka.support.serializer.JsonDeserializer
 
 
+
     datasource:
       url: jdbc:postgresql://${ORCHESTRATOR_DB_HOST:localhost}:${ORCHESTRATOR_DB_PORT:5433}/orchestrator-db
       username: ${ORCHESTRATOR_DB_USER:postgres}
       password: ${ORCHESTRATOR_DB_PASSWORD:postgres}
       driver-class-name: org.postgresql.Driver
+      hikari:
+        connectionTimeout: 300000
 
     thymeleaf:
       enabled: true

@@ -44,7 +44,6 @@ function saveFile() {
     $.ajax({
         url: './settings/backup',
         method: 'GET',
-        async: false,
         success: function (data) {
             let json = JSON.stringify(data);
             let blob = new Blob([json], {type: "application/json"});
