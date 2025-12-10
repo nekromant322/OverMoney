@@ -27,7 +27,7 @@ RUN cp -r /workspace/.git /workspace/recognizer_service/.git
 RUN mvn -B clean package -DskipTests -Dcheckstyle.skip
 
 # Stage 2: Runtime
-FROM openjdk:11-bullseye
+FROM eclipse-temurin:11
 
 RUN apt-get -y update \
     && apt-get -y upgrade \
