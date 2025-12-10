@@ -6,6 +6,7 @@ import com.override.orchestrator_service.model.Transaction;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.QueryHints;
@@ -27,6 +28,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     @Query("SELECT t FROM Transaction t WHERE t.account.id = :id AND t.category.id is null")
     List<Transaction> findAllWithoutCategoriesByAccountId(@Param("id") Long accountId);
 
+    @EntityGraph(attributePaths = {"account", "suggestion"})
     List<Transaction> findAllByAccountId(Long accountId);
 
     Transaction findFirstTransactionByAccountIdOrderByDate(Long accountId);
