@@ -63,7 +63,8 @@
       bahertylop,
       Megokolos,
       KGrach,
-      akash1gg
+      akash1gg,
+      sergey_argunov
 
   # Для удаления кейвордов по которым давно не было транзакций
   clean-deprecated-keywords:
