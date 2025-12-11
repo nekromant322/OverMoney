@@ -121,8 +121,6 @@
       username: ${ORCHESTRATOR_DB_USER:postgres}
       password: ${ORCHESTRATOR_DB_PASSWORD:postgres}
       driver-class-name: org.postgresql.Driver
-      hikari:
-        connectionTimeout: 300000
 
     thymeleaf:
       enabled: true
