@@ -28,7 +28,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     @Query("SELECT t FROM Transaction t WHERE t.account.id = :id AND t.category.id is null")
     List<Transaction> findAllWithoutCategoriesByAccountId(@Param("id") Long accountId);
 
-    @EntityGraph(attributePaths = {"account", "suggestion"})
+    @EntityGraph(attributePaths = {"account", "suggestion", "category"})
     List<Transaction> findAllByAccountId(Long accountId);
 
     Transaction findFirstTransactionByAccountIdOrderByDate(Long accountId);
