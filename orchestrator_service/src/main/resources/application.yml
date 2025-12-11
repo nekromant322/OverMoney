@@ -83,7 +83,6 @@
       refresh: ${JWT_REFRESH_KEY:zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==}
     token:
       lifetime-in-hours: 24
-
   spring:
     servlet:
       multipart:
@@ -114,6 +113,7 @@
               value:
                 delegate:
                   class: org.springframework.kafka.support.serializer.JsonDeserializer
+
 
 
     datasource:

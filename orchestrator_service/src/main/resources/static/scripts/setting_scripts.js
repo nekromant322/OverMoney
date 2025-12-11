@@ -41,10 +41,14 @@ $("#readButton").click(function () {
 });
 
 function saveFile() {
+    let button = event.target;
+    button.disabled = true;
+
+    let originalText = button.innerHTML;
+    button.innerHTML = 'Загрузка...';
     $.ajax({
         url: './settings/backup',
         method: 'GET',
-        async: false,
         success: function (data) {
             let json = JSON.stringify(data);
             let blob = new Blob([json], {type: "application/json"});
@@ -64,10 +68,24 @@ function saveFile() {
             a.download = dateString + '-overmoney.json';
             a.href = url;
             a.click();
+
+            button.disabled = false;
+            button.innerHTML = originalText;
+        },
+        error: function(){
+            button.disabled = false;
+            button.innerHTML = originalText;
+            alert('Ошибка при загрузке файла');
         }
     });
 }
 function downloadExcel() {
+    let button = event.target;
+    button.disabled = true;
+
+    let originalText = button.innerHTML;
+    button.innerHTML = 'Загрузка...';
+
     $.ajax({
         url: './settings/export/excel',
         method: 'GET',
@@ -94,8 +112,13 @@ function downloadExcel() {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+
+            button.disabled = false;
+            button.innerHTML = originalText;
         },
         error: function (jqXHR, textStatus, errorThrown) {
+            button.disabled = false;
+            button.innerHTML = originalText;
             console.error('Ошибка скачивания: ', textStatus, errorThrown);
         }
     });
