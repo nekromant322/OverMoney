@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-<<header id="header">
+<header id="header">
     <nav class="links" style="--items: 6;">
         <a id="telegram-bot-link" target="_blank">
             <i class="fa fa-telegram"></i>
@@ -41,6 +41,11 @@
             <div class="modal-category-content">
             </div>
         </div>
+        <div>
+            Самозанятая Марандюк Анастасия Александровна
+            shamaneeel881@gmail.com
+        </div>
+        © <span class="current-year"></span>
     </div>
     <div class="modal-default-category" id="modal-default-category">
         <div class="modal-default-category-content">
@@ -98,8 +103,12 @@
             </div>
         </div>
     </div>
-
 </div>
+<script>
+    document.querySelectorAll('.current-year').forEach(function(element) {
+        element.textContent = new Date().getFullYear();
+    });
+</script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script
         src="https://code.jquery.com/jquery-3.6.4.min.js"

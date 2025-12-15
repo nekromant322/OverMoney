@@ -39,6 +39,27 @@ $("#downloadExelButton").click(function () {
 $("#readButton").click(function () {
     modalConfirmation.style.display = "block";
 });
+$("#subscrButton").click(function (){
+    clickSubButton();
+});
+function clickSubButton(){
+    getUserChatId(function(data){
+        const apiUrl = 'http://localhost:8084/payments/pay/' + data;
+        $.ajax({
+            url: apiUrl,
+            method: 'GET',
+            dataType: 'text',
+            timeout: 5000,
+            success: function(response) {
+                console.log(response);
+                window.location.href = response;
+            },
+            error: function(xhr, status, error) {
+                console.error("Ошибка:", error);
+            }
+        })
+    })
+}
 
 function saveFile() {
     let button = event.target;
@@ -229,3 +250,137 @@ sendButton.on("click", function () {
         }
     });
 });
+$(document).ready(function() {
+    const $checkbox = $('#statusCheckbox');
+    const $refreshBtn = $('#refreshBtn');
+    const $statusMessage = $('#statusMessage');
+    const $statusTime = $('#statusTime');
+    const $subscrButton =$('#subscrButton');
+
+    // Глобальная переменная для состояния системы
+    let isActive = false;
+    let subscriptionDate = '';
+
+    function showTimeOfSubscription(date){
+        if(!isActive) {
+            $statusTime.text('Подписка не активирована');
+        } else {
+            $statusTime.text('Подписка действует до: ' + date);
+        }
+    }
+
+    // Функция показа сообщения
+    function showMessage(text, type = 'info') {
+        $statusMessage
+            .removeClass('success error loading warning')
+            .addClass(type)
+            .text(text)
+            .fadeIn(300);
+
+        if (type !== 'error') {
+            setTimeout(() => {
+                $statusMessage.fadeOut(300);
+            }, 3000);
+        }
+    }
+
+    function checkStatus() {
+
+        $checkbox.prop('disabled', true);
+        $refreshBtn.addClass('loading');
+        getUserChatId(function(data) {
+        const chatId = data;
+        const apiUrl = './payments/subscription/' + data + '/status';
+
+        $.ajax({
+            url: apiUrl,
+            method: 'GET',
+            dataType: 'json',
+            timeout: 5000,
+            success: function(response) {
+                isActive = response.active;
+                console.log(isActive);
+                $checkbox.prop('checked', isActive);
+
+                if (isActive) {
+                    $subscrButton.hide();
+                    const dateString = response.endDate;
+                    const date = new Date(dateString);
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const year = date.getFullYear();
+
+                    subscriptionDate = `${day}.${month}.${year}`;;
+                    showTimeOfSubscription(subscriptionDate);
+                    showMessage('✅ Подписка активирована', 'success');
+                } else {
+                    subscriptionDate = '';
+                    showTimeOfSubscription('');
+                    showMessage('⚠️ Подписка не активирована', 'warning');
+                }
+
+                console.log('Статус получен:', response);
+            },
+            error: function(xhr, status, error) {
+                isActive = false;
+                $checkbox.prop('checked', false);
+                subscriptionDate = '';
+                showTimeOfSubscription('');
+
+                let errorText = 'Ошибка проверки: ';
+                if (status === 'timeout') {
+                    errorText += 'таймаут запроса';
+                } else if (status === 'error') {
+                    errorText += 'ошибка сети';
+                } else {
+                    errorText += error || 'неизвестная ошибка';
+                }
+
+                showMessage(`❌ ${errorText}`, 'error');
+                console.error('Ошибка при проверке статуса:', error);
+            },
+            complete: function() {
+                $checkbox.prop('disabled', false);
+                $refreshBtn.removeClass('loading');
+            }
+        });
+        });
+    }
+
+    checkStatus();
+
+    $refreshBtn.click(function(e) {
+        e.preventDefault();
+        checkStatus();
+    });
+
+    $checkbox.click(function(e) {
+        const targetState = $(this).prop('checked');
+
+        if (targetState === true && !isActive) {
+            showMessage('❌ Включение невозможно: подписка неактивна', 'error');
+            $(this).prop('checked', false);
+            e.preventDefault();
+            return false;
+        }
+
+        if (targetState === false && isActive) {
+            showMessage('⚠️ Вы отключили вкладку', 'warning');
+        }
+
+        if (targetState === true && isActive) {
+            showMessage('✅ Вкладка включена', 'success');
+        }
+
+        showTimeOfSubscription(subscriptionDate || "30 dec 2025");
+    });
+});
+function getUserChatId(callback){
+    $.ajax({
+        url: './users/currentChatId',
+        method: 'GET',
+        success: function (data) {
+            callback(data);
+        }
+    });
+}
