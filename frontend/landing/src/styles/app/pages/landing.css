@@ -1,136 +1,142 @@
 .landing__wrapper {
-  min-height: 100%;
-  background-color: #0D1117;
-  position: relative;
-  overflow: hidden;
+    min-height: 100%;
+    background-color: #0D1117;
+    position: relative;
+    overflow: hidden;
 }
 
 @media screen and (max-width: 1024px) {
-  .landing__wrapper {
-    background-size: auto;
-  }
+    .landing__wrapper {
+        background-size: auto;
+    }
 }
 
 .landing__top-background {
-  width: 100%;
-  height: auto;
-  position: absolute;
-  top: 0;
-  opacity: 0.8;
+    width: 100%;
+    height: auto;
+    position: absolute;
+    top: 0;
+    opacity: 0.8;
 }
 
 .landing__bottom-background {
-  width: 100%;
-  height: auto;
-  position: absolute;
-  bottom: 0;
-  transform: scale(-1);
-  opacity: 0.8;
+    width: 100%;
+    height: auto;
+    position: absolute;
+    bottom: 0;
+    transform: scale(-1);
+    opacity: 0.8;
 }
 
 .landing__header {
-  position: relative;
+    position: relative;
 }
 
 .landing__content {
-  padding: 0 32px;
-  position: relative;
+    padding: 0 32px;
+    position: relative;
 }
 
 @media screen and (max-width: 1024px) {
-  .landing__content {
-    padding: 0 16px;
-  }
+    .landing__content {
+        padding: 0 16px;
+    }
 }
 
 .landing__hero {
-  display: flex;
-  flex-direction: column;
-  padding: 160px 0 80px 0;
-  align-items: center;;
+    display: flex;
+    flex-direction: column;
+    padding: 160px 0 80px 0;
+    align-items: center;;
 }
 
 @media screen and (max-width: 640px) {
-  .landing__hero {
-    padding: 80px 0;
-  }
+    .landing__hero {
+        padding: 80px 0;
+    }
 }
 
 .landing__subtitle {
-  margin-top: 16px;
+    margin-top: 16px;
 }
 
-.landing__features { 
-  display: grid;
-  max-width: 910px;
-  gap: 40px;
-  margin: 0 auto;
-  grid-template-columns: repeat(3, 1fr);
-  box-sizing: content-box;
-  justify-items: center;
+.landing__features {
+    display: grid;
+    max-width: 910px;
+    gap: 40px;
+    margin: 0 auto;
+    grid-template-columns: repeat(3, 1fr);
+    box-sizing: content-box;
+    justify-items: center;
 }
 
 @media screen and (max-width: 1024px) {
-  .landing__features {
-    grid-template-columns: 1fr 1fr;
-    max-width: 464px;
-  }
+    .landing__features {
+        grid-template-columns: 1fr 1fr;
+        max-width: 464px;
+    }
 }
 
 @media screen and (max-width: 640px) {
-  .landing__features {
-    grid-template-columns: 1fr;
-    max-width: 288px;
-  }
+    .landing__features {
+        grid-template-columns: 1fr;
+        max-width: 288px;
+    }
 }
 
 .landing__try-app-button {
-  width: fit-content;
-  display: flex;
-  margin: 80px auto 0 auto;
+    width: fit-content;
+    display: flex;
+    margin: 80px auto 0 auto;
 }
 
 .landing__info {
-  max-width: 910px;
-  margin: 0 auto;
-  box-sizing: content-box;
+    max-width: 910px;
+    margin: 0 auto;
+    box-sizing: content-box;
 }
 
 @media screen and (max-width: 640px) {
-  .landing__info {
-    max-width: 288px;
-  }
+    .landing__info {
+        max-width: 288px;
+    }
 }
 
 .landing__detail {
-  padding-top: 80px;
+    padding-top: 80px;
 }
 
 .landing__feedback {
-  max-width: 430px;
-  margin: 120px auto 0 auto;
-  text-align: center;
+    max-width: 430px;
+    margin: 120px auto 0 auto;
+    text-align: center;
 }
 
 .landing__feedback-info {
-  padding-top: 24px;
-  font-size: 16px;
-  line-height: 24px;
-  color: #8B949E;
+    padding-top: 24px;
+    font-size: 16px;
+    line-height: 24px;
+    color: #8B949E;
 }
 
 @media screen and (max-width: 640px) {
-  .landing__feedback-info {
-    max-width: 288px;
-    margin: 0 auto;
-  }
+    .landing__feedback-info {
+        max-width: 288px;
+        margin: 0 auto;
+    }
 }
 
 .landing__send-feedback {
-  margin-top: 48px;
+    margin-top: 48px;
 }
 
 .landing__footer {
-  margin-top: 80px;
-  position: relative;
+    margin-top: 80px;
+    position: relative;
+}
+
+.landing__footer-name {
+    color: white;
+    display: block;
+    margin-bottom: 8px;
 }
