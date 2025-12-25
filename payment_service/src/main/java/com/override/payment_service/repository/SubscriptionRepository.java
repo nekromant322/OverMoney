@@ -4,13 +4,11 @@ import com.override.payment_service.model.Subscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
 public interface SubscriptionRepository extends JpaRepository<Subscription, Long> {
-    Optional<Subscription> findByChatId(Long chatId);
+    List<Subscription> findByChatId(Long chatId);
 
-    Optional<Subscription> findByOrderId(String orderId);
-
-    Optional<Subscription> findByPaymentId(String paymentId);
+    List<Subscription> findByPayment_InvoiceId(Long paymentInvoiceId);
 }

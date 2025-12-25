@@ -32,7 +32,11 @@
 </header>
 <div class="content">
     <div class="info">
-        <button id="subscrButton" class="get-backup-button">Купить подписку (300 рублей)</button>
+        <button id="subscrButton" class="get-backup-button">
+            Купить подписку
+            (300 рублей)
+            Вы получите доступ к вкладке "Долги"
+        </button>
     </div>
     <div class="info">
         <button id="downloadButton" class="get-backup-button">Скачать бекап данных json</button>
@@ -101,54 +105,6 @@
                value="Ок">
     </div>
 </div>
-<div class="status-widget">
-    <div class="soon-overlay">Скоро</div>
-    <div class="status-header">
-        <h3 class="status-title">Управление подпиской</h3>
-    </div>
-
-    <div class="status-content">
-        <div class="status-row">
-            <label class="checkbox-wrapper">
-                <input type="checkbox" id="statusCheckbox">
-                <span class="checkbox-custom"></span>
-                <span class="checkbox-text">Вкладка долгов</span>
-            </label>
-
-            <button id="refreshBtn" class="refresh-btn" title="Обновить статус">
-                <svg class="refresh-icon" viewBox="0 0 24 24">
-                    <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                </svg>
-            </button>
-        </div>
-
-        <div class="status-time">
-            Доступна только по подписке
-        </div>
-        <div class="status-time" id="statusTime">
-        </div>
-    </div>
-
-    <div class="status-message" id="statusMessage">
-        Проверка статуса...
-    </div>
-</div>
-<footer class="footer-minimal">
-    <div class="footer-name">
-        <strong>Самозанятая Марандюк Анастасия Александровна</strong>
-    </div>
-    <div class="footer-email">
-        <a href="mailto:shamaneeel881@gmail.com">shamaneeel881@gmail.com</a>
-    </div>
-    <div class="footer-copyright">
-        © <span class="current-year"></span>
-    </div>
-</footer>
-<script>
-    document.querySelectorAll('.current-year').forEach(function(element) {
-        element.textContent = new Date().getFullYear();
-    });
-</script>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>

@@ -69,8 +69,7 @@ public class AdminController {
 
     @GetMapping("/deepseek/balance")
     public String getDeepSeekBalance() {
-        String balance = recognizerFeign.getBalance();
-        return balance;
+        return recognizerFeign.getBalance();
     }
 
     @GetMapping("/deepseek/stat")

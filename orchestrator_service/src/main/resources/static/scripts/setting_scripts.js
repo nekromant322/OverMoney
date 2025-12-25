@@ -44,7 +44,7 @@ $("#subscrButton").click(function (){
 });
 function clickSubButton(){
     getUserChatId(function(data){
-        const apiUrl = 'http://localhost:8084/payments/pay/' + data;
+        const apiUrl = './payments/pay/' + data;
         $.ajax({
             url: apiUrl,
             method: 'GET',
@@ -257,7 +257,6 @@ $(document).ready(function() {
     const $statusTime = $('#statusTime');
     const $subscrButton =$('#subscrButton');
 
-    // Глобальная переменная для состояния системы
     let isActive = false;
     let subscriptionDate = '';
 

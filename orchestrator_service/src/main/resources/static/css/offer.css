@@ -1,0 +1,356 @@
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+    padding: 20px;
+    background-image: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+/* Шапка */
+.header {
+    background: linear-gradient(135deg, #2c3e50 0%, #4a6491 100%);
+    color: white;
+    padding: 30px 40px;
+    text-align: center;
+    border-bottom: 5px solid #3498db;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-size: 2.5rem;
+    margin-right: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.header h1 {
+    font-family: 'Source Serif Pro', serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.site-info {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    margin-top: 10px;
+}
+
+.site-info i {
+    margin-right: 10px;
+}
+
+/* Основное содержание */
+.contract-content {
+    padding: 30px 40px;
+}
+
+.section-wrapper {
+    counter-reset: section;
+}
+
+.contract-section {
+    margin-bottom: 40px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #eaeaea;
+    position: relative;
+}
+
+.contract-section:last-of-type {
+    border-bottom: none;
+}
+
+.contract-section h2 {
+    font-family: 'Source Serif Pro', serif;
+    font-size: 1.6rem;
+    color: #2c3e50;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #f0f0f0;
+    display: flex;
+    align-items: center;
+}
+
+.contract-section h2 i {
+    margin-right: 12px;
+    color: #3498db;
+    font-size: 1.4rem;
+}
+
+.contract-section p {
+    margin-bottom: 15px;
+    font-size: 1.05rem;
+    line-height: 1.7;
+}
+
+.contract-section a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+    border-bottom: 1px dotted transparent;
+}
+
+.contract-section a:hover {
+    color: #2980b9;
+    border-bottom: 1px dotted #2980b9;
+}
+
+/* Списки */
+.responsibilities {
+    margin: 25px 0;
+}
+
+.responsibilities h3 {
+    font-size: 1.2rem;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+}
+
+.responsibilities h3 i {
+    margin-right: 10px;
+    color: #3498db;
+}
+
+.responsibilities ul {
+    list-style-type: none;
+    margin-left: 10px;
+}
+
+.responsibilities li {
+    margin-bottom: 12px;
+    padding-left: 10px;
+    position: relative;
+    font-size: 1.05rem;
+}
+
+.responsibilities li span {
+    font-weight: 600;
+    margin-right: 8px;
+    color: #2c3e50;
+}
+
+.responsibilities li:before {
+    content: "•";
+    color: #3498db;
+    font-weight: bold;
+    font-size: 1.2rem;
+    position: absolute;
+    left: -12px;
+    top: 0;
+}
+
+/* Контактная информация */
+.contact-info {
+    background: #f8fafc;
+    border-left: 4px solid #3498db;
+    padding: 20px;
+    border-radius: 0 8px 8px 0;
+    margin-top: 15px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.contact-item:last-child {
+    margin-bottom: 0;
+}
+
+.contact-item i {
+    color: #3498db;
+    margin-right: 15px;
+    font-size: 1.2rem;
+    margin-top: 3px;
+    min-width: 20px;
+}
+
+/* Финальная секция с реквизитами */
+.final-section {
+    background: linear-gradient(to right, #f8fafc, #ffffff);
+    padding: 30px;
+    border-radius: 10px;
+    border: 1px solid #eaeaea;
+}
+
+.details {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+}
+
+.detail-item i {
+    color: #3498db;
+    font-size: 1.4rem;
+    margin-right: 15px;
+    margin-top: 5px;
+}
+
+.detail-item strong {
+    display: block;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.detail-item p {
+    margin: 0;
+    color: #555;
+}
+
+/* Футер */
+.footer {
+    background: #2c3e50;
+    color: #ecf0f1;
+    padding: 25px 40px;
+    text-align: center;
+    border-top: 5px solid #3498db;
+}
+
+.footer a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer-note {
+    margin-top: 15px;
+    font-size: 0.95rem;
+    opacity: 0.9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.footer-note i {
+    margin-right: 8px;
+    color: #3498db;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .container {
+        border-radius: 8px;
+    }
+
+    .header {
+        padding: 25px 20px;
+    }
+
+    .header h1 {
+        font-size: 1.8rem;
+    }
+
+    .logo {
+        width: 60px;
+        height: 60px;
+        font-size: 2rem;
+        margin-right: 15px;
+    }
+
+    .contract-content {
+        padding: 25px 20px;
+    }
+
+    .contract-section h2 {
+        font-size: 1.4rem;
+    }
+
+    .details {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .footer {
+        padding: 20px;
+    }
+
+    .site-info {
+        font-size: 1rem;
+        padding: 6px 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+
+    .header {
+        padding: 20px 15px;
+    }
+
+    .logo-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .contract-section h2 {
+        font-size: 1.3rem;
+    }
+
+    .contact-info {
+        padding: 15px;
+    }
+}

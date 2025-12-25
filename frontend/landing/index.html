@@ -87,8 +87,20 @@
         <a href="/">
           <img src="/images/logo.svg" width="32" height="32" alt="app logo">
         </a>
-        <span class="footer__copyright">© 2024 OverMoney</span>
+          <strong class="landing__footer-name">Самозанятая Марандюк Анастасия Александровна</strong>
+          <a href="mailto:shamaneeel881@gmail.com">shamaneeel881@gmail.com</a>
+          <div class="footer__copyright">
+              © <span class="current-year"></span>
+              <a href="/offer">
+                  Договор-оферта
+              </a>
+          </div>
       </footer>
+        <script>
+            document.querySelectorAll('.current-year').forEach(function(element) {
+                element.textContent = new Date().getFullYear();
+            });
+        </script>
     </div>
   </body>
 </html>

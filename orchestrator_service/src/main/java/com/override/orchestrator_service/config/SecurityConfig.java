@@ -41,7 +41,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/templates/**", "/scripts/**", "/css/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
+                //Robokassa ip
+                .antMatchers("/payments/result").permitAll()
                 .antMatchers("/login/**").permitAll()
+                .antMatchers("/offer/**").permitAll()
                 .antMatchers("/actuator/health", "/actuator/prometheus").permitAll()
                 .anyRequest().authenticated()
                 .and()

@@ -1,9 +1,14 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.*;
+import com.override.dto.CategoryDTO;
+import com.override.dto.TransactionAmountAndCommentDTO;
+import com.override.dto.TransactionMessageDTO;
 import com.override.orchestrator_service.exception.InvalidDataException;
 import com.override.orchestrator_service.feign.RecognizerFeign;
-import com.override.orchestrator_service.model.*;
+import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.Keyword;
+import com.override.orchestrator_service.model.OverMoneyAccount;
+import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.service.calc.*;
 import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
-import java.time.*;
-import java.util.*;
-import java.util.regex.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class TransactionProcessingService {

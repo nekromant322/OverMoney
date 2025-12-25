@@ -5,7 +5,6 @@ import com.override.dto.DateRangeDTO;
 import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.model.Transaction;
 import com.override.orchestrator_service.repository.specification.TransactionSpecification;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,7 +1,6 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.CategoryDTO;
-import com.override.dto.constants.Type;
 import com.override.orchestrator_service.mapper.CategoryMapper;
 import com.override.orchestrator_service.model.Category;
 import com.override.orchestrator_service.model.Keyword;
@@ -13,9 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.HashSet;
+import java.util.Set;
 
 @ExtendWith(MockitoExtension.class)
 public class CategoryMapperTest {

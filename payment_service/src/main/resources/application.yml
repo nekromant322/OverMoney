@@ -27,6 +27,8 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        hbm2ddl:
+          auto: update
 
   liquibase:
     enabled: true
@@ -95,3 +97,11 @@ subscription:
     months: 1
   payment:
     timeout-minutes: 10
+robokassa:
+  login-shop-id: ${ROBOKASSA_LOGIN_SHOP_ID}
+  password-one: ${ROBOKASSA_PASSWORD_ONE}
+  password-two: ${ROBOKASSA_PASSWORD_TWO}
+  test-password-one: ${ROBOKASSA_TEST_PASSWORD_ONE}
+  test-password-two: ${ROBOKASSA_TEST_PASSWORD_TWO}
+  subscription-amount: 300
+  base-url: https://auth.robokassa.ru

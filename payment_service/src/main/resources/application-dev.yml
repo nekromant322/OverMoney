@@ -14,3 +14,6 @@ integration:
 spring:
   kafka:
     bootstrap-servers: http://localhost:9092
+  jpa:
+    hibernate:
+      ddl-auto: update

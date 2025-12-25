@@ -12,6 +12,11 @@ public class UserViewController {
         return new RedirectView("/overmoney");
     }
 
+    @GetMapping("/offer")
+    public String getOffer() {
+        return "offer";
+    }
+
     @GetMapping("/overmoney")
     public String getMainPage() {
         return "overmoney";

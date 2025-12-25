@@ -8,7 +8,10 @@ import org.zalando.logbook.HttpMessage;
 import org.zalando.logbook.StructuredHttpLogFormatter;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class MyJsonLogFormatter implements StructuredHttpLogFormatter {
 
