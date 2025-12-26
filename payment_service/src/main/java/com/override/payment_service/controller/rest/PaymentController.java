@@ -1,7 +1,6 @@
 package com.override.payment_service.controller.rest;
 
 import com.override.dto.SubscriptionDTO;
-import com.override.payment_service.kafka.service.ProducerService;
 import com.override.payment_service.model.Subscription;
 import com.override.payment_service.service.RoboKassaInterface;
 import com.override.payment_service.service.SubscriptionService;
@@ -21,7 +20,6 @@ public class PaymentController {
 
     private final RoboKassaInterface robokassaService;
     private final SubscriptionService subscriptionService;
-    private final ProducerService producerService;
 
     /**
      * Колбэк для успешной оплаты
@@ -49,9 +47,7 @@ public class PaymentController {
      */
     @PostMapping(value = "/result")
     public ResponseEntity<String> resultCallback(@RequestParam Map<String, String> allParams) {
-        ResponseEntity<String> result = robokassaService.updatePaymentStatus(allParams);
-        producerService.sendSubscriptionNotification(result);
-        return result;
+        return robokassaService.updatePaymentStatus(allParams);
     }
 
     @GetMapping("/pay/{chatId}")

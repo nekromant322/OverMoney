@@ -1,5 +1,6 @@
 package com.override.payment_service.kafka.service;
 
+import com.override.dto.PaymentResponseDTO;
 import com.override.payment_service.kafka.constants.KafkaConstants;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,10 +15,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class ProducerService {
-    private final KafkaTemplate<String, ResponseEntity<String>> kafkaTemplate;
+    private final KafkaTemplate<String, PaymentResponseDTO> kafkaTemplate;
 
-    public void sendSubscriptionNotification(ResponseEntity<String> response) {
-        Message<ResponseEntity<String>> message = MessageBuilder
+    public void sendSubscriptionNotification(PaymentResponseDTO response) {
+        Message<PaymentResponseDTO> message = MessageBuilder
                 .withPayload(response)
                 .setHeader(KafkaHeaders.TOPIC, KafkaConstants.SUBSCRIPTION_NOTIFICATION_TOPIC)
                 .build();
@@ -25,8 +26,8 @@ public class ProducerService {
         kafkaTemplate.send(message)
                 .addCallback(
                         result -> log.info(
-                                "Уведомление о подписке отправлено для paymentId: {}",
-                                response.getBody().substring(2)),
+                                "Уведомление о подписке отправлено для chatId: {}",
+                                response.getChatId()),
                         ex -> log.error(
                                 "Не удалось отправить уведомление о подписке",
                                 ex)

@@ -88,7 +88,7 @@
         value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
         group-id: transaction-sent-events
         properties:
-          spring.json.trusted.packages: "com.override.dto, org.springframework.http"
+          spring.json.trusted.packages: com.override.dto
           spring:
             deserializer:
               key:

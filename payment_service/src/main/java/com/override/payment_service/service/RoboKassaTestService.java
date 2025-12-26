@@ -1,11 +1,13 @@
 package com.override.payment_service.service;
 
 import com.override.dto.PaymentRequestDTO;
+import com.override.dto.PaymentResponseDTO;
 import com.override.dto.constants.Currency;
 import com.override.dto.constants.PaymentStatus;
 import com.override.payment_service.config.RobokassaValues;
 import com.override.payment_service.exceptions.RepeatPaymentException;
 import com.override.payment_service.exceptions.SignatureNonMatchException;
+import com.override.payment_service.kafka.service.ProducerService;
 import com.override.payment_service.mapper.PaymentMapper;
 import com.override.payment_service.model.Payment;
 import com.override.payment_service.model.Subscription;
@@ -33,6 +35,7 @@ public class RoboKassaTestService implements RoboKassaInterface {
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final RobokassaValues robokassaValues;
+    private final ProducerService producerService;
 
     @Transactional
     public ResponseEntity<String> createPayment(Long chatId) {
@@ -73,7 +76,12 @@ public class RoboKassaTestService implements RoboKassaInterface {
         }
 
         paymentRepository.save(paymentRepository.findByInvoiceId(invoiceId).setPaymentStatus(PaymentStatus.SUCCESS));
-        activateSubscription(subscriptionRepository.findByPayment_InvoiceId(invoiceId).get(0));
+        Subscription subscription = subscriptionRepository.findByPayment_InvoiceId(invoiceId).get(0);
+        activateSubscription(subscription);
+        producerService.sendSubscriptionNotification(PaymentResponseDTO.builder()
+                        .message("OK"+invoiceId)
+                        .chatId(subscription.getChatId())
+                .build());
 
         return ResponseEntity.ok("OK" + invoiceId);
     }
