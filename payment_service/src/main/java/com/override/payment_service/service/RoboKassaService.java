@@ -1,11 +1,13 @@
 package com.override.payment_service.service;
 
 import com.override.dto.PaymentRequestDTO;
+import com.override.dto.PaymentResponseDTO;
 import com.override.dto.constants.Currency;
 import com.override.dto.constants.PaymentStatus;
 import com.override.payment_service.config.RobokassaValues;
 import com.override.payment_service.exceptions.RepeatPaymentException;
 import com.override.payment_service.exceptions.SignatureNonMatchException;
+import com.override.payment_service.kafka.service.ProducerService;
 import com.override.payment_service.mapper.PaymentMapper;
 import com.override.payment_service.model.Payment;
 import com.override.payment_service.model.Subscription;
@@ -27,12 +29,13 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RoboKassaService {
+public class RoboKassaService implements RoboKassaInterface {
     private final SubscriptionService subscriptionService;
     private final SubscriptionRepository subscriptionRepository;
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
     private final RobokassaValues robokassaValues;
+    private final ProducerService producerService;
 
     /**
      * Метод создания ссылки на оплату подписки
@@ -66,11 +69,6 @@ public class RoboKassaService {
      * @return при удачной проверке подписей, "OK"+invoiceId
      */
 
-    /**
-     * Генерация подписи для создания платежа. Генерация происходит по принципу "логин:сумма:id:Пароль#1"
-     *
-     * @return сигнатура
-     */
     @Transactional
     public ResponseEntity<String> updatePaymentStatus(Map<String, String> allParams) {
         Long invoiceId = Long.valueOf(allParams.get("InvId"));
@@ -83,7 +81,12 @@ public class RoboKassaService {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
         paymentRepository.save(paymentRepository.findByInvoiceId(invoiceId).setPaymentStatus(PaymentStatus.SUCCESS));
-        activateSubscription(subscriptionRepository.findByPayment_InvoiceId(invoiceId).get(0));
+        Subscription subscription = subscriptionRepository.findByPayment_InvoiceId(invoiceId).get(0);
+        activateSubscription(subscription);
+        producerService.sendSubscriptionNotification(PaymentResponseDTO.builder()
+                .message("OK"+invoiceId)
+                .chatId(subscription.getChatId())
+                .build());
 
         return ResponseEntity.ok("OK" + invoiceId);
     }
@@ -151,6 +154,11 @@ public class RoboKassaService {
         return constructPaymentUrl(requestDTO, invoiceId, localSignature);
     }
 
+    /**
+     * Генерация подписи для создания платежа. Генерация происходит по принципу "логин:сумма:id:Пароль#1"
+     *
+     * @return сигнатура
+     */
     private String generateSignature(String login, String amount, Long invoiceId) {
         return generateMD5(String.format("%s:%s:%s:%s", login, amount, invoiceId, robokassaValues.getPasswordOne()));
     }

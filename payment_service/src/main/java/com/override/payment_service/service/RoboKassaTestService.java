@@ -29,7 +29,7 @@ import java.util.Optional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RoboKassaTestService implements RoboKassaInterface {
+public class RoboKassaTestService {
     private final SubscriptionService subscriptionService;
     private final SubscriptionRepository subscriptionRepository;
     private final PaymentRepository paymentRepository;
