@@ -15,6 +15,7 @@ import com.override.payment_service.repository.PaymentRepository;
 import com.override.payment_service.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,7 @@ public class RoboKassaService implements RoboKassaInterface {
      * @return ссылка на оплату подписки
      */
     @Transactional
+    @Cacheable(value = "createPayment", cacheManager = "cacheManager1Min")
     public ResponseEntity<String> createPayment(Long chatId) {
         try {
             PaymentRequestDTO requestDTO = createBasePaymentRequestDTO();

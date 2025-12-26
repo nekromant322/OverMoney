@@ -103,5 +103,5 @@ robokassa:
   password-two: ${ROBOKASSA_PASSWORD_TWO}
   test-password-one: ${ROBOKASSA_TEST_PASSWORD_ONE}
   test-password-two: ${ROBOKASSA_TEST_PASSWORD_TWO}
-  subscription-amount: 300
+  subscription-amount: 1
   base-url: https://auth.robokassa.ru
