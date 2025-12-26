@@ -45,7 +45,7 @@ public class RoboKassaService implements RoboKassaInterface {
      * @return ссылка на оплату подписки
      */
     @Transactional
-    @Cacheable(value = "createPayment", cacheManager = "cacheManager1Min")
+    @Cacheable(value = "chatId", cacheManager = "cacheManager1Min")
     public ResponseEntity<String> createPayment(Long chatId) {
         try {
             PaymentRequestDTO requestDTO = createBasePaymentRequestDTO();
