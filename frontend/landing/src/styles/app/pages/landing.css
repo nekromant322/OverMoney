@@ -131,6 +131,14 @@
 }
 
 .landing__footer {
-  margin-top: 80px;
-  position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-top: 80px;
+    position: relative;
+}
+
+.landing__footer-name {
+    color: white;
+    display: block;
+    margin-bottom: 8px;
 }
