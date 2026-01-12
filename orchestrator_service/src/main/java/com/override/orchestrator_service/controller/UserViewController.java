@@ -18,7 +18,7 @@ public class UserViewController {
     }
 
     @GetMapping("/offer")
-    public String getOffer(){
+    public String getOffer() {
         return "offer";
     }
 
