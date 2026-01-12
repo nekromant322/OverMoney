@@ -3,7 +3,6 @@ package com.overmoney.telegram_bot_service.kafka.consumer;
 import com.overmoney.telegram_bot_service.constants.KafkaConstants;
 import com.overmoney.telegram_bot_service.service.TelegramNotificationService;
 import com.override.dto.PaymentResponseDTO;
-import com.override.dto.constants.PaymentStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
