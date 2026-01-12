@@ -17,6 +17,11 @@ public class UserViewController {
         return "overmoney";
     }
 
+    @GetMapping("/offer")
+    public String getOffer(){
+        return "offer";
+    }
+
     @GetMapping("/history")
     public String getTransactionPage() {
         return "history";
