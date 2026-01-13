@@ -10,24 +10,44 @@ integration:
 
 spring:
   datasource:
-    password: postgres
-    username: postgres
-    url: jdbc:postgresql://localhost:8130/postgres
-    driver-class-name: org.postgresql.Driver
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password:
   jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
+    show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        dialect: org.hibernate.dialect.H2Dialect
+        format_sql: true
   liquibase:
-    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: false
+  cache:
+    type: none
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+robokassa:
+  merchant:
+    login: test_merchant
+  password:
+    one: test_pass1
+    two: test_pass2
+  api:
+    url: https://test.robokassa.ru
 
-
-#настройка веб адреса приложения
 orchestrator:
   host: test.ru
+
+logging:
+  level:
+    root: WARN
+    com.override.payment_service: DEBUG
+    org.springframework.test: WARN
