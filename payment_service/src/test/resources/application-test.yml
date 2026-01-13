@@ -45,9 +45,3 @@ robokassa:
 
 orchestrator:
   host: test.ru
-
-logging:
-  level:
-    root: WARN
-    com.override.payment_service: DEBUG
-    org.springframework.test: WARN
