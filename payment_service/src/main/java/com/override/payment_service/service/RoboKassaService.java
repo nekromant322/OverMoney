@@ -63,12 +63,13 @@ public class RoboKassaService implements RoboKassaInterface {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
     /**
      * Метод используется при удачной оплате, Robokassa достучится до контроллера, а из контроля вызовется этот метод.
      * С нашей стороны должна происходить проверка сравнения приходящего signatureValue (параметр метода)
      * и сгенерированной параметрами метода (invoiceId, outSum) signature
      *
-     * @return при удачной проверке подписей, "OK"+invoiceId
+     * @return при удачной проверке подписей, "OK"+invoiceId - требование Robokassa
      */
 
     @Transactional
@@ -86,7 +87,7 @@ public class RoboKassaService implements RoboKassaInterface {
         Subscription subscription = subscriptionRepository.findByPayment_InvoiceId(invoiceId).get(0);
         activateSubscription(subscription);
         producerService.sendSubscriptionNotification(PaymentResponseDTO.builder()
-                .message("OK"+invoiceId)
+                .message("OK" + invoiceId)
                 .chatId(subscription.getChatId())
                 .build());
 

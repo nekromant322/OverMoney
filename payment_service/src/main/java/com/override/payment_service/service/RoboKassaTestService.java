@@ -26,6 +26,9 @@ import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * Класс использовать исключительно для разработки, должен реализовать интерфейс RoboKassaInterface
+ */
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -61,7 +64,7 @@ public class RoboKassaTestService {
      * С нашей стороны должна происходить проверка сравнения приходящего signatureValue (параметр метода)
      * и сгенерированной параметрами метода (invoiceId, outSum) signature
      *
-     * @return при удачной проверке подписей, "OK"+invoiceId
+     * @return при удачной проверке подписей, "OK"+invoiceId - требование Robokassa
      */
     @Transactional
     public ResponseEntity<String> updatePaymentStatus(Map<String, String> allParams) {
@@ -79,8 +82,8 @@ public class RoboKassaTestService {
         Subscription subscription = subscriptionRepository.findByPayment_InvoiceId(invoiceId).get(0);
         activateSubscription(subscription);
         producerService.sendSubscriptionNotification(PaymentResponseDTO.builder()
-                        .message("OK"+invoiceId)
-                        .chatId(subscription.getChatId())
+                .message("OK" + invoiceId)
+                .chatId(subscription.getChatId())
                 .build());
 
         return ResponseEntity.ok("OK" + invoiceId);
