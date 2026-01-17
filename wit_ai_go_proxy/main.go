@@ -16,6 +16,7 @@ import (
 	"strings"
 )
 
+
 const keyServerAddr = "serverAddr"
 
 type RecognizerRequestDTO struct {
