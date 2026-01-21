@@ -1,4 +1,4 @@
-package com.override.payment_service.constants;
+package com.override.payment_service.kafka.constants;
 
 public class KafkaConstants {
     public static final String PAYMENT_REQUESTS_TOPIC = "payment-requests";

@@ -50,6 +50,31 @@ deployment:
           secretKeyRef:
             name: qa
             key: qa-yookassa-secret-key
+      - name: ROBOKASSA_LOGIN_SHOP_ID
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-robokassa-login-shop-id
+      - name: ROBOKASSA_PASSWORD_ONE
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-robokassa-password-one
+      - name: ROBOKASSA_PASSWORD_TWO
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-robokassa-password-two
+      - name: ROBOKASSA_TEST_PASSWORD_ONE
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-robokassa-test-password-one
+      - name: ROBOKASSA_TEST_PASSWORD_TWO
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-robokassa-test-password-two
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
