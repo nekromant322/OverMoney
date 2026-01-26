@@ -380,7 +380,7 @@ public class TransactionServiceTest {
 
         transactionService.editTransaction(transactionDTO);
 
-        verify(keywordRepository, times(1)).delete(keyword.get());
+        verify(keywordRepository, times(1)).deleteByKeywordId(any(KeywordId.class));
     }
 
     @Test
@@ -404,7 +404,7 @@ public class TransactionServiceTest {
 
         transactionService.editTransaction(transactionDTO);
 
-        verify(keywordRepository, times(2)).delete(keyword.get());
+        verify(keywordRepository, times(1)).delete(keyword.get());
     }
 
     @Test

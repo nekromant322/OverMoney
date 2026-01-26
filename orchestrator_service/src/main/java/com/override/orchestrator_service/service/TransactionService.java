@@ -209,7 +209,7 @@ public class TransactionService {
         if (transactionUpdate.getCategory() != null) {
             if (!transactionUpdate.getCategory().getName().equals(transactionDTO.getCategoryName())) {
                 transactionUpdate.setCategory(category);
-                keyword.ifPresent(k -> keywordRepository.delete(k));
+                keyword.ifPresent(k -> keywordRepository.deleteByKeywordId(k.getKeywordId()));
             }
         } else if (!transactionDTO.getCategoryName().equals("Нераспознанное")) {
             if (transactionDTO.getMessage() != null) {
@@ -259,7 +259,7 @@ public class TransactionService {
 
     public Optional<Keyword> getKeywordByTransaction(Transaction transaction) {
         KeywordId keywordId = new KeywordId();
-        keywordId.setAccountId(transaction.getAccount().getId());
+        keywordId.setAccountId(transaction.getAccount().getChatId());
         keywordId.setName(transaction.getMessage());
         return keywordRepository.findByKeywordId(keywordId);
     }

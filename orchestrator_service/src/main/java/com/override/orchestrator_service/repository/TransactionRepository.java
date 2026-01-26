@@ -38,6 +38,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     void updateCategoryId(@Param("oldCategory") Long oldCategoryId, @Param("newCategory") Long newCategoryId);
 
     @Query("SELECT t FROM Transaction t WHERE t.account.id = :id")
+    @EntityGraph(attributePaths = {"category", "suggestion"})
     Page<Transaction> findAllByAccountId(@Param("id") Long id, Pageable pageable);
 
     @QueryHints(@QueryHint(name = org.hibernate.annotations.QueryHints.CACHEABLE, value = "true"))
