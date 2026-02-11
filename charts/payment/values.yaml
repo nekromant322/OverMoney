@@ -40,16 +40,31 @@ deployment:
           secretKeyRef:
             name: prod
             key: telegram-bot-token
-      - name: YOOKASSA_SHOP_ID
+      - name: ROBOKASSA_LOGIN_SHOP_ID
         valueFrom:
           secretKeyRef:
             name: prod
-            key: yookassa-shop-id
-      - name: YOOKASSA_SECRET_KEY
+            key: robokassa-login-shop-id
+      - name: ROBOKASSA_PASSWORD_ONE
         valueFrom:
           secretKeyRef:
             name: prod
-            key: yookassa-secret-key
+            key: robokassa-password-one
+      - name: ROBOKASSA_PASSWORD_TWO
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: robokassa-password-two
+      - name: ROBOKASSA_TEST_PASSWORD_ONE
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: robokassa-test-password-one
+      - name: ROBOKASSA_TEST_PASSWORD_TWO
+        valueFrom:
+          secretKeyRef:
+            name: prod
+            key: robokassa-test-password-two
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
