@@ -1,9 +1,9 @@
 package com.override.payment_service.controller.rest;
 
 import com.override.dto.SubscriptionDTO;
-import com.override.payment_service.model.Subscription;
-import com.override.payment_service.service.RoboKassaInterface;
+import com.override.payment_service.service.RoboKassaService;
 import com.override.payment_service.service.SubscriptionService;
+import com.override.payment_service.util.HttpParametr;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import static org.apache.kafka.common.requests.DeleteAclsResponse.log;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final RoboKassaInterface robokassaService;
+    private final RoboKassaService robokassaService;
     private final SubscriptionService subscriptionService;
 
     /**
@@ -47,29 +47,16 @@ public class PaymentController {
      */
     @PostMapping(value = "/result")
     public ResponseEntity<String> resultCallback(@RequestParam Map<String, String> allParams) {
-        return robokassaService.updatePaymentStatus(allParams);
+        return robokassaService.updatePaymentStatus(new HttpParametr(allParams));
     }
 
     @GetMapping("/pay/{chatId}")
-    @ResponseBody
-    public ResponseEntity<String> getPaymentUrl(@PathVariable Long chatId) {
+    public String getPaymentUrl(@PathVariable Long chatId) {
         return robokassaService.createPayment(chatId);
     }
 
     @GetMapping("/subscription/{chatId}/status")
     public SubscriptionDTO getSubscriptionByChatId(@PathVariable Long chatId) {
-        try {
-            Subscription subscription = subscriptionService.findByChatId(chatId).get(0);
-            subscriptionService.checkActiveStatus(subscription);
-            return SubscriptionDTO.builder()
-                    .isActive(subscription.isActive())
-                    .endDate(subscription.getEndDate())
-                    .build();
-        } catch (RuntimeException e) {
-            return SubscriptionDTO.builder()
-                    .isActive(false)
-                    .endDate(null)
-                    .build();
-        }
+        return subscriptionService.getSubscriptionWithStatusByChatId(chatId);
     }
 }

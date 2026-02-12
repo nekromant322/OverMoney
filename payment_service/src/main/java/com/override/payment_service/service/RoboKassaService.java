@@ -4,7 +4,7 @@ import com.override.dto.PaymentRequestDTO;
 import com.override.dto.PaymentResponseDTO;
 import com.override.dto.constants.Currency;
 import com.override.dto.constants.PaymentStatus;
-import com.override.payment_service.config.RobokassaValues;
+import com.override.payment_service.config.RobokassaConfig;
 import com.override.payment_service.exceptions.RepeatPaymentException;
 import com.override.payment_service.exceptions.SignatureNonMatchException;
 import com.override.payment_service.kafka.service.ProducerService;
@@ -13,30 +13,31 @@ import com.override.payment_service.model.Payment;
 import com.override.payment_service.model.Subscription;
 import com.override.payment_service.repository.PaymentRepository;
 import com.override.payment_service.repository.SubscriptionRepository;
+import com.override.payment_service.util.HttpParametr;
+import com.override.payment_service.util.RoboKassaSignature;
+import com.override.payment_service.util.RoboKassaUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class RoboKassaService implements RoboKassaInterface {
-    private final SubscriptionService subscriptionService;
-    private final SubscriptionRepository subscriptionRepository;
-    private final PaymentRepository paymentRepository;
-    private final PaymentMapper paymentMapper;
-    private final RobokassaValues robokassaValues;
-    private final ProducerService producerService;
+@Profile("prod")
+public class RoboKassaService{
+    protected final SubscriptionService subscriptionService;
+    protected final SubscriptionRepository subscriptionRepository;
+    protected final PaymentRepository paymentRepository;
+    protected final PaymentMapper paymentMapper;
+    protected final RobokassaConfig robokassaConfig;
+    protected final ProducerService producerService;
 
     /**
      * Метод создания ссылки на оплату подписки
@@ -45,24 +46,41 @@ public class RoboKassaService implements RoboKassaInterface {
      * @return ссылка на оплату подписки
      */
     @Transactional
-    @Cacheable(value = "chatId", cacheManager = "cacheManager1Min")
-    public ResponseEntity<String> createPayment(Long chatId) {
+    public String createPayment(Long chatId) {
         try {
             PaymentRequestDTO requestDTO = createBasePaymentRequestDTO();
-            Subscription subscription = getOrCreateSubscription(chatId);
-            validateSubscription(subscription);
+            Subscription subscription = subscriptionService.getOrCreateSubscription(chatId);
 
-            Payment payment = createPayment(requestDTO);
-            updateSubscriptionPayment(subscription, payment);
+            Payment payment = paymentMapper.toModel(requestDTO)
+                    .setPaymentStatus(PaymentStatus.PENDING);
 
-            return ResponseEntity.ok(buildPaymentUrl(requestDTO, subscription.getPayment().getInvoiceId()));
+            Payment savedPayment = paymentRepository.save(payment);
+            log.info("Saved payment with id: {}, invoiceId: {}", savedPayment.getInvoiceId(),
+                    savedPayment.getInvoiceId());
+
+            Optional.ofNullable(subscription.getPayment())
+                    .ifPresent(oldPayment -> {
+                        subscription.setPayment(null);
+                        paymentRepository.delete(oldPayment);
+                    });
+
+            subscription.setPayment(savedPayment);
+            subscriptionService.save(subscription);
+
+            Subscription savedSubscription = subscriptionRepository.findById(subscription.getId()).orElseThrow();
+            log.info("Subscription saved with payment_invoice_id: {}",
+                    savedSubscription.getPayment() != null ? savedSubscription.getPayment().getInvoiceId() : "null");
+
+            return buildPaymentUrl(requestDTO, savedPayment.getInvoiceId());
+
         } catch (RepeatPaymentException e) {
             throw e;
         } catch (Exception e) {
-            log.error(e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            log.error("Error creating payment: {}", e.getMessage(), e);
+            return "";
         }
     }
+
 
     /**
      * Метод используется при удачной оплате, Robokassa достучится до контроллера, а из контроля вызовется этот метод.
@@ -73,150 +91,52 @@ public class RoboKassaService implements RoboKassaInterface {
      */
 
     @Transactional
-    public ResponseEntity<String> updatePaymentStatus(Map<String, String> allParams) {
-        Long invoiceId = Long.valueOf(allParams.get("InvId"));
-        BigDecimal outSum = BigDecimal.valueOf(Double.parseDouble(allParams.get("OutSum"))).setScale(6);
-
+    public ResponseEntity<String> updatePaymentStatus(HttpParametr httpParametr) {
         try {
-            validateSignature(allParams.get("SignatureValue"),
-                    generateSignatureForStatus(invoiceId, outSum).toUpperCase());
+            RoboKassaSignature httpSignature = new RoboKassaSignature(httpParametr.getHttpSignature());
+            RoboKassaSignature signatureForStatus = new RoboKassaSignature();
+
+            signatureForStatus.generateSignatureForStatus(httpParametr.getInvoiceId(), httpParametr.getTestOutSum());
+            httpSignature.validateSignature(signatureForStatus.getSignature());
         } catch (SignatureNonMatchException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
-        paymentRepository.save(paymentRepository.findByInvoiceId(invoiceId).setPaymentStatus(PaymentStatus.SUCCESS));
-        Subscription subscription = subscriptionRepository.findByPayment_InvoiceId(invoiceId).get(0);
-        activateSubscription(subscription);
-        producerService.sendSubscriptionNotification(PaymentResponseDTO.builder()
-                .message("OK" + invoiceId)
-                .chatId(subscription.getChatId())
-                .build());
+        paymentRepository.save(paymentRepository.findByInvoiceId(httpParametr.getInvoiceId())
+                .setPaymentStatus(PaymentStatus.SUCCESS));
 
-        return ResponseEntity.ok("OK" + invoiceId);
-    }
-
-    private void activateSubscription(Subscription subscription) {
+        Subscription subscription = subscriptionRepository.findByPayment_InvoiceId(httpParametr.getInvoiceId())
+                .orElseThrow(
+                () -> new IllegalStateException("Subscription not found for invoice: " + httpParametr.getInvoiceId())
+                );
         subscriptionRepository.save(subscription
                 .setStartDate(LocalDateTime.now())
                 .setEndDate(LocalDateTime.now().plusMonths(1))
                 .setActive(true));
+        producerService.sendSubscriptionNotification(PaymentResponseDTO.builder()
+                .message("OK" + httpParametr.getInvoiceId())
+                .chatId(subscription.getChatId())
+                .build());
+
+        return ResponseEntity.ok("OK" + httpParametr.getInvoiceId());
     }
 
     private PaymentRequestDTO createBasePaymentRequestDTO() {
         return PaymentRequestDTO.builder()
                 .currency(Currency.RUB)
                 .description("оплата подписки")
-                .amount(BigDecimal.valueOf(300))
+                .amount(BigDecimal.valueOf(robokassaConfig.getSubscriptionAmount()))
                 .build();
-    }
-
-    private Subscription getOrCreateSubscription(Long chatId) {
-        return subscriptionService.findByChatId(chatId)
-                .stream()
-                .findFirst()
-                .orElseGet(() -> createNewSubscription(chatId));
-    }
-
-    private Subscription createNewSubscription(Long chatId) {
-        Subscription subscription = new Subscription().setChatId(chatId);
-        subscriptionService.save(subscription);
-        return subscription;
-    }
-
-    private void validateSubscription(Subscription subscription) {
-        if (subscription.isActive()) {
-            throw new RepeatPaymentException("Подписка уже активирована");
-        }
-    }
-
-    private void validateSignature(String httpSignature, String localSignature) {
-        if (!httpSignature.equals(localSignature)) {
-            throw new SignatureNonMatchException("Сигнатуры не совпадают");
-        }
-    }
-
-    private Payment createPayment(PaymentRequestDTO requestDTO) {
-        return paymentMapper.toModel(requestDTO)
-                .setPaymentStatus(PaymentStatus.PENDING);
-    }
-
-    private void updateSubscriptionPayment(Subscription subscription, Payment payment) {
-        Optional.ofNullable(subscription.getPayment())
-                .ifPresent(paymentRepository::delete);
-
-        subscription.setPayment(payment);
-        subscriptionService.save(subscription);
     }
 
     private String buildPaymentUrl(PaymentRequestDTO requestDTO, Long invoiceId) {
         String amount = requestDTO.getAmount().toString();
-        String localSignature = generateSignature(
-                robokassaValues.getMerchantLogin(),
+        RoboKassaSignature localSignature = new RoboKassaSignature();
+        localSignature.setSignature(
+                localSignature.generateSignature(
+                robokassaConfig.getLoginShopId(),
                 amount,
-                invoiceId
-        );
-        return constructPaymentUrl(requestDTO, invoiceId, localSignature);
+                invoiceId));
+        return RoboKassaUtils.constructPaymentUrl(requestDTO, invoiceId, localSignature.getSignature(), false);
     }
 
-    /**
-     * Генерация подписи для создания платежа. Генерация происходит по принципу "логин:сумма:id:Пароль#1"
-     *
-     * @return сигнатура
-     */
-    private String generateSignature(String login, String amount, Long invoiceId) {
-        return generateMD5(String.format("%s:%s:%s:%s", login, amount, invoiceId, robokassaValues.getPasswordOne()));
-    }
-
-    /**
-     * Генерация подписи для проверки статуса
-     * Генерация происходит по принципу "сумма:id:Пароль#2"
-     *
-     * @param invoiceId уникальный id платежа (Payment)
-     * @param amount    сумма подписки
-     */
-    private String generateSignatureForStatus(Long invoiceId, BigDecimal amount) {
-        String date = String.format("%s:%s:%s",
-                amount,
-                invoiceId.toString(),
-                robokassaValues.getPasswordTwo());
-        return generateMD5(date);
-    }
-
-    /**
-     * Генерация MD5 хеша
-     */
-    private String generateMD5(String data) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            md.update(data.getBytes());
-            byte[] digest = md.digest();
-
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : digest) {
-                hexString.append(String.format("%02x", b));
-            }
-            return hexString.toString();
-        } catch (NoSuchAlgorithmException e) {
-            log.error(e.getMessage());
-            return null;
-        }
-    }
-
-    /**
-     * Конструкция URL для оплаты
-     */
-    private String constructPaymentUrl(PaymentRequestDTO request, Long invoiceId, String signature) {
-        StringBuilder url = new StringBuilder(robokassaValues.getApiUrl());
-        url.append("/Merchant/Index.aspx");
-        url.append("?MerchantLogin=").append(robokassaValues.getMerchantLogin());
-        url.append("&OutSum=").append(request.getAmount());
-        url.append("&InvId=").append(invoiceId);
-        url.append("&Description=").append(encode(request.getDescription()));
-        url.append("&SignatureValue=").append(signature);
-
-        return url.toString();
-    }
-
-    private String encode(String value) {
-        return value != null ? java.net.URLEncoder.encode(value, java.nio.charset.StandardCharsets.UTF_8) : "";
-    }
 }

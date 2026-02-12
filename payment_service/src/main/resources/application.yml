@@ -11,6 +11,7 @@ spring:
   application:
     name: payment-service
 
+
   datasource:
     url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payments-db
     username: ${PAYMENT_DB_USER:postgres}
@@ -29,6 +30,7 @@ spring:
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
         hbm2ddl:
           auto: update
+    show-sql: true
 
   liquibase:
     enabled: true
