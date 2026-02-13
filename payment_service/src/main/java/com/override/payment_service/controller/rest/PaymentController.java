@@ -1,51 +1,62 @@
 package com.override.payment_service.controller.rest;
 
-import com.override.dto.PaymentRequestDTO;
-import com.override.dto.PaymentResponseDTO;
 import com.override.dto.SubscriptionDTO;
+import com.override.payment_service.service.RoboKassaService;
 import com.override.payment_service.service.SubscriptionService;
-import com.override.payment_service.service.YooKassaService;
+import com.override.payment_service.util.HttpParametr;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
+import java.util.Map;
+
+import static org.apache.kafka.common.requests.DeleteAclsResponse.log;
 
 @RestController
 @RequestMapping("/payments")
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final YooKassaService yooKassaService;
+    private final RoboKassaService robokassaService;
     private final SubscriptionService subscriptionService;
 
-    @PostMapping
-    public PaymentResponseDTO createPayment(@RequestBody PaymentRequestDTO paymentRequest) {
-        return yooKassaService.createPayment(paymentRequest);
+    /**
+     * Колбэк для успешной оплаты
+     */
+    @GetMapping("/success")
+    public String successCallback() {
+        return "redirect::/settings";
     }
 
-    @GetMapping("/{paymentId}/status")
-    public PaymentResponseDTO checkPaymentStatus(@PathVariable String paymentId) {
-        PaymentResponseDTO response = yooKassaService.checkPaymentStatus(paymentId);
-        subscriptionService.updateSubscriptionStatus(paymentId, response.getStatus());
-        return response;
+    /**
+     * Колбэк для неуспешной оплаты
+     */
+    @GetMapping("/fail")
+    public String failCallback(
+            @RequestParam("OutSum") BigDecimal amount,
+            @RequestParam("InvId") Long invoiceId) {
+
+        log.warn("Неуспешная оплата: invoiceId={}, amount={}", invoiceId, amount);
+
+        return "OK";
     }
 
-    @PostMapping("/subscription")
-    public PaymentResponseDTO createSubscriptionPayment(
-            @RequestParam Long chatId,
-            @RequestBody PaymentRequestDTO paymentRequest) {
-        return subscriptionService.createOrGetExistingPayment(chatId, paymentRequest);
+    /**
+     * Колбэк для уведомления об оплате (server-to-server)
+     */
+    @PostMapping(value = "/result")
+    public ResponseEntity<String> resultCallback(@RequestParam Map<String, String> allParams) {
+        return robokassaService.updatePaymentStatus(new HttpParametr(allParams));
+    }
+
+    @GetMapping("/pay/{chatId}")
+    public String getPaymentUrl(@PathVariable Long chatId) {
+        return robokassaService.createPayment(chatId);
     }
 
     @GetMapping("/subscription/{chatId}/status")
-    public SubscriptionDTO getSubscriptionStatus(@PathVariable Long chatId) {
-        return subscriptionService.getSubscriptionByChatId(chatId)
-                .map(sub -> SubscriptionDTO.builder()
-                        .chatId(sub.getChatId())
-                        .endDate(sub.getEndDate())
-                        .isActive(sub.isActive())
-                        .build())
-                .orElse(SubscriptionDTO.builder()
-                        .chatId(chatId)
-                        .isActive(false)
-                        .build());
+    public SubscriptionDTO getSubscriptionByChatId(@PathVariable Long chatId) {
+        return subscriptionService.getSubscriptionWithStatusByChatId(chatId);
     }
 }
