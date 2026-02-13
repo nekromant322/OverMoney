@@ -31,7 +31,7 @@ import java.util.Optional;
 @Slf4j
 @RequiredArgsConstructor
 @Profile("prod")
-public class RoboKassaService{
+public class RoboKassaService {
     protected final SubscriptionService subscriptionService;
     protected final SubscriptionRepository subscriptionRepository;
     protected final PaymentRepository paymentRepository;
@@ -93,8 +93,8 @@ public class RoboKassaService{
     @Transactional
     public ResponseEntity<String> updatePaymentStatus(HttpParametr httpParametr) {
         try {
-            RoboKassaSignature httpSignature = new RoboKassaSignature(httpParametr.getHttpSignature());
-            RoboKassaSignature signatureForStatus = new RoboKassaSignature();
+            RoboKassaSignature httpSignature = new RoboKassaSignature(httpParametr.getHttpSignature(), robokassaConfig);
+            RoboKassaSignature signatureForStatus = new RoboKassaSignature(robokassaConfig);
 
             signatureForStatus.generateSignatureForStatus(httpParametr.getInvoiceId(), httpParametr.getTestOutSum());
             httpSignature.validateSignature(signatureForStatus.getSignature());
@@ -106,7 +106,7 @@ public class RoboKassaService{
 
         Subscription subscription = subscriptionRepository.findByPayment_InvoiceId(httpParametr.getInvoiceId())
                 .orElseThrow(
-                () -> new IllegalStateException("Subscription not found for invoice: " + httpParametr.getInvoiceId())
+                        () -> new IllegalStateException("Subscription not found for invoice: " + httpParametr.getInvoiceId())
                 );
         subscriptionRepository.save(subscription
                 .setStartDate(LocalDateTime.now())
@@ -120,7 +120,7 @@ public class RoboKassaService{
         return ResponseEntity.ok("OK" + httpParametr.getInvoiceId());
     }
 
-    private PaymentRequestDTO createBasePaymentRequestDTO() {
+    protected PaymentRequestDTO createBasePaymentRequestDTO() {
         return PaymentRequestDTO.builder()
                 .currency(Currency.RUB)
                 .description("оплата подписки")
@@ -128,14 +128,14 @@ public class RoboKassaService{
                 .build();
     }
 
-    private String buildPaymentUrl(PaymentRequestDTO requestDTO, Long invoiceId) {
+    protected String buildPaymentUrl(PaymentRequestDTO requestDTO, Long invoiceId) {
         String amount = requestDTO.getAmount().toString();
-        RoboKassaSignature localSignature = new RoboKassaSignature();
+        RoboKassaSignature localSignature = new RoboKassaSignature(robokassaConfig);
         localSignature.setSignature(
                 localSignature.generateSignature(
-                robokassaConfig.getLoginShopId(),
-                amount,
-                invoiceId));
+                        robokassaConfig.getLoginShopId(),
+                        amount,
+                        invoiceId));
         return RoboKassaUtils.constructPaymentUrl(requestDTO, invoiceId, localSignature.getSignature(), false);
     }
 

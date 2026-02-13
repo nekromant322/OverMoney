@@ -3,6 +3,7 @@ package com.override.payment_service.util;
 import com.override.dto.PaymentRequestDTO;
 import com.override.payment_service.config.RobokassaConfig;
 import com.override.payment_service.exceptions.SignatureNonMatchException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.security.MessageDigest;
@@ -11,6 +12,12 @@ import java.security.NoSuchAlgorithmException;
 @Component
 public class RoboKassaUtils {
     public static RobokassaConfig robokassaConfig;
+
+    @Autowired
+    public RoboKassaUtils(RobokassaConfig robokassaConfig) {
+        this.robokassaConfig = robokassaConfig;
+    }
+
     public static void validateSignature(String httpSignature, String localSignature) {
         if (!httpSignature.equals(localSignature)) {
             throw new SignatureNonMatchException("Сигнатуры не совпадают");

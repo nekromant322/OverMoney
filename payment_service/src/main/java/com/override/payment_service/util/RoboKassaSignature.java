@@ -9,13 +9,15 @@ import java.math.BigDecimal;
 @Data
 public class RoboKassaSignature {
     private String signature;
-    private RobokassaConfig robokassaConfig;
+    private final RobokassaConfig robokassaConfig;
 
-    public RoboKassaSignature(String signature){
+    public RoboKassaSignature(String signature, RobokassaConfig robokassaConfig){
         this.signature = signature;
+        this.robokassaConfig = robokassaConfig;
     }
 
-    public RoboKassaSignature() {
+    public RoboKassaSignature(RobokassaConfig robokassaConfig) {
+        this.robokassaConfig = robokassaConfig;
     }
 
     public void validateSignature( String localSignature) {

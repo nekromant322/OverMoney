@@ -7,11 +7,6 @@ service:
   transaction:
     processing: kafka
 
-spring:
-  application:
-    name: payment-service
-
-
   datasource:
     url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payments-db
     username: ${PAYMENT_DB_USER:postgres}
@@ -88,11 +83,6 @@ authorization-header:
 mask-log-spring-boot-starter:
   maskedFields:
     - x-internal-key
-
-yookassa:
-  shop-id: ${YOOKASSA_SHOP_ID}
-  secret-key: ${YOOKASSA_SECRET_KEY}
-  url: https://api.yookassa.ru/v3
 
 subscription:
   duration:
