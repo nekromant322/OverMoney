@@ -1,6 +1,8 @@
 deployment:
   registry: overregistry.ru
   containers:
+    requestsMemory: "150M"
+    limitsMemory: "300M"
     image: nekromant322/overmoney-telegram-bot
     env:
       - name: SPRING_APPLICATION_PROFILE
