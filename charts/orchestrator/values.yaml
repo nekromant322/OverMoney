@@ -1,8 +1,8 @@
 deployment:
   registry: overregistry.ru
   containers:
-    requestsMemory: "150M"
-    limitsMemory: "300M"
+    requestsMemory: "200M"
+    limitsMemory: "400M"
     image: nekromant322/overmoney-orchestrator
     env:
       - name: SPRING_APPLICATION_PROFILE
