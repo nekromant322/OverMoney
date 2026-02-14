@@ -9,6 +9,7 @@ import java.util.Map;
 public class HttpParametr {
     private Long invoiceId;
     private BigDecimal outSum;
+
     private String httpSignature;
 
     public HttpParametr(Map<String, String> mapOfParametrs){
