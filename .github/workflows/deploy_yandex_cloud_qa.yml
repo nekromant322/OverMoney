@@ -45,7 +45,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         with:
-          version: v0.10.0
+          version: v0.31.1
 
       - name: Recognizer Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
