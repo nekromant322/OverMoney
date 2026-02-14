@@ -2,7 +2,9 @@ environment: ${ENVIRONMENT:dev}
 
 server:
   port: 8080
-
+spring:
+  profiles:
+    active: ${SPRING_APPLICATION_PROFILE:dev}
 service:
   transaction:
     processing: kafka
@@ -31,8 +33,6 @@ service:
     enabled: true
     change-log: /db/changelog/db.changelog-master.xml
 
-  profiles:
-    active: ${SPRING_APPLICATION_PROFILE:dev}
 
   kafka:
     topics:
