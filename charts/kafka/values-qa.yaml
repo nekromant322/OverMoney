@@ -56,7 +56,7 @@ deployment:
     requests:
       memory: "128M"
     limits:
-      memory: "300M"
+      memory: "512M"
 
   priorityClassName: qa-priority-class
 
