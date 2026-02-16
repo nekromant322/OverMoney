@@ -3,9 +3,6 @@ persistentVolumeClaim:
 
 deployment:
   containers:
-    name: broker
-    image: confluentinc/cp-kafka
-    imageTag: 7.5.0
     env:
       - name: KAFKA_PROCESS_ROLES
         value: "broker,controller"
