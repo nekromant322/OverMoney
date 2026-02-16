@@ -45,7 +45,7 @@ deployment:
       - name: KAFKA_INTER_BROKER_LISTENER_NAME
         value: "PLAINTEXT"
 
-      - name: CLUSTER_ID
+      - name: KAFKA_CLUSTER_ID
         value: "r4X2g8ZpQ5yLk9TnV3cWbA"
 
       - name: KAFKA_HEAP_OPTS
