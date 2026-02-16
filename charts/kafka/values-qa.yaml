@@ -32,7 +32,7 @@ deployment:
         value: "PLAINTEXT"
 
       - name: CLUSTER_ID
-        value: "b1e5e3de-481a-4abd-bf81-2c660de15f6b"
+        value: "r4X2g8ZpQ5yLk9TnV3cWbA"
 
       - name: KAFKA_HEAP_OPTS
         value: "-Xms128m -Xmx256m"
