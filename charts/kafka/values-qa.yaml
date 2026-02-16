@@ -5,6 +5,8 @@ persistentVolumeClaim:
 deployment:
   containers:
     env:
+      - name: KAFKA_ZOOKEEPER_CONNECT
+        value: ""
       - name: KAFKA_ENABLE_KRAFT
         value: "yes"
       - name: KAFKA_CFG_NODE_ID
@@ -37,6 +39,8 @@ deployment:
       memory: "1Gi"
 
   priorityClassName: qa-priority-class
+
+replicaCount: 1
 
 service:
   name: kafka-service
