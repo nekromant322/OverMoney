@@ -1,5 +1,5 @@
 persistentVolumeClaim:
-  requestsStorage: 300M
+  requestsStorage: 314572800
 
 deployment:
   containers:
