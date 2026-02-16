@@ -9,7 +9,7 @@ deployment:
     type: Recreate # Нужно из-за привязки PVC OneToOne - нет возможности законнектить одновременно две кафки, поэтому будет даунтайм
   containers:
     name: broker
-    image: bitnamilegacy/kafka:latest
+    image: bitnamilegacy/kafka
     imageTag: latest
     ports:
       - containerPort: 9092
