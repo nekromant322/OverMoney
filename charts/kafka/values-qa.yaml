@@ -1,6 +1,5 @@
 persistentVolumeClaim:
   requestsStorage: 512M
-  requestStorage: 1Gi
 
 deployment:
   containers:
@@ -13,10 +12,12 @@ deployment:
         value: ""
       - name: KAFKA_ENABLE_KRAFT
         value: "yes"
+      - name: KAFKA_KRAFT_CLUSTER_ID
+        value: "qa-kraft-cluster-2026"
       - name: KAFKA_ADVERTISED_LISTENERS
         value: "PLAINTEXT://kafka-service.qa.svc:9092"
       - name: KAFKA_CFG_NODE_ID
-        value: 1
+        value: "1"
       - name: KAFKA_CFG_PROCESS_ROLES
         value: "controller,broker"
       - name: KAFKA_CFG_CONTROLLER_QUORUM_VOTERS
@@ -39,6 +40,8 @@ deployment:
         value: "1"
       - name: KAFKA_HEAP_OPTS
         value: "-Xms128m -Xmx256m"
+      - name: ALLOW_PLAINTEXT_LISTENER
+        value: "yes"
 
   resources:
     requests:
