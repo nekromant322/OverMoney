@@ -10,7 +10,9 @@ deployment:
   containers:
     name: broker
     image: bitnami/kafka
-    imageTag: 3.4.0
+    imageTag: latest
+    ports:
+      - containerPort: 9092
     pullPolicy: IfNotPresent
     containerPort: 9092
     requestsMemory: "128M"
