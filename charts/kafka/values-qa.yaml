@@ -54,7 +54,7 @@ deployment:
 
   resources:
     requests:
-      memory: "128M"
+      memory: "326M"
     limits:
       memory: "512M"
 
