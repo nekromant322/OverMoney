@@ -3,6 +3,8 @@ persistentVolumeClaim:
 
 deployment:
   containers:
+    image: bitnamilegacy/kafka
+    imageTag: latest
     env:
       - name: KAFKA_PROCESS_ROLES
         value: "broker,controller"
