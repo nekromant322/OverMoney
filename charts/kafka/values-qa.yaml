@@ -32,7 +32,8 @@ deployment:
         value: "PLAINTEXT"
 
       - name: CLUSTER_ID
-        value: "qa-kraft-cluster-2026"
+        value: "b1e5e3de-481a-4abd-bf81-2c660de15f6b"
+
       - name: KAFKA_HEAP_OPTS
         value: "-Xms128m -Xmx256m"
 
