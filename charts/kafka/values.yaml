@@ -10,7 +10,7 @@ deployment:
   containers:
     name: broker
     image: confluentinc/cp-kafka
-    imageTag: 7.0.1
+    imageTag: 7.5.0
     pullPolicy: IfNotPresent
     containerPort: 9092
     requestsMemory: "2Gi"
