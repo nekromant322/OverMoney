@@ -13,8 +13,8 @@ deployment:
     imageTag: 7.5.0
     pullPolicy: IfNotPresent
     containerPort: 9092
-    requestsMemory: "2Gi"
-    limitsMemory: "4Gi"
+    requestsMemory: "128M"
+    limitsMemory: "300M"
     env:
       - name: KAFKA_BROKER_ID
         value: "1"

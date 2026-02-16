@@ -1,5 +1,5 @@
 persistentVolumeClaim:
-  requestsStorage: 1Gi
+  requestsStorage: 300M
 
 deployment:
   containers:
@@ -54,9 +54,9 @@ deployment:
 
   resources:
     requests:
-      memory: "512M"
+      memory: "128M"
     limits:
-      memory: "1Gi"
+      memory: "300M"
 
   priorityClassName: qa-priority-class
 
