@@ -1,12 +1,12 @@
 environment: vault
 tls:
   - hosts:
-      - vault.overmoneytest.online
+      - overmoneytest.online
     secretName: vault-tls-secret
 rules:
-  - host: vault.overmoneytest.online
+  - host: overmoneytest.online
     paths:
-      - path: /
+      - path: /vault
         pathType: Prefix
         backend:
           service:
@@ -15,3 +15,4 @@ rules:
               number: 8200
 annotations:
   cert-manager.io/cluster-issuer: letsencrypt-staging
+  nginx.ingress.kubernetes.io/rewrite-target: /

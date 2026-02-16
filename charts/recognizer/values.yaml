@@ -1,5 +1,7 @@
 deployment:
   containers:
+    requestsMemory: "100M"
+    limitsMemory: "200M"
     image: overregistry.ru/overmoney-recognizer
     env:
       - name: SPRING_APPLICATION_PROFILE
