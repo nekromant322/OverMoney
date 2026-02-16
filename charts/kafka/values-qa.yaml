@@ -52,12 +52,6 @@ deployment:
       - name: KAFKA_HEAP_OPTS
         value: "-Xms128m -Xmx256m"
 
-  resources:
-    requests:
-      memory: "326M"
-    limits:
-      memory: "512M"
-
   priorityClassName: qa-priority-class
 
 replicaCount: 1
