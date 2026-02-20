@@ -15,8 +15,8 @@ deployment:
       - containerPort: 9092
     pullPolicy: IfNotPresent
     containerPort: 9092
-    requestsMemory: "128M"
-    limitsMemory: "512M"
+    requestsMemory: "512M"
+    limitsMemory: "650M"
     env:
       - name: KAFKA_PROCESS_ROLES
         value: "broker,controller"
