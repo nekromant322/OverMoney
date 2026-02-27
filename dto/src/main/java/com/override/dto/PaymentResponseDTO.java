@@ -16,4 +16,5 @@ public class PaymentResponseDTO {
     private String paymentUrl;
     private PaymentStatus status;
     private String paymentId;
+    private String message;
 }
