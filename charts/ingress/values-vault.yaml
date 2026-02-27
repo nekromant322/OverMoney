@@ -1,0 +1,17 @@
+environment: vault
+tls:
+  - hosts:
+      - overmoneytest.online
+    secretName: vault-tls-secret
+rules:
+  - host: overmoneytest.online
+    paths:
+      - path: /vault
+        pathType: Prefix
+        backend:
+          service:
+            name: 'hashicorp-vault'
+            port:
+              number: 8200
+annotations:
+  cert-manager.io/cluster-issuer: letsencrypt-staging

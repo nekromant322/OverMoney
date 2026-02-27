@@ -1,0 +1,9 @@
+apiVersion: 1
+contactPoints:
+  - name: Telegram
+    receivers:
+      - type: telegram
+        settings:
+          bottoken: "$__env{telegram-bot-token-grafana}"
+          chatid: "-4795149880"
+          message: '{{ template "telegram.message" . }}'

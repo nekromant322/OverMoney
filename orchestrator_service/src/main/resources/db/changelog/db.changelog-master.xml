@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
+
+    <include file="v1.0.0/db.changelog-createTables.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/001-db.changelog-setSuggestedCategoryIdInTransaction.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/002-db.changelog-setTelegramUserIdInTransaction.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/003-db.changelog-deleteRolesInUsersTableAndDropRoleTable.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/004-db.changelog-dropNotNullConstraintUsernameColumnUsersTable.xml"
+             relativeToChangelogFile="true"/>
+    <include file="v1.0.0/005-db.changelog-addUniqueConstraintForCategories.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/006-db.changelog-updateUserTelegramPhotoUrlType.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/007-db.changelog-createBugReportTable.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/008-db.changelog-createTinkoffInfoTable.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/009-db.changelog-addCheckConstraintForTransactions.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/010-db.changelog-updateAmountType.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/011-db.changelog-add_investAmount_column.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/012-db.changelog-add_lastUsed_column.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/013-db.changelog-add-table-for-scheduler.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/014-db.changelog-set_last_used_column.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/015-db.changelog-add_usage_count_column.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/016-db.changelog-usage_count_column_new_parameter.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/017-db.changelog-add-accuracy_column.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/018-db.changelog-add-accuracy_default_value.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/019-db.changelog-create-suggestions-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/020-db.changelog-create-extension-pg-trgm.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/021-db.changelog-create-profile-photo-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/022-db.changelog-deleteColumnPhotoUrlFromUsers.xml" relativeToChangelogFile="true"/>
+    <include file="v1.0.0/023-db.changelog-add-user-colum.xml" relativeToChangelogFile="true"/>
+</databaseChangeLog>

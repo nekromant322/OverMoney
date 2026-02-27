@@ -1,0 +1,3 @@
+serviceAccountName: admin-user
+serviceAccountNamespace: kube-system
+roleRefName: admin

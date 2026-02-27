@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: root-vault
+  namespace: argo-cd
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: vault
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: qa # TODO change to HEAD
+    path: argocd/overmoney-cluster/vault
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: -1
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 23h
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true

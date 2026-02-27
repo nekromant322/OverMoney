@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+
+
+integration:
+  internal:
+    host:
+      orchestrator: http://localhost:8081
+      #      локальный запуск этого сервиса не удобен, в коде есть мок, который отвечает пиво двести
+      wit-ai-proxy: http://vnimanie-zalupa

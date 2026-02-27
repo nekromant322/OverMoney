@@ -1,0 +1,21 @@
+server:
+  port: 8081
+
+integration:
+  internal:
+    host:
+      orchestrator: http://localhost:8081
+      telegram-bot: http://localhost:8082
+      recognizer: http://localhost:8080
+      payment: http://localhost:8084
+
+spring:
+  kafka:
+    bootstrap-servers: http://localhost:9092
+
+app:
+  cors:
+    allowed-origins:
+      - "https://ez4x60-109-68-119-186.ru.tuna.am"
+      - "http://localhost:8080"
+      - "http://localhost:8081"

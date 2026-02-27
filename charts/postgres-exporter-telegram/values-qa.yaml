@@ -1,0 +1,24 @@
+deployment:
+  containers:
+    env:
+      - name: DATA_SOURCE_URI
+        value: "194.87.237.197:5435/telegram-bot-db?sslmode=disable"
+    envFrom:
+      - name: QA_DATA_SOURCE_USER
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-orchestrator-db-user
+      - name: QA_DATA_SOURCE_PASS
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-orchestrator-db-password
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: qa-priority-class
+
+secretProviderClass:
+  name: vault-qa

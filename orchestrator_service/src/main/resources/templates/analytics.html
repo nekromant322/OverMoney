@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Аналитика</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="/css/analytics.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<
+<header id="header">
+    <nav class="links" style="--items: 6;">
+        <a id="telegram-bot-link" target="_blank">
+            <i class="fa fa-telegram"></i>
+        </a>
+        <a href="/overmoney">Обзор</a>
+        <a href="/history">История</a>
+        <a href="/analytics">Аналитика</a>
+        <a href="/micromanagement">Микроменеджмент</a>
+        <a href="/settings"><i class="fa fa-cog"></i></a>
+        <span class="line"></span>
+    </nav>
+</header>
+<div class="content">
+    <div class="info">
+        <input id="info__container_1" class="info__switch" type="checkbox">
+        <label for="info__container_1" class="info__headline">Расходы по категориям</label>
+        <div class="info__container">
+            <canvas id="expenseAnalytics"></canvas>
+            <div>
+                <table id="table_expense">
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="info">
+        <input id="info__container_2" class="info__switch" type="checkbox">
+        <label for="info__container_2" class="info__headline">Доходы по категориям</label>
+        <div class="info__container">
+            <canvas id="incomeAnalytics"></canvas>
+            <div>
+                <table id="table_income">
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="info">
+        <input id="info__body_3" class="info__switch" type="checkbox">
+        <label for="info__body_3" class="info__headline">Расходы доходы по месяцам</label>
+        <div class="info__body">
+            <select id="yearSelect"></select>
+            <canvas id="totalExpenseAnalitics"></canvas>
+        </div>
+    </div>
+
+    <div class="info">
+        <input id="info__body_4" class="info__switch" type="checkbox">
+        <label for="info__body_4" class="info__headline">Доходы за год по категориям</label>
+        <div class="info__body">
+            <select id="yearSelectForMonthlyAnalytics"></select>
+            <canvas id="monthlyYearIncomeAnalytics"></canvas>
+        </div>
+    </div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<script src="/scripts/analytics_scripts.js"></script>
+<script src="/scripts/telegram_bot_href_scripts.js" type="text/javascript"></script>
+</html>

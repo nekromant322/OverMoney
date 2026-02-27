@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="26.07.2024-set-last-used-column" author="p1peCode">
+        <update tableName="keywords">
+            <column name="last_used" valueComputed="CURRENT_TIMESTAMP"/>
+            <where>last_used IS NULL</where>
+        </update>
+    </changeSet>
+</databaseChangeLog>

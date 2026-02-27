@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: payment
+  namespace: argo-cd
+  annotations:
+    argocd-image-updater.argoproj.io/image-list: payment=overregistry.ru/overmoney-payment:latest
+    argocd-image-updater.argoproj.io/payment.update-strategy: digest
+    argocd-image-updater.argoproj.io/payment.force-update: 'true'
+    argocd-image-updater.argoproj.io/payment.helm.image-name: deployment.containers.image
+    argocd-image-updater.argoproj.io/payment.helm.image-tag: deployment.containers.imageTag
+spec:
+  project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: prod
+  source:
+    repoURL: https://github.com/nekromant322/OverMoney.git
+    targetRevision: HEAD
+    path: charts/payment
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    retry:
+      limit: -1
+      backoff:
+        duration: 1m
+        factor: 2
+        maxDuration: 23h
+    syncOptions:
+      - CreateNamespace=true
+      - ApplyOutOfSyncOnly=true

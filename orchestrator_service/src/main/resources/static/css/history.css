@@ -1,0 +1,29 @@
+.text-modal {
+    display: flex;
+    flex-direction: row;
+    white-space: nowrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-dialog {
+    width: auto;
+}
+
+.custom-button {
+    background-color: white;
+    color: gray;
+    border: none;
+    outline: none;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.custom-button:hover {
+    background-color: white;
+    color: darkgrey;
+}
+
+.custom-button:focus {
+    outline: none;
+}

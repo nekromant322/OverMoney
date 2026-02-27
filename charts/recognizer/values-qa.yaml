@@ -1,0 +1,29 @@
+deployment:
+  containers:
+    image: overregistry.ru/overmoney-recognizer-qa
+    env:
+      - name: SPRING_APPLICATION_PROFILE
+        value: "prod"
+      - name: JAVA_TOOL_OPTIONS
+        value: "-XX:MaxRAMPercentage=70.0 -XX:MinRAMPercentage=50.0"
+      - name: ENVIRONMENT
+        value: "qa"
+    envFrom:
+      - name: INTERNAL_KEY_HEADER
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-internal-key-header
+      - name: DEEPSEEK_AUTH_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: qa
+            key: qa-deepseek-auth-token
+    volumes:
+      - name: secrets-store-inline
+        volumeMountPath: "/mnt/secrets-store"
+        readOnly: true
+  priorityClassName: qa-priority-class
+
+secretProviderClass:
+  name: vault-qa

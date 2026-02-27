@@ -1,0 +1,11 @@
+environment: default
+rules:
+  - host: overmoney.tech
+    paths:
+      - path: /grafana
+        pathType: Prefix
+        backend:
+          service:
+            name: grafana-service
+            port:
+              number: 3000
