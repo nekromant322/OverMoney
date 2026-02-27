@@ -137,7 +137,6 @@
         hibernate:
           dialect: org.hibernate.dialect.PostgreSQLDialect
           current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
-          show_sql: true
 
     application:
       name: orchestrator-service
