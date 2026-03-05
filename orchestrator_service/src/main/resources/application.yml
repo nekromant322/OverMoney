@@ -4,6 +4,7 @@
       encoding:
         charset: UTF-8
         force-response: true
+    shutdown: graceful
   app:
     cors:
       allowed-origins:
@@ -84,6 +85,8 @@
     token:
       lifetime-in-hours: 24
   spring:
+    lifecycle:
+      timeout-per-shutdown-phase: 30s
     autoconfigure:
       exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
     servlet:
@@ -101,6 +104,12 @@
       producer:
         key-serializer: org.apache.kafka.common.serialization.StringSerializer
         value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+        properties:
+          session.timeout.ms: 10000
+          heartbeat.interval.ms: 3000
+          request.timeout.ms: 15000
+          max.poll.interval.ms: 300000
+
       consumer:
         key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
         value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
