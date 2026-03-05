@@ -78,6 +78,10 @@ spec:
               {{- if .readOnly }}
               readOnly: {{ .readOnly }}
               {{- end }}
+          lifecycle:
+            preStop:
+              exec:
+                command: [ "sh", "-c", "sleep 15" ]
           {{- end }}
           {{- end }}
       priorityClassName: {{ .Values.deployment.priorityClassName }}
