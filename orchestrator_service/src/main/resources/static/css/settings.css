@@ -242,3 +242,250 @@
 .get-backup-button {
     margin-bottom: 10px;
 }
+/* ===== ВИДЖЕТ СТАТУСА ===== */
+
+.status-widget {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    z-index: 1000;
+    background: #fefefe;
+    border-radius: 8px;
+    padding: 15px;
+    width: 280px;
+    box-shadow: 0 0 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid #888;
+    font-family: 'Lato', sans-serif;
+}
+
+.status-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.status-title {
+    font-size: 1.2em;
+    font-weight: 400;
+    color: #123;
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+}
+
+.status-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Строка с чекбоксом и кнопкой */
+.status-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Кастомный чекбокс */
+.checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    flex: 1;
+    user-select: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.checkbox-wrapper:hover {
+    background: #f5f5f5;
+}
+
+#statusCheckbox {
+    display: none;
+}
+
+.checkbox-custom {
+    position: relative;
+    width: 40px;
+    height: 20px;
+    background: #e0e0e0;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    border: 1px solid #888;
+}
+
+.checkbox-custom:after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+#statusCheckbox:checked + .checkbox-custom {
+    background: #28a745;
+    border-color: #28a745;
+}
+
+#statusCheckbox:checked + .checkbox-custom:after {
+    transform: translateX(20px);
+}
+
+#statusCheckbox:disabled + .checkbox-custom {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.checkbox-text {
+    font-size: 1em;
+    font-weight: 300;
+    color: #333;
+    transition: color 0.3s ease;
+    font-family: 'Lato', sans-serif;
+}
+
+#statusCheckbox:checked ~ .checkbox-text {
+    color: #28a745;
+    font-weight: 400;
+}
+
+/* Кнопка обновления */
+.refresh-btn {
+    width: 35px;
+    height: 35px;
+    border-radius: 5px;
+    border: 1px solid #888;
+    background: #f8f9fa;
+    color: #555;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    padding: 0;
+    flex-shrink: 0;
+    font-family: 'Lato', sans-serif;
+}
+
+.refresh-btn:hover {
+    background: #007bff;
+    color: white;
+    border-color: #007bff;
+}
+
+.refresh-btn:active {
+    transform: scale(0.95);
+}
+
+.refresh-btn.loading {
+    animation: spin 1s linear infinite;
+    pointer-events: none;
+}
+
+.refresh-icon {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+}
+
+/* Сообщение о статусе */
+.status-message {
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 5px;
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+    border-left: 4px solid #007bff;
+    border-right: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    transition: all 0.3s ease;
+    display: none;
+    font-family: 'Lato', sans-serif;
+    font-weight: 300;
+}
+
+.status-message.success {
+    border-left-color: #28a745;
+    color: #155724;
+    background: #d4edda;
+    border-color: #c3e6cb;
+    display: block;
+}
+
+.status-message.error {
+    border-left-color: #dc3545;
+    color: #721c24;
+    background: #f8d7da;
+    border-color: #f5c6cb;
+    display: block;
+}
+
+.status-message.loading {
+    border-left-color: #007bff;
+    color: #004085;
+    background: #cce5ff;
+    border-color: #b8daff;
+    display: block;
+}
+
+/* Время последнего обновления */
+.status-time {
+    font-size: 0.8em;
+    color: #777;
+    text-align: right;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #e0e0e0;
+    font-family: 'Inconsolata', monospace;
+}
+
+/* Анимация вращения */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .status-widget {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: 100%;
+        max-width: 400px;
+        margin: 20px auto;
+        box-shadow: 0 0 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .content {
+        margin-top: 90px !important;
+    }
+}
+
+/* Фикс для основного контента */
+.content {
+    margin-top: 90px;
+    padding: 20px;
+    max-width: calc(100% - 320px);
+}
+
+@media (max-width: 1024px) {
+    .content {
+        max-width: 100%;
+        margin-right: 0;
+    }
+}

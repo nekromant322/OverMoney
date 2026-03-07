@@ -7,10 +7,6 @@ service:
   transaction:
     processing: kafka
 
-spring:
-  application:
-    name: payment-service
-
   datasource:
     url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payments-db
     username: ${PAYMENT_DB_USER:postgres}
@@ -27,6 +23,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        hbm2ddl:
+          auto: update
+    show-sql: true
 
   liquibase:
     enabled: true
@@ -85,13 +84,16 @@ mask-log-spring-boot-starter:
   maskedFields:
     - x-internal-key
 
-yookassa:
-  shop-id: ${YOOKASSA_SHOP_ID}
-  secret-key: ${YOOKASSA_SECRET_KEY}
-  url: https://api.yookassa.ru/v3
-
 subscription:
   duration:
     months: 1
   payment:
     timeout-minutes: 10
+robokassa:
+  login-shop-id: ${ROBOKASSA_LOGIN_SHOP_ID}
+  password-one: ${ROBOKASSA_PASSWORD_ONE}
+  password-two: ${ROBOKASSA_PASSWORD_TWO}
+  test-password-one: ${ROBOKASSA_TEST_PASSWORD_ONE}
+  test-password-two: ${ROBOKASSA_TEST_PASSWORD_TWO}
+  subscription-amount: 1
+  base-url: https://auth.robokassa.ru
