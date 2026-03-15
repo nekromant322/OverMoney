@@ -8,10 +8,12 @@ WORKDIR /workspace
 COPY . .
 
 RUN --mount=type=cache,target=/root/.m2 \
-  mvn -B -pl orchestrator_service -am clean package -DskipTests
+    mvn -B clean package -DskipTests -pl :orchestrator_service -am
 
 
 FROM amazoncorretto:11-alpine
+
+WORKDIR /app
 
 EXPOSE 8081
 COPY --from=build /workspace/orchestrator/target/*.jar app.jar
