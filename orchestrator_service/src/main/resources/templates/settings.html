@@ -31,15 +31,28 @@
 </header>
 <div class="content">
     <div class="info">
+        <button id="subscrButton" class="get-backup-button">
+            Купить подписку
+            (300 рублей)
+            Вы получите доступ к вкладке "Долги"
+        </button>
+    </div>
+    <div class="info">
         <button id="downloadButton" class="get-backup-button">Скачать бекап данных json</button>
     </div>
     <div class="info">
         <button id="downloadExelButton" class="get-backup-button">Экспорт истории транзакций в Excel</button>
     </div>
-</div>
-<div class="info">
-    <h5></h5>
-    <button id="bugReportButton" class="btn-danger">Отправить багрепорт</button>
+    <div class="info">
+        <h5></h5>
+        <button id="bugReportButton" class="btn-danger">Отправить багрепорт</button>
+    </div>
+    <div class="content">
+        <div class="info">
+            <p style="color:red">Восстановить данные из файла</p>
+            <button id="readButton" class="btn-danger" onclick="saveFile()">Восстановить</button>
+        </div>
+    </div>
 </div>
 
 <div class="modal" id="bugReportModal">
@@ -59,13 +72,6 @@
                 <button id="sendReport" type="submit" class="btn btn-primary">Отправить</button>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="content">
-    <div class="info">
-        <p style="color:red">Восстановить данные из файла</p>
-        <button id="readButton" class="btn-danger" onclick="saveFile()">Восстановить</button>
     </div>
 </div>
 

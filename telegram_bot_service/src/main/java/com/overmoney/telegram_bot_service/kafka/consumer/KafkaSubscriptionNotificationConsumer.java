@@ -3,7 +3,6 @@ package com.overmoney.telegram_bot_service.kafka.consumer;
 import com.overmoney.telegram_bot_service.constants.KafkaConstants;
 import com.overmoney.telegram_bot_service.service.TelegramNotificationService;
 import com.override.dto.PaymentResponseDTO;
-import com.override.dto.constants.PaymentStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,7 @@ public class KafkaSubscriptionNotificationConsumer {
             groupId = KafkaConstants.TELEGRAM_BOT_GROUP
     )
     public void listenForSubscriptionNotifications(PaymentResponseDTO response) {
-        if (response.getStatus() == PaymentStatus.SUCCESS) {
+        if (response.getMessage().contains("OK")) {
             log.info("Получено уведомление об успешной оплате подписки для chatId: {}", response.getChatId());
             telegramNotificationService.sendSubscriptionSuccessNotification(response.getChatId());
         }
