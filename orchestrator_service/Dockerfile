@@ -1,39 +1,22 @@
-# syntax=docker/dockerfile:1.4
+# Stage 1: Build
 FROM maven:3.6.3-jdk-11-slim AS build
 
 WORKDIR /workspace
 
-WORKDIR /workspace/actuator_git_info_starter
-COPY /actuator_git_info_starter/pom.xml /workspace/actuator_git_info_starter
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B dependency:go-offline
+COPY pom.xml .
+COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
+COPY dto/pom.xml dto/
+COPY mask_log_starter/pom.xml mask_log_starter/
+COPY orchestrator_service/pom.xml orchestrator_service/
 
-COPY /actuator_git_info_starter/src /workspace/actuator_git_info_starter/src
+RUN mvn -B dependency:go-offline
 
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B clean install -DskipTests -Dcheckstyle.skip
+COPY actuator_git_info_starter/src actuator_git_info_starter/src
+COPY dto/src dto/src
+COPY mask_log_starter/src mask_log_starter/src
+COPY orchestrator_service/src orchestrator_service/src
 
-WORKDIR /workspace/dto
-COPY /dto/pom.xml /workspace/dto
-COPY /dto/src /workspace/dto/src
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B clean install -DskipTests -Dcheckstyle.skip
-
-WORKDIR /workspace/mask_log_starter
-COPY /mask_log_starter/pom.xml /workspace/mask_log_starter
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B dependency:go-offline
-COPY /mask_log_starter/src /workspace/mask_log_starter/src
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B clean install -DskipTests -Dcheckstyle.skip
-
-WORKDIR /workspace/orchestrator
-COPY /orchestrator_service/pom.xml /workspace/orchestrator
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B dependency:go-offline
-COPY /orchestrator_service/src /workspace/orchestrator/src
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B clean install -DskipTests -Dcheckstyle.skip
+RUN mvn -B clean package -DskipTests -Dcheckstyle.skip
 
 # Stage 2: Runtime
 FROM amazoncorretto:11-alpine
