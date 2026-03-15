@@ -2,13 +2,11 @@
 
 FROM maven:3.6.3-jdk-11-slim AS build
 
-# Сначала копируем .git вручную
 WORKDIR /workspace
-
 COPY . .
 
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B clean package -DskipTests -pl :orchestrator_service -am
+    mvn -B clean package -DskipTests
 
 
 FROM amazoncorretto:11-alpine
