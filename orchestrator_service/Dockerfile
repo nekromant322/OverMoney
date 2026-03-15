@@ -15,6 +15,8 @@ COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/pom.xml
 RUN --mount=type=cache,target=/root/.m2/repository \
     mvn -B -e dependency:go-offline
 
+COPY . .
+
 RUN --mount=type=cache,target=/root/.m2/repository \
     mvn -B -e package -DskipTests
 
