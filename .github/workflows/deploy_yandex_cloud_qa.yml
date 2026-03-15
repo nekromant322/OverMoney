@@ -105,3 +105,6 @@ jobs:
           file: ./payment_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-payment-qa
+
+      - name: Show image size
+        run: docker images
