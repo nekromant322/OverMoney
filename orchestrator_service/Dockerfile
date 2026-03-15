@@ -2,6 +2,8 @@ FROM maven:3.9.9-eclipse-temurin-11 AS build
 
 WORKDIR /workspace
 
+COPY pom.xml .
+
 COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
 COPY dto/pom.xml dto/
 COPY mask_log_starter/pom.xml mask_log_starter/
@@ -9,8 +11,7 @@ COPY orchestrator_service/pom.xml orchestrator_service/
 
 RUN --mount=type=cache,target=/root/.m2 \
     mvn -B -q -e -DskipTests -Dcheckstyle.skip \
-    -pl actuator_git_info_starter,dto,mask_log_starter,orchestrator_service \
-    -am dependency:go-offline
+    -pl orchestrator_service -am dependency:go-offline
 
 COPY actuator_git_info_starter/src actuator_git_info_starter/src
 COPY dto/src dto/src
