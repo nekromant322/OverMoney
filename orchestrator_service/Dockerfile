@@ -9,9 +9,6 @@ COPY mask_log_starter/pom.xml mask_log_starter/
 COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
 COPY orchestrator_service/pom.xml orchestrator_service/
 
-# 2. скачиваем зависимости
-RUN mvn -B -q -pl orchestrator_service -am dependency:go-offline
-
 # 3. копируем исходники
 COPY dto/src dto/src
 COPY mask_log_starter/src mask_log_starter/src
