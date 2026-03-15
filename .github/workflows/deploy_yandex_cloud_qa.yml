@@ -22,13 +22,10 @@ jobs:
       payment: ${{ steps.filter.outputs.payment }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          base: ${{ github.event.before }}
+          base: ${{ github.ref }}
           filters: |
             recognizer: ['recognizer_service/**']
             orchestrator: ['orchestrator_service/**']
@@ -38,13 +35,12 @@ jobs:
             payment: ['payment_service/**']
 
   build-and-push-images:
+    name: Build & Push images to DockerHub
     runs-on: ubuntu-latest
     needs: [ detect-changes ]
-
     steps:
       - uses: actions/checkout@v4
-
-      - name: Login to private registry
+      - name: Login to private Docker registry (overregistry.ru)
         uses: docker/login-action@v3
         with:
           registry: overregistry.ru
@@ -54,69 +50,74 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # ================= ORCHESTRATOR =================
-      - name: Orchestrator Build and Push
-        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./orchestrator_service/Dockerfile
-          push: true
-          pull: true
-          tags: overregistry.ru/overmoney-orchestrator-qa
-          cache-from: type=gha,scope=orchestrator
-          cache-to: type=gha,mode=max,scope=orchestrator
-
-      # ================= RECOGNIZER =================
-      - name: Recognizer Build and Push
+      - name: Recognizer Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./recognizer_service/Dockerfile
           push: true
-          pull: true
           tags: overregistry.ru/overmoney-recognizer-qa
-          cache-from: type=gha,scope=recognizer
-          cache-to: type=gha,mode=max,scope=recognizer
 
-      # ================= TELEGRAM BOT =================
-      - name: Telegram Bot Build and Push
+      - name: Orchestrator Build and Push to overregistry.ru
+        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./orchestrator_service/Dockerfile
+          push: true
+          tags: overregistry.ru/overmoney-orchestrator-qa
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+
+      - name: Telegram Bot Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./telegram_bot_service/Dockerfile
           push: true
-          pull: true
           tags: overregistry.ru/overmoney-telegram-bot-qa
-          cache-from: type=gha,scope=telegram-bot
-          cache-to: type=gha,mode=max,scope=telegram-bot
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      # ================= PAYMENT =================
-      - name: Payment Build and Push
-        if: ${{ needs.detect-changes.outputs.payment == 'true' }}
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./payment_service/Dockerfile
-          push: true
-          pull: true
-          tags: overregistry.ru/overmoney-payment-qa
-          cache-from: type=gha,scope=payment
-          cache-to: type=gha,mode=max,scope=payment
 
-      # ================= FRONTEND LANDING =================
-      - name: Frontend Landing Build and Push
+      #      - name: Frontend Build and Push to overregistry.ru
+      #        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
+      #        uses: docker/build-push-action@v5
+      #        with:
+      #          context: .
+      #          file: ./frontend/Dockerfile
+      #          push: true
+      #          tags: overregistry.ru/overmoney-frontend-qa
+      #    cache-from: type=gha
+      #    cache-to: type=gha,mode=max
+
+      - name: Frontend Landing Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.frontend-landing == 'true' }}
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./frontend/landing/Dockerfile
           push: true
-          pull: true
           tags: overregistry.ru/overmoney-frontend-landing-qa
           build-args: |
             BUILD_CMD=build-staging
-          cache-from: type=gha,scope=frontend-landing
-          cache-to: type=gha,mode=max,scope=frontend-landing
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Payment Build and Push to overregistry.ru
+        if: ${{ needs.detect-changes.outputs.payment == 'true' }}
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./payment_service/Dockerfile
+          push: true
+          tags: overregistry.ru/overmoney-payment-qa
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Show image size
+        run: docker images

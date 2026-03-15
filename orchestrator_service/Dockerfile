@@ -14,14 +14,15 @@ COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
 COPY payment_service/pom.xml payment_service/
 
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B -pl orchestrator_service -am \
-    dependency:go-offline
+    mvn -B -pl orchestrator_service -am dependency:go-offline
 
-COPY . .
+COPY orchestrator_service/src /workspace/orchestrator_service/src
+COPY dto/src /workspace/dto/src
+COPY mask_log_starter/src /workspace/mask_log_starter/src
+COPY actuator_git_info_starter/src /workspace/actuator_git_info_starter/src
 
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B -pl orchestrator_service -am \
-    -DskipTests package
+    mvn -B -pl orchestrator_service -am -DskipTests package
 
 FROM amazoncorretto:11-alpine
 
