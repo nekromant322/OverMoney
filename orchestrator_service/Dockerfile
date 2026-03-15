@@ -1,24 +1,14 @@
-# Stage 1: Build
+# syntax=docker/dockerfile:1.6
 FROM maven:3.6.3-jdk-11-slim AS build
 
 # Сначала копируем .git вручную
 WORKDIR /workspace
 
-COPY pom.xml .
-COPY dto/pom.xml dto/
-COPY orchestrator_service/pom.xml orchestrator_service/
-COPY mask_log_starter/pom.xml mask_log_starter/
-COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
-
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B dependency:go-offline
-
 COPY . .
 
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B clean package -DskipTests -Dcheckstyle.skip -pl orchestrator_service -am
+  mvn -B -pl orchestrator_service -am clean package -DskipTests \
 
-# Stage 2: Runtime
 FROM amazoncorretto:11-alpine
 
 EXPOSE 8081
