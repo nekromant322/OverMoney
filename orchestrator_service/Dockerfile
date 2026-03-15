@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1.6
+# syntax=docker/dockerfile:1.7
 
 FROM maven:3.6.3-jdk-11-slim AS build
 
@@ -8,7 +8,7 @@ COPY . .
 
 RUN --mount=type=cache,target=/root/.m2 \
     mvn -B -pl orchestrator_service -am \
-    clean package -DskipTests -Dcheckstyle.skip
+    package -DskipTests -Dcheckstyle.skip
 
 FROM amazoncorretto:11-alpine
 
