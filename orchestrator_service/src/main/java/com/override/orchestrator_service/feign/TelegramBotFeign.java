@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @FeignClient(value = "telegram-bot", url = "${integration.internal.host.telegram-bot}")
 public interface TelegramBotFeign {
-    //trigger
+    //triggerr
     @PostMapping("/announce")
     void sendAnnounce(AnnounceDTO announceDTO);
 
