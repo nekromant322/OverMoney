@@ -13,5 +13,5 @@ RUN --mount=type=cache,target=/root/.m2 \
 FROM amazoncorretto:11-alpine
 
 EXPOSE 8081
-COPY --from=build /workspace/orchestrator/target/*.jar app.jar
+COPY --from=build /workspace/orchestrator_service/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
