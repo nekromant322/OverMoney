@@ -9,9 +9,8 @@ COPY . .
 RUN --mount=type=cache,target=/root/.m2 \
     mvn -B -pl orchestrator_service -am \
     clean package -DskipTests -Dcheckstyle.skip
-FROM amazoncorretto:11-alpine
 
-WORKDIR /app
+FROM amazoncorretto:11-alpine
 
 EXPOSE 8081
 COPY --from=build /workspace/orchestrator/target/*.jar app.jar
