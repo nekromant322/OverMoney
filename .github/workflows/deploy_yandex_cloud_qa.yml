@@ -55,6 +55,13 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Cache Maven
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: maven-
+
       - name: Orchestrator Build and Push
         if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
         uses: docker/build-push-action@v5

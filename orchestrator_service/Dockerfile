@@ -1,26 +1,30 @@
 FROM maven:3.6.3-jdk-11-slim AS build
-WORKDIR /build
 
-COPY pom.xml .
-COPY dto/pom.xml dto/
-COPY mask_log_starter/pom.xml mask_log_starter/
-COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
-COPY orchestrator_service/pom.xml orchestrator_service/
+COPY .git /workspace/.git
+WORKDIR /workspace
 
-RUN mvn -B -pl orchestrator_service -am dependency:go-offline
+WORKDIR /workspace/actuator_git_info_starter
+COPY /actuator_git_info_starter/pom.xml /workspace/actuator_git_info_starter
+COPY /actuator_git_info_starter/src /workspace/actuator_git_info_starter/src
+RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
 
-COPY dto/src dto/src
-COPY mask_log_starter/src mask_log_starter/src
-COPY actuator_git_info_starter/src actuator_git_info_starter/src
-COPY orchestrator_service/src orchestrator_service/src
+WORKDIR /workspace/dto
+COPY /dto/pom.xml /workspace/dto
+COPY /dto/src /workspace/dto/src
+RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
 
-RUN mvn -B -pl orchestrator_service -am clean package -DskipTests -Dcheckstyle.skip
+WORKDIR /workspace/mask_log_starter
+COPY /mask_log_starter/pom.xml /workspace/mask_log_starter
+COPY /mask_log_starter/src /workspace/mask_log_starter/src
+RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
 
+WORKDIR /workspace/orchestrator
+COPY /orchestrator_service/pom.xml /workspace/orchestrator
+COPY /orchestrator_service/src /workspace/orchestrator/src
+RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
 FROM amazoncorretto:11-alpine
-WORKDIR /app
-
-COPY --from=build /build/orchestrator_service/target/*.jar app.jar
 
 EXPOSE 8081
+COPY --from=build /workspace/orchestrator/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]
