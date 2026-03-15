@@ -1,8 +1,6 @@
 # syntax=docker/dockerfile:1.4
 FROM maven:3.6.3-jdk-11-slim AS build
 
-# Сначала копируем .git вручную
-COPY .git /workspace/.git
 WORKDIR /workspace
 
 WORKDIR /workspace/actuator_git_info_starter
