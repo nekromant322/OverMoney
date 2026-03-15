@@ -64,8 +64,8 @@ jobs:
           file: ./orchestrator_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-orchestrator-qa
-          cache-from: type=registry,ref=overregistry.ru/overmoney-orchestrator-qa-cache
-          cache-to: type=registry,ref=overregistry.ru/overmoney-orchestrator-qa-cache,mode=max
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Telegram Bot Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
