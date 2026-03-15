@@ -58,7 +58,7 @@ jobs:
 
       - name: Orchestrator Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./orchestrator_service/Dockerfile
@@ -75,6 +75,8 @@ jobs:
           file: ./telegram_bot_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-telegram-bot-qa
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
 
       #      - name: Frontend Build and Push to overregistry.ru
@@ -85,6 +87,8 @@ jobs:
       #          file: ./frontend/Dockerfile
 #          push: true
       #          tags: overregistry.ru/overmoney-frontend-qa
+      #    cache-from: type=gha
+      #    cache-to: type=gha,mode=max
 
       - name: Frontend Landing Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.frontend-landing == 'true' }}
@@ -96,6 +100,8 @@ jobs:
           tags: overregistry.ru/overmoney-frontend-landing-qa
           build-args: |
             BUILD_CMD=build-staging
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Payment Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.payment == 'true' }}
@@ -105,6 +111,8 @@ jobs:
           file: ./payment_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-payment-qa
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Show image size
         run: docker images
