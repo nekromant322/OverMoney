@@ -14,7 +14,7 @@ import java.util.List;
 @Schema(description = "Набор фильтров для получения транзакций")
 public class TransactionFilter {
 
-    //todo private List<String> categories??
+    //todo private List<String> categories ??
     private Category category;
 
     @Schema(description = "Диапазон суммы транзакции", nullable = true)
