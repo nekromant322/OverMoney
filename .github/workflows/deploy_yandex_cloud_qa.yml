@@ -70,6 +70,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           provenance: false
+          build-args: |
+            MAVEN_CACHE=1
 
       - name: Telegram Bot Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
