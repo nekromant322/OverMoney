@@ -30,7 +30,7 @@ COPY actuator_git_info_starter/src /workspace/actuator_git_info_starter/src
 RUN --mount=type=cache,target=/root/.m2 \
     mvn -B -pl orchestrator_service -am -DskipTests package \
     -Dgit.commit.id.skip=true \
-    -Dmaven.gitcommitid.skip=true \
+    -Dmaven.gitcommitid.skip=true
 
 FROM amazoncorretto:11-alpine
 
