@@ -4,25 +4,11 @@ FROM maven:3.6.3-jdk-11-slim AS build
 
 WORKDIR /workspace
 
-COPY pom.xml .
-
-COPY dto/pom.xml dto/
-COPY recognizer_service/pom.xml recognizer_service/
-COPY orchestrator_service/pom.xml orchestrator_service/
-COPY telegram_bot_service/pom.xml telegram_bot_service/
-COPY mask_log_starter/pom.xml mask_log_starter/
-COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
-COPY payment_service/pom.xml payment_service/
-
-RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B -N dependency:go-offline
-
 COPY . .
 
 RUN --mount=type=cache,target=/root/.m2 \
     mvn -B -pl orchestrator_service -am \
-    clean package -DskipTests -Dcheckstyle.ski
-
+    clean package -DskipTests -Dcheckstyle.skip
 FROM amazoncorretto:11-alpine
 
 WORKDIR /app
