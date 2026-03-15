@@ -13,7 +13,13 @@ COPY mask_log_starter/pom.xml mask_log_starter/
 COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
 COPY payment_service/pom.xml payment_service/
 
+ARG MAVEN_OPTS
+
 RUN --mount=type=cache,target=/root/.m2 \
+    --mount=type=secret,id=m2_cache \
+    if [ -f /run/secrets/m2_cache ]; then \
+        cp -r /run/secrets/m2_cache/* /root/.m2/repository/ 2>/dev/null || true; \
+    fi && \
     mvn -B -pl orchestrator_service -am dependency:go-offline
 
 COPY orchestrator_service/src /workspace/orchestrator_service/src
