@@ -9,6 +9,7 @@ COPY . .
 RUN --mount=type=cache,target=/root/.m2 \
   mvn -B -pl orchestrator_service -am clean package -DskipTests \
 
+
 FROM amazoncorretto:11-alpine
 
 EXPOSE 8081
