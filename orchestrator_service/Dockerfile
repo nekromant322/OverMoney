@@ -15,11 +15,13 @@ COPY mask_log_starter/pom.xml mask_log_starter/
 COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
 COPY payment_service/pom.xml payment_service/
 
-RUN mvn -B dependency:go-offline
+RUN --mount=type=cache,target=/root/.m2/repository \
+    mvn -B dependency:go-offline
 
 COPY . .
 
-RUN mvn -B package -DskipTests
+RUN --mount=type=cache,target=/root/.m2/repository \
+    mvn -B package -DskipTests
 
 FROM amazoncorretto:11-alpine
 
