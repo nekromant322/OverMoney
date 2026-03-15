@@ -15,7 +15,7 @@ COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
 COPY payment_service/pom.xml payment_service/
 
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B -N dependency:go-offline \
+    mvn -B -N dependency:go-offline
 
 COPY . .
 
