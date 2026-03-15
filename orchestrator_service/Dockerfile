@@ -4,7 +4,7 @@ FROM maven:3.6.3-jdk-11-slim AS build
 
 WORKDIR /workspace
 
-RUN ls -la /root/.m2/repository
+ENV MAVEN_OPTS="-Dmaven.repo.local=/root/.m2/repository"
 
 COPY pom.xml .
 
