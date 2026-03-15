@@ -1,33 +1,33 @@
-# Stage 1: Build
-FROM maven:3.6.3-jdk-11-slim AS build
+FROM maven:3.9.9-eclipse-temurin-11 AS build
 
-# Сначала копируем .git вручную
-COPY .git /workspace/.git
 WORKDIR /workspace
 
-WORKDIR /workspace/actuator_git_info_starter
-COPY /actuator_git_info_starter/pom.xml /workspace/actuator_git_info_starter
-COPY /actuator_git_info_starter/src /workspace/actuator_git_info_starter/src
-RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/
+COPY dto/pom.xml dto/
+COPY mask_log_starter/pom.xml mask_log_starter/
+COPY orchestrator_service/pom.xml orchestrator_service/
 
-WORKDIR /workspace/dto
-COPY /dto/pom.xml /workspace/dto
-COPY /dto/src /workspace/dto/src
-RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn -B -q -e -DskipTests -Dcheckstyle.skip \
+    -pl actuator_git_info_starter,dto,mask_log_starter,orchestrator_service \
+    -am dependency:go-offline
 
-WORKDIR /workspace/mask_log_starter
-COPY /mask_log_starter/pom.xml /workspace/mask_log_starter
-COPY /mask_log_starter/src /workspace/mask_log_starter/src
-RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+COPY actuator_git_info_starter/src actuator_git_info_starter/src
+COPY dto/src dto/src
+COPY mask_log_starter/src mask_log_starter/src
+COPY orchestrator_service/src orchestrator_service/src
 
-WORKDIR /workspace/orchestrator
-COPY /orchestrator_service/pom.xml /workspace/orchestrator
-COPY /orchestrator_service/src /workspace/orchestrator/src
-RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
+RUN --mount=type=cache,target=/root/.m2 \
+    mvn -B -DskipTests -Dcheckstyle.skip \
+    -pl orchestrator_service -am package
 
-# Stage 2: Runtime
+
 FROM amazoncorretto:11-alpine
 
+WORKDIR /app
+
 EXPOSE 8081
-COPY --from=build /workspace/orchestrator/target/*.jar app.jar
+
+COPY --from=build /workspace/orchestrator_service/target/*.jar app.jar
+
 ENTRYPOINT ["java","-jar","app.jar"]
