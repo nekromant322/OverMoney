@@ -8,7 +8,7 @@ WORKDIR /workspace
 WORKDIR /workspace/actuator_git_info_starter
 COPY /actuator_git_info_starter/pom.xml /workspace/actuator_git_info_starter
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B dependency:go-offline \
+    mvn -B dependency:go-offline
 
 COPY /actuator_git_info_starter/src /workspace/actuator_git_info_starter/src
 
@@ -24,7 +24,7 @@ RUN --mount=type=cache,target=/root/.m2 \
 WORKDIR /workspace/mask_log_starter
 COPY /mask_log_starter/pom.xml /workspace/mask_log_starter
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B dependency:go-offline \
+    mvn -B dependency:go-offline
 COPY /mask_log_starter/src /workspace/mask_log_starter/src
 RUN --mount=type=cache,target=/root/.m2 \
     mvn -B clean install -DskipTests -Dcheckstyle.skip
@@ -32,7 +32,7 @@ RUN --mount=type=cache,target=/root/.m2 \
 WORKDIR /workspace/orchestrator
 COPY /orchestrator_service/pom.xml /workspace/orchestrator
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -B dependency:go-offline \
+    mvn -B dependency:go-offline
 COPY /orchestrator_service/src /workspace/orchestrator/src
 RUN --mount=type=cache,target=/root/.m2 \
     mvn -B clean install -DskipTests -Dcheckstyle.skip
