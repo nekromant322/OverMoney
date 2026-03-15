@@ -15,7 +15,7 @@ COPY payment_service/pom.xml payment_service/
 
 RUN --mount=type=cache,target=/root/.m2 \
     mvn -B -pl orchestrator_service -am \
-    -DskipTests package
+    dependency:go-offline
 
 COPY . .
 

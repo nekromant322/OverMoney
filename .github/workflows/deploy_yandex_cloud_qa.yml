@@ -59,6 +59,9 @@ jobs:
           push: true
           tags: overregistry.ru/overmoney-recognizer-qa
 
+      - name: Inspect cache
+        run: docker buildx du
+
       - name: Orchestrator Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
         uses: docker/build-push-action@v5
@@ -67,11 +70,9 @@ jobs:
           file: ./orchestrator_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-orchestrator-qa
+          pull: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          provenance: false
-          build-args: |
-            MAVEN_CACHE=1
 
       - name: Telegram Bot Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
