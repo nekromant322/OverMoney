@@ -8,11 +8,11 @@ COPY dto/pom.xml dto/pom.xml
 COPY mask_log_starter/pom.xml mask_log_starter/pom.xml
 COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/pom.xml
 
-RUN mvn -B -q -pl orchestrator -am -DskipTests dependency:go-offline
+RUN mvn -B -q -pl orchestrator_service -am -DskipTests dependency:go-offline
 
 COPY . .
 
-RUN mvn -B -pl orchestrator -am clean package -DskipTests
+RUN mvn -B -pl orchestrator_service -am clean package -DskipTests
 
 FROM amazoncorretto:11-alpine
 
