@@ -8,6 +8,8 @@ COPY dto/pom.xml dto/pom.xml
 COPY mask_log_starter/pom.xml mask_log_starter/pom.xml
 COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/pom.xml
 
+RUN mkdir recognizer_service telegram_bot_service payment_service
+
 RUN mvn -B -q -pl orchestrator_service -am -DskipTests dependency:go-offline
 
 COPY . .
