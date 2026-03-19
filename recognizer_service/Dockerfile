@@ -15,7 +15,7 @@ RUN mvn -B -q -pl recognizer_service -am dependency:go-offline
 
 COPY . .
 
-RUN mvn -B -pl recognizer_service -am clean package
+RUN mvn -B -pl recognizer_service -am clean package -DskipTests=false -DskipITs
 
 FROM amazoncorretto:11-alpine
 
