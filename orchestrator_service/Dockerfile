@@ -15,7 +15,7 @@ RUN mvn -B -q -pl orchestrator_service -am -DskipTests dependency:go-offline
 
 COPY . .
 
-RUN mvn -B -o -pl orchestrator_service -am clean package -DskipTests
+RUN mvn -B -pl orchestrator_service -am clean package -DskipTests
 
 FROM amazoncorretto:11-alpine
 

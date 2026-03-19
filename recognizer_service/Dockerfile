@@ -1,38 +1,24 @@
-# Stage 1: Build
-FROM maven:3.6.3-openjdk-11-slim AS build
+FROM maven:3.6.3-jdk-11-slim AS build
 
-# Сначала копируем .git вручную
-COPY .git /workspace/.git
 WORKDIR /workspace
 
-WORKDIR /workspace/actuator_git_info_starter
-COPY /actuator_git_info_starter/pom.xml /workspace/actuator_git_info_starter
-COPY /actuator_git_info_starter/src /workspace/actuator_git_info_starter/src
-RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+COPY pom.xml .
+COPY orchestrator_service/pom.xml orchestrator_service/pom.xml
+COPY dto/pom.xml dto/pom.xml
+COPY mask_log_starter/pom.xml mask_log_starter/pom.xml
+COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/pom.xml
+COPY recognizer_service/pom.xml recognizer_service/pom.xml
+COPY telegram_bot_service/pom.xml telegram_bot_service/pom.xml
+COPY payment_service/pom.xml payment_service/pom.xml
 
-WORKDIR /workspace/dto
-COPY /dto/pom.xml /workspace/dto
-COPY /dto/src /workspace/dto/src
-RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+RUN mvn -B -q -pl recognizer_service -am -DskipTests dependency:go-offline
 
-WORKDIR /workspace/mask_log_starter
-COPY /mask_log_starter/pom.xml /workspace/mask_log_starter
-COPY /mask_log_starter/src /workspace/mask_log_starter/src
-RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+COPY . .
 
-WORKDIR /workspace/recognizer_service
-COPY /recognizer_service/pom.xml /workspace/recognizer_service
-COPY /recognizer_service/src /workspace/recognizer_service/src
-RUN cp -r /workspace/.git /workspace/recognizer_service/.git
-RUN mvn -B clean package -DskipTests -Dcheckstyle.skip
+RUN mvn -B -pl recognizer_service -am clean package -DskipTests
 
-# Stage 2: Runtime
-FROM eclipse-temurin:11
-
-RUN apt-get -y update \
-    && apt-get -y upgrade \
-    && apt-get install -y --no-install-recommends ffmpeg
+FROM amazoncorretto:11-alpine
 
 EXPOSE 8080
 COPY --from=build /workspace/recognizer_service/target/*.jar app.jar
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]

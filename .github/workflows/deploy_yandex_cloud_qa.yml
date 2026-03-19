@@ -49,12 +49,15 @@ jobs:
 
       - name: Recognizer Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./recognizer_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-recognizer-qa
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
 
       - name: Orchestrator Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
@@ -69,12 +72,14 @@ jobs:
 
       - name: Telegram Bot Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./telegram_bot_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-telegram-bot-qa
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
 
       #      - name: Frontend Build and Push to overregistry.ru
@@ -88,7 +93,7 @@ jobs:
 
       - name: Frontend Landing Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.frontend-landing == 'true' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./frontend/landing/Dockerfile
@@ -99,9 +104,11 @@ jobs:
 
       - name: Payment Build and Push to overregistry.ru
         if: ${{ needs.detect-changes.outputs.payment == 'true' }}
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./payment_service/Dockerfile
           push: true
           tags: overregistry.ru/overmoney-payment-qa
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

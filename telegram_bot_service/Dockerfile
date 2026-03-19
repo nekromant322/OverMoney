@@ -1,33 +1,24 @@
-# Stage 1: Build
-FROM maven:3.6.3-openjdk-11-slim AS build
+FROM maven:3.6.3-jdk-11-slim AS build
 
-# Сначала копируем .git вручную
-COPY .git /workspace/.git
 WORKDIR /workspace
 
-WORKDIR /workspace/actuator_git_info_starter
-COPY /actuator_git_info_starter/pom.xml /workspace/actuator_git_info_starter
-COPY /actuator_git_info_starter/src /workspace/actuator_git_info_starter/src
-RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+COPY pom.xml .
+COPY orchestrator_service/pom.xml orchestrator_service/pom.xml
+COPY dto/pom.xml dto/pom.xml
+COPY mask_log_starter/pom.xml mask_log_starter/pom.xml
+COPY actuator_git_info_starter/pom.xml actuator_git_info_starter/pom.xml
+COPY recognizer_service/pom.xml recognizer_service/pom.xml
+COPY telegram_bot_service/pom.xml telegram_bot_service/pom.xml
+COPY payment_service/pom.xml payment_service/pom.xml
 
-WORKDIR /workspace/dto
-COPY /dto/pom.xml /workspace/dto
-COPY /dto/src /workspace/dto/src
-RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+RUN mvn -B -q -pl telegram_bot_service -am -DskipTests dependency:go-offline
 
-WORKDIR /workspace/mask_log_starter
-COPY /mask_log_starter/pom.xml /workspace/mask_log_starter
-COPY /mask_log_starter/src /workspace/mask_log_starter/src
-RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
+COPY . .
 
-WORKDIR /workspace/telegram_bot
-COPY /telegram_bot_service/pom.xml /workspace/telegram_bot
-COPY /telegram_bot_service/src /workspace/telegram_bot/src
-RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
+RUN mvn -B -pl telegram_bot_service -am clean package -DskipTests
 
-# Stage 2: Runtime
 FROM amazoncorretto:11-alpine
 
 EXPOSE 8082
-COPY --from=build /workspace/telegram_bot/target/*.jar app.jar
-ENTRYPOINT ["java","-jar","app.jar"]
+COPY --from=build /workspace/telegram_bot_service/target/*.jar app.jar
+ENTRYPOINT ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-jar", "app.jar"]
