@@ -11,11 +11,11 @@ COPY recognizer_service/pom.xml recognizer_service/pom.xml
 COPY telegram_bot_service/pom.xml telegram_bot_service/pom.xml
 COPY payment_service/pom.xml payment_service/pom.xml
 
-RUN mvn -B -q -pl orchestrator_service -am -DskipTests dependency:go-offline
+RUN mvn -B -q -pl orchestrator_service -am dependency:go-offline
 
 COPY . .
 
-RUN mvn -B -pl orchestrator_service -am clean package -DskipTests
+RUN mvn -B -pl orchestrator_service -am clean package
 
 FROM amazoncorretto:11-alpine
 
