@@ -18,8 +18,8 @@ import static org.apache.kafka.common.requests.DeleteAclsResponse.log;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final PayingService payingService;
     private final SubscriptionService subscriptionService;
+    private final PayingService payingService;
 
     /**
      * Колбэк для успешной оплаты
