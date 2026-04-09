@@ -4,7 +4,6 @@ import com.override.dto.PaymentRequestDTO;
 import com.override.dto.PaymentResponseDTO;
 import com.override.dto.YooKassaWebhookDTO;
 import com.override.dto.constants.PaymentStatus;
-import com.override.payment_service.kafka.consumerproducer.KafkaProducerService;
 import com.override.payment_service.model.Subscription;
 import com.override.payment_service.repository.SubscriptionRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,6 @@ public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final YooKassaService yooKassaService;
-    private final KafkaProducerService kafkaProducerService;
 
     @Value("${subscription.duration.months}")
     private int subscriptionMonths;
@@ -131,7 +129,7 @@ public class SubscriptionService {
                     .chatId(subscription.getChatId())
                     .build();
 
-            kafkaProducerService.sendSubscriptionNotification(response);
+//            kafkaProducerService.sendSubscriptionNotification(response); отправить по http
         });
     }
 

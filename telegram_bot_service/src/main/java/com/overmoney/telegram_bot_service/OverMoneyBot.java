@@ -3,13 +3,15 @@ package com.overmoney.telegram_bot_service;
 import com.overmoney.telegram_bot_service.commands.OverMoneyCommand;
 import com.overmoney.telegram_bot_service.constants.InlineKeyboardCallback;
 import com.overmoney.telegram_bot_service.exception.VoiceProcessingException;
-import com.overmoney.telegram_bot_service.kafka.service.KafkaProducerService;
 import com.overmoney.telegram_bot_service.mapper.ChatMemberMapper;
 import com.overmoney.telegram_bot_service.mapper.TransactionMapper;
 import com.overmoney.telegram_bot_service.model.TelegramMessage;
 import com.overmoney.telegram_bot_service.service.*;
 import com.overmoney.telegram_bot_service.util.InlineKeyboardMarkupUtil;
-import com.override.dto.*;
+import com.override.dto.AccountDataDTO;
+import com.override.dto.TransactionDTO;
+import com.override.dto.TransactionMessageDTO;
+import com.override.dto.TransactionResponseDTO;
 import com.override.dto.constants.StatusMailing;
 import feign.FeignException;
 import lombok.SneakyThrows;
@@ -31,8 +33,10 @@ import java.io.InputStream;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.overmoney.telegram_bot_service.constants.MessageConstants.*;
@@ -44,14 +48,10 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     private String botName;
     @Value("${bot.token}")
     private String botToken;
-    @Value("${service.transaction.processing}")
-    private String switcher;
     @Value("${orchestrator.host}")
     private String orchestratorHost;
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
-    @Autowired
-    private KafkaProducerService kafkaProducerService;
     @Autowired
     private TransactionMapper transactionMapper;
     @Autowired
@@ -338,52 +338,21 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     }
 
     private void processTransaction(Long chatId, Integer messageId, TransactionMessageDTO transactionMessageDTO) {
-
-        if (switcher.equals("orchestrator")) {
-            try {
-                TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
-                        .sendTransaction(transactionMessageDTO);
-                telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
-                        .messageId(messageId)
-                        .chatId(chatId)
-                        .idTransaction(transactionResponseDTO.getId()).build());
-                sendMessage(chatId, transactionMapper
-                        .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
-            } catch (FeignException.InternalServerError e) {
-                log.error(e.getMessage(), e);
-                sendMessage(chatId, MESSAGE_NOT_REGISTERED);
-            } catch (Exception e) {
-                log.error(e.getMessage(), e);
-                sendMessage(chatId, TRANSACTION_MESSAGE_INVALID); // todo возможно тут 1
-            }
-        } else if (switcher.equals("kafka")) {
-            List<TransactionMessageDTO> messageDTOList = splitToTransactionDtoList(transactionMessageDTO);
-            for (TransactionMessageDTO messageDTO : messageDTOList) {
-                CompletableFuture<TransactionResponseDTO> future =
-                        kafkaProducerService.sendTransaction(messageDTO);
-
-                future.thenAccept(transactionResponseDTO -> {
-                    if (transactionResponseDTO.getComment().equals("error")) {
-                        throw new RuntimeException("Невалидное сообщение");
-                    }
-                    telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
-                            .messageId(messageId)
-                            .chatId(chatId)
-                            .idTransaction(transactionResponseDTO.getId()).build());
-                    sendMessage(chatId, transactionMapper
-                            .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
-                }).exceptionally(e -> {
-                    if (e.getCause() instanceof RuntimeException &&
-                            "Невалидное сообщение".equals(e.getCause().getMessage())) {
-                        log.error(e.getMessage(), e);
-                        sendMessage(chatId, TRANSACTION_MESSAGE_INVALID);
-                    } else {
-                        log.error(e.getMessage(), e);
-                        sendMessage(chatId, NETWORK_ERROR);
-                    }
-                    return null;
-                });
-            }
+        try {
+            TransactionResponseDTO transactionResponseDTO = orchestratorRequestService
+                    .sendTransaction(transactionMessageDTO);
+            telegramMessageService.saveTelegramMessage(TelegramMessage.builder()
+                    .messageId(messageId)
+                    .chatId(chatId)
+                    .idTransaction(transactionResponseDTO.getId()).build());
+            sendMessage(chatId, transactionMapper
+                    .mapTransactionResponseToTelegramMessage(transactionResponseDTO));
+        } catch (FeignException.InternalServerError e) {
+            log.error(e.getMessage(), e);
+            sendMessage(chatId, MESSAGE_NOT_REGISTERED);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            sendMessage(chatId, TRANSACTION_MESSAGE_INVALID); // todo возможно тут 1
         }
     }
 
