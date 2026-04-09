@@ -46,9 +46,6 @@ public class TransactionController {
     @Autowired
     private SuggestionService suggestionService;
 
-    @Autowired
-    private SseService sseService;
-
     @GetMapping("/transactions/count")
     @Operation(summary = "Получить количество транзакций", description = "Возвращает общее количество транзакций")
     @ApiResponses(value = {
@@ -73,7 +70,6 @@ public class TransactionController {
                 transactionProcessingService.validateAndProcessTransaction(transactionMessage, principal);
         transactionService.saveTransaction(transaction);
         transactionProcessingService.suggestCategoryToProcessedTransaction(transaction);
-        sseService.checkUncategorizedTransaction(transaction);
         return transactionMapper.mapTransactionToTelegramResponse(transaction);
     }
 
