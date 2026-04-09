@@ -1,131 +1,98 @@
-bot:
-  name: ${TELEGRAM_BOT_NAME}
-  token: ${TELEGRAM_BOT_TOKEN}
-  api:
-    url: https://api.telegram.org
-  voice:
-    max_length: 10
-admin:
-  allowed_users:
-    Marandyuk_Anatolii,
-    Denis_Shvartcer
+  bot:
+    name: ${TELEGRAM_BOT_NAME}
+    token: ${TELEGRAM_BOT_TOKEN}
+    api:
+      url: https://api.telegram.org
+    voice:
+      max_length: 10
+  admin:
+    allowed_users:
+      Marandyuk_Anatolii,
+      Denis_Shvartcer
 
 #настройка веб адреса приложения
-orchestrator:
-  host: ${ORCHESTRATOR_HOST}
+  orchestrator:
+    host: ${ORCHESTRATOR_HOST}
 
-integration:
-  internal:
-    host:
-      orchestrator: http://orchestrator-service
-      recognizer: http://recognizer-service
-      payment: http://payment-service
+  integration:
+    internal:
+      host:
+        orchestrator: http://orchestrator-service
+        recognizer: http://recognizer-service
+        payment: http://payment-service
 
-environment: ${ENVIRONMENT:dev}
+  environment: ${ENVIRONMENT:dev}
 
-subscription:
-  price: 200.00
-  currency: RUB
-  duration:
-    months: 1
-    days: 0
-  payment:
-    return-url: "https://overmoney.tech/"
-    description: "Подписка на сервис OverMoney"
-    timeout-minutes: 10
+  subscription:
+    price: 200.00
+    currency: RUB
+    duration:
+      months: 1
+      days: 0
+    payment:
+      return-url: "https://overmoney.tech/"
+      description: "Подписка на сервис OverMoney"
+      timeout-minutes: 10
 
-server:
-  port: 8080
-# Используется для переключения получения транзакций через kafka или через http
-# Необходимо поменять и в orchestrator_service и в telegram_bot_service
-# Для выбора http необходимо установить значение processing: orchestrator
-# Для выбора kafka необходимо установить значение processing: kafka
-service:
-  transaction:
-    processing: kafka
+  server:
+    port: 8080
 
-spring:
-  application:
-    name: telegram-bot-service
+  spring:
+    application:
+      name: telegram-bot-service
 
-  datasource:
-    url: jdbc:postgresql://${TELEGRAM_BOT_DB_HOST:localhost}:${TELEGRAM_BOT_DB_PORT:5435}/telegram-bot-db
-    username: ${TELEGRAM_BOT_DB_USER:postgres}
-    password: ${TELEGRAM_BOT_DB_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
+    datasource:
+      url: jdbc:postgresql://${TELEGRAM_BOT_DB_HOST:localhost}:${TELEGRAM_BOT_DB_PORT:5435}/telegram-bot-db
+      username: ${TELEGRAM_BOT_DB_USER:postgres}
+      password: ${TELEGRAM_BOT_DB_PASSWORD:postgres}
+      driver-class-name: org.postgresql.Driver
 
-  jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-    properties:
+    jpa:
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      generate-ddl: false
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
-
-  liquibase:
-    enabled: true
-    change-log: /db/changelog/db.changelog-master.xml
-
-  profiles:
-    active: ${SPRING_APPLICATION_PROFILE:dev}
-  kafka:
-    topics:
-      request: transaction-request-events-topic
-      response: transaction-response-events-topic
-      payment-request: payment-requests
-      payment-response: payment-responses
-      subscription-status-updates: subscription-status-updates
-      subscription-notification: subscription-notification
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      group-id: transaction-sent-events
+        ddl-auto: none
       properties:
-        spring.json.trusted.packages: com.override.dto
-        spring:
-          deserializer:
-            key:
-              delegate:
-                class: org.apache.kafka.common.serialization.StringDeserializer
-            value:
-              delegate:
-                class: org.springframework.kafka.support.serializer.JsonDeserializer
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
 
-logging:
-  level:
-    org.zalando.logbook: TRACE
+    liquibase:
+      enabled: true
+      change-log: /db/changelog/db.changelog-master.xml
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,prometheus,gitInfo
-  metrics:
-    export:
-      prometheus:
-        enabled: true
-    distribution:
-      percentiles-histogram:
-        "[http.server.requests]": true
+    profiles:
+      active: ${SPRING_APPLICATION_PROFILE:dev}
 
-max-mailing-messages:
-  maxMessagesOfAnnouncePerSecond: 25
+  logging:
+    level:
+      org.zalando.logbook: TRACE
 
-authorization-header:
-  header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,prometheus,gitInfo
+    metrics:
+      export:
+        prometheus:
+          enabled: true
+      distribution:
+        percentiles-histogram:
+          "[http.server.requests]": true
 
-mask-log-spring-boot-starter:
-  maskedFields:
-    - x-internal-key
-onboarding:
-  steps:
-    - dayOffset: 0
-      text: "Ты можешь отправить боту голосовые сообщения и он сам распознает сумму и комментарий"
-      image: "voice_message_example.jpg"
+  max-mailing-messages:
+    maxMessagesOfAnnouncePerSecond: 25
+
+  authorization-header:
+    header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+
+  mask-log-spring-boot-starter:
+    maskedFields:
+      - x-internal-key
+  onboarding:
+    steps:
+      - dayOffset: 0
+        text: "Ты можешь отправить боту голосовые сообщения и он сам распознает сумму и комментарий"
+        image: "voice_message_example.jpg"

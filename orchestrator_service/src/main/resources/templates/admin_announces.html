@@ -13,35 +13,33 @@
 </head>
 <body>
 <
-<header id="header">
-    <nav class="links" style="--items: 3;">
-        <a href="/admin/stat">Статистика</a>
-        <a href="/admin/announces">Рассылки</a>
-        <a href="/admin/bugReports">Багрепорты</a>
-        <span class="line"></span>
-    </nav>
-</header>
+    <header id="header">
+        <nav class="links" style="--items: 3;">
+            <a href="/admin/stat">Статистика</a>
+            <a href="/admin/announces">Рассылки</a>
+            <a href="/admin/bugReports">Багрепорты</a>
+            <span class="line"></span>
+        </nav>
+    </header>
 
-<div class="content" style="padding: 20px">
-    <form name="send_announce" class="send_announce">
-        <label for="announce_text">Announce text:</label>
-        <input type="text" id="announce_text" name="announce_text"/>
-    </form>
+    <div class="content" style="padding: 20px">
+        <form name="send_announce" class="send_announce">
+            <label for="announce_text">Announce text:</label>
+            <input type="text" id="announce_text" name="announce_text"/>
+        </form>
 
-    <div class="space-for-button">
-        <button type="button" class="send-announce-button" id="send-announce-button" onclick="sendAnnounce();">Отправить
-            анонс
-        </button>
+        <div class="space-for-button">
+            <button type="button" class="send-announce-button" id="send-announce-button" onclick="sendAnnounce();">Отправить анонс</button>
+        </div>
+
+        <div class="space-for-button">
+            <button type="button" class="update-announce-button" onclick="updateStatusList();">Обновить статусы рассылки
+            </button>
+        </div>
     </div>
 
-    <div class="space-for-button">
-        <button type="button" class="update-announce-button" onclick="updateStatusList();">Обновить статусы рассылки
-        </button>
+    <div class="status-list" id="statusList">
     </div>
-</div>
-
-<div class="status-list" id="statusList">
-</div>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="
         crossorigin="anonymous"></script>

@@ -18,9 +18,9 @@ public class TelegramBotRequestService {
 
     public void sendAnnounce(String announceText) {
         telegramBotFeign.sendAnnounce(AnnounceDTO.builder()
-                .announceText(announceText.replaceAll("\"", ""))
-                .userIds(userService.getAllUserIds())
-                .build());
+                        .announceText(announceText.replaceAll("\"", ""))
+                        .userIds(userService.getAllUserIds())
+                        .build());
     }
 
     public List<MailDTO> getStatusOfMails() {

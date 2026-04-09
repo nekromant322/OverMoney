@@ -13,8 +13,4 @@ public class PaymentTestController {
 
     private final PaymentFeign paymentFeign;
 
-    @GetMapping("/test")
-    public String test() {
-        return paymentFeign.getTest();
-    }
 }

@@ -29,10 +29,10 @@ public class StatisticServiceTest {
     @Test
     void calculateSuggestionsStatistic_WithMixedSuggestions_ReturnsCorrectStatistics() {
         List<Suggestion> suggestions = Arrays.asList(
-                createSuggestion(0.8f, true),
-                createSuggestion(0.7f, true),
-                createSuggestion(0.3f, false),
-                createSuggestion(0.2f, null)
+            createSuggestion(0.8f, true),
+            createSuggestion(0.7f, true),
+            createSuggestion(0.3f, false),
+            createSuggestion(0.2f, null)
         );
         when(suggestionRepository.findAllByAlgorithm("DEEPSEEK")).thenReturn(suggestions);
 
@@ -66,7 +66,7 @@ public class StatisticServiceTest {
     }
 
 
-    private Suggestion createSuggestion(Float accuracy, Boolean isCorrect) {
+    private Suggestion createSuggestion (Float accuracy, Boolean isCorrect){
         return Suggestion.builder()
                 .accuracy(accuracy)
                 .isCorrect(isCorrect)

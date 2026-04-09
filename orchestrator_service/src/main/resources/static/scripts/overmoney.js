@@ -38,7 +38,6 @@ function setMaxSingleTransactionAmount(value) {
 function getMaxSingleTransactionAmount() {
     return maxSingleTransactionAmount;
 }
-
 // ---- НАЧАЛО РАБОТЫ С LONG POLLING ----
 
 let fibonacciCounter = fibonacci();
@@ -60,13 +59,13 @@ function fibonacci() {
     let fibonacciInner = [1, 1];
 
     return {
-        getNext: function () {
+        getNext: function() {
             let lastNumber = fibonacciInner[1];
             fibonacciInner[1] = fibonacciInner[0] + fibonacciInner[1];
             fibonacciInner[0] = lastNumber;
             return fibonacciInner[1];
         },
-        get: function () {
+        get: function() {
             return fibonacciInner[1];
         },
         set: function (array) {
@@ -76,14 +75,14 @@ function fibonacci() {
                 console.log('некорректноей длины передали массив ы fibonacci.set(array)');
             }
         },
-        reset: function () {
+        reset: function() {
             fibonacciInner = [1, 1];
         }
     };
 }
 
 function checkUserIsActive() {
-    if (userIsActive && new Date().getTime() - lastActiveTimestamp > timeout) {
+    if (userIsActive && new Date().getTime() - lastActiveTimestamp > timeout){
         userIsActive = false;
         fibonacciCounter.reset();
     }
@@ -732,7 +731,7 @@ function updateCategory(category) {
         },
         data: JSON.stringify(category),
         dataType: 'json',
-    }).fail(function (error) {
+    }).fail(function(error) {
         console.error("Ошибка при обновлении категории", error);
         window.alert("Ошибка при обновлении категории");
         location.reload();

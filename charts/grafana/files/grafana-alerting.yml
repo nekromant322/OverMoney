@@ -41,7 +41,7 @@ groups:
                     params:
                       - C
                   reducer:
-                    params: [ ]
+                    params: []
                     type: last
                   type: query
               datasource:
@@ -71,7 +71,7 @@ groups:
               to: 0
             datasourceUid: fejkzilfrpy4gf
             model:
-              adhocFilters: [ ]
+              adhocFilters: []
               datasource:
                 type: prometheus
                 uid: fejkzilfrpy4gf
@@ -101,7 +101,7 @@ groups:
                     params:
                       - C
                   reducer:
-                    params: [ ]
+                    params: []
                     type: last
                   type: query
               datasource:

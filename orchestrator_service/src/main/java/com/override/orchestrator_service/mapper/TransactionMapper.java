@@ -1,17 +1,14 @@
 package com.override.orchestrator_service.mapper;
 
-import com.override.dto.TransactionDTO;
-import com.override.dto.TransactionResponseDTO;
+import com.override.dto.*;
 import com.override.dto.constants.Type;
-import com.override.orchestrator_service.model.Suggestion;
-import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.util.NumericalUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.management.InstanceNotFoundException;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 @Component
 public class TransactionMapper {

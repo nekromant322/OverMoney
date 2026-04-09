@@ -13,7 +13,6 @@
     font-size: 2em;
     font-weight: 300;
 }
-
 .links > a {
     color: #9ab;
     padding: .75em;
@@ -21,12 +20,10 @@
     text-decoration: none;
     transition: all .5s;
 }
-
 .links > a:hover {
     background: #ffffff06;
     color: #adf;
 }
-
 .links > .line {
     background: #68a;
     height: 1px;
@@ -43,13 +40,11 @@
     padding-bottom: 30px;
     display: inline-block;
 }
-
 .links {
     display: grid;
     grid-template-columns: repeat(var(--items), 1fr);
     position: relative;
 }
-
 .links > .line {
     opacity: 0;
     transition: all .5s;
@@ -59,51 +54,18 @@
     width: var(--width, calc(100% / var(--items)));
     --index: 0;
 }
-
 .links > a:hover ~ .line {
     opacity: 1;
 }
 
-.links > a:nth-of-type(1):hover ~ .line {
-    --index: 1;
-}
-
-.links > a:nth-of-type(2):hover ~ .line {
-    --index: 2;
-}
-
-.links > a:nth-of-type(3):hover ~ .line {
-    --index: 3;
-}
-
-.links > a:nth-of-type(4):hover ~ .line {
-    --index: 4;
-}
-
-.links > a:nth-of-type(5):hover ~ .line {
-    --index: 5;
-}
-
-.links > a:nth-of-type(6):hover ~ .line {
-    --index: 6;
-}
-
-.links > a:nth-of-type(7):hover ~ .line {
-    --index: 7;
-}
-
-.links > a:nth-of-type(8):hover ~ .line {
-    --index: 8;
-}
-
-.links > a:nth-of-type(9):hover ~ .line {
-    --index: 9;
-}
-
-.links > a:nth-of-type(10):hover ~ .line {
-    --index: 10;
-}
-
-.links > a:last-of-type:hover ~ .line {
-    --index: var(--items);
-}
+.links > a:nth-of-type(1):hover ~ .line { --index: 1; }
+.links > a:nth-of-type(2):hover ~ .line { --index: 2; }
+.links > a:nth-of-type(3):hover ~ .line { --index: 3; }
+.links > a:nth-of-type(4):hover ~ .line { --index: 4; }
+.links > a:nth-of-type(5):hover ~ .line { --index: 5; }
+.links > a:nth-of-type(6):hover ~ .line { --index: 6; }
+.links > a:nth-of-type(7):hover ~ .line { --index: 7; }
+.links > a:nth-of-type(8):hover ~ .line { --index: 8; }
+.links > a:nth-of-type(9):hover ~ .line { --index: 9; }
+.links > a:nth-of-type(10):hover ~ .line { --index: 10; }
+.links > a:last-of-type:hover ~ .line { --index: var(--items); }

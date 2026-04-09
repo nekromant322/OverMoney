@@ -1,1 +1,1 @@
-{ { - template "shared.priorityclass" . - } }
+{{- template "shared.priorityclass" . -}}

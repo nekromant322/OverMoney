@@ -1,1 +1,1 @@
-{ { - template "shared.ingress" . - } }
+{{- template "shared.ingress" . -}}

@@ -1,8 +1,8 @@
 a {
-    text-decoration: none;
-    user-select: none;
+  text-decoration: none;
+  user-select: none;
 }
 
 a:hover {
-    cursor: pointer;
+  cursor: pointer;
 }

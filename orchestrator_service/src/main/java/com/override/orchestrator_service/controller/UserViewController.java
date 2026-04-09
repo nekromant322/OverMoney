@@ -31,7 +31,7 @@ public class UserViewController {
     public String getLoginPage() {
         return "login";
     }
-
+  
     @GetMapping("/analytics")
     public String getAnalytics() {
         return "analytics";

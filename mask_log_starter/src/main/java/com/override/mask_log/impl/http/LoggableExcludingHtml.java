@@ -17,7 +17,7 @@ public class LoggableExcludingHtml implements Sink {
 
     @Override
     public void write(final @NotNull Precorrelation precorrelation, final HttpRequest request)
-            throws IOException {
+        throws IOException {
         String requestBody = new String(request.getBody());
 
         if (shouldLog(requestBody)) {
@@ -28,7 +28,7 @@ public class LoggableExcludingHtml implements Sink {
 
     @Override
     public void write(final @NotNull Correlation correlation, final HttpRequest request,
-                      final HttpResponse response) throws IOException {
+            final HttpResponse response) throws IOException {
 
         String responseBody = new String(response.getBody());
 

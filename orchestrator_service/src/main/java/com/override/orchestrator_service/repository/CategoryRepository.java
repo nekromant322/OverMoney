@@ -35,14 +35,18 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT c FROM Category c WHERE c.account.id = :id AND c.type = :type")
     List<Category> findAllByTypeAndAccId(@Param("id") Long accountId, @Param("type") Type type);
 
-    @Query("SELECT new com.override.dto.AnalyticsDataDTO(c.id, c.name, (SUM(t.amount)) / " +
+    @Query("SELECT NEW com.override.dto.AnalyticsDataDTO(" +
+            "c.id, " +
+            "c.name, " +
+            "COALESCE(SUM(t.amount), 0) / " +
             "(EXTRACT(MONTH FROM MAX(t.date)) - EXTRACT(MONTH FROM MIN(t.date)) + " +
-            "(((EXTRACT(YEAR FROM MAX(t.date)) - EXTRACT(YEAR FROM MIN(t.date)))) * 12) + 1))\n" +
-            "FROM Category c \n" +
-            "LEFT JOIN Transaction t ON t.category.id = c.id\n" +
-            "WHERE c.account.id = :accId\n" +
-            "AND c.type = :type\n" +
-            "GROUP BY c.id")
+            "((EXTRACT(YEAR FROM MAX(t.date)) - EXTRACT(YEAR FROM MIN(t.date))) * 12) + 1)" +
+            ") " +
+            "FROM Category c " +
+            "LEFT JOIN c.transactions t " +
+            "WHERE c.account.id = :accId " +
+            "AND c.type = :type " +
+            "GROUP BY c.id, c.name")
     List<AnalyticsDataDTO> findMediumAmountOfAllCategoriesByAccIdAndType(@Param("accId") Long accId,
                                                                          @Param("type") Type type);
 

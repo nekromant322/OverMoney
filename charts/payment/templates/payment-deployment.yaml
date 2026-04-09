@@ -1,1 +1,1 @@
-{ { - template "shared.deployment" . - } }
+{{- template "shared.deployment" . -}}

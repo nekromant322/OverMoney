@@ -1,9 +1,6 @@
 package com.override.orchestrator_service.controller.rest;
 
-import com.override.dto.TransactionDTO;
-import com.override.dto.TransactionDefineDTO;
-import com.override.dto.TransactionMessageDTO;
-import com.override.dto.TransactionResponseDTO;
+import com.override.dto.*;
 import com.override.orchestrator_service.filter.TransactionFilter;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
@@ -49,9 +46,6 @@ public class TransactionController {
     @Autowired
     private SuggestionService suggestionService;
 
-    @Autowired
-    private SseService sseService;
-
     @GetMapping("/transactions/count")
     @Operation(summary = "Получить количество транзакций", description = "Возвращает общее количество транзакций")
     @ApiResponses(value = {
@@ -76,7 +70,6 @@ public class TransactionController {
                 transactionProcessingService.validateAndProcessTransaction(transactionMessage, principal);
         transactionService.saveTransaction(transaction);
         transactionProcessingService.suggestCategoryToProcessedTransaction(transaction);
-        sseService.checkUncategorizedTransaction(transaction);
         return transactionMapper.mapTransactionToTelegramResponse(transaction);
     }
 

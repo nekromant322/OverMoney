@@ -212,7 +212,7 @@ function clearTableOfExpense(table) {
 
 $(document).on("click", "#total-analytics-table-foot td", function () {
     let rowIndex = $(this).closest("tr").index();
-
+    
     let categoryId = $("#total-analytics-table-foot").find("tr").eq(rowIndex).find("td").eq(0).html();
     let month = $(this).closest("td").index() - 1;
     let year = $("#yearSelectAnnualAndMonthlyTotalStatistics").val();

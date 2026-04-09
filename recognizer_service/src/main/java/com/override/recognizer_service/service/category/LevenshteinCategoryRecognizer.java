@@ -37,9 +37,9 @@ public class LevenshteinCategoryRecognizer implements CategoryRecognizer {
 
         for (CategoryDTO category : categories) {
             category.getKeywords().add(
-                    KeywordIdDTO.builder()
-                            .name(category.getName())
-                            .build());
+                     KeywordIdDTO.builder()
+                    .name(category.getName())
+                    .build());
 
             for (KeywordIdDTO keywordId : category.getKeywords()) {
                 float currentValue = calculateLevenshteinDistance(message, keywordId.getName());

@@ -1,8 +1,8 @@
 package com.override.recognizer_service.service;
 
 
-import com.override.recognizer_service.feign.DeepSeekFeignClient;
 import com.override.recognizer_service.llm.deepseek.DeepSeekBalanceResponseDTO;
+import com.override.recognizer_service.feign.DeepSeekFeignClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

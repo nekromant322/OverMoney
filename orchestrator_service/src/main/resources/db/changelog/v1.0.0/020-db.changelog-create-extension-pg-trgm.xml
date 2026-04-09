@@ -21,7 +21,7 @@
         </preConditions>
         <sql>
             CREATE INDEX idx_transactions_message_trgm
-                ON transactions USING gin (lower (message) gin_trgm_ops);
+            ON transactions USING gin (lower (message) gin_trgm_ops);
         </sql>
     </changeSet>
 </databaseChangeLog>

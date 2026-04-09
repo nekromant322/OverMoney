@@ -2,10 +2,10 @@ package com.override.recognizer_service.service;
 
 import com.override.dto.CategoryDTO;
 import com.override.dto.KeywordIdDTO;
-import com.override.recognizer_service.llm.LLMResponseDTO;
 import com.override.recognizer_service.llm.Message;
-import com.override.recognizer_service.service.category.LevenshteinCategoryRecognizer;
+import com.override.recognizer_service.llm.LLMResponseDTO;
 import com.override.recognizer_service.service.category.LlamaApiCategoryRecognizer;
+import com.override.recognizer_service.service.category.LevenshteinCategoryRecognizer;
 import com.override.recognizer_service.service.category.RecognizerResult;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,15 +40,15 @@ public class CategoryRecognizerServiceTests {
     @Test
     public void returnCorrectCategoryWhenKeywordMatched() {
         final KeywordIdDTO keywordBeer = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("пиво")
-                .build();
+            .accountId(1L)
+            .name("пиво")
+            .build();
         List<KeywordIdDTO> listOfKeywords = new ArrayList<>();
         listOfKeywords.add(keywordBeer);
         final CategoryDTO categoryWithBeer = CategoryDTO.builder()
-                .keywords(listOfKeywords)
-                .name("Категория с пивом")
-                .build();
+            .keywords(listOfKeywords)
+            .name("Категория с пивом")
+            .build();
         final String message = "пиво";
         List<CategoryDTO> categories = List.of(categoryWithBeer);
 
@@ -60,13 +60,13 @@ public class CategoryRecognizerServiceTests {
     @Test
     public void returnAnotherWhenOneIsBlank() {
         final KeywordIdDTO keywordBeer = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("пиво")
-                .build();
+            .accountId(1L)
+            .name("пиво")
+            .build();
         final KeywordIdDTO keywordBlank = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("")
-                .build();
+            .accountId(1L)
+            .name("")
+            .build();
 
         List<KeywordIdDTO> listOfKeywordBeer = new ArrayList<>();
         listOfKeywordBeer.add(keywordBeer);
@@ -74,13 +74,13 @@ public class CategoryRecognizerServiceTests {
         listOfKeywordBlank.add(keywordBlank);
 
         final CategoryDTO categoryWithBeer = CategoryDTO.builder()
-                .keywords(listOfKeywordBeer)
-                .name("Категория с пивом")
-                .build();
+            .keywords(listOfKeywordBeer)
+            .name("Категория с пивом")
+            .build();
         final CategoryDTO categoryWithBlank = CategoryDTO.builder()
-                .keywords(listOfKeywordBlank)
-                .name("Категория без ключевых слов")
-                .build();
+            .keywords(listOfKeywordBlank)
+            .name("Категория без ключевых слов")
+            .build();
         final String message = "молоко";
         List<CategoryDTO> categories = List.of(categoryWithBeer, categoryWithBlank);
 
@@ -92,26 +92,26 @@ public class CategoryRecognizerServiceTests {
     @Test
     public void returnCorrectCategoryWhenMisspell() {
         final KeywordIdDTO keywordLupa = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("лупа")
-                .build();
+            .accountId(1L)
+            .name("лупа")
+            .build();
         final KeywordIdDTO keywordPupa = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("пупа")
-                .build();
+            .accountId(1L)
+            .name("пупа")
+            .build();
         List<KeywordIdDTO> listOfKeywordPupa = new ArrayList<>();
         listOfKeywordPupa.add(keywordPupa);
         List<KeywordIdDTO> listOfKeywordLupa = new ArrayList<>();
         listOfKeywordLupa.add(keywordLupa);
 
         final CategoryDTO categoryWithLupa = CategoryDTO.builder()
-                .keywords(listOfKeywordLupa)
-                .name("Категория с Лупой")
-                .build();
+            .keywords(listOfKeywordLupa)
+            .name("Категория с Лупой")
+            .build();
         final CategoryDTO categoryWithPupa = CategoryDTO.builder()
-                .keywords(listOfKeywordPupa)
-                .name("Категория с Пупой")
-                .build();
+            .keywords(listOfKeywordPupa)
+            .name("Категория с Пупой")
+            .build();
         final String message = "пупв";
         List<CategoryDTO> categories = List.of(categoryWithLupa, categoryWithPupa);
 
@@ -125,16 +125,16 @@ public class CategoryRecognizerServiceTests {
     public void doNotSuggestCategoryWhenAccuracyIsLow() {
 
         final KeywordIdDTO keywordAnalgin = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("анальгин")
-                .build();
+            .accountId(1L)
+            .name("анальгин")
+            .build();
         List<KeywordIdDTO> listOfKeywords = new ArrayList<>();
         listOfKeywords.add(keywordAnalgin);
 
         final CategoryDTO categoryWithAnalgin = CategoryDTO.builder()
-                .keywords(listOfKeywords)
-                .name("Категория с анальгином")
-                .build();
+            .keywords(listOfKeywords)
+            .name("Категория с анальгином")
+            .build();
         final String message = "апельсин";
         List<CategoryDTO> categories = List.of(categoryWithAnalgin);
 
@@ -149,16 +149,16 @@ public class CategoryRecognizerServiceTests {
     public void suggestCategoryWhenAccuracyIsHigh() {
 
         final KeywordIdDTO keywordApple = KeywordIdDTO.builder()
-                .accountId(1L)
-                .name("яблоко")
-                .build();
+            .accountId(1L)
+            .name("яблоко")
+            .build();
         List<KeywordIdDTO> listOfKeywords = new ArrayList<>();
         listOfKeywords.add(keywordApple);
 
         final CategoryDTO categoryWithApple = CategoryDTO.builder()
-                .keywords(listOfKeywords)
-                .name("Категория с яблоком")
-                .build();
+            .keywords(listOfKeywords)
+            .name("Категория с яблоком")
+            .build();
         String message = "яблоки";
         List<CategoryDTO> categories = List.of(categoryWithApple);
 
@@ -183,13 +183,13 @@ public class CategoryRecognizerServiceTests {
         categories.add(CategoryDTO.builder().name(categoryName).build());
 
         when(llamaApiCategoryRecognizer.recognizeCategoryUsingAPI(message, categories)).thenReturn(
-                mockResponse);
+            mockResponse);
 
         LLMResponseDTO response = llamaApiCategoryRecognizer.recognizeCategoryUsingAPI(message,
-                categories);
+            categories);
 
         Assertions.assertEquals(categoryName, response.getCategoryName());
         Assertions.assertEquals(accuracy, response.getAccuracy(),
-                0.001);
+            0.001);
     }
 }

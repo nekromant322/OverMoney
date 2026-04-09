@@ -1,1 +1,1 @@
-{ { - template "shared.persistentVolumeClaim" . - } }
+{{- template "shared.persistentVolumeClaim" . -}}

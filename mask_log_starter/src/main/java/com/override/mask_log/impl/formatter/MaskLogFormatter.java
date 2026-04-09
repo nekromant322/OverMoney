@@ -74,7 +74,7 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
      * Маскирует секретные заголоки HTTP-сообщения и возвращает
      * новый объект HttpRequest с обновленными заголовками.
      *
-     * @param request объект HttpRequest, представляющий HTTP-сообщение
+     * @param request       объект HttpRequest, представляющий HTTP-сообщение
      * @return объект HttpRequest с обновленными заголовками
      */
     private HttpRequest maskHeader(HttpRequest request) {
@@ -88,9 +88,7 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
         return new MaskedHttpRequest(request, maskedHeaders, request.getRequestUri());
     }
 
-    /**
-     * Маскирует секретные query параметры в uri запроса
-     */
+    /** Маскирует секретные query параметры в uri запроса */
     private HttpRequest maskUri(HttpRequest request) {
         String uri = request.getRequestUri();
         String maskedUri = mask(uri, "([?|&])([^=]+)=([^&]+)", 2,
@@ -106,14 +104,14 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
     /**
      * Находит {@link MaskLogProperties#getMaskedFields() чувствительные} поля в строке по регулярке
      * и заменяет их строкой из функции.
-     *
-     * @param string               строка
-     * @param regex                {@link Pattern регулярка}
-     * @param keyGroup             номер {@link Matcher#group(int) группы} в регулярке, которая является ключем в паре,
-     *                             значение которой нужно маскировать
+     * @param string строка
+     * @param regex {@link Pattern регулярка}
+     * @param keyGroup номер {@link Matcher#group(int) группы} в регулярке, которая является ключем в паре,
+     *                 значение которой нужно маскировать
      * @param replacementGenerator значение регулярки, будет полностью заменено на строку
      *                             из этой функции, функция работает как
      *                             {@link Matcher#appendReplacement(StringBuffer, String) replacement}
+     *
      * @return {@code null} если в строке нет ни одного совпадения, или отформатированную строку.
      */
     private String mask(String string, String regex, int keyGroup, Function<Matcher, String> replacementGenerator) {
@@ -147,18 +145,17 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
 
     /**
      * Маскирует середину строки в соответствии с параметрами
-     *
-     * @param string         строка
+     * @param string строка
      * @param maskPercentage кол-во скрытых символов в процентах
-     * @param mask           маска на место скрытых символов
+     * @param mask маска на место скрытых символов
      * @return отформатированную строку
      */
     private String maskString(String string, int maskPercentage, String mask) {
         int maskedCharacters = (int) Math.ceil((string.length() / 100d) * maskPercentage);
         int unmaskedCharacters = string.length() - maskedCharacters;
         return string.substring(0, unmaskedCharacters / 2) +
-                mask +
-                string.substring(string.length() - unmaskedCharacters / 2);
+               mask +
+               string.substring(string.length() - unmaskedCharacters / 2);
     }
 
     private static final class JsonBody {

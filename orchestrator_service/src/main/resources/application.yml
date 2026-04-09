@@ -1,185 +1,165 @@
-server:
-  port: 8080
-  servlet:
-    encoding:
-      charset: UTF-8
-      force-response: true
-app:
-  cors:
-    allowed-origins:
-      - "https://overmoney.tech"
-      - "https://www.overmoney.tech"
-      - "https://overmoneytest.online"
-
-# Используется для переключения получения транзакций через kafka или через http
-# Необходимо поменять и в orchestrator_service и в telegram_bot_service
-# Для выбора http необходимо установить значение processing: orchestrator
-# Для выбора kafka необходимо установить значение processing: kafka
-service:
-  transaction:
-    processing: kafka
-
-integration:
-  internal:
-    host:
-      telegram-bot: http://telegram-bot-service
-      recognizer: http://recognizer-service
-      payment: http://payment-service
-
-environment: ${ENVIRONMENT:dev}
-
-telegram:
-  bot:
-    token: ${TELEGRAM_BOT_TOKEN:asd}
-    name: ${TELEGRAM_BOT_NAME:asd}
-
-default-category:
-  categories:
-    - name: Зарплата
-      type: INCOME
-    - name: Продукты
-      type: EXPENSE
-    - name: Транспорт
-      type: EXPENSE
-    - name: Рестораны
-      type: EXPENSE
-
-recent-activity:
-  activityDays: 30
-
-admin:
-  allowed_users:
-    Marandyuk_Anatolii,
-    HomerTheBald,
-    Shainara,
-    Kovaaf,
-    vkusnyjchaj,
-    V_EIIE_V,
-    SadWalther,
-    bahertylop,
-    Megokolos,
-    KGrach,
-    akash1gg,
-    sergey_argunov
-
-# Для удаления кейвордов по которым давно не было транзакций
-clean-deprecated-keywords:
-  interval: 7 # Как часто выполняется очистка
-  max-days: 365 # Сколько дней ключевые слова могут быть не использованы
-  min-usage: 1 # Минимальное количество использований
+  server:
+    port: 8080
+    servlet:
+      encoding:
+        charset: UTF-8
+        force-response: true
+    shutdown: graceful
+  app:
+    cors:
+      allowed-origins:
+        - "https://overmoney.tech"
+        - "https://www.overmoney.tech"
+        - "https://overmoneytest.online"
 
 
-filters:
-  authorization-header:
-    header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+  integration:
+    internal:
+      host:
+        telegram-bot: http://telegram-bot-service
+        recognizer: http://recognizer-service
+        payment: http://payment-service
 
-jwt:
-  secret:
-    access: ${JWT_ACCESS_KEY:qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==}
-    refresh: ${JWT_REFRESH_KEY:zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==}
-  token:
-    lifetime-in-hours: 24
-spring:
-  servlet:
-    multipart:
-      max-file-size: 10MB
-      ## переменная используется в классе CommonExceptionHandler при ошибке MaxUploadSizeExceededException
-      ## для формирования error message, кт в дальнейшем будет отображена на фронт пользователю
-      max-request-size: 10MB
-  kafka:
-    topics:
-      request: transaction-request-events-topic
-      response: transaction-response-events-topic
-      sse: transaction-sse-events-topic
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      group-id: transaction-sent-events
-      properties:
-        spring.json.trusted.packages: com.override.dto
-        spring:
-          deserializer:
-            key:
-              delegate:
-                class: org.apache.kafka.common.serialization.StringDeserializer
-            value:
-              delegate:
-                class: org.springframework.kafka.support.serializer.JsonDeserializer
+  environment: ${ENVIRONMENT:dev}
+
+  telegram:
+    bot:
+      token: ${TELEGRAM_BOT_TOKEN:asd}
+      name: ${TELEGRAM_BOT_NAME:asd}
+
+  default-category:
+    categories:
+      -
+        name: Зарплата
+        type: INCOME
+      -
+        name: Продукты
+        type: EXPENSE
+      -
+        name: Транспорт
+        type: EXPENSE
+      -
+        name: Рестораны
+        type: EXPENSE
+
+  recent-activity:
+    activityDays: 30
+
+  admin:
+    allowed_users:
+      Marandyuk_Anatolii,
+      HomerTheBald,
+      Shainara,
+      Kovaaf,
+      vkusnyjchaj,
+      V_EIIE_V,
+      SadWalther,
+      bahertylop,
+      Megokolos,
+      KGrach,
+      akash1gg,
+      sergey_argunov
+
+  # Для удаления кейвордов по которым давно не было транзакций
+  clean-deprecated-keywords:
+    interval: 7 # Как часто выполняется очистка
+    max-days: 365 # Сколько дней ключевые слова могут быть не использованы
+    min-usage: 1 # Минимальное количество использований
+
+
+  filters:
+    authorization-header:
+      header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
+
+  jwt:
+    secret:
+      access: ${JWT_ACCESS_KEY:qBTmv4oXFFR2GwjexDJ4t6fsIUIUhhXqlktXjXdkcyygs8nPVEwMfo29VDRRepYDVV5IkIxBMzr7OEHXEHd37w==}
+      refresh: ${JWT_REFRESH_KEY:zL1HB3Pch05Avfynovxrf/kpF9O2m4NCWKJUjEp27s9J2jEG3ifiKCGylaZ8fDeoONSTJP/wAzKawB8F9rOMNg==}
+    token:
+      lifetime-in-hours: 24
+  spring:
+    lifecycle:
+      timeout-per-shutdown-phase: 30s
+    autoconfigure:
+      exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
+    servlet:
+      multipart:
+        max-file-size: 10MB
+        ## переменная используется в классе CommonExceptionHandler при ошибке MaxUploadSizeExceededException
+        ## для формирования error message, кт в дальнейшем будет отображена на фронт пользователю
+        max-request-size: 10MB
 
 
 
-  datasource:
-    url: jdbc:postgresql://${ORCHESTRATOR_DB_HOST:localhost}:${ORCHESTRATOR_DB_PORT:5433}/orchestrator-db
-    username: ${ORCHESTRATOR_DB_USER:postgres}
-    password: ${ORCHESTRATOR_DB_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
+    datasource:
+      url: jdbc:postgresql://${ORCHESTRATOR_DB_HOST:localhost}:${ORCHESTRATOR_DB_PORT:5433}/orchestrator-db
+      username: ${ORCHESTRATOR_DB_USER:postgres}
+      password: ${ORCHESTRATOR_DB_PASSWORD:postgres}
+      driver-class-name: org.postgresql.Driver
 
-  thymeleaf:
-    enabled: true
-    prefix: classpath:/templates/
-    suffix: .html
+    thymeleaf:
+      enabled: true
+      prefix: classpath:/templates/
+      suffix: .html
 
-  jpa:
-    database: postgresql
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    generate-ddl: true
-    hibernate:
-      ddl-auto: validate
-    properties:
+    jpa:
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+      generate-ddl: true
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-        current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        ddl-auto: validate
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+          current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+          show_sql: true
 
-  application:
-    name: orchestrator-service
+    application:
+      name: orchestrator-service
 
-  liquibase:
-    enabled: true
-    change-log: /db/changelog/db.changelog-master.xml
+    liquibase:
+      enabled: true
+      change-log: /db/changelog/db.changelog-master.xml
 
-  profiles:
-    active: ${SPRING_APPLICATION_PROFILE:dev}
+    profiles:
+      active: ${SPRING_APPLICATION_PROFILE:dev}
 
-logging:
-  level:
-    org.zalando.logbook: TRACE
+  logging:
+    level:
+      org.zalando.logbook: TRACE
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,prometheus,info,gitInfo
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: health,prometheus,info,gitInfo
 
-  metrics:
-    export:
-      prometheus:
-        enabled: true
-    distribution:
-      percentiles-histogram:
-        "[http.server.requests]": true
+    metrics:
+      export:
+        prometheus:
+          enabled: true
+      distribution:
+        percentiles-histogram:
+          "[http.server.requests]": true
 
-long-polling:
-  overmoney:
-    period-of-inactivity: 10_000
+  long-polling:
+    overmoney:
+      period-of-inactivity: 10_000
 
-mask-log-spring-boot-starter:
-  maskedFields:
-    - x-internal-key
-    - investAccountId
-    - token
-    - cookie
-    - tinkoffAccountId
-    - favoriteAccountId
+  mask-log-spring-boot-starter:
+    maskedFields:
+      - x-internal-key
+      - investAccountId
+      - token
+      - cookie
+      - tinkoffAccountId
+      - favoriteAccountId
 
-# Валидность подсказки
-recognizer:
-  min-accuracy: 0.7 # Минимальная точность подсказки
+  # Валидность подсказки
+  recognizer:
+    min-accuracy: 0.7 # Минимальная точность подсказки
 
-# степень схожести слов при неточном поиске
-# симечки | семечки ~= 0.45
-search:
-  accuracy-threshold: 0.35
+  # степень схожести слов при неточном поиске
+  # симечки | семечки ~= 0.45
+  search:
+    accuracy-threshold: 0.35

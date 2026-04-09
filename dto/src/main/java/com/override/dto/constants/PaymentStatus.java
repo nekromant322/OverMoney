@@ -10,8 +10,7 @@ public enum PaymentStatus {
     SUCCESS("succeeded"),
     CANCELED("canceled"),
     PENDING("pending"),
-    WAITING("waiting_for_capture"),
-    ERROR("error");
+    WAITING("waiting_for_capture");
 
     @JsonValue
     private final String status;

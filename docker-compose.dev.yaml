@@ -57,7 +57,7 @@ services:
       SPRING_INTEGRATION_INTERNAL_HOST_TELEGRAM_BOT: http://telegram-bot:8082
       SPRING_INTEGRATION_INTERNAL_HOST_INVEST: http://invest:8087
       SPRING_INTEGRATION_INTERNAL_HOST_PAYMENT: http://payment:8084
-      #      закоменти следующую строку если охота пулять транзакции через кафку
+#      закоменти следующую строку если охота пулять транзакции через кафку
       SPRING_SERVICE_TRANSACTION_PROCESSING: orchestrator
     depends_on:
       - orchestrator-db

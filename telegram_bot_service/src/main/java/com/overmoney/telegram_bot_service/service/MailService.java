@@ -19,7 +19,7 @@ public class MailService {
 
     @Autowired
     private AnnounceRepository announceRepository;
-
+  
     public Mail createMail(Announce announce, StatusMailing statusMailing, long userTgId) {
         return Mail.builder()
                 .announce(announce)
@@ -39,7 +39,7 @@ public class MailService {
     public List<Mail> findAllMailsByStatusAndAnnounce(StatusMailing statusMailing, Announce announce) {
         return mailRepository.findAllMailsByStatusMailing(statusMailing, announce);
     }
-
+  
     public List<MailDTO> getCountOfMailsStatusByAnnounceId() {
         Announce announce = announceRepository.findTopByOrderByIdDesc().get();
         return mailRepository.getCountOfMailsStatusByAnnounce(announce);

@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -50,11 +50,11 @@ class SuggestionServiceTest {
         suggestionService.createSuggestion(transactionDTO);
 
         verify(suggestionRepository).save(argThat(suggestion ->
-                suggestion.getSuggestedCategoryId().equals(suggestedCategoryId) &&
-                        suggestion.getTransaction().equals(transaction) &&
-                        suggestion.getAccuracy().equals(accuracy) &&
-                        suggestion.getAlgorithm().equals(algorithm.getName()) &&
-                        suggestion.getIsCorrect() == null
+            suggestion.getSuggestedCategoryId().equals(suggestedCategoryId) &&
+                suggestion.getTransaction().equals(transaction) &&
+                suggestion.getAccuracy().equals(accuracy) &&
+                suggestion.getAlgorithm().equals(algorithm.getName()) &&
+                suggestion.getIsCorrect() == null
         ));
     }
 

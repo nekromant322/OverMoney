@@ -1,7 +1,7 @@
 button {
-    user-select: none;
+  user-select: none;
 }
 
 button:hover {
-    cursor: pointer;
+  cursor: pointer;
 }

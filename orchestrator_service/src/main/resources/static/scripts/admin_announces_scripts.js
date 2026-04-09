@@ -57,7 +57,7 @@ function drawStatusListOnPage(statusList) {
     });
     let sumOfStatusCount = errorNumber + pendingNumber + successNumber;
 
-    let htmlStatus = ` 
+        let htmlStatus = ` 
         <label for="status_all">Всего:</label>
         <input type="number" readonly id="status_all" name="status_all" value="${sumOfStatusCount}"/>
         <label for="status_success">Успешно отправлено:</label>

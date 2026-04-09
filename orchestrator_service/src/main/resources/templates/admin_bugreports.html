@@ -20,64 +20,64 @@
 </head>
 <body>
 <
-<header id="header">
-    <nav class="links" style="--items: 3;">
-        <a href="/admin/stat">Статистика</a>
-        <a href="/admin/announces">Рассылки</a>
-        <a href="/admin/bugReports">Багрепорты</a>
-        <span class="line"></span>
-    </nav>
-</header>
+    <header id="header">
+        <nav class="links" style="--items: 3;">
+            <a href="/admin/stat">Статистика</a>
+            <a href="/admin/announces">Рассылки</a>
+            <a href="/admin/bugReports">Багрепорты</a>
+            <span class="line"></span>
+        </nav>
+    </header>
 
-<div class="content">
-    <div class="tab-pane fade show active" id="home" role="tabpanel"
-         aria-labelledby="bug-reports-table">
-        <table class="table" id="bug-reports-table">
-            <thead class="table-dark">
-            <tr>
-                <th>ID</th>
-                <th>Пользователь</th>
-                <th>Дата</th>
-                <th>Сообщение</th>
-                <th></th>
-            </tr>
-            </thead>
+    <div class="content">
+        <div class="tab-pane fade show active" id="home" role="tabpanel"
+             aria-labelledby="bug-reports-table">
+            <table class="table" id="bug-reports-table">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Пользователь</th>
+                        <th>Дата</th>
+                        <th>Сообщение</th>
+                        <th></th>
+                    </tr>
+                </thead>
 
-            <tbody id="bug-reports-table-body">
-            </tbody>
-        </table>
+                <tbody id="bug-reports-table-body">
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
 
-<!--Модальное окно Delete-->
-<div class="modal h-auto" id="modal-delete" tabindex="-1" aria-labelledby="modal-delete" aria-hidden="true"
-     role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Удалить отчет о баге</h5>
-            </div>
-            <div class="modal-body">
-                <div hidden class="form-group mt-3 mx-auto" style="width: 360px">
-                    <label for="hidden-delete-id"></label>
-                    <input id="hidden-delete-id" type="text" name="id" class="form-control"/>
+    <!--Модальное окно Delete-->
+    <div class="modal h-auto" id="modal-delete" tabindex="-1" aria-labelledby="modal-delete" aria-hidden="true"
+         role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Удалить отчет о баге</h5>
+                </div>
+                <div class="modal-body">
+                    <div hidden class="form-group mt-3 mx-auto" style="width: 360px">
+                        <label for="hidden-delete-id"></label>
+                        <input id="hidden-delete-id" type="text" name="id" class="form-control"/>
+                    </div>
+
+                    <div class="text-modal">
+                        <span> Вы точно хотите удалить отчет под номером </span>
+                        <span id="shower-delete-id"></span>
+                        <span>?</span>
+                    </div>
                 </div>
 
-                <div class="text-modal">
-                    <span> Вы точно хотите удалить отчет под номером </span>
-                    <span id="shower-delete-id"></span>
-                    <span>?</span>
+                <div class="modal-footer">
+                    <button id="delete-button" type="button" class="btn btn-primary" onclick="deleteBugreportClick()">
+                        Удалить
+                    </button>
                 </div>
-            </div>
-
-            <div class="modal-footer">
-                <button id="delete-button" type="button" class="btn btn-primary" onclick="deleteBugreportClick()">
-                    Удалить
-                </button>
             </div>
         </div>
     </div>
-</div>
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8="

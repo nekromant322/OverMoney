@@ -22,6 +22,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import static org.mockito.Mockito.*;
@@ -148,7 +150,6 @@ public class OverMoneyAccountServiceTest {
         verify(userMapper, times(1)).mapChatMemberDTOToUser(chatMemberDTO);
         verify(userService, times(1)).saveUser(user);
     }
-
     @Test
     public void removeChatMemberToAccountTest() throws InstanceNotFoundException {
         OverMoneyAccount overMoneyAccount = OverMoneyAccount.builder()

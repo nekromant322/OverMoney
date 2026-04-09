@@ -32,7 +32,6 @@ public class ExportUserDataServiceTest {
     private TransactionService transactionService;
     @Mock
     private OverMoneyAccountService overMoneyAccountService;
-
     @Test
     public void downloadExcelFileTest() throws IOException, InstanceNotFoundException {
         List<CategoryDTO> categoryDTOList = new ArrayList<>();

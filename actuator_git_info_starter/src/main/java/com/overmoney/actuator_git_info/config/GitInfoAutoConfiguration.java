@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean;
 public class GitInfoAutoConfiguration {
 
 
+
     @Bean
     @ConditionalOnMissingBean
     public ApplicationStartUpListener applicationStartUpListener() {

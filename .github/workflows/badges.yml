@@ -47,8 +47,8 @@ jobs:
 
       - name: Commit the badge (if it changed)
         run: |
-          git config --global user.name github-actions
-          git config --global user.email github-actions@github.com
-          git add -A
-          git commit -m "JaCoCo coverage badges"
-          git push --force origin HEAD:badges-branch
+           git config --global user.name github-actions
+           git config --global user.email github-actions@github.com
+           git add -A
+           git commit -m "JaCoCo coverage badges"
+           git push --force origin HEAD:badges-branch

@@ -61,7 +61,7 @@ function applyFilter() {
     }
 }
 
-function makePayLoad() {
+function makePayLoad(){
     const searchText = document.getElementById("search-input").value;
 
     return {

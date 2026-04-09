@@ -15,8 +15,8 @@ public interface RecognizerFeign {
 
     @PostMapping("/recognizer/category/suggested")
     void recognizeCategory(@RequestParam String message,
-                           @RequestParam UUID transactionId,
-                           @RequestBody List<CategoryDTO> categories);
+                                                  @RequestParam UUID transactionId,
+                                                  @RequestBody List<CategoryDTO> categories);
 
     @GetMapping("/recognizer/deepseek/balance")
     String getBalance();

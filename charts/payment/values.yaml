@@ -1,8 +1,8 @@
 deployment:
   registry: overregistry.ru
   containers:
-    requestsMemory: "150M"
-    limitsMemory: "300M"
+    requestsMemory: "300M"
+    limitsMemory: "500M"
     image: nekromant322/overmoney-payment
     env:
       - name: SPRING_APPLICATION_PROFILE
@@ -42,31 +42,16 @@ deployment:
           secretKeyRef:
             name: prod
             key: telegram-bot-token
-      - name: ROBOKASSA_LOGIN_SHOP_ID
+      - name: YOOKASSA_SHOP_ID
         valueFrom:
           secretKeyRef:
             name: prod
-            key: robokassa-login-shop-id
-      - name: ROBOKASSA_PASSWORD_ONE
+            key: yookassa-shop-id
+      - name: YOOKASSA_SECRET_KEY
         valueFrom:
           secretKeyRef:
             name: prod
-            key: robokassa-password-one
-      - name: ROBOKASSA_PASSWORD_TWO
-        valueFrom:
-          secretKeyRef:
-            name: prod
-            key: robokassa-password-two
-      - name: ROBOKASSA_TEST_PASSWORD_ONE
-        valueFrom:
-          secretKeyRef:
-            name: prod
-            key: robokassa-test-password-one
-      - name: ROBOKASSA_TEST_PASSWORD_TWO
-        valueFrom:
-          secretKeyRef:
-            name: prod
-            key: robokassa-test-password-two
+            key: yookassa-secret-key
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"

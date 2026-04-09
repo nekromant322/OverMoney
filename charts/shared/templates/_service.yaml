@@ -1,16 +1,16 @@
-{ { - define "shared.service" - } }
+{{- define "shared.service" -}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: { { .Chart.Name } }-service
+  name: {{ .Chart.Name }}-service
   {{- if .Values.serviceNamespace }}
-  namespace: { { .Values.serviceNamespace } }
-  { { - end } }
+  namespace: {{ .Values.serviceNamespace }}
+  {{- end }}
 spec:
   ports:
-    - port: { { .Values.servicePort } }
+    - port: {{ .Values.servicePort }}
       protocol: TCP
-      targetPort: { { .Values.serviceTargetPort } }
+      targetPort: {{ .Values.serviceTargetPort }}
   selector:
-    app: { { .Chart.Name } }
-  { { - end - } }
+    app: {{ .Chart.Name }}
+{{- end -}}

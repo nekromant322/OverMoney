@@ -15,7 +15,7 @@ public class MaskedHttpRequest implements HttpRequest {
     private HttpHeaders maskedHeaders;
     private String maskedUri;
 
-    public MaskedHttpRequest(HttpRequest httpRequest, HttpHeaders maskedHeaders, String maskedUri) {
+    public MaskedHttpRequest(HttpRequest httpRequest, HttpHeaders maskedHeaders , String maskedUri) {
         this.httpRequest = httpRequest;
         this.maskedHeaders = maskedHeaders;
         this.maskedUri = maskedUri;
