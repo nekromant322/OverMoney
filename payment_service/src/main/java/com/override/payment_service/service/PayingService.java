@@ -3,7 +3,6 @@ package com.override.payment_service.service;
 import com.override.dto.PaymentResponseDTO;
 import com.override.dto.constants.Currency;
 import com.override.dto.constants.PaymentStatus;
-import com.override.payment_service.config.PayingConfig;
 import com.override.payment_service.exceptions.RepeatPaymentException;
 import com.override.payment_service.kafka.service.ProducerService;
 import com.override.payment_service.model.Payment;
