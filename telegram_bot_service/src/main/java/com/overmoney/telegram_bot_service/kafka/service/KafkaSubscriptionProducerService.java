@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-@ConditionalOnProperty(name = "service.transaction.processing", havingValue = "kafka")
 @Slf4j
 @RequiredArgsConstructor
 public class KafkaSubscriptionProducerService {
