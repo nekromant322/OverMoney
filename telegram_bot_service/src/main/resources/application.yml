@@ -36,13 +36,6 @@
 
   server:
     port: 8080
-# Используется для переключения получения транзакций через kafka или через http
-# Необходимо поменять и в orchestrator_service и в telegram_bot_service
-# Для выбора http необходимо установить значение processing: orchestrator
-# Для выбора kafka необходимо установить значение processing: kafka
-  service:
-    transaction:
-      processing: orchestrator
 
   spring:
     application:
@@ -71,32 +64,6 @@
 
     profiles:
       active: ${SPRING_APPLICATION_PROFILE:dev}
-    kafka:
-      topics:
-        request: transaction-request-events-topic
-        response: transaction-response-events-topic
-        payment-request: payment-requests
-        payment-response: payment-responses
-        subscription-status-updates: subscription-status-updates
-        subscription-notification: subscription-notification
-      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
-      producer:
-        key-serializer: org.apache.kafka.common.serialization.StringSerializer
-        value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-      consumer:
-        key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-        value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-        group-id: transaction-sent-events
-        properties:
-          spring.json.trusted.packages: com.override.dto
-          spring:
-            deserializer:
-              key:
-                delegate:
-                  class: org.apache.kafka.common.serialization.StringDeserializer
-              value:
-                delegate:
-                  class: org.springframework.kafka.support.serializer.JsonDeserializer
 
   logging:
     level:

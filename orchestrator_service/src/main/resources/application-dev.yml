@@ -12,8 +12,6 @@
   spring:
     autoconfigure:
       exclude: org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration
-    kafka:
-      bootstrap-servers: http://localhost:9092
 
   app:
     cors:

@@ -113,10 +113,6 @@
             <version>3.14.0</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.overmoney</groupId>
             <artifactId>actuator_git_info_starter</artifactId>
             <version>0.0.1-SNAPSHOT</version>

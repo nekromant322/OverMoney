@@ -2,7 +2,6 @@ package com.override.orchestrator_service.service;
 
 
 import com.override.dto.TransactionDTO;
-import com.override.orchestrator_service.kafka.consumerproducer.SseProducer;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import lombok.extern.slf4j.Slf4j;
