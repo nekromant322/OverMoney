@@ -1,10 +1,9 @@
 package com.override.payment_service.service;
 
-import com.override.dto.PaymentResponseDTO;
 import com.override.dto.constants.Currency;
 import com.override.dto.constants.PaymentStatus;
+import com.override.payment_service.config.PayingConfig;
 import com.override.payment_service.exceptions.RepeatPaymentException;
-import com.override.payment_service.kafka.service.ProducerService;
 import com.override.payment_service.model.Payment;
 import com.override.payment_service.model.PaymentCallback;
 import com.override.payment_service.model.Subscription;
@@ -30,9 +29,6 @@ class PayingServiceTest {
 
     @Mock
     private PaymentService paymentService;
-
-    @Mock
-    private ProducerService producerService;
 
     @Mock
     private RoboKassaService roboKassaService;
@@ -131,6 +127,5 @@ class PayingServiceTest {
         verify(roboKassaService).validatePaymentCallbackSignature(callback);
         verify(paymentService).successPayment(1L);
         verify(subscriptionService).activateSubscription(payment);
-        verify(producerService).sendSubscriptionNotification(any(PaymentResponseDTO.class));
     }
 }
