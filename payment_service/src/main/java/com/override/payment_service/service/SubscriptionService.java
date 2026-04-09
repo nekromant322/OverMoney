@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -50,5 +51,15 @@ public class SubscriptionService {
         subscription.setEndDate(LocalDateTime.now().plusMonths(1));
         subscription.setActive(true);
         return subscriptionRepository.save(subscription);
+    }
+
+    @Transactional
+    public List<Subscription> findAllByEndDateBeforeAndActiveTrue(LocalDateTime now) {
+        return subscriptionRepository.findAllByEndDateBeforeAndActiveTrue(now);
+    }
+
+    @Transactional
+    public List<Subscription> saveAll(List<Subscription> subscriptionList) {
+        return subscriptionRepository.saveAll(subscriptionList);
     }
 }
