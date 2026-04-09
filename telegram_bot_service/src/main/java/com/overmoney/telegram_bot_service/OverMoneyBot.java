@@ -354,7 +354,6 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
             log.error(e.getMessage(), e);
             sendMessage(chatId, TRANSACTION_MESSAGE_INVALID); // todo возможно тут 1
         }
-
     }
 
     private List<TransactionMessageDTO> splitToTransactionDtoList(TransactionMessageDTO transactionMessageDTO) {
