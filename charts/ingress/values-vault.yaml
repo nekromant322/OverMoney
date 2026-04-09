@@ -1,12 +1,12 @@
 environment: vault
 tls:
   - hosts:
-      - overmoneytest.online
+      - vault.overmoneytest.online
     secretName: vault-tls-secret
 rules:
-  - host: overmoneytest.online
+  - host: vault.overmoneytest.online
     paths:
-      - path: /vault
+      - path: /
         pathType: Prefix
         backend:
           service:
