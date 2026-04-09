@@ -4,7 +4,6 @@ import com.overmoney.telegram_bot_service.constants.KafkaConstants;
 import com.override.dto.PaymentRequestDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-@ConditionalOnProperty(name = "service.transaction.processing", havingValue = "kafka")
 @Slf4j
 @RequiredArgsConstructor
 public class KafkaSubscriptionProducerService {
