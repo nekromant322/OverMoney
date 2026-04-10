@@ -2,7 +2,6 @@ package com.override.orchestrator_service.service;
 
 
 import com.override.dto.TransactionDTO;
-import com.override.orchestrator_service.kafka.consumerproducer.SseProducer;
 import com.override.orchestrator_service.mapper.TransactionMapper;
 import com.override.orchestrator_service.model.Transaction;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import reactor.core.publisher.FluxSink;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -32,8 +30,6 @@ public class SseService {
     private String instanceId;
 
     private Map<Long, FluxSink<ServerSentEvent>> subscriptions = new ConcurrentHashMap<>();
-    @Autowired
-    private SseProducer sseProducer;
 
     public Flux<ServerSentEvent> createSseStream(Long userId) {
         Flux<ServerSentEvent> dataStream = Flux.create(fluxSink -> {
@@ -72,12 +68,6 @@ public class SseService {
             log.info("Send message, {} in subscription", userId);
         } else {
             log.info("Do not send message, {} not in subscription", userId);
-        }
-    }
-
-    public void checkUncategorizedTransaction(Transaction transaction) {
-        if (Objects.isNull(transaction.getCategory())) {
-            sseProducer.sendMessage(transaction.getId());
         }
     }
 }
