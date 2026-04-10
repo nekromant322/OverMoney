@@ -43,18 +43,18 @@ deployment:
       - name: ROBOKASSA_LOGIN_SHOP_ID
         valueFrom:
           secretKeyRef:
+            key: qa-robokassa_login_shop_id
             name: qa
-            key: qa-robokassa-login-shop-id
       - name: ROBOKASSA_PASSWORD_ONE
         valueFrom:
           secretKeyRef:
-            name: qa
             key: qa-robokassa-password-one
+            name: qa
       - name: ROBOKASSA_PASSWORD_TWO
         valueFrom:
           secretKeyRef:
-            name: qa
             key: qa-robokassa-password-two
+            name: qa
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
