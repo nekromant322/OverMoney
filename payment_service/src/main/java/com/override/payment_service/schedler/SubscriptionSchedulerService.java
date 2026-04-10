@@ -20,7 +20,7 @@ public class SubscriptionSchedulerService {
     public void updateSubscriptionTimer() {
         System.out.println(LocalDateTime.now());
         List<Subscription> listOfEndsSubscriptions = subscriptionService.findAllByEndDateBeforeAndActiveTrue(
-                LocalDateTime.now().plusHours(3));
+                (LocalDateTime.now().plusHours(3)));
         listOfEndsSubscriptions.forEach(subscription -> subscription.setActive(false));
         subscriptionService.saveAll(listOfEndsSubscriptions);
     }
