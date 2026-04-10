@@ -16,6 +16,4 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
     Optional<Subscription> findByPayment(Payment payment);
 
     List<Subscription> findAllByEndDateBeforeAndActiveTrue(LocalDateTime now);
-
-    List<Subscription> saveAll(List<Subscription> subscriptionList);
 }
