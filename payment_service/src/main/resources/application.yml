@@ -1,12 +1,9 @@
 environment: ${ENVIRONMENT:dev}
 
 server:
-  port: 8080
+  port: 8084
 
-service:
-  transaction:
-    processing: kafka
-
+spring:
   datasource:
     url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payments-db
     username: ${PAYMENT_DB_USER:postgres}
@@ -84,11 +81,6 @@ mask-log-spring-boot-starter:
   maskedFields:
     - x-internal-key
 
-subscription:
-  duration:
-    months: 1
-  payment:
-    timeout-minutes: 10
 robokassa:
   login-shop-id: ${ROBOKASSA_LOGIN_SHOP_ID}
   password-one: ${ROBOKASSA_PASSWORD_ONE}
@@ -97,3 +89,4 @@ robokassa:
   test-password-two: ${ROBOKASSA_TEST_PASSWORD_TWO}
   subscription-amount: 1
   base-url: https://auth.robokassa.ru
+  test-mode: true
