@@ -55,6 +55,16 @@ deployment:
           secretKeyRef:
             key: qa-robokassa-password-two
             name: qa
+      - name: ROBOKASSA_TEST_PASSWORD_ONE
+        valueFrom:
+          secretKeyRef:
+            key: qa-robokassa-test-password-one
+            name: qa
+      - name: ROBOKASSA_TEST_PASSWORD_TWO
+        valueFrom:
+          secretKeyRef:
+            key: qa-robokassa-test-password-two
+            name: qa
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"
