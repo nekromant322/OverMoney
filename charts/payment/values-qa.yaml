@@ -43,7 +43,7 @@ deployment:
       - name: ROBOKASSA_LOGIN_SHOP_ID
         valueFrom:
           secretKeyRef:
-            key: qa-robokassa_login_shop_id
+            key: qa-robokassa-login-shop-id
             name: qa
       - name: ROBOKASSA_PASSWORD_ONE
         valueFrom:
