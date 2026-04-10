@@ -5,8 +5,6 @@ orchestrator:
   host: overridetech.ru
 
 spring:
-  profiles:
-    active: ${SPRING_PROFILES_ACTIVE:dev}
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
