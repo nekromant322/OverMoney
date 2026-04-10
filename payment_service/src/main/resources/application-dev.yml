@@ -31,48 +31,10 @@ spring:
   profiles:
     active: ${SPRING_APPLICATION_PROFILE:dev}
 
-  kafka:
-    topics:
-      payment-request: payment-requests
-      payment-response: payment-responses
-      subscription-status-updates: subscription-status-updates
-      subscription-notification: subscription-notification
-    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-      group-id: transaction-payment-events
-      properties:
-        spring.json.trusted.packages: com.override.dto
-        spring:
-          deserializer:
-            key:
-              delegate:
-                class: org.apache.kafka.common.serialization.StringDeserializer
-            value:
-              delegate:
-                class: org.springframework.kafka.support.serializer.JsonDeserializer
-
 logging:
   level:
     org.zalando.logbook: TRACE
     org.springframework.kafka: INFO
-
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health,prometheus,gitInfo
-  metrics:
-    export:
-      prometheus:
-        enabled: true
-    distribution:
-      percentiles-histogram:
-        "[http.server.requests]": true
 
 authorization-header:
   header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
