@@ -1,15 +1,12 @@
-environment: ${ENVIRONMENT:dev}
-
 server:
   port: 8080
 
-spring:
-  datasource:
-    url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payments-db
-    username: ${PAYMENT_DB_USER:postgres}
-    password: ${PAYMENT_DB_PASSWORD:postgres}
-    driver-class-name: org.postgresql.Driver
+orchestrator:
+  host: overridetech.ru
 
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -20,28 +17,22 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
-        hbm2ddl:
-          auto: update
-    show-sql: true
 
   liquibase:
     enabled: true
     change-log: /db/changelog/db.changelog-master.xml
 
-  profiles:
-    active: ${SPRING_APPLICATION_PROFILE:dev}
+
+  datasource:
+    url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payments-db
+    username: ${PAYMENT_DB_USER:postgres}
+    password: ${PAYMENT_DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
 
 logging:
   level:
     org.zalando.logbook: TRACE
     org.springframework.kafka: INFO
-
-authorization-header:
-  header-value: ${INTERNAL_KEY_HEADER:X-INTERNAL-KEY}
-
-mask-log-spring-boot-starter:
-  maskedFields:
-    - x-internal-key
 
 robokassa:
   login-shop-id: ${ROBOKASSA_LOGIN_SHOP_ID}
@@ -49,6 +40,7 @@ robokassa:
   password-two: ${ROBOKASSA_PASSWORD_TWO}
   test-password-one: ${ROBOKASSA_TEST_PASSWORD_ONE}
   test-password-two: ${ROBOKASSA_TEST_PASSWORD_TWO}
-  subscription-amount: 1
   base-url: https://auth.robokassa.ru
   test-mode: true
+paying:
+  subscription-amount: 1

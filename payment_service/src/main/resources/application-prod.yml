@@ -5,6 +5,8 @@ orchestrator:
   host: overridetech.ru
 
 spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:prod}
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -39,6 +41,6 @@ robokassa:
   test-password-one: ${ROBOKASSA_TEST_PASSWORD_ONE}
   test-password-two: ${ROBOKASSA_TEST_PASSWORD_TWO}
   base-url: https://auth.robokassa.ru
-  test-mode: true
+  test-mode: false
 paying:
   subscription-amount: 1

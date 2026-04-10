@@ -4,7 +4,7 @@ deployment:
     image: overregistry.ru/overmoney-payment-qa
     env:
       - name: SPRING_APPLICATION_PROFILE
-        value: "prod"
+        value: "dev"
       - name: ORCHESTRATOR_HOST
         value: "https://testmoney.tech/overmoney"
       - name: TELEGRAM_BOT_NAME
