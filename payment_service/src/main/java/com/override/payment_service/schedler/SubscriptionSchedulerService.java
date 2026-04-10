@@ -18,7 +18,7 @@ public class SubscriptionSchedulerService {
     @Scheduled(fixedRate = 60000)
     @Transactional
     public void updateSubscriptionTimer() {
-        System.out.println(LocalDateTime.now());
+        System.out.println(LocalDateTime.now().plusHours(3));
         List<Subscription> listOfEndsSubscriptions = subscriptionService.findAllByEndDateBeforeAndActiveTrue(
                 (LocalDateTime.now().plusHours(3)));
         listOfEndsSubscriptions.forEach(subscription -> subscription.setActive(false));
