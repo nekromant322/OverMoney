@@ -8,6 +8,7 @@ import org.springframework.util.DigestUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @Profile("dev")
@@ -22,7 +23,7 @@ public class DevSignatureStrategy implements SignatureStrategy {
                 shopId,
                 amount,
                 invoiceId,
-                robokassaConfig.getTestPasswordOne()).getBytes()
+                robokassaConfig.getTestPasswordOne()).getBytes(StandardCharsets.UTF_8)
         );
     }
 
