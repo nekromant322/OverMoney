@@ -8,10 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -58,15 +56,5 @@ public class SubscriptionService {
         subscription.setStartDate(ZonedDateTime.now(ZoneId.of("Europe/Moscow")));
         subscription.setEndDate(ZonedDateTime.now(ZoneId.of("Europe/Moscow")).plusMonths(1));
         return subscriptionRepository.save(subscription);
-    }
-
-    @Transactional
-    public List<Subscription> findAllByEndDateBeforeAndActiveTrue(LocalDateTime now) {
-        return subscriptionRepository.findAllByEndDateBeforeAndActiveTrue(now);
-    }
-
-    @Transactional
-    public List<Subscription> saveAll(List<Subscription> subscriptionList) {
-        return subscriptionRepository.saveAll(subscriptionList);
     }
 }

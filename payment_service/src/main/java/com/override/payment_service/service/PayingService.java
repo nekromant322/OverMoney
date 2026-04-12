@@ -3,7 +3,6 @@ package com.override.payment_service.service;
 import com.override.dto.constants.Currency;
 import com.override.dto.constants.PaymentStatus;
 import com.override.payment_service.config.PayingConfig;
-import com.override.payment_service.exceptions.RepeatPaymentException;
 import com.override.payment_service.model.Payment;
 import com.override.payment_service.model.PaymentCallback;
 import com.override.payment_service.model.Subscription;
@@ -31,11 +30,7 @@ public class PayingService {
     @Transactional
     public String createPayment(Long chatId) {
         Subscription subscription = subscriptionService.getOrCreateSubscription(chatId);
-        if (subscription.isActive()) {
-            throw new RepeatPaymentException("Подписка уже активна");
-        }
 
-        //TODO проверить .email (робакасса по идее должна передавать)
         Payment payment = paymentService.save(Payment.builder()
                 .paymentStatus(PaymentStatus.PENDING)
                 .description("оплата подписки")
