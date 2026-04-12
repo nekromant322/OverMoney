@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
@@ -23,17 +23,12 @@ public class Subscription {
 
     @Column(name = "chat_id", nullable = false, unique = true)
     private Long chatId;
-    @Column(name = "email")
-    private String email;
 
     @Column(name = "start_date")
-    private LocalDateTime startDate;
+    private ZonedDateTime startDate;
 
     @Column(name = "end_date")
-    private LocalDateTime endDate;
-
-    @Column(name = "is_active")
-    private boolean active;
+    private ZonedDateTime endDate;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Payment payment;

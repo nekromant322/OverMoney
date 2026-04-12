@@ -18,8 +18,8 @@ import static org.apache.kafka.common.requests.DeleteAclsResponse.log;
 @RequiredArgsConstructor
 public class PaymentController {
 
-    private final PayingService payingService;
     private final SubscriptionService subscriptionService;
+    private final PayingService payingService;
 
     /**
      * Колбэк для успешной оплаты
@@ -55,9 +55,8 @@ public class PaymentController {
         return payingService.createPayment(chatId);
     }
 
-    //TODO обновление на сервере статуса (активно или нет) по расписанию
     @GetMapping("/subscription/{chatId}/status")
-    public SubscriptionStatusDTO getSubscriptionByChatId(@PathVariable Long chatId) {
-        return subscriptionService.getSubscriptionStatus(chatId);
+    public SubscriptionStatusDTO getSubscriptionStatusByChatId(@PathVariable Long chatId) {
+        return subscriptionService.getAndUpdateSubscriptionStatus(chatId);
     }
 }

@@ -1,15 +1,8 @@
 server:
-  port: 8084
-
+  port: 8080
 
 orchestrator:
   host: overridetech.ru
-
-integration:
-  internal:
-    host:
-      orchestrator: http://localhost:8081
-      recognizer: http://localhost:8080
 
 spring:
   jpa:
@@ -17,14 +10,11 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
-        hbm2ddl:
-          auto: update
-    show-sql: true
 
   liquibase:
     enabled: true
@@ -36,9 +26,6 @@ spring:
     username: ${PAYMENT_DB_USER:postgres}
     password: ${PAYMENT_DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
-
-
-
 
 logging:
   level:
@@ -52,5 +39,6 @@ robokassa:
   test-password-one: ${ROBOKASSA_TEST_PASSWORD_ONE}
   test-password-two: ${ROBOKASSA_TEST_PASSWORD_TWO}
   base-url: https://auth.robokassa.ru
+  test-mode: true
 paying:
-  subscription-amount: 300
+  subscription-amount: 1

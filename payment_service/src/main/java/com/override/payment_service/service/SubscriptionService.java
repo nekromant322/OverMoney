@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Service
@@ -17,11 +17,17 @@ import java.util.Optional;
 public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
 
-    @Transactional(readOnly = true)
-    public SubscriptionStatusDTO getSubscriptionStatus(Long chatId) {
-        boolean isActive = subscriptionRepository.findByChatId(chatId).map(Subscription::isActive).orElse(false);
+    @Transactional
+    public SubscriptionStatusDTO getAndUpdateSubscriptionStatus(Long chatId) {
+        Optional<Subscription> subscription = subscriptionRepository.findByChatId(chatId);
+        if (subscription.isPresent()) {
+            boolean isActive = subscription.get().getEndDate().isAfter(ZonedDateTime.now(ZoneId.of("Europe/Moscow")));
         return SubscriptionStatusDTO.builder()
                 .isActive(isActive)
+                .build();
+        }
+        return SubscriptionStatusDTO.builder()
+                .isActive(false)
                 .build();
     }
 
@@ -47,19 +53,8 @@ public class SubscriptionService {
                         "Subscription not found for invoice: " + payment.getInvoiceId()
                 ));
 
-        subscription.setStartDate(LocalDateTime.now());
-        subscription.setEndDate(LocalDateTime.now().plusMonths(1));
-        subscription.setActive(true);
+        subscription.setStartDate(ZonedDateTime.now(ZoneId.of("Europe/Moscow")));
+        subscription.setEndDate(ZonedDateTime.now(ZoneId.of("Europe/Moscow")).plusMonths(1));
         return subscriptionRepository.save(subscription);
-    }
-
-    @Transactional
-    public List<Subscription> findAllByEndDateBeforeAndActiveTrue(LocalDateTime now) {
-        return subscriptionRepository.findAllByEndDateBeforeAndActiveTrue(now);
-    }
-
-    @Transactional
-    public List<Subscription> saveAll(List<Subscription> subscriptionList) {
-        return subscriptionRepository.saveAll(subscriptionList);
     }
 }

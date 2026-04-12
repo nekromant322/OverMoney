@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.nio.charset.StandardCharsets;
 
 @Service
 @Profile("dev")
@@ -22,14 +22,14 @@ public class DevSignatureStrategy implements SignatureStrategy {
                 shopId,
                 amount,
                 invoiceId,
-                robokassaConfig.getTestPasswordOne()).getBytes()
+                robokassaConfig.getTestPasswordOne()).getBytes(StandardCharsets.UTF_8)
         );
     }
 
     @Override
     public String generateCallbackSignature(Long invoiceId, BigDecimal payedSum) {
         return DigestUtils.md5DigestAsHex(String.format("%s:%s:%s",
-                payedSum.setScale(2, RoundingMode.UNNECESSARY),
+                payedSum,
                 invoiceId,
                 robokassaConfig.getTestPasswordTwo()).getBytes());
     }

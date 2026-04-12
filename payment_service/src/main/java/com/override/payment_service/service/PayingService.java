@@ -1,10 +1,8 @@
 package com.override.payment_service.service;
 
-import com.override.dto.PaymentResponseDTO;
 import com.override.dto.constants.Currency;
 import com.override.dto.constants.PaymentStatus;
-import com.override.payment_service.exceptions.RepeatPaymentException;
-import com.override.payment_service.kafka.service.ProducerService;
+import com.override.payment_service.config.PayingConfig;
 import com.override.payment_service.model.Payment;
 import com.override.payment_service.model.PaymentCallback;
 import com.override.payment_service.model.Subscription;
@@ -20,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class PayingService {
     private final SubscriptionService subscriptionService;
     private final PaymentService paymentService;
-    private final ProducerService producerService;
     private final RoboKassaService roboKassaService;
     private final PayingConfig payingConfig;
 
@@ -33,11 +30,7 @@ public class PayingService {
     @Transactional
     public String createPayment(Long chatId) {
         Subscription subscription = subscriptionService.getOrCreateSubscription(chatId);
-        if (subscription.isActive()) {
-            throw new RepeatPaymentException("Подписка уже активна");
-        }
 
-        //TODO проверить .email (робакасса по идее должна передавать)
         Payment payment = paymentService.save(Payment.builder()
                 .paymentStatus(PaymentStatus.PENDING)
                 .description("оплата подписки")
@@ -63,14 +56,7 @@ public class PayingService {
         roboKassaService.validatePaymentCallbackSignature(paymentCallback);
 
         Payment payment = paymentService.successPayment(paymentCallback.getInvoiceId());
-        Subscription subscription = subscriptionService.activateSubscription(payment);
-
-        producerService.sendSubscriptionNotification(
-                PaymentResponseDTO.builder()
-                        .message("OK" + paymentCallback.getInvoiceId())
-                        .chatId(subscription.getChatId())
-                        .build()
-        );
+        subscriptionService.activateSubscription(payment);
 
         return "OK" + paymentCallback.getInvoiceId();
     }

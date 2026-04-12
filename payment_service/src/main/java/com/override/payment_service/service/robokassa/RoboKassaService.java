@@ -41,7 +41,7 @@ public class RoboKassaService {
     public void validatePaymentCallbackSignature(PaymentCallback paymentCallback) {
         String localSignature = signatureStrategy.generateCallbackSignature(
                 paymentCallback.getInvoiceId(), paymentCallback.getPayedSum());
-        if (!localSignature.equals(paymentCallback.getHttpSignature())) {
+        if (!localSignature.equals(paymentCallback.getHttpSignature().toLowerCase())) {
             throw new SignatureNonMatchException("Сигнатуры не совпадают");
         }
     }

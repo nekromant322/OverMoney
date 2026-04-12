@@ -1,10 +1,8 @@
 package com.override.payment_service.service;
 
-import com.override.dto.PaymentResponseDTO;
 import com.override.dto.constants.Currency;
 import com.override.dto.constants.PaymentStatus;
-import com.override.payment_service.exceptions.RepeatPaymentException;
-import com.override.payment_service.kafka.service.ProducerService;
+import com.override.payment_service.config.PayingConfig;
 import com.override.payment_service.model.Payment;
 import com.override.payment_service.model.PaymentCallback;
 import com.override.payment_service.model.Subscription;
@@ -19,7 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -30,9 +27,6 @@ class PayingServiceTest {
 
     @Mock
     private PaymentService paymentService;
-
-    @Mock
-    private ProducerService producerService;
 
     @Mock
     private RoboKassaService roboKassaService;
@@ -52,7 +46,6 @@ class PayingServiceTest {
     void setUp() {
         subscription = new Subscription();
         subscription.setChatId(chatId);
-        subscription.setActive(false);
 
         payment = Payment.builder()
                 .invoiceId(1L)
@@ -91,21 +84,6 @@ class PayingServiceTest {
         verify(roboKassaService).buildPaymentUrl(payment);
     }
 
-    @Test
-    void createPayment_shouldThrowExceptionIfSubscriptionActive() {
-
-        subscription.setActive(true);
-
-        when(subscriptionService.getOrCreateSubscription(chatId))
-                .thenReturn(subscription);
-
-        assertThrows(RepeatPaymentException.class,
-                () -> payingService.createPayment(chatId));
-
-        verify(paymentService, never()).save(any());
-        verify(roboKassaService, never()).buildPaymentUrl(any());
-    }
-
     // ============================
     // handlePaymentCallback
     // ============================
@@ -115,8 +93,6 @@ class PayingServiceTest {
 
         PaymentCallback callback = new PaymentCallback();
         callback.setInvoiceId(1L);
-
-        subscription.setActive(true);
 
         when(paymentService.successPayment(1L))
                 .thenReturn(payment);
@@ -131,6 +107,5 @@ class PayingServiceTest {
         verify(roboKassaService).validatePaymentCallbackSignature(callback);
         verify(paymentService).successPayment(1L);
         verify(subscriptionService).activateSubscription(payment);
-        verify(producerService).sendSubscriptionNotification(any(PaymentResponseDTO.class));
     }
 }
