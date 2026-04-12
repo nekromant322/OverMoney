@@ -1,15 +1,13 @@
 package com.override.payment_service.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
 @Accessors(chain = true)
 @Entity
