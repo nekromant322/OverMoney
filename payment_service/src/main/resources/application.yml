@@ -4,9 +4,6 @@ server:
   port: 8080
 
 spring:
-  application:
-    name: payment-service
-
   datasource:
     url: jdbc:postgresql://${PAYMENT_DB_HOST:localhost}:${PAYMENT_DB_PORT:5436}/payments-db
     username: ${PAYMENT_DB_USER:postgres}
@@ -23,6 +20,9 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         current_session_context_class: org.springframework.orm.hibernate5.SpringSessionContext
+        hbm2ddl:
+          auto: update
+    show-sql: true
 
   liquibase:
     enabled: true
@@ -31,10 +31,35 @@ spring:
   profiles:
     active: ${SPRING_APPLICATION_PROFILE:dev}
 
+  kafka:
+    topics:
+      payment-request: payment-requests
+      payment-response: payment-responses
+      subscription-status-updates: subscription-status-updates
+      subscription-notification: subscription-notification
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:kafka-service}:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      group-id: transaction-payment-events
+      properties:
+        spring.json.trusted.packages: com.override.dto
+        spring:
+          deserializer:
+            key:
+              delegate:
+                class: org.apache.kafka.common.serialization.StringDeserializer
+            value:
+              delegate:
+                class: org.springframework.kafka.support.serializer.JsonDeserializer
 
 logging:
   level:
     org.zalando.logbook: TRACE
+    org.springframework.kafka: INFO
 
 management:
   endpoints:
@@ -56,13 +81,12 @@ mask-log-spring-boot-starter:
   maskedFields:
     - x-internal-key
 
-yookassa:
-  shop-id: ${YOOKASSA_SHOP_ID}
-  secret-key: ${YOOKASSA_SECRET_KEY}
-  url: https://api.yookassa.ru/v3
-
-subscription:
-  duration:
-    months: 1
-  payment:
-    timeout-minutes: 10
+robokassa:
+  login-shop-id: ${ROBOKASSA_LOGIN_SHOP_ID}
+  password-one: ${ROBOKASSA_PASSWORD_ONE}
+  password-two: ${ROBOKASSA_PASSWORD_TWO}
+  test-password-one: ${ROBOKASSA_TEST_PASSWORD_ONE}
+  test-password-two: ${ROBOKASSA_TEST_PASSWORD_TWO}
+  subscription-amount: 1
+  base-url: https://auth.robokassa.ru
+  test-mode: true

@@ -1,9 +1,9 @@
 package com.override.mask_log.impl.http;
 
-import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 import org.zalando.logbook.*;
-import org.zalando.logbook.Sink;
+
+import java.io.IOException;
 
 public class LoggableExcludingHtml implements Sink {
 
