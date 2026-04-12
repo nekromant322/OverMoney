@@ -4,7 +4,7 @@ deployment:
     image: overregistry.ru/overmoney-payment-qa
     env:
       - name: SPRING_APPLICATION_PROFILE
-        value: "prod"
+        value: "dev"
       - name: ORCHESTRATOR_HOST
         value: "https://testmoney.tech/overmoney"
       - name: TELEGRAM_BOT_NAME
@@ -40,16 +40,31 @@ deployment:
           secretKeyRef:
             name: qa
             key: qa-payment-db-password
-      - name: YOOKASSA_SHOP_ID
+      - name: ROBOKASSA_LOGIN_SHOP_ID
         valueFrom:
           secretKeyRef:
+            key: qa-robokassa-login-shop-id
             name: qa
-            key: qa-yookassa-shop-id
-      - name: YOOKASSA_SECRET_KEY
+      - name: ROBOKASSA_PASSWORD_ONE
         valueFrom:
           secretKeyRef:
+            key: qa-robokassa-password-one
             name: qa
-            key: qa-yookassa-secret-key
+      - name: ROBOKASSA_PASSWORD_TWO
+        valueFrom:
+          secretKeyRef:
+            key: qa-robokassa-password-two
+            name: qa
+      - name: ROBOKASSA_TEST_PASSWORD_ONE
+        valueFrom:
+          secretKeyRef:
+            key: qa-robokassa-test-password-one
+            name: qa
+      - name: ROBOKASSA_TEST_PASSWORD_TWO
+        valueFrom:
+          secretKeyRef:
+            key: qa-robokassa-test-password-two
+            name: qa
     volumes:
       - name: secrets-store-inline
         volumeMountPath: "/mnt/secrets-store"

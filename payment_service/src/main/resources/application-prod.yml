@@ -1,15 +1,8 @@
 server:
-  port: 8084
-
+  port: 8080
 
 orchestrator:
   host: overridetech.ru
-
-integration:
-  internal:
-    host:
-      orchestrator: http://localhost:8081
-      recognizer: http://localhost:8080
 
 spring:
   jpa:
@@ -34,9 +27,6 @@ spring:
     password: ${PAYMENT_DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
 
-
-
-
 logging:
   level:
     org.zalando.logbook: TRACE
@@ -49,5 +39,6 @@ robokassa:
   test-password-one: ${ROBOKASSA_TEST_PASSWORD_ONE}
   test-password-two: ${ROBOKASSA_TEST_PASSWORD_TWO}
   base-url: https://auth.robokassa.ru
+  test-mode: false
 paying:
   subscription-amount: 1
