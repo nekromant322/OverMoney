@@ -9,7 +9,6 @@ import java.util.List;
 
 @Component
 public class AccountMapper {
-
     public List<Category> mapAccountToCategoryList(OverMoneyAccount account) {
         return new ArrayList<>(account.getCategories());
     }
