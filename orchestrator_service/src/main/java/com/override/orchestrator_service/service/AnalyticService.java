@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,6 +46,14 @@ public class AnalyticService {
     public List<Integer> findAvailableYears(Long telegramId) throws InstanceNotFoundException {
         Long accountId = accountService.getAccountByUserId(telegramId).getId();
         return transactionService.findAvailableYears(accountId);
+    }
+
+    public List<Integer> findAvailableYearsReverse(Long telegramId) throws InstanceNotFoundException {
+        List<Integer> sortedYears = transactionService.findAvailableYears(
+                accountService.getAccountByUserId(telegramId).getId()
+        );
+        sortedYears.sort(Collections.reverseOrder());
+        return sortedYears;
     }
 
     public List<AnalyticsMonthlyReportForYearDTO> findMonthlyIncomeStatisticsForYearByAccountId(Long telegramId,
