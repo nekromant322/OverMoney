@@ -79,7 +79,7 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
      */
     private HttpRequest maskHeader(HttpRequest request) {
         List<String> maskedFields = maskLogProperties.getMaskedFields();
-        if (maskedFields.isEmpty()) {
+        if (maskedFields == null || maskedFields.isEmpty()) {
             return request;
         }
         HttpHeaders maskedHeaders = request.getHeaders().apply(maskedFields,
@@ -116,7 +116,7 @@ public class MaskLogFormatter implements StructuredHttpLogFormatter {
      */
     private String mask(String string, String regex, int keyGroup, Function<Matcher, String> replacementGenerator) {
         List<String> maskedFields = maskLogProperties.getMaskedFields();
-        if (maskedFields.isEmpty()) {
+        if (maskedFields == null || maskedFields.isEmpty()) {
             return null;
         }
 

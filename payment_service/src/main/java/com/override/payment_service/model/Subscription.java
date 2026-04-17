@@ -1,45 +1,33 @@
 package com.override.payment_service.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
-@Data
+@Getter
+@Setter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Accessors(chain = true)
 @Entity
 @Table(name = "subscriptions")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "chat_id", nullable = false)
+    @Column(name = "chat_id", nullable = false, unique = true)
     private Long chatId;
 
-    @Column(name = "order_id", nullable = false, unique = true)
-    private String orderId;
-
-    @Column(name = "payment_id")
-    private String paymentId;
-
     @Column(name = "start_date")
-    private LocalDateTime startDate;
+    private ZonedDateTime startDate;
 
     @Column(name = "end_date")
-    private LocalDateTime endDate;
+    private ZonedDateTime endDate;
 
-    @Column(name = "is_active")
-    private boolean active;
-
-    @Column(name = "payment_url")
-    private String paymentUrl;
-
-    @Column(name = "payment_url_expires")
-    private LocalDateTime paymentUrlExpires;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Payment payment;
 }
