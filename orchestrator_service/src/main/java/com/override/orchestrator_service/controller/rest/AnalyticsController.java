@@ -46,7 +46,7 @@ public class AnalyticsController {
 
     @GetMapping("/available-years")
     public List<Integer> getAvailableYears(Principal principal) throws InstanceNotFoundException {
-        return analyticService.findAvailableYears(telegramUtils.getTelegramId(principal));
+        return analyticService.findAvailableYearsReverse(telegramUtils.getTelegramId(principal));
     }
 
     @GetMapping("/income/{year}")
