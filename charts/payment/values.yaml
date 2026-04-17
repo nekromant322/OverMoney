@@ -46,7 +46,7 @@ deployment:
         valueFrom:
           secretKeyRef:
             name: prod
-            key: robokassa_login_shop_id
+            key: robokassa-login-shop-id
       - name: ROBOKASSA_PASSWORD_ONE
         valueFrom:
           secretKeyRef:
