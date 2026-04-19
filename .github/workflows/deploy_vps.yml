@@ -67,7 +67,7 @@ jobs:
         if: needs.detect-changes.outputs.recognize == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./recognizer_service
+          context: .
           file: ./recognizer_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/recognizer:latest
@@ -89,7 +89,7 @@ jobs:
         if: needs.detect-changes.outputs.telegram_bot == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./telegram_bot
+          context: .
           file: ./telegram_bot_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/telegram_bot:latest
@@ -100,7 +100,7 @@ jobs:
         if: needs.detect-changes.outputs.wit_ai_go_proxy == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./wit_ai_go_proxy
+          context: .
           file: ./wit_ai_go_proxy/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/wit_ai_go_proxy:latest
@@ -112,7 +112,7 @@ jobs:
         if: needs.detect-changes.outputs.frontend_landing == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend
+          context: .
           file: ./frontend/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/frontend_landing:latest
@@ -123,7 +123,7 @@ jobs:
         if: needs.detect-changes.outputs.payment == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./payment_service
+          context: .
           file: ./payment_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/payment:latest
