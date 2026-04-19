@@ -178,7 +178,7 @@ jobs:
           script: |
             set -e
 
-            cd /home/serega/deploy
+            cd /home/github/deploy
 
             if [ ! -f docker-compose.yaml ]; then
               echo "docker-compose.yaml not found"
