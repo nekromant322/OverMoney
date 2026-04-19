@@ -78,7 +78,7 @@ jobs:
         if: needs.detect-changes.outputs.orchestrator == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./orchestrator
+          context: .
           file: ./orchestrator_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/orchestrator:latest
