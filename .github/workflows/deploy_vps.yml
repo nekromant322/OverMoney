@@ -31,17 +31,17 @@ jobs:
         with:
           filters: |
             recognize:
-              - 'recognize/**'
+              - 'recognizer_service/**'
             orchestrator:
-              - 'orchestrator/**'
+              - 'orchestrator_service/**'
             telegram_bot:
-              - 'telegram_bot/**'
+              - 'telegram_bot_service/**'
             wit_ai_go_proxy:
               - 'wit_ai_go_proxy/**'
             frontend_landing:
-              - 'frontend_landing/**'
+              - 'frontend/**'
             payment:
-              - 'payment/**'
+              - 'payment_service/**'
             compose:
               - 'docker-compose.yaml'
 
