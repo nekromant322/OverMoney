@@ -20,14 +20,14 @@ COPY /mask_log_starter/pom.xml /workspace/mask_log_starter
 COPY /mask_log_starter/src /workspace/mask_log_starter/src
 RUN mvn -B clean install -DskipTests -Dcheckstyle.skip
 
-WORKDIR /workspace/orchestrator_service
-COPY /orchestrator_service/pom.xml /workspace/orchestrator_service
-COPY /orchestrator_service/src /workspace/orchestrator_service/src
+WORKDIR /workspace/orchestrator
+COPY /orchestrator_service/pom.xml /workspace/orchestrator
+COPY /orchestrator_service/src /workspace/orchestrator/src
 RUN mvn -B -f pom.xml clean package -DskipTests -Dcheckstyle.skip
 
 # Stage 2: Runtime
 FROM amazoncorretto:11-alpine
 
 EXPOSE 8081
-COPY --from=build /workspace/orchestrator_service/target/*.jar app.jar
+COPY --from=build /workspace/orchestrator/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","app.jar"]

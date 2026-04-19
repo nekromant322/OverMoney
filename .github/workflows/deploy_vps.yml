@@ -78,7 +78,7 @@ jobs:
         if: needs.detect-changes.outputs.orchestrator == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./orchestrator_service
+          context: ./orchestrator
           file: ./orchestrator_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/orchestrator:latest
@@ -89,7 +89,7 @@ jobs:
         if: needs.detect-changes.outputs.telegram_bot == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./telegram_bot_service
+          context: ./telegram_bot
           file: ./telegram_bot_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/telegram_bot:latest
