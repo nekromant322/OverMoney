@@ -67,8 +67,8 @@ jobs:
         if: needs.detect-changes.outputs.recognize == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./recognizer
-          file: ./recognizer/Dockerfile
+          context: ./recognizer_service
+          file: ./recognizer_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/recognizer:latest
           cache-from: type=gha
@@ -78,8 +78,8 @@ jobs:
         if: needs.detect-changes.outputs.orchestrator == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./orchestrator
-          file: ./orchestrator/Dockerfile
+          context: ./orchestrator_service
+          file: ./orchestrator_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/orchestrator:latest
           cache-from: type=gha
@@ -89,8 +89,8 @@ jobs:
         if: needs.detect-changes.outputs.telegram_bot == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./telegram_bot
-          file: ./telegram_bot/Dockerfile
+          context: ./telegram_bot_service
+          file: ./telegram_bot_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/telegram_bot:latest
           cache-from: type=gha
@@ -112,8 +112,8 @@ jobs:
         if: needs.detect-changes.outputs.frontend_landing == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend_landing
-          file: ./frontend_landing/Dockerfile
+          context: ./frontend
+          file: ./frontend/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/frontend_landing:latest
           cache-from: type=gha
@@ -123,8 +123,8 @@ jobs:
         if: needs.detect-changes.outputs.payment == 'true'
         uses: docker/build-push-action@v6
         with:
-          context: ./payment
-          file: ./payment/Dockerfile
+          context: ./payment_service
+          file: ./payment_service/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/payment:latest
           cache-from: type=gha
