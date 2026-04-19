@@ -169,13 +169,12 @@ jobs:
           PAYMENT_CHANGED: ${{ needs.detect-changes.outputs.payment }}
           GHCR_USERNAME: nekromant322
           GHCR_TOKEN: ${{ secrets.REGISTRY_GITHUB_TOKEN }}
-          SERVER_ENV_FILE: /home/serega/deploy/app.env
         with:
           host: 194.87.96.29
           username: github
           key: ${{ secrets.VPS_GITHUB_PRIVATE_KEY }}
           port: 22
-          envs: RECOGNIZE_CHANGED,ORCHESTRATOR_CHANGED,TELEGRAM_BOT_CHANGED,WIT_AI_GO_PROXY_CHANGED,FRONTEND_LANDING_CHANGED,PAYMENT_CHANGED,GHCR_USERNAME,GHCR_TOKEN,SERVER_ENV_FILE
+          envs: RECOGNIZE_CHANGED,ORCHESTRATOR_CHANGED,TELEGRAM_BOT_CHANGED,WIT_AI_GO_PROXY_CHANGED,FRONTEND_LANDING_CHANGED,PAYMENT_CHANGED,GHCR_USERNAME,GHCR_TOKEN
           script: |
             set -e
 
@@ -186,12 +185,35 @@ jobs:
               exit 1
             fi
 
-            if [ ! -f "$SERVER_ENV_FILE" ]; then
-              echo "Env file not found: $SERVER_ENV_FILE"
-              exit 1
-            fi
-
             echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+
+            rm -f app.env
+            touch app.env
+
+            echo "SPRING_APPLICATION_PROFILE=prod" >> app.env
+            echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> app.env
+            echo "TELEGRAM_BOT_NAME=${{ secrets.TELEGRAM_BOT_NAME }}" >> app.env
+            echo "JWT_ACCESS_KEY=${{ secrets.JWT_ACCESS_KEY }}" >> app.env
+            echo "JWT_REFRESH_KEY=${{ secrets.JWT_REFRESH_KEY }}" >> app.env
+            echo "INTERNAL_KEY_HEADER=${{ secrets.INTERNAL_KEY_HEADER }}" >> app.env
+
+            echo "ORCHESTRATOR_DB_HOST=${{ secrets.ORCHESTRATOR_DB_HOST }}" >> app.env
+            echo "ORCHESTRATOR_DB_PORT=${{ secrets.ORCHESTRATOR_DB_PORT }}" >> app.env
+            echo "ORCHESTRATOR_DB_USER=${{ secrets.ORCHESTRATOR_DB_USER }}" >> app.env
+            echo "ORCHESTRATOR_DB_PASSWORD=${{ secrets.ORCHESTRATOR_DB_PASSWORD }}" >> app.env
+
+            echo "PAYMENT_DB_HOST=${{ secrets.PAYMENT_DB_HOST }}" >> app.env
+            echo "PAYMENT_DB_PORT=${{ secrets.PAYMENT_DB_PORT }}" >> app.env
+            echo "PAYMENT_DB_USER=${{ secrets.PAYMENT_DB_USER }}" >> app.env
+            echo "PAYMENT_DB_PASSWORD=${{ secrets.PAYMENT_DB_PASSWORD }}" >> app.env
+
+            echo "TELEGRAM_BOT_DB_HOST=${{ secrets.TELEGRAM_BOT_DB_HOST }}" >> app.env
+            echo "TELEGRAM_BOT_DB_PORT=${{ secrets.TELEGRAM_BOT_DB_PORT }}" >> app.env
+            echo "TELEGRAM_BOT_DB_USER=${{ secrets.TELEGRAM_BOT_DB_USER }}" >> app.env
+            echo "TELEGRAM_BOT_DB_PASSWORD=${{ secrets.TELEGRAM_BOT_DB_PASSWORD }}" >> app.env
+
+            echo "WIT_AI_TOKEN=${{ secrets.WIT_AI_TOKEN }}" >> app.env
+            echo "ORCHESTRATOR_HOST=${{ secrets.ORCHESTRATOR_HOST }}" >> app.env
 
             CHANGED_SERVICES=""
 
@@ -213,8 +235,8 @@ jobs:
             echo "Changed services: $CHANGED_SERVICES"
 
             if [ -n "$CHANGED_SERVICES" ]; then
-              docker compose --env-file "$SERVER_ENV_FILE" pull $CHANGED_SERVICES
-              docker compose --env-file "$SERVER_ENV_FILE" up -d --no-deps $CHANGED_SERVICES
+              docker compose --env-file app.env pull $CHANGED_SERVICES
+              docker compose --env-file app.env up -d --no-deps $CHANGED_SERVICES
             else
               echo "No changed services. Skip deploy."
             fi
