@@ -18,8 +18,8 @@
     internal:
       host:
         orchestrator: http://orchestrator-service:8080
-        recognizer: http://recognizer-service
-        payment: http://payment-service
+        recognizer: http://recognizer-service:8080
+        payment: http://payment-service:8080
 
   environment: ${ENVIRONMENT:dev}
 
