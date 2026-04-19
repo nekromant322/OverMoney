@@ -148,7 +148,7 @@ jobs:
           key: ${{ secrets.VPS_GITHUB_PRIVATE_KEY }}
           port: 22
           source: "docker-compose.yaml"
-          target: "/home/serega/deploy"
+          target: "/home/github/deploy"
 
   deploy:
     name: Deploy changed services
