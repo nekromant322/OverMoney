@@ -4,7 +4,7 @@ services:
     image: ghcr.io/nekromant322/orchestrator:latest
     restart: unless-stopped
     ports:
-      - '8081:8080'
+      - '8081:80'
     environment:
       _JAVA_OPTIONS: -Xmx256m
       ORCHESTRATOR_DB_USER: ${ORCHESTRATOR_DB_USER}
