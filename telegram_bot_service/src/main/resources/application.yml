@@ -17,7 +17,7 @@
   integration:
     internal:
       host:
-        orchestrator: http://orchestrator-service
+        orchestrator: http://orchestrator-service:8080
         recognizer: http://recognizer-service
         payment: http://payment-service
 
