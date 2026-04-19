@@ -28,6 +28,7 @@ import static com.overmoney.telegram_bot_service.constants.MessageConstants.NO_R
 @Slf4j
 public class AnnounceCommand extends OverMoneyCommand {
     @Value("${admin.allowed_users}")
+
     private Set<String> admins;
     @Autowired
     private MailService mailService;

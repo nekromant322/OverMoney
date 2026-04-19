@@ -43,6 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/login/**").permitAll()
                 .antMatchers("/offer").permitAll()
+                .antMatchers("/payments/result").permitAll()
                 .antMatchers("/actuator/health", "/actuator/prometheus").permitAll()
                 .anyRequest().authenticated()
                 .and()

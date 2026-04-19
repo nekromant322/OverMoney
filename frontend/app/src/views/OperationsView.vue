@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import { ref, onMounted } from 'vue';
+import {ref, onMounted} from 'vue';
 
-  const data = ref(null);
+const data = ref(null);
 
   onMounted(async () => {
     try {
