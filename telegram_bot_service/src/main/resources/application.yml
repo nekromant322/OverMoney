@@ -12,7 +12,7 @@
 
 #настройка веб адреса приложения
   orchestrator:
-    host: ${ORCHESTRATOR_HOST}
+    url: ${ORCHESTRATOR_URL}
 
   integration:
     internal:

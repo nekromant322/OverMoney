@@ -48,8 +48,6 @@ public class OverMoneyBot extends TelegramLongPollingCommandBot {
     private String botName;
     @Value("${bot.token}")
     private String botToken;
-    @Value("${orchestrator.host}")
-    private String orchestratorHost;
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
     @Autowired

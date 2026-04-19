@@ -213,6 +213,8 @@ jobs:
             echo "TELEGRAM_BOT_DB_PASSWORD=testmoney" >> app.env
 
             echo "WIT_AI_TOKEN=${{ secrets.WIT_AI_TOKEN }}" >> app.env
+            echo " ORCHESTRATOR_URL=overmoney.tech/overmoney" >> app.env
+           
 
             CHANGED_SERVICES=""
 

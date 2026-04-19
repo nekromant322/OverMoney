@@ -21,6 +21,8 @@ services:
       driver: "json-file"
       options:
         max-size: 50m
+    networks:
+      - app-network
 
   recognizer-service:
     container_name: recognizer
@@ -81,9 +83,16 @@ services:
       TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
       TELEGRAM_BOT_NAME: ${TELEGRAM_BOT_NAME}
       SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
-      ORCHESTRATOR_HOST: ${ORCHESTRATOR_HOST}
+      ORCHESTRATOR_URL: ${ORCHESTRATOR_URL}
       INTERNAL_KEY_HEADER: ${INTERNAL_KEY_HEADER}
     logging:
       driver: "json-file"
       options:
         max-size: 50m
+    networks:
+      - app-network
+
+
+networks:
+  app-network:
+    driver: bridge
