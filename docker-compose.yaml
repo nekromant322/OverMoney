@@ -4,7 +4,7 @@ services:
     image: ghcr.io/nekromant322/orchestrator:latest
     restart: unless-stopped
     ports:
-      - '8081:8081'
+      - '8081:8080'
     environment:
       _JAVA_OPTIONS: -Xmx256m
       ORCHESTRATOR_DB_USER: ${ORCHESTRATOR_DB_USER}
@@ -27,7 +27,7 @@ services:
     image: ghcr.io/nekromant322/recognizer:latest
     restart: unless-stopped
     ports:
-      - '8080:8080'
+      - '8080:80'
     environment:
       _JAVA_OPTIONS: -Xmx512m
       SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
@@ -43,7 +43,7 @@ services:
     image: ghcr.io/nekromant322/payment:latest
     restart: unless-stopped
     ports:
-      - '8084:8084'
+      - '8084:80'
     environment:
       _JAVA_OPTIONS: -Xmx256m
       SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
@@ -58,7 +58,7 @@ services:
     image: ghcr.io/nekromant322/wit_ai_go_proxy:latest
     restart: unless-stopped
     ports:
-      - '3333:3333'
+      - '3333:80'
     environment:
       WIT_AI_TOKEN: ${WIT_AI_TOKEN}
     logging:
@@ -71,7 +71,7 @@ services:
     image: ghcr.io/nekromant322/telegram_bot:latest
     restart: unless-stopped
     ports:
-      - '8082:8082'
+      - '8082:80'
     environment:
       _JAVA_OPTIONS: -Xmx256m
       TELEGRAM_BOT_DB_USER: ${TELEGRAM_BOT_DB_USER}
