@@ -1,5 +1,6 @@
 deployment:
   registry: overregistry.ru
+  replicas: 0
   containers:
     requestsMemory: "250M"
     limitsMemory: "400M"
