@@ -3,7 +3,7 @@ name: Build & Deploy
 on:
   push:
     branches:
-      - compose-names
+      - migration
 
 permissions:
   contents: read
