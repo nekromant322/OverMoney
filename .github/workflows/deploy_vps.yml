@@ -133,13 +133,9 @@ jobs:
   push-compose:
     name: Copy docker-compose to server
     runs-on: ubuntu-latest
-    needs:
-      - detect-changes
-    if: needs.detect-changes.outputs.compose == 'true' || needs.detect-changes.outputs.recognize == 'true' || needs.detect-changes.outputs.orchestrator == 'true' || needs.detect-changes.outputs.telegram_bot == 'true' || needs.detect-changes.outputs.wit_ai_go_proxy == 'true' || needs.detect-changes.outputs.frontend_landing == 'true' || needs.detect-changes.outputs.payment == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
       - name: Copy docker-compose.yaml to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -198,7 +194,7 @@ jobs:
             echo "INTERNAL_KEY_HEADER=${{ secrets.INTERNAL_KEY_HEADER }}" >> app.env
 
             echo "ORCHESTRATOR_DB_HOST=194.87.235.171" >> app.env
-            echo "ORCHESTRATOR_DB_PORT=${{ secrets.ORCHESTRATOR_DB_PORT }}" >> app.env
+            echo "ORCHESTRATOR_DB_PORT=5433" >> app.env
             echo "ORCHESTRATOR_DB_USER=${{ secrets.ORCHESTRATOR_DB_USER }}" >> app.env
             echo "ORCHESTRATOR_DB_PASSWORD=${{ secrets.ORCHESTRATOR_DB_PASSWORD }}" >> app.env
 
@@ -208,13 +204,13 @@ jobs:
             echo "PAYMENT_DB_PASSWORD=${{ secrets.PAYMENT_DB_PASSWORD }}" >> app.env
 
             echo "TELEGRAM_BOT_DB_HOST=194.87.235.171" >> app.env
-            echo "TELEGRAM_BOT_DB_PORT=${{ secrets.TELEGRAM_BOT_DB_PORT }}" >> app.env
+            echo "TELEGRAM_BOT_DB_PORT=5434" >> app.env
             echo "TELEGRAM_BOT_DB_USER=${{ secrets.TELEGRAM_BOT_DB_USER }}" >> app.env
             echo "TELEGRAM_BOT_DB_PASSWORD=${{ secrets.TELEGRAM_BOT_DB_PASSWORD }}" >> app.env
 
             echo "WIT_AI_TOKEN=${{ secrets.WIT_AI_TOKEN }}" >> app.env
             
-            echo " ORCHESTRATOR_URL=overmoney.tech/overmoney" >> app.env
+            echo "ORCHESTRATOR_URL=overmoney.tech/overmoney" >> app.env
            
 
             CHANGED_SERVICES=""
