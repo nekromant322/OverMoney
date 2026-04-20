@@ -21,6 +21,6 @@
 Прод [https://overmoney.tech/overmoney](https://overmoney.tech/overmoney)
 
 
-![Схема инфры](infra.svg)
+
 
 
