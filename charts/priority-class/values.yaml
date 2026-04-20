@@ -1,3 +1,0 @@
-name: prod-priority-class
-priority: 0
-description: "This priority class should be used for prod pods."
