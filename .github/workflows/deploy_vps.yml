@@ -204,7 +204,7 @@ jobs:
             echo "PAYMENT_DB_PASSWORD=${{ secrets.PAYMENT_DB_PASSWORD }}" >> app.env
 
             echo "TELEGRAM_BOT_DB_HOST=194.87.235.171" >> app.env
-            echo "TELEGRAM_BOT_DB_PORT=5434" >> app.env
+            echo "TELEGRAM_BOT_DB_PORT=5435" >> app.env
             echo "TELEGRAM_BOT_DB_USER=${{ secrets.TELEGRAM_BOT_DB_USER }}" >> app.env
             echo "TELEGRAM_BOT_DB_PASSWORD=${{ secrets.TELEGRAM_BOT_DB_PASSWORD }}" >> app.env
 
