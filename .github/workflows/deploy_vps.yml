@@ -191,28 +191,29 @@ jobs:
             touch app.env
 
             echo "SPRING_APPLICATION_PROFILE=prod" >> app.env
-            echo "TELEGRAM_BOT_TOKEN=8560131841:AAFi3wuUew1pJRxFSXhKvi3biscHdUeL1cA" >> app.env
-            echo "TELEGRAM_BOT_NAME=testbotformigration" >> app.env
+            echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> app.env
+            echo "TELEGRAM_BOT_NAME=${{ secrets.TELEGRAM_BOT_NAME }}" >> app.env
             echo "JWT_ACCESS_KEY=${{ secrets.JWT_ACCESS_KEY }}" >> app.env
             echo "JWT_REFRESH_KEY=${{ secrets.JWT_REFRESH_KEY }}" >> app.env
             echo "INTERNAL_KEY_HEADER=${{ secrets.INTERNAL_KEY_HEADER }}" >> app.env
 
-            echo "ORCHESTRATOR_DB_HOST=194.87.237.197" >> app.env
-            echo "ORCHESTRATOR_DB_PORT=5433" >> app.env
-            echo "ORCHESTRATOR_DB_USER=testmoney" >> app.env
-            echo "ORCHESTRATOR_DB_PASSWORD=testmoney" >> app.env
+            echo "ORCHESTRATOR_DB_HOST=${{ secrets.ORCHESTRATOR_DB_HOST }}" >> app.env
+            echo "ORCHESTRATOR_DB_PORT=${{ secrets.ORCHESTRATOR_DB_PORT }}" >> app.env
+            echo "ORCHESTRATOR_DB_USER=${{ secrets.ORCHESTRATOR_DB_USER }}" >> app.env
+            echo "ORCHESTRATOR_DB_PASSWORD=${{ secrets.ORCHESTRATOR_DB_PASSWORD }}" >> app.env
 
-            echo "PAYMENT_DB_HOST=194.87.237.197:5433" >> app.env
-            echo "PAYMENT_DB_PORT= 5436" >> app.env
-            echo "PAYMENT_DB_USER=testPayments" >> app.env
-            echo "PAYMENT_DB_PASSWORD=testPaymentsPass" >> app.env
+            echo "PAYMENT_DB_HOST=${{ secrets.PAYMENT_DB_HOST }}" >> app.env
+            echo "PAYMENT_DB_PORT=${{ secrets.PAYMENT_DB_PORT }}" >> app.env
+            echo "PAYMENT_DB_USER=${{ secrets.PAYMENT_DB_USER }}" >> app.env
+            echo "PAYMENT_DB_PASSWORD=${{ secrets.PAYMENT_DB_PASSWORD }}" >> app.env
 
-            echo "TELEGRAM_BOT_DB_HOST=194.87.237.197" >> app.env
-            echo "TELEGRAM_BOT_DB_PORT=5435" >> app.env
-            echo "TELEGRAM_BOT_DB_USER=testmoney" >> app.env
-            echo "TELEGRAM_BOT_DB_PASSWORD=testmoney" >> app.env
+            echo "TELEGRAM_BOT_DB_HOST=${{ secrets.TELEGRAM_BOT_DB_HOST }}" >> app.env
+            echo "TELEGRAM_BOT_DB_PORT=${{ secrets.TELEGRAM_BOT_DB_PORT }}" >> app.env
+            echo "TELEGRAM_BOT_DB_USER=${{ secrets.TELEGRAM_BOT_DB_USER }}" >> app.env
+            echo "TELEGRAM_BOT_DB_PASSWORD=${{ secrets.TELEGRAM_BOT_DB_PASSWORD }}" >> app.env
 
             echo "WIT_AI_TOKEN=${{ secrets.WIT_AI_TOKEN }}" >> app.env
+            
             echo " ORCHESTRATOR_URL=overmoney.tech/overmoney" >> app.env
            
 
