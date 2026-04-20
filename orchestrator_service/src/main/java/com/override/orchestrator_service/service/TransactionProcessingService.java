@@ -6,7 +6,6 @@ import com.override.orchestrator_service.feign.RecognizerFeign;
 import com.override.orchestrator_service.model.*;
 import com.override.orchestrator_service.service.calc.*;
 import com.override.orchestrator_service.util.TelegramUtils;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +18,6 @@ import java.util.*;
 import java.util.regex.*;
 
 @Service
-@Slf4j
 public class TransactionProcessingService {
     private static final double MAX_ALLOWED_AMOUNT = 999_999_999_999_999.0;
 
@@ -129,13 +127,9 @@ public class TransactionProcessingService {
     @Transactional
     public void suggestCategoryToProcessedTransaction(Transaction transaction)
             throws InstanceNotFoundException {
-        try {
-            List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transaction.getTelegramUserId());
-            if (!categories.isEmpty()) {
-                recognizerFeign.recognizeCategory(transaction.getMessage(), transaction.getId(), categories);
-            }
-        } catch (Exception e) {
-            log.error("Ошибка при обращении из оркестраторе в recognizer для определения категории транзакции");
+        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transaction.getTelegramUserId());
+        if (!categories.isEmpty()) {
+            recognizerFeign.recognizeCategory(transaction.getMessage(), transaction.getId(), categories);
         }
     }
 

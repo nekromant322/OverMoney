@@ -11,8 +11,8 @@ import static com.overmoney.telegram_bot_service.constants.Command.WEB;
 
 @Component
 public class WebCommand extends OverMoneyCommand {
-    @Value("${orchestrator.host}")
-    private String orchestratorHost;
+    @Value("${orchestrator.url}")
+    private String orchestratorUrl;
 
     @Autowired
     public WebCommand() {
@@ -21,6 +21,6 @@ public class WebCommand extends OverMoneyCommand {
 
     @Override
     public void execute(AbsSender absSender, User user, Chat chat, String[] strings) {
-        sendMessage(absSender, chat.getId(), orchestratorHost);
+        sendMessage(absSender, chat.getId(), orchestratorUrl);
     }
 }

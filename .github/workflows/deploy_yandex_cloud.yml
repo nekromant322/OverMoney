@@ -1,116 +1,204 @@
-name: Build & Push & Deploy to k8s cluster
-
-on:
-  push:
-    branches:
-      - master
-
-jobs:
-  detect-changes:
-    runs-on: ubuntu-latest
-    outputs:
-      recognizer: ${{ steps.filter.outputs.recognizer }}
-      orchestrator: ${{ steps.filter.outputs.orchestrator }}
-      telegram-bot: ${{ steps.filter.outputs.telegram-bot }}
-      wit-ai-go-proxy: ${{ steps.filter.outputs.wit-ai-go-proxy }}
-      frontend: ${{ steps.filter.outputs.frontend }}
-      frontend-landing: ${{ steps.filter.outputs.frontend-landing }}
-      payment: ${{ steps.filter.outputs.payment }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v2
-        id: filter
-        with:
-          base: ${{ github.ref }}
-          filters: |
-            recognizer: ['recognizer_service/**']
-            orchestrator: ['orchestrator_service/**']
-            telegram-bot: ['telegram_bot_service/**']
-            shared-chart: ['charts/shared/**']
-            wit-ai-go-proxy: ['wit_ai_go_proxy/**']
-            frontend: ['frontend/app/**']
-            frontend-landing: ['frontend/landing/**']
-            payment: ['payment_service/**']
-
-  build-and-push-images:
-    name: Build & Push images to DockerHub
-    runs-on: ubuntu-latest
-    needs: [detect-changes]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Login to private Docker registry (overregistry.ru)
-        uses: docker/login-action@v3
-        with:
-          registry: overregistry.ru
-          username: ${{ secrets.DOCKER_PRIVATE_REGISTRY_USERNAME }}
-          password: ${{ secrets.DOCKER_PRIVATE_REGISTRY_PASSWORD }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          version: v0.31.1
-
-      - name: Recognizer Build and Push to overregistry.ru
-        if: ${{ needs.detect-changes.outputs.recognizer == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./recognizer_service/Dockerfile
-          push: true
-          tags: overregistry.ru/overmoney-recognizer
-
-      - name: Orchestrator Build and Push to overregistry.ru
-        if: ${{ needs.detect-changes.outputs.orchestrator == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./orchestrator_service/Dockerfile
-          push: true
-          tags: overregistry.ru/overmoney-orchestrator
-
-      - name: Telegram Bot Build and Push to overregistry.ru
-        if: ${{ needs.detect-changes.outputs.telegram-bot == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./telegram_bot_service/Dockerfile
-          push: true
-          tags: overregistry.ru/overmoney-telegram-bot
-
-      - name: Wit ai go proxy Build and Push to overregistry.ru
-        if: ${{ needs.detect-changes.outputs.wit-ai-go-proxy == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./wit_ai_go_proxy/Dockerfile
-          push: true
-          tags: overregistry.ru/overmoney-wit-ai-go-proxy
-
-#      - name: Frontend Build and Push to overregistry.ru
-#        if: ${{ needs.detect-changes.outputs.frontend == 'true' }}
-#        uses: docker/build-push-action@v2
+#name: Build & Push & Deploy to VPS
+#
+#on:
+#  push:
+#    branches:
+#      - master
+#
+#jobs:
+#  detect-changes:
+#    name: Detect changed services
+#    runs-on: ubuntu-latest
+#    outputs:
+#      recognizer: ${{ steps.filter.outputs.recognizer }}
+#      orchestrator: ${{ steps.filter.outputs.orchestrator }}
+#      telegram_bot: ${{ steps.filter.outputs.telegram_bot }}
+#      wit_ai_go_proxy: ${{ steps.filter.outputs.wit_ai_go_proxy }}
+#      frontend_landing: ${{ steps.filter.outputs.frontend_landing }}
+#      payment: ${{ steps.filter.outputs.payment }}
+#      any_changed: ${{ steps.changed.outputs.any_changed }}
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Detect changes
+#        id: filter
+#        uses: dorny/paths-filter@v3
+#        with:
+#          filters: |
+#            recognizer:
+#              - 'recognizer_service/**'
+#              - 'dto/**'
+#              - 'pom.xml'
+#            orchestrator:
+#              - 'orchestrator_service/**'
+#              - 'dto/**'
+#              - 'pom.xml'
+#            telegram_bot:
+#              - 'telegram_bot_service/**'
+#              - 'dto/**'
+#              - 'pom.xml'
+#            wit_ai_go_proxy:
+#              - 'wit_ai_go_proxy/**'
+#            frontend_landing:
+#              - 'frontend/landing/**'
+#            payment:
+#              - 'payment_service/**'
+#              - 'dto/**'
+#              - 'pom.xml'
+#
+#      - name: Check if anything changed
+#        id: changed
+#        run: |
+#          if [[ "${{ steps.filter.outputs.recognizer }}" == "true" || \
+#                "${{ steps.filter.outputs.orchestrator }}" == "true" || \
+#                "${{ steps.filter.outputs.telegram_bot }}" == "true" || \
+#                "${{ steps.filter.outputs.wit_ai_go_proxy }}" == "true" || \
+#                "${{ steps.filter.outputs.frontend_landing }}" == "true" || \
+#                "${{ steps.filter.outputs.payment }}" == "true" ]]; then
+#            echo "any_changed=true" >> $GITHUB_OUTPUT
+#          else
+#            echo "any_changed=false" >> $GITHUB_OUTPUT
+#          fi
+#
+#  build-and-push-images:
+#    name: Build & Push images to Docker Hub
+#    runs-on: ubuntu-latest
+#    needs: detect-changes
+#    if: needs.detect-changes.outputs.any_changed == 'true'
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Login to Docker Hub
+#        uses: docker/login-action@v3
+#        with:
+#          username: ${{ secrets.DOCKER_PRIVATE_REGISTRY_USERNAME }}
+#          password: ${{ secrets.DOCKER_PRIVATE_REGISTRY_PASSWORD }}
+#
+#      - name: Set up Docker Buildx
+#        uses: docker/setup-buildx-action@v3
+#
+#      - name: Build & Push Recognizer
+#        if: needs.detect-changes.outputs.recognizer == 'true'
+#        uses: docker/build-push-action@v6
 #        with:
 #          context: .
-#          file: ./frontend/Dockerfile
+#          file: ./recognizer_service/Dockerfile
 #          push: true
-#          tags: overregistry.ru/overmoney-frontend
-
-      - name: Frontend Landing Build and Push to overregistry.ru
-        if: ${{ needs.detect-changes.outputs.frontend-landing == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./frontend/landing/Dockerfile
-          push: true
-          tags: overregistry.ru/overmoney-frontend-landing
-          build-args: |
-            BUILD_CMD=build-production
-
-      - name: Payment Build and Push to overregistry.ru
-        if: ${{ needs.detect-changes.outputs.payment == 'true' }}
-        uses: docker/build-push-action@v2
-        with:
-          context: .
-          file: ./payment_service/Dockerfile
-          push: true
-          tags: overregistry.ru/overmoney-payment
+#          tags: |
+#            nekromant322/overmoney-recognizer:latest
+#            nekromant322/overmoney-recognizer:${{ github.sha }}
+#
+#      - name: Build & Push Orchestrator
+#        if: needs.detect-changes.outputs.orchestrator == 'true'
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          file: ./orchestrator_service/Dockerfile
+#          push: true
+#          tags: |
+#            nekromant322/overmoney-orchestrator:latest
+#            nekromant322/overmoney-orchestrator:${{ github.sha }}
+#
+#      - name: Build & Push Telegram Bot
+#        if: needs.detect-changes.outputs.telegram_bot == 'true'
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          file: ./telegram_bot_service/Dockerfile
+#          push: true
+#          tags: |
+#            nekromant322/overmoney-telegram-bot:latest
+#            nekromant322/overmoney-telegram-bot:${{ github.sha }}
+#
+#      - name: Build & Push Wit AI Go Proxy
+#        if: needs.detect-changes.outputs.wit_ai_go_proxy == 'true'
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          file: ./wit_ai_go_proxy/Dockerfile
+#          push: true
+#          tags: |
+#            nekromant322/overmoney-wit-ai-go-proxy:latest
+#            nekromant322/overmoney-wit-ai-go-proxy:${{ github.sha }}
+#
+#      - name: Build & Push Frontend Landing
+#        if: needs.detect-changes.outputs.frontend_landing == 'true'
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          file: ./frontend/landing/Dockerfile
+#          push: true
+#          tags: |
+#            nekromant322/overmoney-frontend-landing:latest
+#            nekromant322/overmoney-frontend-landing:${{ github.sha }}
+#          build-args: |
+#            BUILD_CMD=build-production
+#
+#      - name: Build & Push Payment
+#        if: needs.detect-changes.outputs.payment == 'true'
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          file: ./payment_service/Dockerfile
+#          push: true
+#          tags: |
+#            nekromant322/overmoney-payment:latest
+#            nekromant322/overmoney-payment:${{ github.sha }}
+#
+#  push-compose:
+#    name: Copy docker-compose files to server
+#    runs-on: ubuntu-latest
+#    needs: detect-changes
+#    if: needs.detect-changes.outputs.any_changed == 'true'
+#    steps:
+#      - uses: actions/checkout@v4
+#
+#      - name: Copy docker-compose.yml to server
+#        uses: appleboy/scp-action@v0.1.7
+#        with:
+#          host: "194.87.96.29"
+#          username: "nekromant322"
+#          key: ${{ secrets.VPS_GITHUB_PRIVATE_KEY }}
+#          source: "docker-compose.yml"
+#          target: "/home/nekromant322/overmoney"
+#
+#  deploy:
+#    name: Deploy on VPS
+#    runs-on: ubuntu-latest
+#    needs: [ build-and-push-images, push-compose ]
+#    if: always() && needs.detect-changes.outputs.any_changed == 'true'
+#    steps:
+#      - name: Deploy with SSH
+#        uses: appleboy/ssh-action@v1.0.3
+#        with:
+#          host: "194.87.96.29"
+#          username: "nekromant322"
+#          key: ${{ secrets.VPS_GITHUB_PRIVATE_KEY }}
+#          port: 22
+#          script: |
+#            mkdir -p /home/nekromant322/overmoney
+#            cd /home/nekromant322/overmoney
+#
+#            cat > .env <<EOF
+#            ORCHESTRATOR_DB_USER=${{ secrets.ORCHESTRATOR_DB_USER }}
+#            ORCHESTRATOR_DB_PASSWORD=${{ secrets.ORCHESTRATOR_DB_PASSWORD }}
+#            ORCHESTRATOR_DB_HOST=${{ secrets.ORCHESTRATOR_DB_HOST }}
+#            ORCHESTRATOR_DB_PORT=${{ secrets.ORCHESTRATOR_DB_PORT }}
+#            PAYMENT_DB_USER=${{ secrets.PAYMENT_DB_USER }}
+#            PAYMENT_DB_PASSWORD=${{ secrets.PAYMENT_DB_PASSWORD }}
+#            PAYMENT_DB_HOST=${{ secrets.PAYMENT_DB_HOST }}
+#            PAYMENT_DB_PORT=${{ secrets.PAYMENT_DB_PORT }}
+#            TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}
+#            TELEGRAM_BOT_NAME=${{ secrets.TELEGRAM_BOT_NAME }}
+#            JWT_ACCESS_KEY=${{ secrets.JWT_ACCESS_KEY }}
+#            JWT_REFRESH_KEY=${{ secrets.JWT_REFRESH_KEY }}
+#            INTERNAL_KEY_HEADER=${{ secrets.INTERNAL_KEY_HEADER }}
+#            SPRING_APPLICATION_PROFILE=prod
+#            EOF
+#
+#            echo "${{ secrets.DOCKER_PRIVATE_REGISTRY_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_PRIVATE_REGISTRY_USERNAME }}" --password-stdin
+#
+#            docker compose --env-file .env pull
+#            docker compose --env-file .env up -d --remove-orphans
+#
+#            docker ps -a

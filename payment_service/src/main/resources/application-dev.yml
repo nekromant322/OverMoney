@@ -1,9 +1,6 @@
 server:
   port: 8080
 
-orchestrator:
-  host: overridetech.ru
-
 spring:
   jpa:
     database: postgresql

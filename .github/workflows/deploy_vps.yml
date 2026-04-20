@@ -1,0 +1,242 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  detect-changes:
+    name: Detect changed services
+    runs-on: ubuntu-latest
+    outputs:
+      recognize: ${{ steps.filter.outputs.recognize }}
+      orchestrator: ${{ steps.filter.outputs.orchestrator }}
+      telegram_bot: ${{ steps.filter.outputs.telegram_bot }}
+      wit_ai_go_proxy: ${{ steps.filter.outputs.wit_ai_go_proxy }}
+      frontend_landing: ${{ steps.filter.outputs.frontend_landing }}
+      payment: ${{ steps.filter.outputs.payment }}
+      compose: ${{ steps.filter.outputs.compose }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Detect paths
+        id: filter
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            recognize:
+              - 'recognizer_service/**'
+            orchestrator:
+              - 'orchestrator_service/**'
+            telegram_bot:
+              - 'telegram_bot_service/**'
+            wit_ai_go_proxy:
+              - 'wit_ai_go_proxy/**'
+            frontend_landing:
+              - 'frontend/**'
+            payment:
+              - 'payment_service/**'
+            compose:
+              - 'docker-compose.yaml'
+
+  build-and-push:
+    name: Build and push changed images
+    runs-on: ubuntu-latest
+    needs: detect-changes
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: nekromant322
+          password: ${{ secrets.REGISTRY_GITHUB_TOKEN }}
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build recognizer
+        if: needs.detect-changes.outputs.recognize == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./recognizer_service/Dockerfile
+          push: true
+          tags: ghcr.io/nekromant322/recognizer:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build orchestrator
+        if: needs.detect-changes.outputs.orchestrator == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./orchestrator_service/Dockerfile
+          push: true
+          tags: ghcr.io/nekromant322/orchestrator:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build telegram_bot
+        if: needs.detect-changes.outputs.telegram_bot == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./telegram_bot_service/Dockerfile
+          push: true
+          tags: ghcr.io/nekromant322/telegram_bot:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build wit_ai_go_proxy
+        if: needs.detect-changes.outputs.wit_ai_go_proxy == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./wit_ai_go_proxy/Dockerfile
+          push: true
+          tags: ghcr.io/nekromant322/wit_ai_go_proxy:latest
+
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build frontend_landing
+        if: needs.detect-changes.outputs.frontend_landing == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ghcr.io/nekromant322/frontend_landing:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build payment
+        if: needs.detect-changes.outputs.payment == 'true'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./payment_service/Dockerfile
+          push: true
+          tags: ghcr.io/nekromant322/payment:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  push-compose:
+    name: Copy docker-compose to server
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Copy docker-compose.yaml to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: 194.87.96.29
+          username: github
+          key: ${{ secrets.VPS_GITHUB_PRIVATE_KEY }}
+          port: 22
+          source: "docker-compose.yaml"
+          target: "/home/github/deploy"
+
+  deploy:
+    name: Deploy changed services
+    runs-on: ubuntu-latest
+    needs:
+      - detect-changes
+      - build-and-push
+      - push-compose
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          RECOGNIZE_CHANGED: ${{ needs.detect-changes.outputs.recognize }}
+          ORCHESTRATOR_CHANGED: ${{ needs.detect-changes.outputs.orchestrator }}
+          TELEGRAM_BOT_CHANGED: ${{ needs.detect-changes.outputs.telegram_bot }}
+          WIT_AI_GO_PROXY_CHANGED: ${{ needs.detect-changes.outputs.wit_ai_go_proxy }}
+          FRONTEND_LANDING_CHANGED: ${{ needs.detect-changes.outputs.frontend_landing }}
+          PAYMENT_CHANGED: ${{ needs.detect-changes.outputs.payment }}
+          GHCR_USERNAME: nekromant322
+          GHCR_TOKEN: ${{ secrets.REGISTRY_GITHUB_TOKEN }}
+        with:
+          host: 194.87.96.29
+          username: github
+          key: ${{ secrets.VPS_GITHUB_PRIVATE_KEY }}
+          port: 22
+          envs: RECOGNIZE_CHANGED,ORCHESTRATOR_CHANGED,TELEGRAM_BOT_CHANGED,WIT_AI_GO_PROXY_CHANGED,FRONTEND_LANDING_CHANGED,PAYMENT_CHANGED,GHCR_USERNAME,GHCR_TOKEN
+          script: |
+            set -e
+
+            cd /home/github/deploy
+
+            if [ ! -f docker-compose.yaml ]; then
+              echo "docker-compose.yaml not found"
+              exit 1
+            fi
+
+            echo "$GHCR_TOKEN" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin
+
+            rm -f app.env
+            touch app.env
+
+            echo "SPRING_APPLICATION_PROFILE=prod" >> app.env
+            echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> app.env
+            echo "TELEGRAM_BOT_NAME=OverMoneyBot" >> app.env
+            echo "JWT_ACCESS_KEY=${{ secrets.JWT_ACCESS_KEY }}" >> app.env
+            echo "JWT_REFRESH_KEY=${{ secrets.JWT_REFRESH_KEY }}" >> app.env
+            echo "INTERNAL_KEY_HEADER=${{ secrets.INTERNAL_KEY_HEADER }}" >> app.env
+
+            echo "ORCHESTRATOR_DB_HOST=194.87.235.171" >> app.env
+            echo "ORCHESTRATOR_DB_PORT=5433" >> app.env
+            echo "ORCHESTRATOR_DB_USER=${{ secrets.ORCHESTRATOR_DB_USER }}" >> app.env
+            echo "ORCHESTRATOR_DB_PASSWORD=${{ secrets.ORCHESTRATOR_DB_PASSWORD }}" >> app.env
+
+            echo "PAYMENT_DB_HOST=194.87.235.171" >> app.env
+            echo "PAYMENT_DB_PORT=5436" >> app.env
+            echo "PAYMENT_DB_USER=${{ secrets.PAYMENT_DB_USER }}" >> app.env
+            echo "PAYMENT_DB_PASSWORD=${{ secrets.PAYMENT_DB_PASSWORD }}" >> app.env
+
+            echo "TELEGRAM_BOT_DB_HOST=194.87.235.171" >> app.env
+            echo "TELEGRAM_BOT_DB_PORT=5435" >> app.env
+            echo "TELEGRAM_BOT_DB_USER=${{ secrets.TELEGRAM_BOT_DB_USER }}" >> app.env
+            echo "TELEGRAM_BOT_DB_PASSWORD=${{ secrets.TELEGRAM_BOT_DB_PASSWORD }}" >> app.env
+
+            echo "WIT_AI_TOKEN=${{ secrets.WIT_AI_TOKEN }}" >> app.env
+            
+            echo "ORCHESTRATOR_URL=overmoney.tech/overmoney" >> app.env
+           
+
+            CHANGED_SERVICES=""
+
+            add_service() {
+              if [ -z "$CHANGED_SERVICES" ]; then
+                CHANGED_SERVICES="$1"
+              else
+                CHANGED_SERVICES="$CHANGED_SERVICES $1"
+              fi
+            }
+
+            [ "$RECOGNIZE_CHANGED" = "true" ] && add_service recognizer-service
+            [ "$ORCHESTRATOR_CHANGED" = "true" ] && add_service orchestrator-service
+            [ "$TELEGRAM_BOT_CHANGED" = "true" ] && add_service telegram-bot-service
+            [ "$WIT_AI_GO_PROXY_CHANGED" = "true" ] && add_service wit-ai-go-proxy-service
+            [ "$FRONTEND_LANDING_CHANGED" = "true" ] && add_service frontend-landing-service
+            [ "$PAYMENT_CHANGED" = "true" ] && add_service payment-service
+
+            echo "Changed services: $CHANGED_SERVICES"
+
+            if [ -n "$CHANGED_SERVICES" ]; then
+              docker compose --env-file app.env pull $CHANGED_SERVICES
+              docker compose --env-file app.env up -d --no-deps $CHANGED_SERVICES
+            else
+              echo "No changed services. Skip deploy."
+            fi
+
+            docker ps

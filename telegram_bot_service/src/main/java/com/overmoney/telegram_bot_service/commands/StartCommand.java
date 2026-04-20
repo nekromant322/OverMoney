@@ -17,8 +17,8 @@ import static com.overmoney.telegram_bot_service.constants.MessageConstants.NETW
 public class StartCommand extends OverMoneyCommand {
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
-    @Value("${orchestrator.host}")
-    private String orchestratorHost;
+    @Value("${orchestrator.url}")
+    private String orchestratorUrl;
 
     @Autowired
     public StartCommand() {
@@ -32,7 +32,7 @@ public class StartCommand extends OverMoneyCommand {
         boolean isRegistrationSuccess =
                 orchestratorRequestService.registerSingleAccount(new AccountDataDTO(chatId, userId));
         if (isRegistrationSuccess) {
-            sendMessage(absSender, chatId, Command.START.getDescription() + orchestratorHost);
+            sendMessage(absSender, chatId, Command.START.getDescription() + orchestratorUrl);
         } else {
             sendMessage(absSender, chatId, NETWORK_ERROR);
         }

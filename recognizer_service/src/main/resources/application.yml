@@ -4,8 +4,8 @@
   integration:
     internal:
       host:
-        orchestrator: http://orchestrator-service
-        wit-ai-proxy: http://wit-ai-go-proxy-service
+        orchestrator: http://orchestrator-service:8080
+        wit-ai-proxy: http://wit-ai-go-proxy-service:8080
 
   environment: ${ENVIRONMENT:dev}
 
