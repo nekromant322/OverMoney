@@ -34,4 +34,4 @@ bot:
 
 #настройка веб адреса приложения
 orchestrator:
-  host: test.ru
+  url: test.ru
