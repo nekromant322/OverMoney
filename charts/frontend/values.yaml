@@ -1,6 +1,7 @@
 serviceTargetPort: 80
 
 deployment:
+  replicas: 0
   registry: overregistry.ru
   containers:
     image: overregistry.ru/overmoney-frontend

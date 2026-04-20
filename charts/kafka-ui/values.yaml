@@ -1,4 +1,5 @@
 deployment:
+  replicas: 0
   containers:
     image: provectuslabs/kafka-ui
     pullPolicy: IfNotPresent
