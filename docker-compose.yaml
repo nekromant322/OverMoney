@@ -35,6 +35,7 @@ services:
       SPRING_APPLICATION_PROFILE: ${SPRING_APPLICATION_PROFILE}
       WIT_AI_TOKEN: ${WIT_AI_TOKEN}
       INTERNAL_KEY_HEADER: ${INTERNAL_KEY_HEADER}
+      DEEPSEEK_AUTH_TOKEN: ${DEEPSEEK_AUTH_TOKEN}
     logging:
       driver: "json-file"
       options:

@@ -207,6 +207,8 @@ jobs:
             echo "TELEGRAM_BOT_DB_PORT=5435" >> app.env
             echo "TELEGRAM_BOT_DB_USER=${{ secrets.TELEGRAM_BOT_DB_USER }}" >> app.env
             echo "TELEGRAM_BOT_DB_PASSWORD=${{ secrets.TELEGRAM_BOT_DB_PASSWORD }}" >> app.env
+            
+            echo "DEEPSEEK_AUTH_TOKEN=${{ secrets.DEEPSEEK_AUTH_TOKEN }}" >> app.env
 
             echo "WIT_AI_TOKEN=${{ secrets.WIT_AI_TOKEN }}" >> app.env
             
