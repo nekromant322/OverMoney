@@ -25,7 +25,7 @@ public class Payment {
     private Long invoiceId;
     @Column(name = "amount", nullable = false)
     private BigDecimal amount;
-    @Column(name = "cleanAmount")
+    @Column(name = "clean_amount")
     private BigDecimal cleanAmount;
     @Column(name = "currency", nullable = false)
     @Enumerated(value = EnumType.STRING)
@@ -34,7 +34,7 @@ public class Payment {
     private String email;
     @Column(name = "description", nullable = false)
     private String description;
-    @Column(name = "paymentStatus", nullable = false)
+    @Column(name = "payment_status", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private PaymentStatus paymentStatus;
 }
