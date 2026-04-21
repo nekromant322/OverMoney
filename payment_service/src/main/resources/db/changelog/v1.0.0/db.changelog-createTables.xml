@@ -4,33 +4,63 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.9.xsd">
 
-    <changeSet id="create-subscriptions-table" author="Anton Cherkas">
+    <changeSet id="create-payments-table" author="argunovsd">
+        <createTable tableName="payments">
+
+            <column name="invoice_id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+
+            <column name="amount" type="DECIMAL(19,2)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="clean_amount" type="DECIMAL(19,2)"/>
+
+            <column name="currency" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="email" type="VARCHAR(255)"/>
+
+            <column name="description" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="payment_status" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet id="create-subscriptions-table" author="argunovsd">
         <createTable tableName="subscriptions">
+
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
+
             <column name="chat_id" type="BIGINT">
-                <constraints nullable="false"/>
-            </column>
-            <column name="order_id" type="VARCHAR(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
-            <column name="payment_id" type="VARCHAR(255)"/>
-            <column name="start_date" type="TIMESTAMP"/>
-            <column name="end_date" type="TIMESTAMP"/>
-            <column name="is_active" type="BOOLEAN" defaultValue="false">
-                <constraints nullable="false"/>
+
+            <column name="start_date" type="TIMESTAMP WITH TIME ZONE"/>
+            <column name="end_date" type="TIMESTAMP WITH TIME ZONE"/>
+
+            <column name="payment_invoice_id" type="BIGINT">
+                <constraints unique="true"
+                             foreignKeyName="fk_subscription_payment"
+                             referencedTableName="payments"
+                             referencedColumnNames="invoice_id"/>
             </column>
-            <column name="payment_url" type="VARCHAR(512)"/>
-            <column name="payment_url_expires" type="TIMESTAMP"/>
+
         </createTable>
 
-        <createIndex tableName="subscriptions" indexName="idx_subscriptions_chat_id">
+        <createIndex tableName="subscriptions"
+                     indexName="idx_subscriptions_chat_id">
             <column name="chat_id"/>
         </createIndex>
-
-        <createIndex tableName="subscriptions" indexName="idx_subscriptions_payment_id">
-            <column name="payment_id"/>
-        </createIndex>
     </changeSet>
+
 </databaseChangeLog>
