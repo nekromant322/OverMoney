@@ -25,7 +25,8 @@ target/
 **/mvnw
 **/mvnw.cmd
 **/.gitignore
-frontend/app
+**/node_modules
+**/dist
 
 
 
