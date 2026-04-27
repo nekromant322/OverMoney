@@ -19,9 +19,9 @@ const apiProxy: ProxyOptions = {
       }
     });
     proxy.on('proxyRes', (proxyRes) => {
-      const cookies = proxyRes.headers['set-cookie'];
+      const cookies = proxyRes.headers['set-cookie'] as string[] | undefined;
       if (cookies) {
-        proxyRes.headers['set-cookie'] = cookies.map((c) =>
+        proxyRes.headers['set-cookie'] = cookies.map((c: string) =>
           c.replace(/;\s*Domain=[^;]+/gi, '').replace(/;\s*Secure/gi, ''),
         );
       }
