@@ -1,27 +1,11 @@
-import {fileURLToPath, URL} from 'node:url'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-import {defineConfig} from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
-
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueDevTools(),
-  ],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    },
-  },
+  plugins: [react()],
   server: {
-    proxy: {
-      '/transactions': {
-        target: 'https://overmoneytest.online',
-        changeOrigin: true,
-        secure: false,
-      }
-    }
-  }
-})
+    host: '127.0.0.1',
+    port: 5173,
+    strictPort: true,
+  },
+});
