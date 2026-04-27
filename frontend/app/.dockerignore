@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+.git
+.gitignore
+*.local
+*.tsbuildinfo
+.idea
+.vscode
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

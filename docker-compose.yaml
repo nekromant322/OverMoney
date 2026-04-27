@@ -106,6 +106,19 @@ services:
     networks:
       - app-network
 
+  frontend-app-service:
+    container_name: frontend-app
+    image: ghcr.io/nekromant322/frontend_app:latest
+    restart: unless-stopped
+    ports:
+      - '8085:80'
+    logging:
+      driver: "json-file"
+      options:
+        max-size: 50m
+    networks:
+      - app-network
+
 
 networks:
   app-network:
