@@ -1,4 +1,5 @@
 import Login from './pages/Login';
+import Operations from './pages/Operations';
 
 function Home() {
   return (
@@ -10,8 +11,10 @@ function Home() {
 }
 
 function App() {
-  const isLogin = /\/login\/?$/.test(window.location.pathname);
-  return isLogin ? <Login /> : <Home />;
+  const path = window.location.pathname;
+  if (/\/login\/?$/.test(path)) return <Login />;
+  if (/\/operations\/?$/.test(path)) return <Operations />;
+  return <Home />;
 }
 
 export default App;

@@ -1,0 +1,586 @@
+import { useEffect, useRef, useState } from 'react';
+import './Operations.css';
+
+type CategoryType = 'INCOME' | 'EXPENSE';
+
+type Category = {
+  id: number;
+  name: string;
+  type: CategoryType;
+};
+
+type Transaction = {
+  id: string;
+  message: string;
+  amount: number;
+  date: string;
+  categoryName?: string;
+  type?: CategoryType;
+};
+
+const formatAmount = (n: number) => new Intl.NumberFormat('ru-RU').format(Math.abs(n));
+
+const formatDate = (iso: string) => {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} / ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+};
+
+type CategoryListProps = {
+  items: Category[];
+  dropTargetId: number | null;
+  onCategoryDragOver: (e: React.DragEvent, catId: number) => void;
+  onCategoryDrop: (e: React.DragEvent, catId: number) => void;
+};
+
+function CategoryList({ items, dropTargetId, onCategoryDragOver, onCategoryDrop }: CategoryListProps) {
+  return (
+    <ul className="category-list">
+      {items.map((c) => (
+        <li
+          key={c.id}
+          className={`category-row ${dropTargetId === c.id ? 'is-drop-target' : ''}`}
+          onDragOver={(e) => onCategoryDragOver(e, c.id)}
+          onDrop={(e) => onCategoryDrop(e, c.id)}
+        >
+          <span className="category-name">{c.name}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+type OperationCardProps = {
+  tx: Transaction;
+  isDragging: boolean;
+  onDragStart: (e: React.DragEvent, txId: string) => void;
+  onDragEnd: () => void;
+};
+
+function OperationCard({ tx, isDragging, onDragStart, onDragEnd }: OperationCardProps) {
+  return (
+    <article
+      className={`op-card ${isDragging ? 'is-dragging' : ''}`}
+      draggable
+      onDragStart={(e) => onDragStart(e, tx.id)}
+      onDragEnd={onDragEnd}
+    >
+      <header className="op-card__head">
+        <h3 className="op-card__title">{tx.message}</h3>
+        <button type="button" className="icon-btn" aria-label="Редактировать">
+          <PenIcon />
+        </button>
+      </header>
+      <footer className="op-card__foot">
+        <span className="op-card__date">{formatDate(tx.date)}</span>
+        <span className="op-card__amount">{formatAmount(tx.amount)}</span>
+      </footer>
+    </article>
+  );
+}
+
+export default function Operations() {
+  const [query, setQuery] = useState('');
+  const [activeTab, setActiveTab] = useState<'ops' | 'cats' | 'arch' | 'dyn'>('ops');
+  const [categories, setCategories] = useState<Category[] | null>(null);
+  const [categoriesError, setCategoriesError] = useState<string | null>(null);
+  const [transactions, setTransactions] = useState<Transaction[] | null>(null);
+  const [transactionsError, setTransactionsError] = useState<string | null>(null);
+  const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [dropTargetId, setDropTargetId] = useState<number | null>(null);
+  const [trashHover, setTrashHover] = useState(false);
+  const [toast, setToast] = useState<{ tx: Transaction; categoryId: number; categoryName: string } | null>(null);
+  const toastTimerRef = useRef<number | null>(null);
+  const [isAddOpen, setAddOpen] = useState(false);
+  const [noteInput, setNoteInput] = useState('');
+  const [amountInput, setAmountInput] = useState('');
+  const [addSubmitting, setAddSubmitting] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/categories/', { credentials: 'include' })
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json() as Promise<Category[]>;
+      })
+      .then((data) => {
+        if (!cancelled) setCategories(data);
+      })
+      .catch((e: Error) => {
+        if (!cancelled) {
+          setCategories([]);
+          setCategoriesError(e.message);
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (toastTimerRef.current !== null) {
+        window.clearTimeout(toastTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isAddOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeAddModal();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
+  const loadTransactions = () => {
+    return fetch('/transactions', { credentials: 'include' })
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json() as Promise<Transaction[]>;
+      })
+      .then((data) => {
+        setTransactions(data);
+        setTransactionsError(null);
+      })
+      .catch((e: Error) => {
+        setTransactions((prev) => prev ?? []);
+        setTransactionsError(e.message);
+      });
+  };
+
+  useEffect(() => {
+    loadTransactions();
+  }, []);
+
+  const all = categories ?? [];
+  const expenses = all.filter((c) => c.type === 'EXPENSE');
+  const incomes = all.filter((c) => c.type === 'INCOME');
+
+  const q = query.trim().toLowerCase();
+  const filteredExpenses = q
+    ? expenses.filter((c) => c.name.toLowerCase().includes(q))
+    : expenses;
+  const filteredIncomes = q ? incomes.filter((c) => c.name.toLowerCase().includes(q)) : incomes;
+
+  const handleDragStart = (e: React.DragEvent, txId: string) => {
+    e.dataTransfer.setData('text/plain', txId);
+    e.dataTransfer.effectAllowed = 'move';
+    setDraggingId(txId);
+  };
+
+  const handleDragEnd = () => {
+    setDraggingId(null);
+    setDropTargetId(null);
+    setTrashHover(false);
+  };
+
+  const handleCategoryDragOver = (e: React.DragEvent, catId: number) => {
+    if (!draggingId) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dropTargetId !== catId) setDropTargetId(catId);
+  };
+
+  const showToast = (next: { tx: Transaction; categoryId: number; categoryName: string }) => {
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+    }
+    setToast(next);
+    toastTimerRef.current = window.setTimeout(() => {
+      setToast(null);
+      toastTimerRef.current = null;
+    }, 6000);
+  };
+
+  const hideToast = () => {
+    if (toastTimerRef.current !== null) {
+      window.clearTimeout(toastTimerRef.current);
+      toastTimerRef.current = null;
+    }
+    setToast(null);
+  };
+
+  const handleCategoryDrop = async (e: React.DragEvent, catId: number) => {
+    e.preventDefault();
+    const txId = e.dataTransfer.getData('text/plain');
+    setDraggingId(null);
+    setDropTargetId(null);
+    if (!txId) return;
+
+    const previous = transactions;
+    const droppedTx = previous?.find((t) => t.id === txId);
+    const targetCategory = categories?.find((c) => c.id === catId);
+    setTransactions((prev) => prev?.filter((t) => t.id !== txId) ?? null);
+
+    try {
+      const r = await fetch('/transaction/define', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ transactionId: txId, categoryId: catId }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      if (droppedTx && targetCategory) {
+        showToast({ tx: droppedTx, categoryId: catId, categoryName: targetCategory.name });
+      }
+    } catch (err) {
+      console.error('Failed to define transaction category', err);
+      setTransactions(previous);
+    }
+  };
+
+  const openAddModal = () => {
+    setNoteInput('');
+    setAmountInput('');
+    setAddOpen(true);
+  };
+
+  const closeAddModal = () => {
+    if (addSubmitting) return;
+    setAddOpen(false);
+  };
+
+  const handleAddSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const note = noteInput.trim();
+    const amount = amountInput.trim();
+    if (!note || !amount) return;
+
+    setAddSubmitting(true);
+    try {
+      const r = await fetch('/transaction', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          message: `${note} ${amount}`,
+          date: new Date().toISOString(),
+        }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      setAddOpen(false);
+      await loadTransactions();
+    } catch (err) {
+      console.error('Failed to add transaction', err);
+    } finally {
+      setAddSubmitting(false);
+    }
+  };
+
+  const handleUndoDefine = async () => {
+    if (!toast) return;
+    const { tx, categoryId } = toast;
+    hideToast();
+    setTransactions((prev) => {
+      if (!prev) return [tx];
+      if (prev.some((t) => t.id === tx.id)) return prev;
+      return [...prev, tx].sort((a, b) => a.date.localeCompare(b.date));
+    });
+    try {
+      const r = await fetch('/transaction/undefine', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ transactionId: tx.id, categoryId }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    } catch (err) {
+      console.error('Failed to undefine transaction', err);
+    }
+  };
+
+  const handleTrashDragOver = (e: React.DragEvent) => {
+    if (!draggingId) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (!trashHover) setTrashHover(true);
+  };
+
+  const handleTrashDragLeave = () => {
+    setTrashHover(false);
+  };
+
+  const handleTrashDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    const txId = e.dataTransfer.getData('text/plain');
+    setDraggingId(null);
+    setTrashHover(false);
+    if (!txId) return;
+
+    const previous = transactions;
+    setTransactions((prev) => prev?.filter((t) => t.id !== txId) ?? null);
+
+    try {
+      const r = await fetch(`/transaction/${encodeURIComponent(txId)}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    } catch (err) {
+      console.error('Failed to delete transaction', err);
+      setTransactions(previous);
+    }
+  };
+
+  return (
+    <div className="ops-app">
+      <header className="topbar">
+        <div className="topbar__brand" aria-label="OverMoney">
+          <span className="brand-mark" />
+        </div>
+
+        <nav className="tabs" aria-label="Разделы">
+          <button
+            className={`tab ${activeTab === 'ops' ? 'is-active' : ''}`}
+            onClick={() => setActiveTab('ops')}
+          >
+            <SortIcon />
+            <span>Операции</span>
+            {transactions && (
+              <span className="tab__badge">{transactions.length}</span>
+            )}
+          </button>
+          <button
+            className={`tab ${activeTab === 'cats' ? 'is-active' : ''}`}
+            onClick={() => setActiveTab('cats')}
+          >
+            <GridIcon />
+            <span>Категории</span>
+          </button>
+          <button
+            className={`tab ${activeTab === 'arch' ? 'is-active' : ''}`}
+            onClick={() => setActiveTab('arch')}
+          >
+            <ArchiveIcon />
+            <span>Архив</span>
+          </button>
+          <button
+            className={`tab ${activeTab === 'dyn' ? 'is-active' : ''}`}
+            onClick={() => setActiveTab('dyn')}
+          >
+            <LineChartIcon />
+            <span>Динамика</span>
+          </button>
+        </nav>
+
+        <div className="topbar__user">
+          <div className="avatar" aria-label="Профиль" />
+        </div>
+      </header>
+
+      <div className="layout">
+        <aside className="sidebar">
+          <div className="search">
+            <SearchIcon />
+            <input
+              type="text"
+              placeholder="Найти категорию..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </div>
+
+          <section className="cat-section">
+            <h2 className="cat-section__title">Расходы</h2>
+            <CategoryList
+              items={filteredExpenses}
+              dropTargetId={dropTargetId}
+              onCategoryDragOver={handleCategoryDragOver}
+              onCategoryDrop={handleCategoryDrop}
+            />
+          </section>
+
+          <section className="cat-section">
+            <h2 className="cat-section__title">Доходы</h2>
+            <CategoryList
+              items={filteredIncomes}
+              dropTargetId={dropTargetId}
+              onCategoryDragOver={handleCategoryDragOver}
+              onCategoryDrop={handleCategoryDrop}
+            />
+          </section>
+
+          {categoriesError && (
+            <div className="sidebar__error" role="alert">
+              Не удалось загрузить категории: {categoriesError}
+            </div>
+          )}
+        </aside>
+
+        <main className="content">
+          <div className="toolbar">
+            <div className="toolbar__right">
+              <button type="button" className="primary-btn" onClick={openAddModal}>
+                Добавить операцию
+              </button>
+            </div>
+          </div>
+
+          {transactionsError ? (
+            <div className="content__error" role="alert">
+              Не удалось загрузить транзакции: {transactionsError}
+            </div>
+          ) : transactions === null ? (
+            <div className="content__placeholder">Загрузка...</div>
+          ) : transactions.length === 0 ? (
+            <div className="content__placeholder">Нет операций</div>
+          ) : (
+            <div className="op-grid">
+              {transactions.map((tx) => (
+                <OperationCard
+                  key={tx.id}
+                  tx={tx}
+                  isDragging={draggingId === tx.id}
+                  onDragStart={handleDragStart}
+                  onDragEnd={handleDragEnd}
+                />
+              ))}
+            </div>
+          )}
+
+          <button
+            type="button"
+            className={`fab-trash ${trashHover ? 'is-drop-target' : ''}`}
+            aria-label="Удалить"
+            onDragOver={handleTrashDragOver}
+            onDragLeave={handleTrashDragLeave}
+            onDrop={handleTrashDrop}
+          >
+            <TrashIcon />
+          </button>
+        </main>
+      </div>
+
+      {isAddOpen && (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onClick={(e) => { if (e.target === e.currentTarget) closeAddModal(); }}
+        >
+          <div className="modal" role="dialog" aria-modal="true" aria-labelledby="add-tx-title">
+            <h3 id="add-tx-title" className="modal__title">Новая операция</h3>
+            <form className="modal__form" onSubmit={handleAddSubmit}>
+              <label className="modal__field">
+                <span className="modal__label">Примечание</span>
+                <input
+                  type="text"
+                  placeholder="Например: продукты"
+                  value={noteInput}
+                  onChange={(e) => setNoteInput(e.target.value)}
+                  autoFocus
+                  disabled={addSubmitting}
+                />
+              </label>
+              <label className="modal__field">
+                <span className="modal__label">Сумма</span>
+                <input
+                  type="text"
+                  inputMode="decimal"
+                  placeholder="0"
+                  value={amountInput}
+                  onChange={(e) => setAmountInput(e.target.value)}
+                  disabled={addSubmitting}
+                />
+              </label>
+              <div className="modal__actions">
+                <button
+                  type="submit"
+                  className="primary-btn"
+                  disabled={addSubmitting || !noteInput.trim() || !amountInput.trim()}
+                >
+                  {addSubmitting ? 'Добавляю...' : 'Добавить'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {toast && (
+        <div className="toast" role="status">
+          <span className="toast__text">
+            {toast.tx.message} {formatAmount(toast.tx.amount)} → {toast.categoryName}
+          </span>
+          <button type="button" className="toast__undo" onClick={handleUndoDefine}>
+            Отменить
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function SearchIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function PenIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+    </svg>
+  );
+}
+
+function SortIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6h13" />
+      <path d="M3 12h9" />
+      <path d="M3 18h6" />
+      <path d="m17 8 4-4 4 4" transform="translate(-3 0)" />
+      <path d="M18 4v16" />
+    </svg>
+  );
+}
+
+function GridIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" />
+      <rect x="14" y="14" width="7" height="7" />
+    </svg>
+  );
+}
+
+function ArchiveIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="5" rx="1" />
+      <path d="M5 8v11a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8" />
+      <path d="M10 12h4" />
+    </svg>
+  );
+}
+
+function LineChartIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 3v18h18" />
+      <path d="m7 14 4-4 4 4 5-7" />
+    </svg>
+  );
+}
+
+function TrashIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 6h18" />
+      <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+      <path d="m19 6-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+      <path d="M10 11v6" />
+      <path d="M14 11v6" />
+    </svg>
+  );
+}
