@@ -31,7 +31,6 @@ const apiProxy: ProxyOptions = {
 
 const apiPrefixes = [
   '/auth',
-  '/categories',
   '/transaction',
   '/transactions',
   '/analytics',
@@ -48,6 +47,8 @@ const apiPrefixes = [
 const proxy: Record<string, ProxyOptions> = Object.fromEntries(
   apiPrefixes.map((p) => [p, apiProxy]),
 );
+// Use regex so the SPA /categories route falls through; only /categories/* hits backend.
+proxy['^/categories/'] = apiProxy;
 proxy['^/login/.+'] = apiProxy;
 
 export default defineConfig(({ command }) => ({
