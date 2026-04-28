@@ -50,8 +50,6 @@ const formatDate = (iso: string) => {
   return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()}`;
 };
 
-const padToSeconds = (s: string) => (s && s.length === 16 ? `${s}:00` : s);
-
 const nowLocalDate = () => {
   const d = new Date();
   const pad = (n: number) => String(n).padStart(2, '0');
@@ -83,8 +81,8 @@ const buildFilterBody = (f: FilterForm, page: number) => {
   const date =
     begin || end
       ? {
-          begin: begin ? padToSeconds(begin) : '1970-01-01T00:00:00',
-          end: end ? padToSeconds(end) : '9999-12-31T23:59:59',
+          begin: begin ? `${begin}T00:00:00` : '1970-01-01T00:00:00',
+          end: end ? `${end}T23:59:59` : '9999-12-31T23:59:59',
         }
       : null;
 
@@ -221,6 +219,15 @@ export default function Archive() {
     setAppliedFilter(next);
     setSelected(new Set());
     loadPage(0, next, false);
+  };
+
+  const clearFilters = () => {
+    setFilter(emptyFilter);
+    if (appliedFilter !== null) {
+      setAppliedFilter(null);
+      setSelected(new Set());
+      loadPage(0, null, false);
+    }
   };
 
   const toggleSelect = (id: string) => {
@@ -420,14 +427,14 @@ export default function Archive() {
               onChange={(e) => setFilter({ ...filter, amountMax: e.target.value })}
             />
             <input
-              type="datetime-local"
+              type="date"
               className="filter-input"
               placeholder="С даты"
               value={filter.dateBegin}
               onChange={(e) => setFilter({ ...filter, dateBegin: e.target.value })}
             />
             <input
-              type="datetime-local"
+              type="date"
               className="filter-input"
               placeholder="По дату"
               value={filter.dateEnd}
@@ -440,12 +447,24 @@ export default function Archive() {
               value={filter.message}
               onChange={(e) => setFilter({ ...filter, message: e.target.value })}
             />
-            <button type="button" className="primary-btn" onClick={applyFilter} disabled={loading}>
-              Применить
-            </button>
-            <button type="button" className="primary-btn archive-toolbar__add" onClick={openAddModal}>
-              Добавить операцию
-            </button>
+            <div className="archive-toolbar__actions">
+              <button type="button" className="primary-btn" onClick={applyFilter} disabled={loading}>
+                Применить
+              </button>
+              <button
+                type="button"
+                className="ghost-btn"
+                onClick={clearFilters}
+                style={{
+                  visibility: isFilterEmpty(filter) && appliedFilter === null ? 'hidden' : 'visible',
+                }}
+              >
+                Очистить фильтры
+              </button>
+              <button type="button" className="primary-btn" onClick={openAddModal}>
+                Добавить операцию
+              </button>
+            </div>
           </div>
 
           {error && (
