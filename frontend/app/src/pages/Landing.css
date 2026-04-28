@@ -78,6 +78,34 @@
   min-height: 56px;
 }
 
+.tg-connecting {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+}
+
+.tg-connecting__text {
+  margin-left: 2px;
+}
+
+.tg-connecting__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  animation: tg-pulse 1.2s ease-in-out infinite;
+}
+
+.tg-connecting__dot:nth-child(2) { animation-delay: 0.2s; }
+.tg-connecting__dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes tg-pulse {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
 .landing__subtitle {
   margin-top: 0;
   margin-bottom: 0;

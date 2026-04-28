@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import TopBar from './TopBar';
 import ConfirmModal from './ConfirmModal';
+import EditTransactionModal from './EditTransactionModal';
 import './Operations.css';
 import './Categories.css';
 import './Archive.css';
@@ -292,7 +293,7 @@ export default function Archive() {
       message: t.message,
       amount: String(t.amount ?? ''),
       date: t.date ? t.date.slice(0, 10) : '',
-      categoryName: t.categoryName ?? '',
+      categoryName: t.categoryName ?? 'Нераспознанное',
     });
   };
 
@@ -313,7 +314,7 @@ export default function Archive() {
         date: editForm.date
           ? `${editForm.date}T${editing.date.slice(11, 19) || '00:00:00'}`
           : editing.date,
-        categoryName: editForm.categoryName || null,
+        categoryName: editForm.categoryName,
       };
       const r = await fetch('/transactions', {
         method: 'PUT',
@@ -609,7 +610,7 @@ export default function Archive() {
                   }
                   disabled={addSubmitting}
                 >
-                  <option value="">Без категории</option>
+                  <option value="Нераспознанное">Нераспознанное</option>
                   {categories.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.name}
@@ -662,82 +663,15 @@ export default function Archive() {
         onCancel={() => setConfirmOpen(false)}
       />
 
-      {editing && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onClick={(e) => {
-            if (e.target === e.currentTarget) closeEdit();
-          }}
-        >
-          <div className="modal modal--wide" role="dialog" aria-modal="true">
-            <button
-              type="button"
-              className="modal__close"
-              aria-label="Закрыть"
-              onClick={closeEdit}
-              disabled={saving}
-            >
-              ×
-            </button>
-            <h3 className="modal__title modal__title--center">Редактирование операции</h3>
-            <div className="modal__form">
-              <div className="modal__field">
-                <span className="modal__label">Описание</span>
-                <input
-                  type="text"
-                  value={editForm.message}
-                  onChange={(e) => setEditForm({ ...editForm, message: e.target.value })}
-                  disabled={saving}
-                />
-              </div>
-              <div className="modal__field">
-                <span className="modal__label">Категория</span>
-                <select
-                  className="merge-block__select"
-                  value={editForm.categoryName}
-                  onChange={(e) => setEditForm({ ...editForm, categoryName: e.target.value })}
-                  disabled={saving}
-                >
-                  <option value="">Без категории</option>
-                  {categories.map((c) => (
-                    <option key={c.id} value={c.name}>
-                      {c.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="modal__field">
-                <span className="modal__label">Сумма</span>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  value={editForm.amount}
-                  onChange={(e) => setEditForm({ ...editForm, amount: e.target.value })}
-                  disabled={saving}
-                />
-              </div>
-              <div className="modal__field">
-                <span className="modal__label">Дата</span>
-                <input
-                  type="date"
-                  value={editForm.date}
-                  onChange={(e) => setEditForm({ ...editForm, date: e.target.value })}
-                  disabled={saving}
-                />
-              </div>
-              <button
-                type="button"
-                className="primary-btn primary-btn--block"
-                onClick={handleEditSave}
-                disabled={saving || !editForm.message.trim()}
-              >
-                {saving ? 'Сохраняю...' : 'Сохранить'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <EditTransactionModal
+        editing={editing}
+        editForm={editForm}
+        saving={saving}
+        categories={categories}
+        onFormChange={setEditForm}
+        onSave={handleEditSave}
+        onClose={closeEdit}
+      />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import TopBar from './TopBar';
 import ConfirmModal from './ConfirmModal';
+import EditTransactionModal, { EditForm } from './EditTransactionModal';
 import './Operations.css';
 
 type CategoryType = 'INCOME' | 'EXPENSE';
@@ -60,9 +61,10 @@ type OperationCardProps = {
   isDragging: boolean;
   onDragStart: (e: React.DragEvent, txId: string) => void;
   onDragEnd: () => void;
+  onEdit: (tx: Transaction) => void;
 };
 
-function OperationCard({ tx, isDragging, onDragStart, onDragEnd }: OperationCardProps) {
+function OperationCard({ tx, isDragging, onDragStart, onDragEnd, onEdit }: OperationCardProps) {
   return (
     <article
       className={`op-card ${isDragging ? 'is-dragging' : ''}`}
@@ -72,7 +74,7 @@ function OperationCard({ tx, isDragging, onDragStart, onDragEnd }: OperationCard
     >
       <header className="op-card__head">
         <h3 className="op-card__title">{tx.message}</h3>
-        <button type="button" className="icon-btn" aria-label="Редактировать">
+        <button type="button" className="icon-btn" aria-label="Редактировать" onClick={() => onEdit(tx)}>
           <PenIcon />
         </button>
       </header>
@@ -97,6 +99,10 @@ export default function Operations() {
   const [pendingDeleteTxId, setPendingDeleteTxId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ tx: Transaction; categoryId: number; categoryName: string } | null>(null);
   const toastTimerRef = useRef<number | null>(null);
+
+  const [editing, setEditing] = useState<Transaction | null>(null);
+  const [editForm, setEditForm] = useState<EditForm>({ message: '', amount: '', date: '', categoryName: '' });
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -269,6 +275,60 @@ export default function Operations() {
     setPendingDeleteTxId(txId);
   };
 
+  const openEdit = (t: Transaction) => {
+    setEditing(t);
+    setEditForm({
+      message: t.message,
+      amount: String(t.amount ?? ''),
+      date: t.date ? t.date.slice(0, 10) : '',
+      categoryName: t.categoryName ?? 'Нераспознанное',
+    });
+  };
+
+  const closeEdit = () => {
+    if (saving) return;
+    setEditing(null);
+  };
+
+  const handleEditSave = async () => {
+    if (!editing) return;
+    setSaving(true);
+    try {
+      const body = {
+        ...editing,
+        id: editing.id,
+        message: editForm.message.trim(),
+        amount: Number(editForm.amount) || 0,
+        date: editForm.date
+          ? `${editForm.date}T${editing.date.slice(11, 19) || '00:00:00'}`
+          : editing.date,
+        categoryName: editForm.categoryName,
+      };
+      const r = await fetch('/transactions', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify(body),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      setEditing(null);
+      loadTransactions();
+    } catch (e) {
+      console.error('Failed to save transaction', e);
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!editing) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeEdit();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
+
   const confirmDelete = async () => {
     const txId = pendingDeleteTxId;
     if (!txId) return;
@@ -351,6 +411,7 @@ export default function Operations() {
                   isDragging={draggingId === tx.id}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
+                  onEdit={openEdit}
                 />
               ))}
             </div>
@@ -375,6 +436,16 @@ export default function Operations() {
         message="Это действие нельзя отменить."
         onConfirm={confirmDelete}
         onCancel={() => setPendingDeleteTxId(null)}
+      />
+
+      <EditTransactionModal
+        editing={editing}
+        editForm={editForm}
+        saving={saving}
+        categories={categories ?? []}
+        onFormChange={setEditForm}
+        onSave={handleEditSave}
+        onClose={closeEdit}
       />
 
       {toast && (

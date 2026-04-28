@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './Landing.css';
 
 type TelegramUser = {
@@ -19,6 +19,7 @@ declare global {
 
 export default function Login() {
   const widgetSlot = useRef<HTMLDivElement>(null);
+  const [widgetLoaded, setWidgetLoaded] = useState(false);
 
   useEffect(() => {
     window.onTelegramAuth = async (user) => {
@@ -51,6 +52,7 @@ export default function Login() {
         script.setAttribute('data-size', 'large');
         script.setAttribute('data-onauth', 'onTelegramAuth(user)');
         script.setAttribute('data-request-access', 'write');
+        script.onload = () => { if (!cancelled) setWidgetLoaded(true); };
         widgetSlot.current.appendChild(script);
       })
       .catch((e) => console.error('Failed to load bot name', e));
@@ -75,7 +77,16 @@ export default function Login() {
         <section className="landing__hero">
           <h1>OverMoney</h1>
           <h2 className="landing__subtitle">Твой трекер финансов</h2>
-          <div className="landing__widget-slot" ref={widgetSlot} />
+          <div className="landing__widget-slot" ref={widgetSlot}>
+            {!widgetLoaded && (
+              <div className="tg-connecting">
+                <span className="tg-connecting__dot" />
+                <span className="tg-connecting__dot" />
+                <span className="tg-connecting__dot" />
+                <span className="tg-connecting__text">Подключение к Telegram</span>
+              </div>
+            )}
+          </div>
         </section>
 
         <div className="landing__features">

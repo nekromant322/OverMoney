@@ -19,12 +19,20 @@ const apiProxy: ProxyOptions = {
       }
     });
     proxy.on('proxyRes', (proxyRes) => {
+      const location = proxyRes.headers['location'];
+      if (typeof location === 'string' && location.startsWith(PROD_BACKEND)) {
+        proxyRes.headers['location'] = location.replace(PROD_BACKEND, 'http://127.0.0.1:5173');
+      }
+
       const cookies = proxyRes.headers['set-cookie'] as string[] | undefined;
       if (cookies) {
         proxyRes.headers['set-cookie'] = cookies.map((c: string) =>
           c.replace(/;\s*Domain=[^;]+/gi, '').replace(/;\s*Secure/gi, ''),
         );
       }
+
+      proxyRes.headers['access-control-allow-origin'] = 'http://127.0.0.1:5173';
+      proxyRes.headers['access-control-allow-credentials'] = 'true';
     });
   },
 };
