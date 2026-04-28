@@ -11,7 +11,7 @@ import static com.overmoney.telegram_bot_service.constants.Command.WEB;
 
 @Component
 public class WebCommand extends OverMoneyCommand {
-    @Value("${orchestrator.url}")
+    @Value("${web.url}")
     private String orchestratorUrl;
 
     @Autowired

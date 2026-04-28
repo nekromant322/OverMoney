@@ -11,8 +11,8 @@
       Denis_Shvartcer
 
 #настройка веб адреса приложения
-  orchestrator:
-    url: ${ORCHESTRATOR_URL}
+  web:
+    url: ${WEB_URL}
 
   integration:
     internal:

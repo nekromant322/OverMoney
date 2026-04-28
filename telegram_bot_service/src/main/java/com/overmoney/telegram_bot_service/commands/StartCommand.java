@@ -17,7 +17,7 @@ import static com.overmoney.telegram_bot_service.constants.MessageConstants.NETW
 public class StartCommand extends OverMoneyCommand {
     @Autowired
     private OrchestratorRequestService orchestratorRequestService;
-    @Value("${orchestrator.url}")
+    @Value("${web.url}")
     private String orchestratorUrl;
 
     @Autowired
