@@ -168,7 +168,8 @@ public class TransactionController {
     }
 
     @PutMapping("/transaction")
-    @Operation(summary = "Редактировать транзакцию", description = "Редактирует транзакцию")
+    @Operation(summary = "Добавить подсказку для транзакции", description = "Редактирует транзакцию")
+    //todo аккратно поменять урл (ничего не сломав), вводит в заблуждение
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Транзакция отредактиирована"),
             @ApiResponse(responseCode = "400", description = "Некорректные данные транзакции")

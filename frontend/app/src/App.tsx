@@ -1,6 +1,7 @@
 import Login from './pages/Login';
 import Operations from './pages/Operations';
 import Categories from './pages/Categories';
+import Archive from './pages/Archive';
 
 function Home() {
   return (
@@ -16,6 +17,7 @@ function App() {
   if (/\/login\/?$/.test(path)) return <Login />;
   if (/\/operations\/?$/.test(path)) return <Operations />;
   if (/\/categories\/?$/.test(path)) return <Categories />;
+  if (/\/archive\/?$/.test(path)) return <Archive />;
   return <Home />;
 }
 

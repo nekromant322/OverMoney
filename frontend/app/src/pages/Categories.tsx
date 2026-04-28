@@ -32,6 +32,7 @@ export default function Categories() {
   const [mergeOpen, setMergeOpen] = useState(false);
   const [mergeTargetId, setMergeTargetId] = useState<number | ''>('');
   const [merging, setMerging] = useState(false);
+  const [kwExpanded, setKwExpanded] = useState(false);
 
   const loadCategories = () =>
     fetch('/categories/', { credentials: 'include' })
@@ -56,12 +57,14 @@ export default function Categories() {
     setIsCreating(true);
     setEditing({ id: 0, name: '', type: 'EXPENSE', keywords: [] });
     setEditingLoading(false);
+    setKwExpanded(false);
   };
 
   const openEdit = async (c: Category) => {
     setIsCreating(false);
     setEditing({ ...c, keywords: [] });
     setEditingLoading(true);
+    setKwExpanded(false);
     try {
       const r = await fetch(`/categories/${c.id}`, { credentials: 'include' });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -325,27 +328,43 @@ export default function Categories() {
                   <span className="modal__label">Ключевые слова</span>
                   {editingLoading && editing.keywords.length === 0 ? (
                     <span className="modal__hint">Загрузка...</span>
-                  ) : (
-                    <div className="kw-list">
-                      {editing.keywords.length === 0 && (
-                        <span className="modal__hint">Пусто</span>
-                      )}
-                      {editing.keywords.map((k, i) => (
-                        <span key={`${k.name}-${i}`} className="kw-chip">
-                          {k.name}
-                          <button
-                            type="button"
-                            className="kw-chip__remove"
-                            aria-label={`Удалить ${k.name}`}
-                            onClick={() => removeKeyword(i)}
-                            disabled={saving}
-                          >
-                            ×
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  ) : editing.keywords.length === 0 ? (
+                    <span className="modal__hint">Пусто</span>
+                  ) : (() => {
+                    const KW_LIMIT = 15;
+                    const total = editing.keywords.length;
+                    const visible = kwExpanded ? editing.keywords : editing.keywords.slice(0, KW_LIMIT);
+                    const hidden = total - visible.length;
+                    return (
+                      <div className={`kw-box ${kwExpanded ? 'is-expanded' : ''}`}>
+                        <div className="kw-list">
+                          {visible.map((k, i) => (
+                            <span key={`${k.name}-${i}`} className="kw-chip">
+                              {k.name}
+                              <button
+                                type="button"
+                                className="kw-chip__remove"
+                                aria-label={`Удалить ${k.name}`}
+                                onClick={() => removeKeyword(i)}
+                                disabled={saving}
+                              >
+                                ×
+                              </button>
+                            </span>
+                          ))}
+                          {hidden > 0 && (
+                            <button
+                              type="button"
+                              className="kw-more"
+                              onClick={() => setKwExpanded(true)}
+                            >
+                              Показать ещё ({hidden})
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
 

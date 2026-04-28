@@ -254,6 +254,46 @@
 
 .primary-btn:hover { background: var(--accent-hover); }
 
+.primary-btn--danger {
+  background: var(--negative);
+}
+
+.primary-btn--danger:hover { background: #ff8585; }
+
+.primary-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.ghost-btn {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  height: 30px;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.ghost-btn:hover:not(:disabled) {
+  background: var(--surface-3);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.ghost-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.modal--confirm { width: 360px; }
+
+.modal__hint--center { text-align: center; }
+
+.modal__actions--split {
+  display: flex;
+  justify-content: stretch;
+  gap: 8px;
+}
+
+.modal__actions--split > button { flex: 1 1 0; }
+
 /* ---------- Operation grid ---------- */
 .op-grid {
   display: grid;

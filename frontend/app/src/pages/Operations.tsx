@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import TopBar from './TopBar';
+import ConfirmModal from './ConfirmModal';
 import './Operations.css';
 
 type CategoryType = 'INCOME' | 'EXPENSE';
@@ -90,12 +91,9 @@ export default function Operations() {
   const [draggingId, setDraggingId] = useState<string | null>(null);
   const [dropTargetId, setDropTargetId] = useState<number | null>(null);
   const [trashHover, setTrashHover] = useState(false);
+  const [pendingDeleteTxId, setPendingDeleteTxId] = useState<string | null>(null);
   const [toast, setToast] = useState<{ tx: Transaction; categoryId: number; categoryName: string } | null>(null);
   const toastTimerRef = useRef<number | null>(null);
-  const [isAddOpen, setAddOpen] = useState(false);
-  const [noteInput, setNoteInput] = useState('');
-  const [amountInput, setAmountInput] = useState('');
-  const [addSubmitting, setAddSubmitting] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -125,15 +123,6 @@ export default function Operations() {
       }
     };
   }, []);
-
-  useEffect(() => {
-    if (!isAddOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeAddModal();
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  });
 
   const loadTransactions = () => {
     return fetch('/transactions', { credentials: 'include' })
@@ -232,44 +221,6 @@ export default function Operations() {
     }
   };
 
-  const openAddModal = () => {
-    setNoteInput('');
-    setAmountInput('');
-    setAddOpen(true);
-  };
-
-  const closeAddModal = () => {
-    if (addSubmitting) return;
-    setAddOpen(false);
-  };
-
-  const handleAddSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const note = noteInput.trim();
-    const amount = amountInput.trim();
-    if (!note || !amount) return;
-
-    setAddSubmitting(true);
-    try {
-      const r = await fetch('/transaction', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
-        body: JSON.stringify({
-          message: `${note} ${amount}`,
-          date: new Date().toISOString(),
-        }),
-      });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      setAddOpen(false);
-      await loadTransactions();
-    } catch (err) {
-      console.error('Failed to add transaction', err);
-    } finally {
-      setAddSubmitting(false);
-    }
-  };
-
   const handleUndoDefine = async () => {
     if (!toast) return;
     const { tx, categoryId } = toast;
@@ -303,15 +254,21 @@ export default function Operations() {
     setTrashHover(false);
   };
 
-  const handleTrashDrop = async (e: React.DragEvent) => {
+  const handleTrashDrop = (e: React.DragEvent) => {
     e.preventDefault();
     const txId = e.dataTransfer.getData('text/plain');
     setDraggingId(null);
     setTrashHover(false);
     if (!txId) return;
+    setPendingDeleteTxId(txId);
+  };
 
+  const confirmDelete = async () => {
+    const txId = pendingDeleteTxId;
+    if (!txId) return;
     const previous = transactions;
     setTransactions((prev) => prev?.filter((t) => t.id !== txId) ?? null);
+    setPendingDeleteTxId(null);
 
     try {
       const r = await fetch(`/transaction/${encodeURIComponent(txId)}`, {
@@ -369,14 +326,6 @@ export default function Operations() {
         </aside>
 
         <main className="content">
-          <div className="toolbar">
-            <div className="toolbar__right">
-              <button type="button" className="primary-btn" onClick={openAddModal}>
-                Добавить операцию
-              </button>
-            </div>
-          </div>
-
           {transactionsError ? (
             <div className="content__error" role="alert">
               Не удалось загрузить транзакции: {transactionsError}
@@ -412,50 +361,13 @@ export default function Operations() {
         </main>
       </div>
 
-      {isAddOpen && (
-        <div
-          className="modal-backdrop"
-          role="presentation"
-          onClick={(e) => { if (e.target === e.currentTarget) closeAddModal(); }}
-        >
-          <div className="modal" role="dialog" aria-modal="true" aria-labelledby="add-tx-title">
-            <h3 id="add-tx-title" className="modal__title">Новая операция</h3>
-            <form className="modal__form" onSubmit={handleAddSubmit}>
-              <label className="modal__field">
-                <span className="modal__label">Примечание</span>
-                <input
-                  type="text"
-                  placeholder="Например: продукты"
-                  value={noteInput}
-                  onChange={(e) => setNoteInput(e.target.value)}
-                  autoFocus
-                  disabled={addSubmitting}
-                />
-              </label>
-              <label className="modal__field">
-                <span className="modal__label">Сумма</span>
-                <input
-                  type="text"
-                  inputMode="decimal"
-                  placeholder="0"
-                  value={amountInput}
-                  onChange={(e) => setAmountInput(e.target.value)}
-                  disabled={addSubmitting}
-                />
-              </label>
-              <div className="modal__actions">
-                <button
-                  type="submit"
-                  className="primary-btn"
-                  disabled={addSubmitting || !noteInput.trim() || !amountInput.trim()}
-                >
-                  {addSubmitting ? 'Добавляю...' : 'Добавить'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        open={pendingDeleteTxId !== null}
+        title="Удалить операцию?"
+        message="Это действие нельзя отменить."
+        onConfirm={confirmDelete}
+        onCancel={() => setPendingDeleteTxId(null)}
+      />
 
       {toast && (
         <div className="toast" role="status">
