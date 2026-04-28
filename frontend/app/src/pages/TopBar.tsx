@@ -1,59 +1,168 @@
+import { useState, useEffect, useRef } from 'react';
+import { apiFetch } from '../apiFetch';
+
 type TabKey = 'ops' | 'cats' | 'arch' | 'dyn' | 'exp';
 
 const navigate = (sub: string) => {
   window.location.href = `${import.meta.env.BASE_URL}${sub}`;
 };
 
+interface UserInfo {
+  username: string;
+  photoBase64Format: string | null;
+}
+
 export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?: number }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    apiFetch('/users/current')
+      .then(r => r.ok ? r.json() : null)
+      .then((data: UserInfo | null) => { if (data) setUser(data); })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [menuOpen]);
+
+  const handleLogout = async () => {
+    await apiFetch('/auth/logout', { method: 'POST' });
+    window.location.href = `${import.meta.env.BASE_URL}login`;
+  };
+
   return (
-    <header className="topbar">
-      <div className="topbar__brand" aria-label="OverMoney">
-        <span className="brand-mark" />
-      </div>
+    <>
+      <header className="topbar">
+        <div className="topbar__brand" aria-label="OverMoney">
+          <span className="brand-mark" />
+        </div>
 
-      <nav className="tabs" aria-label="Разделы">
-        <button
-          className={`tab ${active === 'ops' ? 'is-active' : ''}`}
-          onClick={() => navigate('operations')}
-        >
-          <SortIcon />
-          <span>Операции</span>
-          {typeof opsBadge === 'number' && <span className="tab__badge">{opsBadge}</span>}
-        </button>
-        <button
-          className={`tab ${active === 'cats' ? 'is-active' : ''}`}
-          onClick={() => navigate('categories')}
-        >
-          <GridIcon />
-          <span>Категории</span>
-        </button>
-        <button
-          className={`tab ${active === 'arch' ? 'is-active' : ''}`}
-          onClick={() => navigate('archive')}
-        >
-          <ArchiveIcon />
-          <span>Архив</span>
-        </button>
-        <button
-          className={`tab ${active === 'dyn' ? 'is-active' : ''}`}
-          onClick={() => navigate('dynamics')}
-        >
-          <LineChartIcon />
-          <span>Динамика</span>
-        </button>
-        <button
-          className={`tab ${active === 'exp' ? 'is-active' : ''}`}
-          onClick={() => navigate('expenses')}
-        >
-          <CoinsIcon />
-          <span>Расходы</span>
-        </button>
-      </nav>
+        <nav className="tabs" aria-label="Разделы">
+          <button
+            className={`tab ${active === 'ops' ? 'is-active' : ''}`}
+            onClick={() => navigate('operations')}
+          >
+            <SortIcon />
+            <span>Операции</span>
+            {typeof opsBadge === 'number' && <span className="tab__badge">{opsBadge}</span>}
+          </button>
+          <button
+            className={`tab ${active === 'cats' ? 'is-active' : ''}`}
+            onClick={() => navigate('categories')}
+          >
+            <GridIcon />
+            <span>Категории</span>
+          </button>
+          <button
+            className={`tab ${active === 'arch' ? 'is-active' : ''}`}
+            onClick={() => navigate('archive')}
+          >
+            <ArchiveIcon />
+            <span>Архив</span>
+          </button>
+          <button
+            className={`tab ${active === 'dyn' ? 'is-active' : ''}`}
+            onClick={() => navigate('dynamics')}
+          >
+            <LineChartIcon />
+            <span>Динамика</span>
+          </button>
+          <button
+            className={`tab ${active === 'exp' ? 'is-active' : ''}`}
+            onClick={() => navigate('expenses')}
+          >
+            <CoinsIcon />
+            <span>Расходы</span>
+          </button>
+        </nav>
 
-      <div className="topbar__user">
-        <div className="avatar" aria-label="Профиль" />
+        <div className="topbar__user">
+          <button
+            className="avatar"
+            aria-label="Профиль"
+            onClick={() => setMenuOpen(o => !o)}
+            style={user?.photoBase64Format ? {
+              backgroundImage: `url(${user.photoBase64Format})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            } : undefined}
+          />
+        </div>
+      </header>
+
+      {menuOpen && (
+        <div className="profile-backdrop" onClick={() => setMenuOpen(false)} />
+      )}
+
+      <div ref={menuRef} className={`profile-menu ${menuOpen ? 'profile-menu--open' : ''}`}>
+        <div className="profile-menu__header">
+          <div
+            className="profile-menu__avatar"
+            style={user?.photoBase64Format ? {
+              backgroundImage: `url(${user.photoBase64Format})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            } : undefined}
+          />
+          <span className="profile-menu__username">{user?.username ?? '—'}</span>
+          <button className="profile-menu__close" onClick={() => setMenuOpen(false)} aria-label="Закрыть">
+            <CloseIcon />
+          </button>
+        </div>
+
+        <div className="profile-menu__divider" />
+
+        <ul className="profile-menu__list">
+          <li>
+            <button className="profile-menu__item" onClick={() => { setMenuOpen(false); navigate('settings'); }}>
+              <SettingsIcon />
+              <span>Настройки</span>
+            </button>
+          </li>
+          <li>
+            <a
+              className="profile-menu__item"
+              href={`${import.meta.env.BASE_URL}privacy-policy`}
+              onClick={() => setMenuOpen(false)}
+            >
+              <ShieldIcon />
+              <span>Политика конфиденциальности</span>
+            </a>
+          </li>
+          <li>
+            <a
+              className="profile-menu__item"
+              href="mailto:support@overmoney.tech"
+              onClick={() => setMenuOpen(false)}
+            >
+              <MailIcon />
+              <span>Написать в поддержку</span>
+            </a>
+          </li>
+        </ul>
+
+        <div className="profile-menu__divider" />
+
+        <ul className="profile-menu__list">
+          <li>
+            <button className="profile-menu__item profile-menu__item--logout" onClick={handleLogout}>
+              <LogoutIcon />
+              <span>Выйти</span>
+            </button>
+          </li>
+        </ul>
       </div>
-    </header>
+    </>
   );
 }
 
@@ -107,6 +216,51 @@ function CoinsIcon() {
       <path d="M3 10v4c0 1.4 2.7 2.5 6 2.5" />
       <ellipse cx="15" cy="14" rx="6" ry="2.5" />
       <path d="M9 17.5c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5V14" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  );
+}
+
+function SettingsIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  );
+}
+
+function ShieldIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+    </svg>
+  );
+}
+
+function MailIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    </svg>
+  );
+}
+
+function LogoutIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
     </svg>
   );
 }

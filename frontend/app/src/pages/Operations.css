@@ -63,8 +63,122 @@
   width: 30px;
   height: 30px;
   border-radius: 50%;
-  background:
-    linear-gradient(135deg, #6f7b9a 0%, #3e465e 100%);
+  background: linear-gradient(135deg, #6f7b9a 0%, #3e465e 100%);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+/* Profile slide-in menu */
+.profile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 199;
+}
+
+.profile-menu {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 260px;
+  background: #111113;
+  border-left: 1px solid var(--border);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-menu--open {
+  transform: translateX(0);
+}
+
+.profile-menu__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 16px 14px;
+}
+
+.profile-menu__avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6f7b9a 0%, #3e465e 100%);
+  flex-shrink: 0;
+}
+
+.profile-menu__username {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profile-menu__close {
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.profile-menu__close:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.profile-menu__divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0;
+}
+
+.profile-menu__list {
+  list-style: none;
+  margin: 0;
+  padding: 6px 0;
+}
+
+.profile-menu__item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+
+.profile-menu__item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.profile-menu__item--logout {
+  color: #ff6b6b;
+}
+
+.profile-menu__item--logout:hover {
+  background: rgba(255, 107, 107, 0.08);
+  color: #ff6b6b;
 }
 
 .tabs {

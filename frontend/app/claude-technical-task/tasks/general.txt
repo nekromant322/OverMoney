@@ -7,12 +7,11 @@
 
 Расходы колонка слева слишком широкая
 
-На странице "Операции" блоки с операциями по центру содержат иконку "карандаш".
-При клике на эту иконку надо открывать модальное окно, которое используется на странице "архив" для редактирования транзакций.
-Вынеси это модальное окно в отдельный компонент.
 
 
-Подпилить корсы corsConfigurationSource в src/main/java/com/override/orchestrator_service/config/SecurityConfig.java
 
-редирект с overmoney.tech/finances/ на overmoney.tech/finances/operations
+Правила CORS можно найти в corsConfigurationSource в src/main/java/com/override/orchestrator_service/config/SecurityConfig.java
+У меня фронт на overmoney.tech/finances/
+Бэк отвечает на overmoney.tech
+Надо изменить правила в сторону сужения, так чтобы фронт продолжал работать, но чтобы избавиться от дыр в безопасности.
 
