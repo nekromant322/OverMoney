@@ -3,7 +3,7 @@ name: Build & Deploy
 on:
   push:
     branches:
-      - ai-front
+      - ai-front-2
 
 permissions:
   contents: read

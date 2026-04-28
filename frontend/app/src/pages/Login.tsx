@@ -64,12 +64,12 @@ export default function Login() {
 
   return (
     <div className="landing__wrapper">
-      <img className="landing__top-background" src="/images/background.svg" alt="" aria-hidden="true" loading="eager" decoding="async" />
-      <img className="landing__bottom-background" src="/images/background.svg" alt="" aria-hidden="true" loading="eager" decoding="async" />
+      <img className="landing__top-background" src={`${import.meta.env.BASE_URL}images/background.svg`} alt="" aria-hidden="true" loading="eager" decoding="async" />
+      <img className="landing__bottom-background" src={`${import.meta.env.BASE_URL}images/background.svg`} alt="" aria-hidden="true" loading="eager" decoding="async" />
 
       <header className="landing__header header">
         <a href="/">
-          <img src="/images/logo.svg" width="32" height="32" alt="OverMoney logo" />
+          <img src={`${import.meta.env.BASE_URL}images/logo.svg`} width="32" height="32" alt="OverMoney logo" />
         </a>
       </header>
 
@@ -125,7 +125,7 @@ export default function Login() {
               </div>
             </div>
             <div className="feature-details__image-container">
-              <img className="feature-details__image" src="/images/comfortable.svg" width="320" height="320" alt="comfortable illustration" loading="lazy" />
+              <img className="feature-details__image" src={`${import.meta.env.BASE_URL}images/comfortable.svg`} width="320" height="320" alt="comfortable illustration" loading="lazy" />
             </div>
           </div>
 
@@ -139,7 +139,7 @@ export default function Login() {
               </div>
             </div>
             <div className="feature-details__image-container">
-              <img className="feature-details__image" src="/images/functional.svg" width="320" height="320" alt="functional illustration" loading="lazy" />
+              <img className="feature-details__image" src={`${import.meta.env.BASE_URL}images/functional.svg`} width="320" height="320" alt="functional illustration" loading="lazy" />
             </div>
           </div>
 
@@ -153,7 +153,7 @@ export default function Login() {
               </div>
             </div>
             <div className="feature-details__image-container">
-              <img className="feature-details__image" src="/images/safe.svg" width="320" height="320" alt="safe illustration" loading="lazy" />
+              <img className="feature-details__image" src={`${import.meta.env.BASE_URL}images/safe.svg`} width="320" height="320" alt="safe illustration" loading="lazy" />
             </div>
           </div>
 
@@ -167,7 +167,7 @@ export default function Login() {
               </div>
             </div>
             <div className="feature-details__image-container">
-              <img className="feature-details__image" src="/images/subscription.svg" width="320" height="320" alt="subscription illustration" loading="lazy" />
+              <img className="feature-details__image" src={`${import.meta.env.BASE_URL}images/subscription.svg`} width="320" height="320" alt="subscription illustration" loading="lazy" />
             </div>
           </div>
         </section>
@@ -183,7 +183,7 @@ export default function Login() {
 
       <footer className="landing__footer footer">
         <a href="/">
-          <img src="/images/logo.svg" width="32" height="32" alt="OverMoney logo" />
+          <img src={`${import.meta.env.BASE_URL}images/logo.svg`} width="32" height="32" alt="OverMoney logo" />
         </a>
         <strong className="landing__footer-name">Самозанятая Марандюк Анастасия Александровна</strong>
         <p><strong className="landing__footer-name">ИНН: 324107164320</strong></p>
