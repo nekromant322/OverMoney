@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import TopBar from './TopBar';
+import { apiFetch } from '../apiFetch';
 import './Operations.css';
 import './Categories.css';
 
@@ -35,7 +36,7 @@ export default function Categories() {
   const [kwExpanded, setKwExpanded] = useState(false);
 
   const loadCategories = () =>
-    fetch('/categories/', { credentials: 'include' })
+    apiFetch('/categories/', { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json() as Promise<Category[]>;
@@ -66,7 +67,7 @@ export default function Categories() {
     setEditingLoading(true);
     setKwExpanded(false);
     try {
-      const r = await fetch(`/categories/${c.id}`, { credentials: 'include' });
+      const r = await apiFetch(`/categories/${c.id}`, { credentials: 'include' });
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       const data = (await r.json()) as FullCategory;
       setEditing(data);
@@ -89,7 +90,7 @@ export default function Categories() {
     if (!editing || mergeTargetId === '') return;
     setMerging(true);
     try {
-      const r = await fetch('/categories/merge', {
+      const r = await apiFetch('/categories/merge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -123,7 +124,7 @@ export default function Categories() {
       const body = isCreating
         ? { name: editing.name, type: editing.type, keywords: [] }
         : editing;
-      const r = await fetch('/categories/', {
+      const r = await apiFetch('/categories/', {
         method: isCreating ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',

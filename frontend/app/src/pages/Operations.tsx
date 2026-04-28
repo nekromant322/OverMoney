@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import TopBar from './TopBar';
 import ConfirmModal from './ConfirmModal';
 import EditTransactionModal, { EditForm } from './EditTransactionModal';
+import { apiFetch } from '../apiFetch';
 import './Operations.css';
 
 type CategoryType = 'INCOME' | 'EXPENSE';
@@ -106,7 +107,7 @@ export default function Operations() {
 
   useEffect(() => {
     let cancelled = false;
-    fetch('/categories/', { credentials: 'include' })
+    apiFetch('/categories/', { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json() as Promise<Category[]>;
@@ -134,7 +135,7 @@ export default function Operations() {
   }, []);
 
   const loadTransactions = () => {
-    return fetch('/transactions', { credentials: 'include' })
+    return apiFetch('/transactions', { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json() as Promise<Transaction[]>;
@@ -217,7 +218,7 @@ export default function Operations() {
     setTransactions((prev) => prev?.filter((t) => t.id !== txId) ?? null);
 
     try {
-      const r = await fetch('/transaction/define', {
+      const r = await apiFetch('/transaction/define', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -243,7 +244,7 @@ export default function Operations() {
       return [...prev, tx].sort((a, b) => a.date.localeCompare(b.date));
     });
     try {
-      const r = await fetch('/transaction/undefine', {
+      const r = await apiFetch('/transaction/undefine', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -304,7 +305,7 @@ export default function Operations() {
           : editing.date,
         categoryName: editForm.categoryName,
       };
-      const r = await fetch('/transactions', {
+      const r = await apiFetch('/transactions', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -337,7 +338,7 @@ export default function Operations() {
     setPendingDeleteTxId(null);
 
     try {
-      const r = await fetch(`/transaction/${encodeURIComponent(txId)}`, {
+      const r = await apiFetch(`/transaction/${encodeURIComponent(txId)}`, {
         method: 'DELETE',
         credentials: 'include',
       });

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import TopBar from './TopBar';
+import { apiFetch } from '../apiFetch';
 import './Operations.css';
 import './Categories.css';
 import './Expenses.css';
@@ -38,7 +39,7 @@ export default function Expenses() {
   } | null>(null);
 
   useEffect(() => {
-    fetch('/analytics/available-years', { credentials: 'include' })
+    apiFetch('/analytics/available-years', { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json() as Promise<number[]>;

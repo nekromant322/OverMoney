@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import TopBar from './TopBar';
 import ConfirmModal from './ConfirmModal';
 import EditTransactionModal from './EditTransactionModal';
+import { apiFetch } from '../apiFetch';
 import './Operations.css';
 import './Categories.css';
 import './Archive.css';
@@ -138,7 +139,7 @@ export default function Archive() {
   const loadingRef = useRef(false);
 
   useEffect(() => {
-    fetch('/categories/', { credentials: 'include' })
+    apiFetch('/categories/', { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json() as Promise<Category[]>;
@@ -156,14 +157,14 @@ export default function Archive() {
       try {
         let data: Transaction[];
         if (useFilter === null) {
-          const r = await fetch(
+          const r = await apiFetch(
             `/transactions/history?pageSize=${PAGE_SIZE}&pageNumber=${page}`,
             { credentials: 'include' },
           );
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
           data = await r.json();
         } else {
-          const r = await fetch('/transactions/filtered', {
+          const r = await apiFetch('/transactions/filtered', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -259,7 +260,7 @@ export default function Archive() {
     try {
       const results = await Promise.allSettled(
         ids.map((id) =>
-          fetch(`/transaction/${encodeURIComponent(id)}`, {
+          apiFetch(`/transaction/${encodeURIComponent(id)}`, {
             method: 'DELETE',
             credentials: 'include',
           }).then((r) => {
@@ -316,7 +317,7 @@ export default function Archive() {
           : editing.date,
         categoryName: editForm.categoryName,
       };
-      const r = await fetch('/transactions', {
+      const r = await apiFetch('/transactions', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -364,7 +365,7 @@ export default function Archive() {
 
     setAddSubmitting(true);
     try {
-      const r = await fetch('/transaction', {
+      const r = await apiFetch('/transaction', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
@@ -380,7 +381,7 @@ export default function Archive() {
 
       if (addForm.categoryId !== '' && created.id) {
         try {
-          const r2 = await fetch('/transaction/define', {
+          const r2 = await apiFetch('/transaction/define', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',

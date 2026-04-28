@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import TopBar from './TopBar';
+import { apiFetch } from '../apiFetch';
 import './Operations.css';
 import './Categories.css';
 import './Dynamics.css';
@@ -35,7 +36,7 @@ export default function Dynamics() {
   const [yearsError, setYearsError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/analytics/available-years', { credentials: 'include' })
+    apiFetch('/analytics/available-years', { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json() as Promise<number[]>;
@@ -457,7 +458,7 @@ function IncomeOutcomePerYearCard() {
 
   useEffect(() => {
     setLoading(true);
-    fetch('/analytics/v2/years/amounts', { credentials: 'include' })
+    apiFetch('/analytics/v2/years/amounts', { credentials: 'include' })
       .then((r) => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json() as Promise<{
