@@ -31,7 +31,7 @@ export default function Login() {
         if (!response.ok) {
           throw new Error(`Auth failed: ${response.status}`);
         }
-        window.location.href = '/front/';
+        window.location.href = `${import.meta.env.BASE_URL}operations`;
       } catch (e) {
         console.error('ERROR! Something wrong happened', e);
       }

@@ -1,4 +1,4 @@
-type TabKey = 'ops' | 'cats' | 'arch' | 'dyn';
+type TabKey = 'ops' | 'cats' | 'arch' | 'dyn' | 'exp';
 
 const navigate = (sub: string) => {
   window.location.href = `${import.meta.env.BASE_URL}${sub}`;
@@ -40,6 +40,13 @@ export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?
         >
           <LineChartIcon />
           <span>Динамика</span>
+        </button>
+        <button
+          className={`tab ${active === 'exp' ? 'is-active' : ''}`}
+          onClick={() => navigate('expenses')}
+        >
+          <CoinsIcon />
+          <span>Расходы</span>
         </button>
       </nav>
 
@@ -88,6 +95,18 @@ function LineChartIcon() {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M3 3v18h18" />
       <path d="m7 14 4-4 4 4 5-7" />
+    </svg>
+  );
+}
+
+function CoinsIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <ellipse cx="9" cy="6" rx="6" ry="2.5" />
+      <path d="M3 6v4c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5V6" />
+      <path d="M3 10v4c0 1.4 2.7 2.5 6 2.5" />
+      <ellipse cx="15" cy="14" rx="6" ry="2.5" />
+      <path d="M9 17.5c0 1.4 2.7 2.5 6 2.5s6-1.1 6-2.5V14" />
     </svg>
   );
 }

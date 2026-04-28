@@ -1,0 +1,193 @@
+.expenses-page {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 18px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.expenses-page__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.year-picker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.expenses-year-select {
+  width: 100px;
+  padding: 5px 10px;
+  font-size: 12px;
+}
+
+.expenses-table-wrap {
+  flex: 1 1 auto;
+  min-height: 0;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.expenses-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.expenses-table thead th {
+  position: sticky;
+  top: 0;
+  background: #15151a;
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-align: left;
+  padding: 13px 14px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+  z-index: 2;
+  white-space: nowrap;
+}
+
+.expenses-table__corner {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  min-width: 200px;
+  background: #15151a;
+}
+
+.expenses-table__month {
+  min-width: 110px;
+}
+
+.expenses-table tbody td,
+.expenses-table tbody th {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.expenses-table tbody tr:last-child td,
+.expenses-table tbody tr:last-child th {
+  border-bottom: 0;
+}
+
+.expenses-table tbody th.row-name {
+  position: sticky;
+  left: 0;
+  background: var(--surface);
+  text-align: left;
+  font-weight: 500;
+  color: var(--text);
+  font-size: 12px;
+  z-index: 1;
+  transition: background-color 0.12s;
+}
+
+.expenses-table .row-data:hover td {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+.expenses-table .row-data:hover th.row-name {
+  background: var(--surface-2);
+}
+
+.expenses-table .row-totals {
+  background: var(--surface-2);
+}
+
+.expenses-table .row-totals td.cell,
+.expenses-table .row-totals th.row-name {
+  background: var(--surface-2);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.expenses-table .row-totals th.row-name {
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.cell-btn {
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  padding: 0;
+  display: block;
+  width: 100%;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+}
+
+.cell-btn:disabled {
+  cursor: default;
+}
+
+.cell { color: var(--text); }
+.cell--zero { color: var(--muted-2); }
+
+.cell--rank-1 { background-color: rgba(200, 110, 110, 0.32); color: var(--text); }
+.cell--rank-2 { background-color: rgba(200, 110, 110, 0.20); color: var(--text); }
+.cell--rank-3 { background-color: rgba(200, 110, 110, 0.10); color: var(--text); }
+
+.expenses-table .row-data:hover td.cell--rank-1 { background-color: rgba(200, 110, 110, 0.40); }
+.expenses-table .row-data:hover td.cell--rank-2 { background-color: rgba(200, 110, 110, 0.28); }
+.expenses-table .row-data:hover td.cell--rank-3 { background-color: rgba(200, 110, 110, 0.16); }
+
+/* ---------- Cell modal list ---------- */
+.cell-modal-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.cell-modal-item {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 4px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+
+.cell-modal-item:last-child { border-bottom: 0; }
+
+.cell-modal-item__num {
+  color: var(--muted-2);
+  flex: 0 0 28px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cell-modal-item__msg {
+  flex: 1;
+  color: var(--text);
+  word-break: break-word;
+  white-space: normal;
+}
+
+.cell-modal-item__amt {
+  flex: 0 0 auto;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
