@@ -335,7 +335,15 @@ function IncomeByCategoryCard({ years }: { years: number[] }) {
           ) : data.length === 0 ? (
             <div className="content__placeholder">Нет данных</div>
           ) : (
-            <LineChart data={data} hidden={hidden} />
+            <LineChart
+              data={data}
+              hidden={hidden}
+              lastMonth={
+                years.length > 0 && year === Math.max(...years)
+                  ? lastNonZeroMonth(data)
+                  : 12
+              }
+            />
           )}
         </>
       )}
@@ -343,16 +351,28 @@ function IncomeByCategoryCard({ years }: { years: number[] }) {
   );
 }
 
+function lastNonZeroMonth(data: CategoryYearData[]): number {
+  let last = 0;
+  for (let m = 1; m <= 12; m++) {
+    const has = data.some((c) => Number(c.monthlyAnalytics[String(m)] ?? 0) > 0);
+    if (has) last = m;
+  }
+  return last;
+}
+
 function LineChart({
   data,
   hidden,
+  lastMonth,
 }: {
   data: CategoryYearData[];
   hidden: Set<string>;
+  lastMonth: number;
 }) {
+  const months = Math.max(1, lastMonth);
   const visible = data.filter((c) => !hidden.has(c.categoryName));
   const allValues = visible.flatMap((c) =>
-    Array.from({ length: 12 }, (_, i) => Number(c.monthlyAnalytics[String(i + 1)] ?? 0)),
+    Array.from({ length: months }, (_, i) => Number(c.monthlyAnalytics[String(i + 1)] ?? 0)),
   );
   const max = Math.max(1, ...allValues);
   const { ticks, niceMax } = niceScale(max, 6);
@@ -363,7 +383,7 @@ function LineChart({
   const innerW = W - PAD.left - PAD.right;
   const innerH = H - PAD.top - PAD.bottom;
 
-  const slotW = innerW / 11;
+  const slotW = months > 1 ? innerW / (months - 1) : innerW;
   const yToPx = (v: number) => PAD.top + innerH - (v / niceMax) * innerH;
   const xToPx = (i: number) => PAD.left + i * slotW;
 
@@ -385,7 +405,7 @@ function LineChart({
         {data.map((c, ci) => {
           if (hidden.has(c.categoryName)) return null;
           const color = PALETTE[ci % PALETTE.length];
-          const points = Array.from({ length: 12 }, (_, i) => {
+          const points = Array.from({ length: months }, (_, i) => {
             const v = Number(c.monthlyAnalytics[String(i + 1)] ?? 0);
             return { x: xToPx(i), y: yToPx(v), v };
           });
@@ -409,7 +429,7 @@ function LineChart({
           );
         })}
 
-        {MONTH_RU_SHORT.map((m, i) => (
+        {MONTH_RU_SHORT.slice(0, months).map((m, i) => (
           <text
             key={m}
             x={xToPx(i)}

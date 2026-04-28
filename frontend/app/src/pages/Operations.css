@@ -181,6 +181,15 @@
   box-shadow: inset 0 0 0 1px rgba(43, 192, 107, 0.55);
 }
 
+.category-row.is-suggested {
+  background: rgba(124, 58, 237, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(139, 92, 246, 0.6);
+}
+
+.category-row.is-suggested .category-name {
+  color: #a78bfa;
+}
+
 .category-name { color: var(--text); pointer-events: none; }
 
 .sidebar__error,

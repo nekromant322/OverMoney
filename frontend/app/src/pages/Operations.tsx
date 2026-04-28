@@ -18,6 +18,7 @@ type Transaction = {
   date: string;
   categoryName?: string;
   type?: CategoryType;
+  suggestedCategoryId?: number | null;
 };
 
 const formatAmount = (n: number) => new Intl.NumberFormat('ru-RU').format(Math.abs(n));
@@ -32,17 +33,18 @@ const formatDate = (iso: string) => {
 type CategoryListProps = {
   items: Category[];
   dropTargetId: number | null;
+  suggestedId?: number | null;
   onCategoryDragOver: (e: React.DragEvent, catId: number) => void;
   onCategoryDrop: (e: React.DragEvent, catId: number) => void;
 };
 
-function CategoryList({ items, dropTargetId, onCategoryDragOver, onCategoryDrop }: CategoryListProps) {
+function CategoryList({ items, dropTargetId, suggestedId, onCategoryDragOver, onCategoryDrop }: CategoryListProps) {
   return (
     <ul className="category-list">
       {items.map((c) => (
         <li
           key={c.id}
-          className={`category-row ${dropTargetId === c.id ? 'is-drop-target' : ''}`}
+          className={`category-row ${dropTargetId === c.id ? 'is-drop-target' : ''} ${suggestedId === c.id ? 'is-suggested' : ''}`}
           onDragOver={(e) => onCategoryDragOver(e, c.id)}
           onDrop={(e) => onCategoryDrop(e, c.id)}
         >
@@ -89,6 +91,7 @@ export default function Operations() {
   const [transactions, setTransactions] = useState<Transaction[] | null>(null);
   const [transactionsError, setTransactionsError] = useState<string | null>(null);
   const [draggingId, setDraggingId] = useState<string | null>(null);
+  const [draggingSuggestedId, setDraggingSuggestedId] = useState<number | null>(null);
   const [dropTargetId, setDropTargetId] = useState<number | null>(null);
   const [trashHover, setTrashHover] = useState(false);
   const [pendingDeleteTxId, setPendingDeleteTxId] = useState<string | null>(null);
@@ -158,12 +161,15 @@ export default function Operations() {
     e.dataTransfer.setData('text/plain', txId);
     e.dataTransfer.effectAllowed = 'move';
     setDraggingId(txId);
+    const tx = transactions?.find((t) => t.id === txId);
+    setDraggingSuggestedId(tx?.suggestedCategoryId ?? null);
   };
 
   const handleDragEnd = () => {
     setDraggingId(null);
     setDropTargetId(null);
     setTrashHover(false);
+    setDraggingSuggestedId(null);
   };
 
   const handleCategoryDragOver = (e: React.DragEvent, catId: number) => {
@@ -303,6 +309,7 @@ export default function Operations() {
             <CategoryList
               items={filteredExpenses}
               dropTargetId={dropTargetId}
+              suggestedId={draggingSuggestedId}
               onCategoryDragOver={handleCategoryDragOver}
               onCategoryDrop={handleCategoryDrop}
             />
@@ -313,6 +320,7 @@ export default function Operations() {
             <CategoryList
               items={filteredIncomes}
               dropTargetId={dropTargetId}
+              suggestedId={draggingSuggestedId}
               onCategoryDragOver={handleCategoryDragOver}
               onCategoryDrop={handleCategoryDrop}
             />
