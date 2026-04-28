@@ -59,9 +59,9 @@ const proxy: Record<string, ProxyOptions> = Object.fromEntries(
 proxy['^/categories/'] = apiProxy;
 proxy['^/login/.+'] = apiProxy;
 
-export default defineConfig(() => ({
+export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: '/',
+  base: command === 'build' ? '/finances/' : '/',
   server: {
     host: '127.0.0.1',
     port: 5173,
