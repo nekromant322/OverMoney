@@ -1,5 +1,5 @@
 export async function apiFetch(input: RequestInfo, init?: RequestInit): Promise<Response> {
-  const response = await fetch(input, init);
+  const response = await fetch(input, { cache: 'no-store', ...init });
   if (response.status === 401 || response.status === 403) {
     window.location.href = `${import.meta.env.BASE_URL}login`;
   }

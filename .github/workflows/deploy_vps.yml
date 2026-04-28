@@ -227,7 +227,7 @@ jobs:
 
             echo "WIT_AI_TOKEN=${{ secrets.WIT_AI_TOKEN }}" >> app.env
             
-            echo "ORCHESTRATOR_URL=overmoney.tech/overmoney" >> app.env
+            echo "WEB_URL=overmoney.tech/overmoney" >> app.env
            
 
             CHANGED_SERVICES=""
