@@ -59,7 +59,7 @@ const proxy: Record<string, ProxyOptions> = Object.fromEntries(
 proxy['^/categories/'] = apiProxy;
 proxy['^/login/.+'] = apiProxy;
 
-export default defineConfig(({ command }) => ({
+export default defineConfig(() => ({
   plugins: [react()],
   base: '/',
   server: {
