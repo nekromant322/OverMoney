@@ -61,7 +61,7 @@ proxy['^/login/.+'] = apiProxy;
 
 export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: command === 'build' ? '/front/' : '/',
+  base: '/',
   server: {
     host: '127.0.0.1',
     port: 5173,
