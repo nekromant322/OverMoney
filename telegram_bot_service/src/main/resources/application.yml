@@ -13,7 +13,6 @@
 #настройка веб адреса приложения
   web:
     url: ${WEB_URL}
-
   integration:
     internal:
       host:
