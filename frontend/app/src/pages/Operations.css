@@ -1,24 +1,11 @@
 .ops-app {
-  --bg: #0e0e10;
-  --surface: #1a1a1d;
-  --surface-2: #232327;
-  --surface-3: #2a2a2e;
-  --border: rgba(255, 255, 255, 0.06);
-  --text: #e9e9ec;
-  --muted: #8a8a92;
-  --muted-2: #5e5e66;
-  --negative: #ff6b6b;
-  --positive: #5ec07a;
-  --accent: #2bc06b;
-  --accent-hover: #36d178;
-  --brand: #f5a623;
 
   position: fixed;
   inset: 0;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  font-size: 13px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 14px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -31,7 +18,7 @@
 /* ---------- Top bar ---------- */
 .topbar {
   height: 52px;
-  background: #000;
+  background: #010409;
   border-bottom: 1px solid var(--border);
   display: grid;
   grid-template-columns: 200px 1fr 200px;
@@ -99,7 +86,7 @@
   right: 0;
   bottom: 0;
   width: 260px;
-  background: #111113;
+  background: var(--surface);
   border-left: 1px solid var(--border);
   z-index: 200;
   display: flex;
@@ -189,12 +176,12 @@
 }
 
 .profile-menu__item--logout {
-  color: #ff6b6b;
+  color: var(--negative);
 }
 
 .profile-menu__item--logout:hover {
-  background: rgba(255, 107, 107, 0.08);
-  color: #ff6b6b;
+  background: rgba(248, 81, 73, 0.08);
+  color: var(--negative);
 }
 
 .tabs {
@@ -342,8 +329,8 @@
 }
 
 .category-row.is-drop-target {
-  background: rgba(43, 192, 107, 0.14);
-  box-shadow: inset 0 0 0 1px rgba(43, 192, 107, 0.55);
+  background: rgba(35, 134, 54, 0.14);
+  box-shadow: inset 0 0 0 1px rgba(35, 134, 54, 0.55);
 }
 
 .category-row.is-suggested {
@@ -372,9 +359,9 @@
   font-size: 11px;
   color: var(--negative);
   padding: 8px 12px;
-  border: 1px solid rgba(255, 107, 107, 0.3);
+  border: 1px solid rgba(248, 81, 73, 0.3);
   border-radius: 4px;
-  background: rgba(255, 107, 107, 0.05);
+  background: rgba(248, 81, 73, 0.05);
 }
 
 .content__placeholder {
@@ -530,7 +517,7 @@
 
 .fab-trash:hover {
   color: var(--negative);
-  border-color: rgba(255, 107, 107, 0.4);
+  border-color: rgba(248, 81, 73, 0.4);
 }
 
 .fab-trash:not(.is-drag-active):hover::after {
@@ -550,14 +537,14 @@
 
 .fab-trash.is-drag-active {
   color: var(--negative);
-  border-color: rgba(255, 107, 107, 0.5);
-  background: rgba(255, 107, 107, 0.07);
+  border-color: rgba(248, 81, 73, 0.5);
+  background: rgba(248, 81, 73, 0.07);
 }
 
 .fab-trash.is-drop-target {
   color: var(--negative);
-  border-color: rgba(255, 107, 107, 0.7);
-  background: rgba(255, 107, 107, 0.14);
+  border-color: rgba(248, 81, 73, 0.7);
+  background: rgba(248, 81, 73, 0.14);
   transform: scale(1.08);
 }
 
