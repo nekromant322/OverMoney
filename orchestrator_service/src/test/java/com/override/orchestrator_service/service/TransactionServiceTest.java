@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -64,12 +65,17 @@ public class TransactionServiceTest {
     private KeywordService keywordService;
     @Mock
     private SuggestionRepository suggestionRepository;
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @Test
     public void transactionRepositorySaveTransactionWhenCategoryAndTransactionFound() {
         final Transaction transaction = new Transaction();
         transaction.setId(UUID.randomUUID());
         transaction.setMessage("пиво 300");
+
+        when(transactionRepository.save(any(Transaction.class))).thenReturn(transaction);
+
         transactionService.saveTransaction(transaction);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
