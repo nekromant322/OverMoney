@@ -394,8 +394,8 @@ export default function Categories() {
               {!isCreating && mergeOpen && (
                 <div className="merge-block">
                   <span className="modal__label">Слить в</span>
-                  <p className="merge-block__hint">
-                    «{editing.name}» будет удалена, её транзакции и ключевые слова перейдут в выбранную категорию.
+                  <p className="merge-block__hint merge-block__hint--danger">
+                    «{editing.name}» будет удалена, её транзакции и ключевые слова перейдут в выбранную категорию!
                   </p>
                   <select
                     className="merge-block__select"

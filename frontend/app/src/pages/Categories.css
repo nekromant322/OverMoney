@@ -169,6 +169,10 @@
   color: var(--muted);
 }
 
+.merge-block__hint--danger {
+  color: var(--negative);
+}
+
 .merge-block__select {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -348,5 +352,18 @@
   .cats-toolbar {
     flex-wrap: wrap;
     gap: 8px;
+  }
+
+  /* Prevent "слияние" link from overlapping the centered title */
+  .modal__title--center {
+    padding: 0 40px;
+  }
+
+  .modal__link {
+    position: static;
+    display: block;
+    text-align: center;
+    margin-top: -14px;
+    margin-bottom: 10px;
   }
 }
