@@ -132,6 +132,9 @@ export default function Operations() {
   const [editForm, setEditForm] = useState<EditForm>({ message: '', amount: '', date: '', categoryName: '' });
   const [saving, setSaving] = useState(false);
 
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const [onboardingBusy, setOnboardingBusy] = useState(false);
+
   useEffect(() => {
     let cancelled = false;
     apiFetch('/categories/', { credentials: 'include' })
@@ -140,7 +143,12 @@ export default function Operations() {
         return r.json() as Promise<Category[]>;
       })
       .then((data) => {
-        if (!cancelled) setCategories(data);
+        if (!cancelled) {
+          setCategories(data);
+          if (data.length === 0 && localStorage.getItem('noDefaultCategory') !== 'true') {
+            setOnboardingOpen(true);
+          }
+        }
       })
       .catch((e: Error) => {
         if (!cancelled) {
@@ -152,6 +160,23 @@ export default function Operations() {
       cancelled = true;
     };
   }, []);
+
+  const handleOnboardingAccept = async () => {
+    setOnboardingBusy(true);
+    try {
+      await apiFetch('/categories/add-default-categories', { method: 'POST', credentials: 'include' });
+      const r = await apiFetch('/categories/', { credentials: 'include' });
+      if (r.ok) setCategories(await r.json());
+    } finally {
+      setOnboardingBusy(false);
+      setOnboardingOpen(false);
+    }
+  };
+
+  const handleOnboardingReject = () => {
+    localStorage.setItem('noDefaultCategory', 'true');
+    setOnboardingOpen(false);
+  };
 
   useEffect(() => {
     return () => {
@@ -514,6 +539,30 @@ export default function Operations() {
           </button>
         </main>
       </div>
+
+      {onboardingOpen && (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onClick={(e) => { if (e.target === e.currentTarget && !onboardingBusy) handleOnboardingReject(); }}
+        >
+          <div className="modal" role="dialog" aria-modal="true">
+            <h3 className="modal__title">Добро пожаловать!</h3>
+            <div className="modal__form">
+              <p className="modal__text">Мы обнаружили, что у вас ещё нет категорий.</p>
+              <p className="modal__text">Добавить стандартный набор категорий?</p>
+            </div>
+            <div className="modal__actions">
+              <button className="ghost-btn" onClick={handleOnboardingReject} disabled={onboardingBusy}>
+                Нет, я сам
+              </button>
+              <button className="primary-btn" onClick={handleOnboardingAccept} disabled={onboardingBusy}>
+                {onboardingBusy ? '...' : 'Да'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ConfirmModal
         open={pendingDeleteTxId !== null}

@@ -82,7 +82,17 @@ export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?
   return (
     <>
       <header className="topbar">
-        <div className="topbar__brand" />
+        <div className="topbar__brand">
+          <a
+            className="topbar__tg-link"
+            href="https://t.me/OverMoneyBot"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Открыть бот в Telegram"
+          >
+            <TelegramIcon />
+          </a>
+        </div>
 
         <nav className="tabs" aria-label="Разделы">
           <button
@@ -235,6 +245,16 @@ export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?
         </div>
       )}
     </>
+  );
+}
+
+function TelegramIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21.5 2 2 9.9l7.4 2.7L21.5 2Z" />
+      <path d="m9.4 12.6 8.1-8.1" />
+      <path d="M9.4 12.6 12 21l3-6.4" />
+    </svg>
   );
 }
 

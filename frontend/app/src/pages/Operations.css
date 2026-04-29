@@ -45,6 +45,22 @@
   align-items: center;
 }
 
+.topbar__tg-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  text-decoration: none;
+  padding: 6px;
+  border-radius: 6px;
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.topbar__tg-link:hover {
+  color: var(--text);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
 .brand-mark {
   width: 28px;
   height: 28px;
@@ -608,6 +624,13 @@
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
+}
+
+.modal__text {
+  margin: 0 0 8px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .modal__form {
