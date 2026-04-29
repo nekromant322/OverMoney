@@ -82,9 +82,7 @@ export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?
   return (
     <>
       <header className="topbar">
-        <div className="topbar__brand" aria-label="OverMoney">
-          <span className="brand-mark" />
-        </div>
+        <div className="topbar__brand" />
 
         <nav className="tabs" aria-label="Разделы">
           <button

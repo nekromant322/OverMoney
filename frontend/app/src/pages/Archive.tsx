@@ -33,6 +33,7 @@ type FilterForm = {
   dateBegin: string;
   dateEnd: string;
   message: string;
+  categoryId: number | '';
 };
 
 const emptyFilter: FilterForm = {
@@ -41,6 +42,7 @@ const emptyFilter: FilterForm = {
   dateBegin: '',
   dateEnd: '',
   message: '',
+  categoryId: '',
 };
 
 const formatAmount = (n: number) => new Intl.NumberFormat('ru-RU').format(Math.abs(n));
@@ -65,9 +67,9 @@ const nowLocalDateTimeString = () => {
 };
 
 const isFilterEmpty = (f: FilterForm) =>
-  Object.values(f).every((v) => !v.trim());
+  f.categoryId === '' && Object.entries(f).filter(([k]) => k !== 'categoryId').every(([, v]) => !String(v).trim());
 
-const buildFilterBody = (f: FilterForm, page: number) => {
+const buildFilterBody = (f: FilterForm, page: number, categories: Category[]) => {
   const min = f.amountMin.trim();
   const max = f.amountMax.trim();
   const amount =
@@ -88,8 +90,11 @@ const buildFilterBody = (f: FilterForm, page: number) => {
         }
       : null;
 
+  const cat = f.categoryId !== '' ? categories.find((c) => c.id === f.categoryId) : null;
+  const category = cat ? { id: cat.id, name: cat.name, type: cat.type } : null;
+
   return {
-    category: null,
+    category,
     amount,
     message: f.message.trim() || null,
     date,
@@ -149,7 +154,7 @@ export default function Archive() {
   }, []);
 
   const loadPage = useCallback(
-    async (page: number, useFilter: FilterForm | null, append: boolean) => {
+    async (page: number, useFilter: FilterForm | null, append: boolean, cats: Category[]) => {
       if (loadingRef.current) return;
       loadingRef.current = true;
       setLoading(true);
@@ -168,7 +173,7 @@ export default function Archive() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
-            body: JSON.stringify(buildFilterBody(useFilter, page)),
+            body: JSON.stringify(buildFilterBody(useFilter, page, cats)),
           });
           if (!r.ok) throw new Error(`HTTP ${r.status}`);
           data = await r.json();
@@ -188,7 +193,7 @@ export default function Archive() {
 
   // Initial load
   useEffect(() => {
-    loadPage(0, null, false);
+    loadPage(0, null, false, categories);
   }, [loadPage]);
 
   // Infinite scroll
@@ -198,14 +203,14 @@ export default function Archive() {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasMore && !loadingRef.current) {
-          loadPage(pageNumber + 1, appliedFilter, true);
+          loadPage(pageNumber + 1, appliedFilter, true, categories);
         }
       },
       { root: scrollRef.current, threshold: 0.1, rootMargin: '120px' },
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [pageNumber, hasMore, appliedFilter, loadPage]);
+  }, [pageNumber, hasMore, appliedFilter, loadPage, categories]);
 
   // Track scroll for scroll-to-top button
   useEffect(() => {
@@ -220,7 +225,7 @@ export default function Archive() {
     const next = isFilterEmpty(filter) ? null : { ...filter };
     setAppliedFilter(next);
     setSelected(new Set());
-    loadPage(0, next, false);
+    loadPage(0, next, false, categories);
   };
 
   const clearFilters = () => {
@@ -228,7 +233,7 @@ export default function Archive() {
     if (appliedFilter !== null) {
       setAppliedFilter(null);
       setSelected(new Set());
-      loadPage(0, null, false);
+      loadPage(0, null, false, categories);
     }
   };
 
@@ -326,7 +331,7 @@ export default function Archive() {
       if (!r.ok) throw new Error(`HTTP ${r.status}`);
       setEditing(null);
       setSelected(new Set());
-      loadPage(0, appliedFilter, false);
+      loadPage(0, appliedFilter, false, categories);
     } catch (e) {
       console.error('Failed to save transaction', e);
     } finally {
@@ -397,7 +402,7 @@ export default function Archive() {
       }
 
       setAddOpen(false);
-      loadPage(0, appliedFilter, false);
+      loadPage(0, appliedFilter, false, categories);
     } catch (err) {
       console.error('Failed to add transaction', err);
     } finally {
@@ -449,6 +454,23 @@ export default function Archive() {
               value={filter.message}
               onChange={(e) => setFilter({ ...filter, message: e.target.value })}
             />
+            <select
+              className="filter-input"
+              value={filter.categoryId === '' ? '' : String(filter.categoryId)}
+              onChange={(e) =>
+                setFilter({
+                  ...filter,
+                  categoryId: e.target.value === '' ? '' : Number(e.target.value),
+                })
+              }
+            >
+              <option value="">Все категории</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
             <div className="archive-toolbar__actions">
               <button type="button" className="primary-btn" onClick={applyFilter} disabled={loading}>
                 Применить
