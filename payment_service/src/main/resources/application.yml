@@ -32,7 +32,6 @@ spring:
 logging:
   level:
     org.zalando.logbook: TRACE
-    org.springframework.kafka: INFO
 
 management:
   endpoints:
