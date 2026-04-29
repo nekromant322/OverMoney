@@ -40,7 +40,6 @@ public class CategoryRecognitionListener {
                     event.getTransactionId(),
                     categories
             );
-
         } catch (FeignException e) {
             log.error("Recognizer unavailable for transaction {}: {}",
                     event.getTransactionId(), e.getMessage());
