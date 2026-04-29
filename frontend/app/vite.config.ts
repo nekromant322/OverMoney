@@ -44,7 +44,6 @@ const apiPrefixes = [
   '/analytics',
   '/account',
   '/users',
-  '/settings',
   '/admin',
   '/payments',
   '/properties',
@@ -55,8 +54,9 @@ const apiPrefixes = [
 const proxy: Record<string, ProxyOptions> = Object.fromEntries(
   apiPrefixes.map((p) => [p, apiProxy]),
 );
-// Use regex so the SPA /categories route falls through; only /categories/* hits backend.
+// Use regex so SPA routes fall through; only /path/* with subpath hits backend.
 proxy['^/categories/'] = apiProxy;
+proxy['^/settings/'] = apiProxy;
 proxy['^/login/.+'] = apiProxy;
 
 export default defineConfig(({ command }) => ({

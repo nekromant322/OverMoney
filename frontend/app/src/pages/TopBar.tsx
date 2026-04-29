@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { apiFetch } from '../apiFetch';
 
-type TabKey = 'ops' | 'cats' | 'arch' | 'dyn' | 'exp';
+type TabKey = 'ops' | 'cats' | 'arch' | 'dyn' | 'exp' | 'settings';
 
 const navigate = (sub: string) => {
   window.location.href = `${import.meta.env.BASE_URL}${sub}`;
@@ -16,6 +16,10 @@ export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  const [bugOpen, setBugOpen] = useState(false);
+  const [bugText, setBugText] = useState('');
+  const [bugBusy, setBugBusy] = useState(false);
 
   useEffect(() => {
     apiFetch('/users/current')
@@ -34,6 +38,41 @@ export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [menuOpen]);
+
+  useEffect(() => {
+    if (!bugOpen) return;
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !bugBusy) closeBugModal();
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [bugOpen, bugBusy]);
+
+  const openBugModal = () => {
+    setMenuOpen(false);
+    setBugText('');
+    setBugOpen(true);
+  };
+
+  const closeBugModal = () => {
+    setBugOpen(false);
+    setBugText('');
+  };
+
+  const handleSendBugReport = async () => {
+    if (!bugText.trim()) return;
+    setBugBusy(true);
+    try {
+      await apiFetch('/bugreport', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ report: bugText.trim(), localDateTime: new Date().toISOString() }),
+      });
+      closeBugModal();
+    } finally {
+      setBugBusy(false);
+    }
+  };
 
   const handleLogout = async () => {
     await apiFetch('/auth/logout', { method: 'POST' });
@@ -140,14 +179,10 @@ export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?
             </a>
           </li>
           <li>
-            <a
-              className="profile-menu__item"
-              href="mailto:support@overmoney.tech"
-              onClick={() => setMenuOpen(false)}
-            >
+            <button className="profile-menu__item" onClick={openBugModal}>
               <MailIcon />
               <span>Написать в поддержку</span>
-            </a>
+            </button>
           </li>
         </ul>
 
@@ -162,6 +197,45 @@ export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?
           </li>
         </ul>
       </div>
+
+      {bugOpen && (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onClick={e => { if (e.target === e.currentTarget && !bugBusy) closeBugModal(); }}
+        >
+          <div className="modal" role="dialog" aria-modal="true">
+            <h3 className="modal__title">Написать в поддержку</h3>
+            <div className="modal__form">
+              <div className="modal__field">
+                <label className="modal__label" htmlFor="bug-report-text">Сообщение</label>
+                <textarea
+                  id="bug-report-text"
+                  className="modal__textarea"
+                  placeholder="Опишите проблему или вопрос..."
+                  rows={5}
+                  value={bugText}
+                  onChange={e => setBugText(e.target.value)}
+                  autoFocus
+                  disabled={bugBusy}
+                />
+              </div>
+            </div>
+            <div className="modal__actions">
+              <button className="ghost-btn" onClick={closeBugModal} disabled={bugBusy}>
+                Отмена
+              </button>
+              <button
+                className="primary-btn"
+                onClick={handleSendBugReport}
+                disabled={bugBusy || !bugText.trim()}
+              >
+                {bugBusy ? '...' : 'Отправить'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

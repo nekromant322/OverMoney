@@ -598,6 +598,27 @@
 
 .modal__field input:disabled { opacity: 0.6; cursor: not-allowed; }
 
+.modal__textarea {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 12px;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+  resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.modal__textarea::placeholder { color: var(--muted-2); }
+
+.modal__textarea:focus { border-color: rgba(43, 192, 107, 0.55); }
+
+.modal__textarea:disabled { opacity: 0.6; cursor: not-allowed; }
+
 .modal__actions {
   display: flex;
   justify-content: flex-end;

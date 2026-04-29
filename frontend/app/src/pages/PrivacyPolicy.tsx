@@ -4,13 +4,6 @@ export default function PrivacyPolicy() {
   return (
     <div className="pp-page">
       <div className="pp-container">
-        <header className="pp-header">
-          <div className="pp-brand" onClick={() => window.location.href = `${import.meta.env.BASE_URL}operations`} title="На главную">
-            <span className="brand-mark" />
-            <span className="pp-brand__name">OverMoney</span>
-          </div>
-        </header>
-
         <main className="pp-content">
           <h1 className="pp-title">Политика конфиденциальности</h1>
           <p className="pp-updated">Последнее обновление: 1 января 2025 г.</p>

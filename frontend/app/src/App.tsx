@@ -5,6 +5,7 @@ import Archive from './pages/Archive';
 import Dynamics from './pages/Dynamics';
 import Expenses from './pages/Expenses';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Settings from './pages/Settings';
 
 function App() {
   const path = window.location.pathname;
@@ -15,6 +16,7 @@ function App() {
   if (/\/dynamics\/?$/.test(path)) return <Dynamics />;
   if (/\/expenses\/?$/.test(path)) return <Expenses />;
   if (/\/privacy-policy\/?$/.test(path)) return <PrivacyPolicy />;
+  if (/\/settings\/?$/.test(path)) return <Settings />;
   window.location.replace(window.location.origin + '/finances/operations');
   return null;
 }
