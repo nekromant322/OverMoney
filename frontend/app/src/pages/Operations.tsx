@@ -327,6 +327,33 @@ export default function Operations() {
     setDraggingSuggestedId(tx?.suggestedCategoryId ?? null);
     if (isMobile()) setMobileSidebarOpen(true);
 
+    const EDGE_ZONE = 80;
+    const MAX_SPEED = 12;
+    let rafId: number | null = null;
+    let lastTouchY = 0;
+
+    const scrollStep = () => {
+      const sidebar = document.querySelector('.sidebar') as HTMLElement | null;
+      if (!sidebar) return;
+
+      const y = lastTouchY;
+      const winH = window.innerHeight;
+      let speed = 0;
+
+      if (y < EDGE_ZONE) {
+        speed = -MAX_SPEED * (1 - y / EDGE_ZONE);
+      } else if (y > winH - EDGE_ZONE) {
+        speed = MAX_SPEED * (1 - (winH - y) / EDGE_ZONE);
+      }
+
+      if (speed !== 0) {
+        sidebar.scrollTop += speed;
+        rafId = requestAnimationFrame(scrollStep);
+      } else {
+        rafId = null;
+      }
+    };
+
     const onMove = (me: TouchEvent) => {
       const t = me.touches[0];
       me.preventDefault();
@@ -334,6 +361,9 @@ export default function Operations() {
       if (!touchDragRef.current) return;
       clone.style.left = `${t.clientX - touchDragRef.current.offsetX}px`;
       clone.style.top  = `${t.clientY - touchDragRef.current.offsetY}px`;
+
+      lastTouchY = t.clientY;
+      if (rafId === null) rafId = requestAnimationFrame(scrollStep);
 
       clone.style.display = 'none';
       const el = document.elementFromPoint(t.clientX, t.clientY);
@@ -348,6 +378,7 @@ export default function Operations() {
     const onEnd = () => {
       document.removeEventListener('touchmove', onMove);
       document.removeEventListener('touchend', onEnd);
+      if (rafId !== null) { cancelAnimationFrame(rafId); rafId = null; }
 
       const state = touchDragRef.current;
       if (!state) return;
