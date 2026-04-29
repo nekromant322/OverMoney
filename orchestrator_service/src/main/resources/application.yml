@@ -10,7 +10,6 @@
       allowed-origins:
         - "https://overmoney.tech"
         - "https://www.overmoney.tech"
-        - "https://overmoneytest.online"
 
 
   integration:

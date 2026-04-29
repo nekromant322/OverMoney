@@ -18,7 +18,6 @@ jobs:
       orchestrator: ${{ steps.filter.outputs.orchestrator }}
       telegram_bot: ${{ steps.filter.outputs.telegram_bot }}
       wit_ai_go_proxy: ${{ steps.filter.outputs.wit_ai_go_proxy }}
-      frontend_landing: ${{ steps.filter.outputs.frontend_landing }}
       frontend_app: ${{ steps.filter.outputs.frontend_app }}
       payment: ${{ steps.filter.outputs.payment }}
       compose: ${{ steps.filter.outputs.compose }}
@@ -39,8 +38,6 @@ jobs:
               - 'telegram_bot_service/**'
             wit_ai_go_proxy:
               - 'wit_ai_go_proxy/**'
-            frontend_landing:
-              - 'frontend/landing/**'
             frontend_app:
               - 'frontend/app/**'
             payment:
@@ -107,18 +104,6 @@ jobs:
           file: ./wit_ai_go_proxy/Dockerfile
           push: true
           tags: ghcr.io/nekromant322/wit_ai_go_proxy:latest
-
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build frontend_landing
-        if: needs.detect-changes.outputs.frontend_landing == 'true'
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: ./frontend/Dockerfile
-          push: true
-          tags: ghcr.io/nekromant322/frontend_landing:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -175,7 +160,6 @@ jobs:
           ORCHESTRATOR_CHANGED: ${{ needs.detect-changes.outputs.orchestrator }}
           TELEGRAM_BOT_CHANGED: ${{ needs.detect-changes.outputs.telegram_bot }}
           WIT_AI_GO_PROXY_CHANGED: ${{ needs.detect-changes.outputs.wit_ai_go_proxy }}
-          FRONTEND_LANDING_CHANGED: ${{ needs.detect-changes.outputs.frontend_landing }}
           FRONTEND_APP_CHANGED: ${{ needs.detect-changes.outputs.frontend_app }}
           PAYMENT_CHANGED: ${{ needs.detect-changes.outputs.payment }}
           GHCR_USERNAME: nekromant322
@@ -185,7 +169,7 @@ jobs:
           username: github
           key: ${{ secrets.VPS_GITHUB_PRIVATE_KEY }}
           port: 22
-          envs: RECOGNIZE_CHANGED,ORCHESTRATOR_CHANGED,TELEGRAM_BOT_CHANGED,WIT_AI_GO_PROXY_CHANGED,FRONTEND_LANDING_CHANGED,FRONTEND_APP_CHANGED,PAYMENT_CHANGED,GHCR_USERNAME,GHCR_TOKEN
+          envs: RECOGNIZE_CHANGED,ORCHESTRATOR_CHANGED,TELEGRAM_BOT_CHANGED,WIT_AI_GO_PROXY_CHANGED,FRONTEND_APP_CHANGED,PAYMENT_CHANGED,GHCR_USERNAME,GHCR_TOKEN
           script: |
             set -e
 
@@ -244,7 +228,6 @@ jobs:
             [ "$ORCHESTRATOR_CHANGED" = "true" ] && add_service orchestrator-service
             [ "$TELEGRAM_BOT_CHANGED" = "true" ] && add_service telegram-bot-service
             [ "$WIT_AI_GO_PROXY_CHANGED" = "true" ] && add_service wit-ai-go-proxy-service
-            [ "$FRONTEND_LANDING_CHANGED" = "true" ] && add_service frontend-landing-service
             [ "$FRONTEND_APP_CHANGED" = "true" ] && add_service frontend-app-service
             [ "$PAYMENT_CHANGED" = "true" ] && add_service payment-service
 

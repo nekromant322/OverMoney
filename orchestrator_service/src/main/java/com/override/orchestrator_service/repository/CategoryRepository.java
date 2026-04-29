@@ -89,6 +89,20 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             @Param("month") int month,
             @Param("day") int day);
 
+    @Query("SELECT NEW com.override.dto.AnalyticsDataDTO(c.id, c.name, COALESCE(SUM(t.amount), 0)) " +
+            "FROM Category c " +
+            "LEFT JOIN c.transactions t " +
+            "WHERE c.account.id = :accId " +
+            "AND c.type = :type " +
+            "AND YEAR(t.date) = :year " +
+            "GROUP BY c.id, c.name")
+    List<AnalyticsDataDTO> findSumOfAllCategoriesByAccIdAndTypeAndYear(@Param("accId") Long accId,
+                                                                       @Param("type") Type type,
+                                                                       @Param("year") Integer year);
+
+    @Query("SELECT MONTH(MIN(t.date)) FROM Transaction t WHERE t.account.id = :accId")
+    Integer findFirstTransactionMonthByAccId(@Param("accId") Long accId);
+
     @Modifying
     @Query("UPDATE Category c SET c.account.id = :newAccountId WHERE c.account.id = :oldAccountId")
     void updateAccountId(@Param("oldAccountId") Long oldAccountId, @Param("newAccountId") Long newAccountId);

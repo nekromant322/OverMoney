@@ -111,10 +111,23 @@ export default function Categories() {
     }
   };
 
-  const removeKeyword = (idx: number) => {
-    setEditing((prev) =>
-      prev ? { ...prev, keywords: prev.keywords.filter((_, i) => i !== idx) } : null,
-    );
+  const removeKeyword = async (idx: number) => {
+    if (!editing) return;
+    const kw = editing.keywords[idx];
+    try {
+      const r = await apiFetch('/categories/keywords', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ name: kw.name, accountId: kw.accountId ?? null }),
+      });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      setEditing((prev) =>
+        prev ? { ...prev, keywords: prev.keywords.filter((_, i) => i !== idx) } : null,
+      );
+    } catch (e) {
+      console.error('Failed to delete keyword', e);
+    }
   };
 
   const handleSave = async () => {
@@ -330,7 +343,7 @@ export default function Categories() {
                   {editingLoading && editing.keywords.length === 0 ? (
                     <span className="modal__hint">Загрузка...</span>
                   ) : editing.keywords.length === 0 ? (
-                    <span className="modal__hint">Пусто</span>
+                    <span className="modal__hint">Здесь пока пусто, добавлять вручную не нужно, просто продолжай трекать расходы и все заработает автоматически</span>
                   ) : (() => {
                     const KW_LIMIT = 15;
                     const total = editing.keywords.length;

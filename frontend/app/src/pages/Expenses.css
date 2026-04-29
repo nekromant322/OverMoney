@@ -56,7 +56,7 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   text-align: left;
-  padding: 13px 14px;
+  padding: 10px 10px;
   border-bottom: 2px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
   z-index: 2;
@@ -67,17 +67,18 @@
   position: sticky;
   left: 0;
   z-index: 3;
-  min-width: 200px;
+  width: 1%;
+  white-space: nowrap;
   background: #15151a;
 }
 
 .expenses-table__month {
-  min-width: 110px;
+  min-width: 80px;
 }
 
 .expenses-table tbody td,
 .expenses-table tbody th {
-  padding: 9px 14px;
+  padding: 8px 10px;
   border-bottom: 1px solid var(--border);
   white-space: nowrap;
 }

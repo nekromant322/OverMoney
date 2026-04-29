@@ -32,27 +32,51 @@ const formatDate = (iso: string) => {
   return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} / ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
+type Period = 'DAY' | 'MONTH' | 'YEAR';
+
+type CategorySum = {
+  id: number;
+  name: string;
+  sum: number;
+  type: CategoryType;
+};
+
 type CategoryListProps = {
   items: Category[];
   dropTargetId: number | null;
   suggestedId?: number | null;
+  sums: Map<number, number>;
   onCategoryDragOver: (e: React.DragEvent, catId: number) => void;
   onCategoryDrop: (e: React.DragEvent, catId: number) => void;
 };
 
-function CategoryList({ items, dropTargetId, suggestedId, onCategoryDragOver, onCategoryDrop }: CategoryListProps) {
+const formatSum = (n: number, type: CategoryType) => {
+  const abs = new Intl.NumberFormat('ru-RU').format(Math.abs(n));
+  if (n === 0) return '0';
+  return type === 'INCOME' ? `+ ${abs}` : `- ${abs}`;
+};
+
+function CategoryList({ items, dropTargetId, suggestedId, sums, onCategoryDragOver, onCategoryDrop }: CategoryListProps) {
   return (
     <ul className="category-list">
-      {items.map((c) => (
-        <li
-          key={c.id}
-          className={`category-row ${dropTargetId === c.id ? 'is-drop-target' : ''} ${suggestedId === c.id ? 'is-suggested' : ''}`}
-          onDragOver={(e) => onCategoryDragOver(e, c.id)}
-          onDrop={(e) => onCategoryDrop(e, c.id)}
-        >
-          <span className="category-name">{c.name}</span>
-        </li>
-      ))}
+      {items.map((c) => {
+        const sum = sums.get(c.id);
+        return (
+          <li
+            key={c.id}
+            className={`category-row ${dropTargetId === c.id ? 'is-drop-target' : ''} ${suggestedId === c.id ? 'is-suggested' : ''}`}
+            onDragOver={(e) => onCategoryDragOver(e, c.id)}
+            onDrop={(e) => onCategoryDrop(e, c.id)}
+          >
+            <span className="category-name">{c.name}</span>
+            {sum !== undefined && (
+              <span className={`category-sum ${c.type === 'INCOME' ? 'is-positive' : 'is-negative'}`}>
+                {formatSum(sum, c.type)}
+              </span>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -101,9 +125,15 @@ export default function Operations() {
   const [toast, setToast] = useState<{ tx: Transaction; categoryId: number; categoryName: string } | null>(null);
   const toastTimerRef = useRef<number | null>(null);
 
+  const [period, setPeriod] = useState<Period>('MONTH');
+  const [categorySums, setCategorySums] = useState<Map<number, number>>(new Map());
+
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [editForm, setEditForm] = useState<EditForm>({ message: '', amount: '', date: '', categoryName: '' });
   const [saving, setSaving] = useState(false);
+
+  const [onboardingOpen, setOnboardingOpen] = useState(false);
+  const [onboardingBusy, setOnboardingBusy] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -113,7 +143,12 @@ export default function Operations() {
         return r.json() as Promise<Category[]>;
       })
       .then((data) => {
-        if (!cancelled) setCategories(data);
+        if (!cancelled) {
+          setCategories(data);
+          if (data.length === 0 && localStorage.getItem('noDefaultCategory') !== 'true') {
+            setOnboardingOpen(true);
+          }
+        }
       })
       .catch((e: Error) => {
         if (!cancelled) {
@@ -126,6 +161,23 @@ export default function Operations() {
     };
   }, []);
 
+  const handleOnboardingAccept = async () => {
+    setOnboardingBusy(true);
+    try {
+      await apiFetch('/categories/add-default-categories', { method: 'POST', credentials: 'include' });
+      const r = await apiFetch('/categories/', { credentials: 'include' });
+      if (r.ok) setCategories(await r.json());
+    } finally {
+      setOnboardingBusy(false);
+      setOnboardingOpen(false);
+    }
+  };
+
+  const handleOnboardingReject = () => {
+    localStorage.setItem('noDefaultCategory', 'true');
+    setOnboardingOpen(false);
+  };
+
   useEffect(() => {
     return () => {
       if (toastTimerRef.current !== null) {
@@ -133,6 +185,32 @@ export default function Operations() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => {
+      apiFetch(`/analytics/categories/sums?period=${period}`, { credentials: 'include' })
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json() as Promise<CategorySum[]>;
+        })
+        .then((data) => {
+          if (cancelled) return;
+          const map = new Map<number, number>();
+          data.forEach((d) => map.set(d.id, d.sum ?? 0));
+          setCategorySums(map);
+        })
+        .catch((e) => console.error('Failed to load category sums', e));
+    };
+    const id: number = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(load)
+      : setTimeout(load, 300) as unknown as number;
+    return () => {
+      cancelled = true;
+      if ('requestIdleCallback' in window) window.cancelIdleCallback(id);
+      else clearTimeout(id);
+    };
+  }, [period]);
 
   const loadTransactions = () => {
     return apiFetch('/transactions', { credentials: 'include' })
@@ -210,6 +288,7 @@ export default function Operations() {
     const txId = e.dataTransfer.getData('text/plain');
     setDraggingId(null);
     setDropTargetId(null);
+    setDraggingSuggestedId(null);
     if (!txId) return;
 
     const previous = transactions;
@@ -366,22 +445,52 @@ export default function Operations() {
           </div>
 
           <section className="cat-section">
-            <h2 className="cat-section__title">Расходы</h2>
+            <div className="cat-section__header">
+              <h2 className="cat-section__title">Расходы</h2>
+              <div className="period-tabs">
+                {(['DAY', 'MONTH', 'YEAR'] as Period[]).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`period-tab ${period === p ? 'is-active' : ''}`}
+                    onClick={() => setPeriod(p)}
+                  >
+                    {p === 'DAY' ? 'Д' : p === 'MONTH' ? 'М' : 'Г'}
+                  </button>
+                ))}
+              </div>
+            </div>
             <CategoryList
               items={filteredExpenses}
               dropTargetId={dropTargetId}
               suggestedId={draggingSuggestedId}
+              sums={categorySums}
               onCategoryDragOver={handleCategoryDragOver}
               onCategoryDrop={handleCategoryDrop}
             />
           </section>
 
           <section className="cat-section">
-            <h2 className="cat-section__title">Доходы</h2>
+            <div className="cat-section__header">
+              <h2 className="cat-section__title">Доходы</h2>
+              <div className="period-tabs">
+                {(['DAY', 'MONTH', 'YEAR'] as Period[]).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`period-tab ${period === p ? 'is-active' : ''}`}
+                    onClick={() => setPeriod(p)}
+                  >
+                    {p === 'DAY' ? 'Д' : p === 'MONTH' ? 'М' : 'Г'}
+                  </button>
+                ))}
+              </div>
+            </div>
             <CategoryList
               items={filteredIncomes}
               dropTargetId={dropTargetId}
               suggestedId={draggingSuggestedId}
+              sums={categorySums}
               onCategoryDragOver={handleCategoryDragOver}
               onCategoryDrop={handleCategoryDrop}
             />
@@ -430,6 +539,30 @@ export default function Operations() {
           </button>
         </main>
       </div>
+
+      {onboardingOpen && (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onClick={(e) => { if (e.target === e.currentTarget && !onboardingBusy) handleOnboardingReject(); }}
+        >
+          <div className="modal" role="dialog" aria-modal="true">
+            <h3 className="modal__title">Добро пожаловать!</h3>
+            <div className="modal__form">
+              <p className="modal__text">Мы обнаружили, что у вас ещё нет категорий.</p>
+              <p className="modal__text">Добавить стандартный набор категорий?</p>
+            </div>
+            <div className="modal__actions">
+              <button className="ghost-btn" onClick={handleOnboardingReject} disabled={onboardingBusy}>
+                Нет, я сам
+              </button>
+              <button className="primary-btn" onClick={handleOnboardingAccept} disabled={onboardingBusy}>
+                {onboardingBusy ? '...' : 'Да'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <ConfirmModal
         open={pendingDeleteTxId !== null}
