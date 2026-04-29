@@ -3,7 +3,7 @@ name: Build & Deploy
 on:
   push:
     branches:
-      - front-v2
+      - master
 
 permissions:
   contents: read
