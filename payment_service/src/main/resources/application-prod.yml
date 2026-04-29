@@ -27,7 +27,6 @@ spring:
 logging:
   level:
     org.zalando.logbook: TRACE
-    org.springframework.kafka: INFO
 
 robokassa:
   login-shop-id: ${ROBOKASSA_LOGIN_SHOP_ID}

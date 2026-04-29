@@ -33,5 +33,5 @@ bot:
   name: DONTDELETEFORTESTBOT
 
 #настройка веб адреса приложения
-orchestrator:
+web:
   url: test.ru
