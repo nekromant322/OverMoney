@@ -55,7 +55,7 @@
 .cats-table {
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: var(--surface);
+  background: var(--bg);
   overflow: hidden;
 }
 
@@ -70,7 +70,7 @@
 
 .cats-row:last-child { border-bottom: 0; }
 
-.cats-row:not(.cats-row--head):hover { background: var(--surface-2); }
+.cats-row:not(.cats-row--head):hover { background: rgba(177, 186, 196, 0.08); }
 
 .cats-row--head {
   background: var(--surface-2);
@@ -148,7 +148,7 @@
 
 .modal__link:hover:not(:disabled) {
   color: var(--accent-hover);
-  background: rgba(43, 192, 107, 0.08);
+  background: rgba(35, 134, 54, 0.08);
 }
 
 .modal__link:disabled { cursor: not-allowed; opacity: 0.5; }
@@ -182,7 +182,7 @@
   transition: border-color 0.15s;
 }
 
-.merge-block__select:focus { border-color: rgba(43, 192, 107, 0.55); }
+.merge-block__select:focus { border-color: rgba(35, 134, 54, 0.55); }
 
 .merge-block__select:disabled { cursor: not-allowed; opacity: 0.6; }
 
@@ -211,12 +211,12 @@
 
 .type-badge--expense {
   color: var(--negative);
-  background: rgba(255, 107, 107, 0.12);
+  background: rgba(248, 81, 73, 0.12);
 }
 
 .type-badge--income {
   color: var(--positive);
-  background: rgba(94, 192, 122, 0.14);
+  background: rgba(63, 185, 80, 0.14);
 }
 
 .type-toggle {
@@ -247,12 +247,12 @@
 
 .type-toggle__btn--expense.is-active {
   color: var(--negative);
-  background: rgba(255, 107, 107, 0.14);
+  background: rgba(248, 81, 73, 0.14);
 }
 
 .type-toggle__btn--income.is-active {
   color: var(--positive);
-  background: rgba(94, 192, 122, 0.16);
+  background: rgba(63, 185, 80, 0.16);
 }
 
 .kw-box {
@@ -294,7 +294,7 @@
 
 .kw-more:hover {
   color: var(--accent-hover);
-  border-color: rgba(43, 192, 107, 0.45);
+  border-color: rgba(35, 134, 54, 0.45);
 }
 
 .kw-chip {
@@ -328,7 +328,7 @@
 
 .kw-chip__remove:hover {
   color: var(--negative);
-  background: rgba(255, 107, 107, 0.1);
+  background: rgba(248, 81, 73, 0.1);
 }
 
 .kw-chip__remove:disabled { cursor: not-allowed; opacity: 0.5; }

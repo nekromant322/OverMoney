@@ -47,7 +47,7 @@
 
 .filter-input::placeholder { color: var(--muted-2); }
 
-.filter-input:focus { border-color: rgba(43, 192, 107, 0.55); }
+.filter-input:focus { border-color: rgba(35, 134, 54, 0.55); }
 
 .filter-input--wide { flex: 2 1 160px; }
 
@@ -59,7 +59,7 @@
 .archive-table {
   border: 1px solid var(--border);
   border-radius: 8px;
-  background: var(--surface);
+  background: var(--bg);
   overflow: hidden;
 }
 
@@ -77,11 +77,11 @@
 .archive-row:last-of-type { border-bottom: 0; }
 
 .archive-row:hover:not(.archive-row--head) {
-  background: var(--surface-2);
+  background: rgba(177, 186, 196, 0.08);
 }
 
 .archive-row.is-selected {
-  background: rgba(43, 192, 107, 0.06);
+  background: rgba(35, 134, 54, 0.06);
 }
 
 .archive-row--head {
@@ -187,14 +187,14 @@
 
 .archive-fabs .fab-trash.is-active {
   color: var(--negative);
-  border-color: rgba(255, 107, 107, 0.55);
-  background: rgba(255, 107, 107, 0.1);
+  border-color: rgba(248, 81, 73, 0.55);
+  background: rgba(248, 81, 73, 0.1);
   cursor: pointer;
 }
 
 .archive-fabs .fab-trash.is-active:hover {
-  background: rgba(255, 107, 107, 0.18);
-  border-color: rgba(255, 107, 107, 0.75);
+  background: rgba(248, 81, 73, 0.18);
+  border-color: rgba(248, 81, 73, 0.75);
   transform: scale(1.05);
 }
 

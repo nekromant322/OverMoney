@@ -32,7 +32,7 @@
 .expenses-table-wrap {
   flex: 1 1 auto;
   min-height: 0;
-  background: var(--surface);
+  background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 8px;
   overflow: auto;
@@ -49,7 +49,7 @@
 .expenses-table thead th {
   position: sticky;
   top: 0;
-  background: #15151a;
+  background: var(--surface);
   color: var(--text);
   font-size: 11px;
   font-weight: 600;
@@ -57,7 +57,7 @@
   text-transform: uppercase;
   text-align: left;
   padding: 10px 10px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.18);
+  border-bottom: 1px solid var(--border);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
   z-index: 2;
   white-space: nowrap;
@@ -69,7 +69,7 @@
   z-index: 3;
   width: 1%;
   white-space: nowrap;
-  background: #15151a;
+  background: var(--surface);
 }
 
 .expenses-table__month {
@@ -91,7 +91,7 @@
 .expenses-table tbody th.row-name {
   position: sticky;
   left: 0;
-  background: var(--surface);
+  background: var(--bg);
   text-align: left;
   font-weight: 500;
   color: var(--text);
@@ -125,6 +125,11 @@
   letter-spacing: 0.04em;
 }
 
+.expenses-table .row-data td.cell:hover {
+  outline: 1px solid var(--border);
+  outline-offset: -1px;
+}
+
 .cell-btn {
   background: transparent;
   border: 0;
@@ -145,13 +150,13 @@
 .cell { color: var(--text); }
 .cell--zero { color: var(--muted-2); }
 
-.cell--rank-1 { background-color: rgba(200, 110, 110, 0.32); color: var(--text); }
-.cell--rank-2 { background-color: rgba(200, 110, 110, 0.20); color: var(--text); }
-.cell--rank-3 { background-color: rgba(200, 110, 110, 0.10); color: var(--text); }
+.cell--rank-1 { background-color: rgba(248, 81, 73, 0.30); color: var(--text); }
+.cell--rank-2 { background-color: rgba(248, 81, 73, 0.18); color: var(--text); }
+.cell--rank-3 { background-color: rgba(248, 81, 73, 0.09); color: var(--text); }
 
-.expenses-table .row-data:hover td.cell--rank-1 { background-color: rgba(200, 110, 110, 0.40); }
-.expenses-table .row-data:hover td.cell--rank-2 { background-color: rgba(200, 110, 110, 0.28); }
-.expenses-table .row-data:hover td.cell--rank-3 { background-color: rgba(200, 110, 110, 0.16); }
+.expenses-table .row-data:hover td.cell--rank-1 { background-color: rgba(248, 81, 73, 0.42); }
+.expenses-table .row-data:hover td.cell--rank-2 { background-color: rgba(248, 81, 73, 0.28); }
+.expenses-table .row-data:hover td.cell--rank-3 { background-color: rgba(248, 81, 73, 0.16); }
 
 /* ---------- Cell modal list ---------- */
 .cell-modal-list {

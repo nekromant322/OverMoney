@@ -4,7 +4,7 @@
   height: 100vh;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
 }
 
 .settings-main {
@@ -79,7 +79,7 @@
 }
 
 .settings-card__desc--danger {
-  color: #ff6b6b;
+  color: var(--negative);
 }
 
 .settings-card__actions {
@@ -101,13 +101,13 @@
 }
 
 .settings-sub-badge--active {
-  background: rgba(94, 192, 122, 0.15);
-  color: #5ec07a;
+  background: rgba(63, 185, 80, 0.15);
+  color: var(--positive);
 }
 
 .settings-sub-badge--inactive {
-  background: rgba(255, 107, 107, 0.12);
-  color: #ff6b6b;
+  background: rgba(248, 81, 73, 0.12);
+  color: var(--negative);
 }
 
 /* Buttons */
@@ -143,13 +143,13 @@
 }
 
 .settings-btn--danger {
-  background: rgba(255, 107, 107, 0.12);
-  color: #ff6b6b;
-  border: 1px solid rgba(255, 107, 107, 0.2);
+  background: rgba(248, 81, 73, 0.12);
+  color: var(--negative);
+  border: 1px solid rgba(248, 81, 73, 0.2);
 }
 
 .settings-btn--danger:hover:not(:disabled) {
-  background: rgba(255, 107, 107, 0.2);
+  background: rgba(248, 81, 73, 0.2);
 }
 
 .settings-btn--ghost {
@@ -225,7 +225,7 @@
 
 .settings-modal__warning {
   font-size: 13px;
-  color: #ff6b6b;
+  color: var(--negative);
   margin: 0;
   line-height: 1.5;
 }
@@ -303,15 +303,15 @@
 }
 
 .settings-toast--success {
-  background: rgba(94, 192, 122, 0.15);
-  color: #5ec07a;
-  border: 1px solid rgba(94, 192, 122, 0.25);
+  background: rgba(63, 185, 80, 0.15);
+  color: var(--positive);
+  border: 1px solid rgba(63, 185, 80, 0.25);
 }
 
 .settings-toast--error {
-  background: rgba(255, 107, 107, 0.15);
-  color: #ff6b6b;
-  border: 1px solid rgba(255, 107, 107, 0.25);
+  background: rgba(248, 81, 73, 0.15);
+  color: var(--negative);
+  border: 1px solid rgba(248, 81, 73, 0.25);
 }
 
 .settings-toast--info {
