@@ -3,7 +3,7 @@ name: Build & Deploy
 on:
   push:
     branches:
-      - master
+      - tg-proxy-login
 
 permissions:
   contents: read

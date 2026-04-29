@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .authorizeRequests()
+                .antMatchers("/tg-widget/**").permitAll()
                 .antMatchers("/templates/**", "/scripts/**", "/css/**").permitAll()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/login/**").permitAll()
