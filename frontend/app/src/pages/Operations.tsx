@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import TopBar from './TopBar';
 import ConfirmModal from './ConfirmModal';
 import EditTransactionModal, { EditForm } from './EditTransactionModal';
@@ -64,6 +64,7 @@ function CategoryList({ items, dropTargetId, suggestedId, sums, onCategoryDragOv
         return (
           <li
             key={c.id}
+            data-cat-id={c.id}
             className={`category-row ${dropTargetId === c.id ? 'is-drop-target' : ''} ${suggestedId === c.id ? 'is-suggested' : ''}`}
             onDragOver={(e) => onCategoryDragOver(e, c.id)}
             onDrop={(e) => onCategoryDrop(e, c.id)}
@@ -86,16 +87,18 @@ type OperationCardProps = {
   isDragging: boolean;
   onDragStart: (e: React.DragEvent, txId: string) => void;
   onDragEnd: () => void;
+  onTouchStart: (e: React.TouchEvent, txId: string) => void;
   onEdit: (tx: Transaction) => void;
 };
 
-function OperationCard({ tx, isDragging, onDragStart, onDragEnd, onEdit }: OperationCardProps) {
+function OperationCard({ tx, isDragging, onDragStart, onDragEnd, onTouchStart, onEdit }: OperationCardProps) {
   return (
     <article
       className={`op-card ${isDragging ? 'is-dragging' : ''}`}
       draggable
       onDragStart={(e) => onDragStart(e, tx.id)}
       onDragEnd={onDragEnd}
+      onTouchStart={(e) => onTouchStart(e, tx.id)}
     >
       <header className="op-card__head">
         <h3 className="op-card__title">{tx.message}</h3>
@@ -134,6 +137,15 @@ export default function Operations() {
 
   const [onboardingOpen, setOnboardingOpen] = useState(false);
   const [onboardingBusy, setOnboardingBusy] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
+  const touchDragRef = useRef<{
+    txId: string;
+    clone: HTMLElement;
+    offsetX: number;
+    offsetY: number;
+    catId: number | null;
+  } | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -242,27 +254,7 @@ export default function Operations() {
     : expenses;
   const filteredIncomes = q ? incomes.filter((c) => c.name.toLowerCase().includes(q)) : incomes;
 
-  const handleDragStart = (e: React.DragEvent, txId: string) => {
-    e.dataTransfer.setData('text/plain', txId);
-    e.dataTransfer.effectAllowed = 'move';
-    setDraggingId(txId);
-    const tx = transactions?.find((t) => t.id === txId);
-    setDraggingSuggestedId(tx?.suggestedCategoryId ?? null);
-  };
-
-  const handleDragEnd = () => {
-    setDraggingId(null);
-    setDropTargetId(null);
-    setTrashHover(false);
-    setDraggingSuggestedId(null);
-  };
-
-  const handleCategoryDragOver = (e: React.DragEvent, catId: number) => {
-    if (!draggingId) return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
-    if (dropTargetId !== catId) setDropTargetId(catId);
-  };
+  const isMobile = () => window.innerWidth <= 768;
 
   const showToast = (next: { tx: Transaction; categoryId: number; categoryName: string }) => {
     if (toastTimerRef.current !== null) {
@@ -283,19 +275,11 @@ export default function Operations() {
     setToast(null);
   };
 
-  const handleCategoryDrop = async (e: React.DragEvent, catId: number) => {
-    e.preventDefault();
-    const txId = e.dataTransfer.getData('text/plain');
-    setDraggingId(null);
-    setDropTargetId(null);
-    setDraggingSuggestedId(null);
-    if (!txId) return;
-
+  const assignToCategory = useCallback(async (txId: string, catId: number) => {
     const previous = transactions;
     const droppedTx = previous?.find((t) => t.id === txId);
     const targetCategory = categories?.find((c) => c.id === catId);
     setTransactions((prev) => prev?.filter((t) => t.id !== txId) ?? null);
-
     try {
       const r = await apiFetch('/transaction/define', {
         method: 'POST',
@@ -311,6 +295,113 @@ export default function Operations() {
       console.error('Failed to define transaction category', err);
       setTransactions(previous);
     }
+  }, [transactions, categories, showToast]);
+
+  const handleTouchStart = useCallback((e: React.TouchEvent, txId: string) => {
+    const touch = e.touches[0];
+    const card = e.currentTarget as HTMLElement;
+    const rect = card.getBoundingClientRect();
+
+    const clone = card.cloneNode(true) as HTMLElement;
+    clone.style.cssText = [
+      'position:fixed',
+      `width:${rect.width}px`,
+      `left:${rect.left}px`,
+      `top:${rect.top}px`,
+      'opacity:0.85',
+      'pointer-events:none',
+      'z-index:9999',
+      'transition:none',
+      'border-radius:6px',
+      'box-shadow:0 8px 24px rgba(0,0,0,0.5)',
+    ].join(';');
+    document.body.appendChild(clone);
+
+    const offsetX = touch.clientX - rect.left;
+    const offsetY = touch.clientY - rect.top;
+
+    touchDragRef.current = { txId, clone, offsetX, offsetY, catId: null };
+
+    setDraggingId(txId);
+    const tx = transactions?.find((t) => t.id === txId);
+    setDraggingSuggestedId(tx?.suggestedCategoryId ?? null);
+    if (isMobile()) setMobileSidebarOpen(true);
+
+    const onMove = (me: TouchEvent) => {
+      const t = me.touches[0];
+      me.preventDefault();
+
+      if (!touchDragRef.current) return;
+      clone.style.left = `${t.clientX - touchDragRef.current.offsetX}px`;
+      clone.style.top  = `${t.clientY - touchDragRef.current.offsetY}px`;
+
+      clone.style.display = 'none';
+      const el = document.elementFromPoint(t.clientX, t.clientY);
+      clone.style.display = '';
+
+      const row = el?.closest('[data-cat-id]');
+      const catId = row ? Number(row.getAttribute('data-cat-id')) : null;
+      touchDragRef.current.catId = catId;
+      setDropTargetId(catId);
+    };
+
+    const onEnd = () => {
+      document.removeEventListener('touchmove', onMove);
+      document.removeEventListener('touchend', onEnd);
+
+      const state = touchDragRef.current;
+      if (!state) return;
+
+      clone.remove();
+      touchDragRef.current = null;
+
+      setDraggingId(null);
+      setDropTargetId(null);
+      setDraggingSuggestedId(null);
+      if (isMobile()) setMobileSidebarOpen(false);
+
+      if (state.catId !== null) {
+        assignToCategory(state.txId, state.catId);
+      }
+    };
+
+    document.addEventListener('touchmove', onMove, { passive: false });
+    document.addEventListener('touchend', onEnd);
+  }, [transactions, assignToCategory]);
+
+  const handleDragStart = (e: React.DragEvent, txId: string) => {
+    e.dataTransfer.setData('text/plain', txId);
+    e.dataTransfer.effectAllowed = 'move';
+    setDraggingId(txId);
+    const tx = transactions?.find((t) => t.id === txId);
+    setDraggingSuggestedId(tx?.suggestedCategoryId ?? null);
+    if (isMobile()) setMobileSidebarOpen(true);
+  };
+
+  const handleDragEnd = () => {
+    setDraggingId(null);
+    setDropTargetId(null);
+    setTrashHover(false);
+    setDraggingSuggestedId(null);
+    if (isMobile()) setMobileSidebarOpen(false);
+  };
+
+  const handleCategoryDragOver = (e: React.DragEvent, catId: number) => {
+    if (!draggingId) return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    if (dropTargetId !== catId) setDropTargetId(catId);
+  };
+
+  const handleCategoryDrop = (e: React.DragEvent, catId: number) => {
+    e.preventDefault();
+    const txId = e.dataTransfer.getData('text/plain');
+    setDraggingId(null);
+    setDropTargetId(null);
+    setDraggingSuggestedId(null);
+    if (isMobile()) setMobileSidebarOpen(false);
+    if (!txId) return;
+    assignToCategory(txId, catId);
   };
 
   const handleUndoDefine = async () => {
@@ -351,6 +442,7 @@ export default function Operations() {
     const txId = e.dataTransfer.getData('text/plain');
     setDraggingId(null);
     setTrashHover(false);
+    if (isMobile()) setMobileSidebarOpen(false);
     if (!txId) return;
     setPendingDeleteTxId(txId);
   };
@@ -429,11 +521,14 @@ export default function Operations() {
   };
 
   return (
-    <div className="ops-app">
-      <TopBar active="ops" opsBadge={transactions?.length} />
+    <div className={`ops-app${draggingId ? ' is-dragging' : ''}`}>
+      <TopBar active="ops" />
 
       <div className="layout">
-        <aside className="sidebar">
+        {mobileSidebarOpen && (
+          <div className="sidebar-backdrop" onClick={() => setMobileSidebarOpen(false)} />
+        )}
+        <aside className={`sidebar${mobileSidebarOpen ? ' sidebar--mobile-open' : ''}`}>
           <div className="search">
             <SearchIcon />
             <input
@@ -504,6 +599,15 @@ export default function Operations() {
         </aside>
 
         <main className="content">
+          <button
+            type="button"
+            className="mobile-filter-btn"
+            aria-label="Фильтры по категориям"
+            onClick={() => setMobileSidebarOpen(o => !o)}
+          >
+            <FilterIcon />
+            <span>Категории</span>
+          </button>
           {transactionsError ? (
             <div className="content__error" role="alert">
               Не удалось загрузить транзакции: {transactionsError}
@@ -521,6 +625,7 @@ export default function Operations() {
                   isDragging={draggingId === tx.id}
                   onDragStart={handleDragStart}
                   onDragEnd={handleDragEnd}
+                  onTouchStart={handleTouchStart}
                   onEdit={openEdit}
                 />
               ))}
@@ -610,6 +715,14 @@ function PenIcon() {
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 20h9" />
       <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4 12.5-12.5z" />
+    </svg>
+  );
+}
+
+function FilterIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3" />
     </svg>
   );
 }

@@ -329,3 +329,31 @@
   from { transform: rotate(0deg); }
   to   { transform: rotate(360deg); }
 }
+
+@media (max-width: 768px) {
+  .settings-main {
+    padding: 18px 14px 40px;
+  }
+
+  .settings-card__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 14px;
+  }
+
+  .settings-card__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .settings-toasts {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+  }
+
+  .settings-toast {
+    max-width: 100%;
+  }
+}

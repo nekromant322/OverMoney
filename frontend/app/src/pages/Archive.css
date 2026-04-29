@@ -239,3 +239,53 @@
     gap: 6px;
   }
 }
+
+@media (max-width: 768px) {
+  .archive-page {
+    padding: 12px 12px 80px;
+  }
+
+  .archive-toolbar {
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .archive-toolbar__actions {
+    width: 100%;
+    margin-left: 0;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  /* "Применить" и "Очистить" делят первую строку поровну */
+  .archive-toolbar__actions .primary-btn:first-child {
+    flex: 1 1 auto;
+  }
+
+  .archive-toolbar__actions .ghost-btn {
+    flex: 1 1 auto;
+  }
+
+  /* "Добавить операцию" — отдельная строка на всю ширину */
+  .archive-toolbar__actions .primary-btn:last-child {
+    width: 100%;
+  }
+
+  /* Simplified columns: checkbox, name, amount, actions */
+  .archive-row {
+    grid-template-columns: 32px minmax(0, 1fr) 80px 36px;
+    gap: 6px;
+    font-size: 12px;
+  }
+
+  /* Hide date and category columns on mobile */
+  .archive-cell:nth-child(3),
+  .archive-cell:nth-child(4) {
+    display: none;
+  }
+
+  .archive-fabs {
+    right: 12px;
+    bottom: 12px;
+  }
+}
