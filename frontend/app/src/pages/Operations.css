@@ -576,6 +576,27 @@
   border-color: rgba(255, 107, 107, 0.4);
 }
 
+.fab-trash:not(.is-drag-active):hover::after {
+  content: 'Перетащи сюда транзакцию для удаления';
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  white-space: nowrap;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 11px;
+  padding: 5px 9px;
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+.fab-trash.is-drag-active {
+  color: var(--negative);
+  border-color: rgba(255, 107, 107, 0.5);
+  background: rgba(255, 107, 107, 0.07);
+}
+
 .fab-trash.is-drop-target {
   color: var(--negative);
   border-color: rgba(255, 107, 107, 0.7);

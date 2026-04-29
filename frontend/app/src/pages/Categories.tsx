@@ -222,7 +222,7 @@ export default function Categories() {
 
         <div className="cats-table">
           <div className="cats-row cats-row--head">
-            <span className="cats-cell-name">Название</span>
+            <span className="cats-cell-name">Категория</span>
             <span className="cats-cell-actions" />
           </div>
 
