@@ -617,3 +617,110 @@
 @media (max-width: 860px) {
   .op-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ---------- Mobile (≤ 768px) ---------- */
+.mobile-filter-btn { display: none; }
+
+@media (max-width: 768px) {
+  /* Topbar */
+  .topbar {
+    grid-template-columns: auto 1fr auto;
+    padding: 0 10px;
+  }
+
+  .tabs {
+    justify-content: space-evenly;
+    gap: 0;
+    padding: 0;
+  }
+
+  .tab {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 4px;
+    gap: 4px;
+    font-size: 0;
+  }
+
+  .tab svg { flex-shrink: 0; }
+
+  .tab__badge {
+    font-size: 10px;
+    padding: 1px 4px;
+  }
+
+  /* Layout: single column, sidebar as overlay */
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+    position: fixed;
+    top: 52px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 150;
+    border-right: none;
+    border-top: 1px solid var(--border);
+    padding: 14px 16px;
+    overflow-y: auto;
+  }
+
+  .sidebar--mobile-open {
+    display: flex;
+  }
+
+  .sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    top: 52px;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 149;
+  }
+
+  /* During drag, backdrop must not block drop targets in sidebar */
+  .ops-app.is-dragging .sidebar-backdrop {
+    pointer-events: none;
+  }
+
+  /* Filter button visible on mobile */
+  .mobile-filter-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    align-self: flex-start;
+    transition: color 0.15s, background-color 0.15s;
+  }
+
+  .mobile-filter-btn:hover { color: var(--text); background: var(--surface-2); }
+
+  /* Cards: 2 columns on mobile */
+  .op-grid { grid-template-columns: repeat(2, 1fr); }
+
+  .content {
+    padding: 10px 12px 80px;
+    gap: 10px;
+  }
+
+  /* Fab trash - keep in place */
+  .fab-trash {
+    bottom: 12px;
+    right: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .op-grid { grid-template-columns: 1fr; }
+
+  .tab { padding: 8px 8px; }
+}

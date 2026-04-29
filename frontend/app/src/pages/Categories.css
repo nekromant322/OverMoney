@@ -339,3 +339,14 @@
   height: 38px;
   font-size: 13px;
 }
+
+@media (max-width: 768px) {
+  .cats-page {
+    padding: 12px 12px 24px;
+  }
+
+  .cats-toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}

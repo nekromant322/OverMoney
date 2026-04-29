@@ -12,9 +12,25 @@ interface UserInfo {
   photoBase64Format: string | null;
 }
 
-export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?: number }) {
+const BADGE_TTL_MS = 60_000;
+let badgeCache: { value: number; at: number } | null = null;
+
+async function fetchBadge(): Promise<number> {
+  if (badgeCache && Date.now() - badgeCache.at < BADGE_TTL_MS) {
+    return badgeCache.value;
+  }
+  const r = await apiFetch('/transactions');
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  const data: unknown[] = await r.json();
+  const value = data.length;
+  badgeCache = { value, at: Date.now() };
+  return value;
+}
+
+export default function TopBar({ active }: { active: TabKey }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [user, setUser] = useState<UserInfo | null>(null);
+  const [opsBadge, setOpsBadge] = useState<number | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const [bugOpen, setBugOpen] = useState(false);
@@ -25,6 +41,10 @@ export default function TopBar({ active, opsBadge }: { active: TabKey; opsBadge?
     apiFetch('/users/current')
       .then(r => r.ok ? r.json() : null)
       .then((data: UserInfo | null) => { if (data) setUser(data); })
+      .catch(() => {});
+
+    fetchBadge()
+      .then(v => setOpsBadge(v))
       .catch(() => {});
   }, []);
 

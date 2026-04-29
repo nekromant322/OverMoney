@@ -30,6 +30,7 @@
   font-family: inherit;
   cursor: pointer;
   height: 30px;
+  white-space: nowrap;
   transition: background-color 0.15s;
 }
 
@@ -51,6 +52,7 @@
   font-family: inherit;
   cursor: pointer;
   height: 30px;
+  white-space: nowrap;
   transition: background-color 0.15s, border-color 0.15s;
 }
 
@@ -179,4 +181,19 @@ body {
 @keyframes modalIn {
   from { opacity: 0; transform: translateY(8px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 768px) {
+  .modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: 18px 16px 28px;
+  }
 }

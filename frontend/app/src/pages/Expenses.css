@@ -197,3 +197,24 @@
   font-variant-numeric: tabular-nums;
   font-weight: 500;
 }
+
+@media (max-width: 768px) {
+  .expenses-page {
+    padding: 10px 10px 14px;
+    gap: 8px;
+  }
+
+  .expenses-table {
+    font-size: 11px;
+  }
+
+  .expenses-table thead th {
+    font-size: 10px;
+    padding: 8px 6px;
+  }
+
+  .expenses-table tbody td,
+  .expenses-table tbody th {
+    padding: 6px 6px;
+  }
+}
