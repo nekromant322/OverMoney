@@ -38,6 +38,14 @@ public class AnalyticsController {
         return analyticService.getTotalCategorySumsForAnalytics(telegramUtils.getTelegramId(principal), type);
     }
 
+    @GetMapping("/totalCategorySums/{type}/{year}")
+    public List<AnalyticsDataDTO> getAnalyticsTotalCategorySumsByYear(Principal principal,
+                                                                      @PathVariable("type") Type type,
+                                                                      @PathVariable("year") Integer year)
+            throws InstanceNotFoundException {
+        return analyticService.getTotalCategorySumsForAnalyticsByYear(telegramUtils.getTelegramId(principal), type, year);
+    }
+
     @GetMapping("/totalIncomeOutcome/{year}")
     public List<AnalyticsDataMonthDTO> getIncomeOutcomePerMonth(Principal principal, @PathVariable("year") int year)
             throws InstanceNotFoundException {

@@ -4,7 +4,10 @@
       "Bash(npm run *)",
       "Bash(curl *)",
       "Bash(xargs -I{} sh -c 'echo \"=== {} ===\"; cat {}')",
-      "Bash(xargs wc *)"
+      "Bash(xargs wc *)",
+      "Bash(xargs grep *)",
+      "Read(//mnt/c/Users/override/IdeaProjects/OverMoney1235/frontend/**)",
+      "Bash(npx tsc *)"
     ]
   }
 }

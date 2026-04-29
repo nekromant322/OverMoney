@@ -24,6 +24,8 @@ const PALETTE = [
   '#ff922b', '#94d82d', '#22b8cf', '#845ef7',
 ];
 
+type CategoryAvgData = { categoryId: number; categoryName: string; mediumAmountOfTransactions: number };
+
 type MonthData = { month: string; totalIncome: number; totalExpense: number };
 
 type CategoryYearData = {
@@ -53,6 +55,7 @@ export default function Dynamics() {
           {yearsError && (
             <div className="content__error">Не удалось загрузить года: {yearsError}</div>
           )}
+          <ExpenseByCategoryPieCard years={years} />
           <IncomeOutcomeCard years={years} />
           <IncomeByCategoryCard years={years} />
           <IncomeOutcomePerYearCard />
@@ -88,6 +91,140 @@ function YearSelect({
           </option>
         ))}
     </select>
+  );
+}
+
+/* ---------------- Card 0: Expense by category pie ---------------- */
+
+function ExpenseByCategoryPieCard({ years }: { years: number[] }) {
+  const [year, setYear] = useState<number | null>(null);
+  const [data, setData] = useState<CategoryAvgData[] | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [collapsed, setCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (years.length > 0 && year === null) setYear(Math.max(...years));
+  }, [years, year]);
+
+  useEffect(() => {
+    if (year === null) return;
+    setLoading(true);
+    setError(null);
+    apiFetch(`/analytics/totalCategorySums/EXPENSE/${year}`, { credentials: 'include' })
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json() as Promise<CategoryAvgData[]>;
+      })
+      .then((rows) => setData(rows.filter((r) => r.mediumAmountOfTransactions > 0)))
+      .catch((e: Error) => {
+        setData([]);
+        setError(e.message);
+      })
+      .finally(() => setLoading(false));
+  }, [year]);
+
+  return (
+    <section className={`chart-card ${collapsed ? 'is-collapsed' : ''}`}>
+      <header className="chart-card__head">
+        <CollapseTitle collapsed={collapsed} onToggle={() => setCollapsed((v) => !v)}>
+          Расходы по категориям
+        </CollapseTitle>
+      </header>
+
+      {!collapsed && (
+        <>
+          <div className="chart-card__controls">
+            <YearSelect years={years} value={year} onChange={setYear} />
+          </div>
+
+          {error && <div className="content__error">Не удалось загрузить: {error}</div>}
+
+          {loading ? (
+            <div className="content__placeholder">Загрузка...</div>
+          ) : !data ? (
+            <div className="content__placeholder">Выбери год</div>
+          ) : data.length === 0 ? (
+            <div className="content__placeholder">Нет данных</div>
+          ) : (
+            <PieChart data={data} />
+          )}
+        </>
+      )}
+    </section>
+  );
+}
+
+function PieChart({ data }: { data: CategoryAvgData[] }) {
+  const { tip, show, hide } = useTooltip();
+  const total = data.reduce((s, d) => s + d.mediumAmountOfTransactions, 0);
+
+  const R = 160;
+  const CX = 210;
+  const CY = 210;
+  const W = 900;
+  const H = 420;
+
+  const slices: Array<{ d: string; color: string; item: CategoryAvgData; midAngle: number }> = [];
+  let angle = -Math.PI / 2;
+  for (let i = 0; i < data.length; i++) {
+    const item = data[i];
+    const sweep = (item.mediumAmountOfTransactions / total) * 2 * Math.PI;
+    const endAngle = angle + sweep;
+    const mid = angle + sweep / 2;
+    const lx1 = CX + R * Math.cos(angle);
+    const ly1 = CY + R * Math.sin(angle);
+    const lx2 = CX + R * Math.cos(endAngle);
+    const ly2 = CY + R * Math.sin(endAngle);
+    const large = sweep > Math.PI ? 1 : 0;
+    const path = `M ${CX} ${CY} L ${lx1} ${ly1} A ${R} ${R} 0 ${large} 1 ${lx2} ${ly2} Z`;
+    slices.push({ d: path, color: PALETTE[i % PALETTE.length], item, midAngle: mid });
+    angle = endAngle;
+  }
+
+  const legendX = CX + R + 40;
+  const legendRowH = 22;
+  const maxLegendRows = Math.floor((H - 20) / legendRowH);
+  const legendItems = data.slice(0, maxLegendRows);
+
+  return (
+    <>
+      <ChartTooltip tip={tip} />
+      <svg className="bar-chart" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet">
+        {slices.map((s) => (
+          <path
+            key={s.item.categoryId}
+            d={s.d}
+            fill={s.color}
+            stroke="#fff"
+            strokeWidth={1.5}
+            onMouseEnter={(e) =>
+              show(e, `${s.item.categoryName}: ${formatTick(s.item.mediumAmountOfTransactions)} / мес`)
+            }
+            onMouseMove={(e) =>
+              show(e, `${s.item.categoryName}: ${formatTick(s.item.mediumAmountOfTransactions)} / мес`)
+            }
+            onMouseLeave={hide}
+          />
+        ))}
+
+        {legendItems.map((item, i) => {
+          const color = PALETTE[i % PALETTE.length];
+          const y = 20 + i * legendRowH;
+          return (
+            <g key={item.categoryId}>
+              <rect x={legendX} y={y} width={14} height={14} fill={color} rx={2} />
+              <text x={legendX + 22} y={y + 11} className="axis-label" fontSize={13}>
+                {item.categoryName}
+              </text>
+              <text x={W - 10} y={y + 11} textAnchor="end" className="axis-label" fontSize={13} fontWeight="600">
+                {formatTick(item.mediumAmountOfTransactions)}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </>
   );
 }
 

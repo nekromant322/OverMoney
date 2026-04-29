@@ -100,6 +100,33 @@ public class AnalyticService {
         return transactionService.findAnnualAndMonthlyTotalStatisticsByAccountId(accountId, year);
     }
 
+    public List<AnalyticsDataDTO> getTotalCategorySumsForAnalyticsByYear(Long userId, Type type, Integer year)
+            throws InstanceNotFoundException {
+        Long accId = accountService.getAccountByUserId(userId).getId();
+        List<Integer> availableYears = transactionService.findAvailableYears(accId);
+
+        int divisor;
+        if (availableYears.isEmpty()) {
+            return Collections.emptyList();
+        } else if (year.equals(Collections.min(availableYears))) {
+            Integer firstMonth = categoryRepository.findFirstTransactionMonthByAccId(accId);
+            divisor = firstMonth != null ? 13 - firstMonth : 12;
+        } else if (year >= LocalDateTime.now().getYear()) {
+            divisor = LocalDateTime.now().getMonthValue();
+        } else {
+            divisor = 12;
+        }
+
+        List<AnalyticsDataDTO> list = categoryRepository.findSumOfAllCategoriesByAccIdAndTypeAndYear(accId, type, year);
+        int finalDivisor = divisor;
+        return list.stream()
+                .filter(dto -> dto.getMediumAmountOfTransactions() != null
+                        && dto.getMediumAmountOfTransactions().doubleValue() != 0)
+                .peek(dto -> dto.setMediumAmountOfTransactions(
+                        Math.round(dto.getMediumAmountOfTransactions().doubleValue() / finalDivisor)))
+                .collect(Collectors.toList());
+    }
+
     public List<SumTransactionPerCategoryPerPeriodDTO> getUserCategoriesWithSumOfTransactionsPerPeriod(
             Long id, Period period
     ) throws InstanceNotFoundException {
