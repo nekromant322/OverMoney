@@ -1,6 +1,0 @@
-Правила CORS можно найти в corsConfigurationSource в src/main/java/com/override/orchestrator_service/config/SecurityConfig.java
-У меня фронт на overmoney.tech/finances/
-Бэк отвечает на overmoney.tech
-Надо изменить правила в сторону сужения, так чтобы фронт продолжал работать, но чтобы избавиться от дыр в безопасности.
-
-
