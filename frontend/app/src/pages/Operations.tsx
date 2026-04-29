@@ -529,7 +529,7 @@ export default function Operations() {
 
           <button
             type="button"
-            className={`fab-trash ${trashHover ? 'is-drop-target' : ''}`}
+            className={`fab-trash ${trashHover ? 'is-drop-target' : ''} ${draggingId ? 'is-drag-active' : ''}`}
             aria-label="Удалить"
             onDragOver={handleTrashDragOver}
             onDragLeave={handleTrashDragLeave}

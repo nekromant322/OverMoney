@@ -70,6 +70,8 @@
 
 .cats-row:last-child { border-bottom: 0; }
 
+.cats-row:not(.cats-row--head):hover { background: var(--surface-2); }
+
 .cats-row--head {
   background: var(--surface-2);
   color: var(--muted);
