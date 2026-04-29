@@ -69,7 +69,6 @@ public class TransactionController {
         Transaction transaction =
                 transactionProcessingService.validateAndProcessTransaction(transactionMessage, principal);
         transactionService.saveTransaction(transaction);
-        transactionProcessingService.suggestCategoryToProcessedTransaction(transaction);
         return transactionMapper.mapTransactionToTelegramResponse(transaction);
     }
 

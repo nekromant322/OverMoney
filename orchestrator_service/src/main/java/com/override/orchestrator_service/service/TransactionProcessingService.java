@@ -124,15 +124,6 @@ public class TransactionProcessingService {
         return processTransaction(transactionMessageDTO);
     }
 
-    @Transactional
-    public void suggestCategoryToProcessedTransaction(Transaction transaction)
-            throws InstanceNotFoundException {
-        List<CategoryDTO> categories = categoryService.findCategoriesListByUserId(transaction.getTelegramUserId());
-        if (!categories.isEmpty()) {
-            recognizerFeign.recognizeCategory(transaction.getMessage(), transaction.getId(), categories);
-        }
-    }
-
     private Category getTransactionCategory(String transactionMessage,
                                             OverMoneyAccount overMoneyAccount) {
         if (Objects.isNull(overMoneyAccount.getCategories()) ||

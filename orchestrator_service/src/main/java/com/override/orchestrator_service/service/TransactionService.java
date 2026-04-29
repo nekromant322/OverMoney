@@ -1,6 +1,7 @@
 package com.override.orchestrator_service.service;
 
 import com.override.dto.*;
+import com.override.orchestrator_service.event.CategoryRecognitionEvent;
 import com.override.orchestrator_service.exception.InvalidDataException;
 import com.override.orchestrator_service.exception.TransactionNotFoundException;
 import com.override.orchestrator_service.feign.TelegramBotFeign;
@@ -14,6 +15,7 @@ import com.override.orchestrator_service.repository.TransactionRepository;
 import com.override.orchestrator_service.repository.specification.TransactionSpecification;
 import com.override.orchestrator_service.util.NumericalUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -55,6 +57,8 @@ public class TransactionService {
     private KeywordService keywordService;
     @Autowired
     private SuggestionRepository suggestionRepository;
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
 
     public int getTransactionsCount() {
         return transactionRepository.getTransactionsCount();
@@ -79,6 +83,11 @@ public class TransactionService {
         Long accountId = transaction.getTelegramUserId();
         keywordService.updateLastUsed(keywordText, accountId);
         transactionRepository.save(transaction);
+        eventPublisher.publishEvent(new CategoryRecognitionEvent(
+                transaction.getId(),
+                transaction.getMessage(),
+                transaction.getTelegramUserId()
+        ));
     }
 
     @Transactional(readOnly = true)
