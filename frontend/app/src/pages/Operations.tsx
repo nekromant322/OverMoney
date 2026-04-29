@@ -177,13 +177,13 @@ export default function Operations() {
         })
         .catch((e) => console.error('Failed to load category sums', e));
     };
-    const id = 'requestIdleCallback' in window
+    const id: number = 'requestIdleCallback' in window
       ? window.requestIdleCallback(load)
-      : window.setTimeout(load, 300);
+      : setTimeout(load, 300) as unknown as number;
     return () => {
       cancelled = true;
-      if ('requestIdleCallback' in window) window.cancelIdleCallback(id as number);
-      else window.clearTimeout(id as number);
+      if ('requestIdleCallback' in window) window.cancelIdleCallback(id);
+      else clearTimeout(id);
     };
   }, [period]);
 
