@@ -217,7 +217,7 @@ function PieChart({ data }: { data: CategoryAvgData[] }) {
               <text x={legendX + 22} y={y + 11} className="axis-label" fontSize={13}>
                 {item.categoryName}
               </text>
-              <text x={W - 10} y={y + 11} textAnchor="end" className="axis-label" fontSize={13} fontWeight="600">
+              <text x={legendX + 200} y={y + 11} textAnchor="start" className="axis-label" fontSize={13} fontWeight="600">
                 {formatTick(item.mediumAmountOfTransactions)}
               </text>
             </g>

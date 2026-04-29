@@ -263,6 +263,7 @@ export default function Operations() {
     const txId = e.dataTransfer.getData('text/plain');
     setDraggingId(null);
     setDropTargetId(null);
+    setDraggingSuggestedId(null);
     if (!txId) return;
 
     const previous = transactions;
