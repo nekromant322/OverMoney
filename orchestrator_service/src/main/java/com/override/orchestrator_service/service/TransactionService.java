@@ -78,15 +78,17 @@ public class TransactionService {
         return transactionRepository.findFirstTransactionByAccountIdOrderByDate(accountId);
     }
 
+    @Transactional
     public void saveTransaction(Transaction transaction) {
         String keywordText = transaction.getMessage();
         Long accountId = transaction.getTelegramUserId();
         keywordService.updateLastUsed(keywordText, accountId);
-        transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+
         eventPublisher.publishEvent(new CategoryRecognitionEvent(
-                transaction.getId(),
-                transaction.getMessage(),
-                transaction.getTelegramUserId()
+                savedTransaction.getId(),
+                savedTransaction.getMessage(),
+                savedTransaction.getTelegramUserId()
         ));
     }
 
