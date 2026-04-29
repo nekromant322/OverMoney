@@ -38,6 +38,7 @@ class CategoryRecognitionListenerTest {
                 777L
         );
 
+
         List<CategoryDTO> categories = List.of(new CategoryDTO());
 
         when(categoryService.findCategoriesListByUserId(777L))
