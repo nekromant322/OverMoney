@@ -32,27 +32,51 @@ const formatDate = (iso: string) => {
   return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}.${d.getFullYear()} / ${pad(d.getHours())}:${pad(d.getMinutes())}`;
 };
 
+type Period = 'DAY' | 'MONTH' | 'YEAR';
+
+type CategorySum = {
+  id: number;
+  name: string;
+  sum: number;
+  type: CategoryType;
+};
+
 type CategoryListProps = {
   items: Category[];
   dropTargetId: number | null;
   suggestedId?: number | null;
+  sums: Map<number, number>;
   onCategoryDragOver: (e: React.DragEvent, catId: number) => void;
   onCategoryDrop: (e: React.DragEvent, catId: number) => void;
 };
 
-function CategoryList({ items, dropTargetId, suggestedId, onCategoryDragOver, onCategoryDrop }: CategoryListProps) {
+const formatSum = (n: number, type: CategoryType) => {
+  const abs = new Intl.NumberFormat('ru-RU').format(Math.abs(n));
+  if (n === 0) return '0';
+  return type === 'INCOME' ? `+ ${abs}` : `- ${abs}`;
+};
+
+function CategoryList({ items, dropTargetId, suggestedId, sums, onCategoryDragOver, onCategoryDrop }: CategoryListProps) {
   return (
     <ul className="category-list">
-      {items.map((c) => (
-        <li
-          key={c.id}
-          className={`category-row ${dropTargetId === c.id ? 'is-drop-target' : ''} ${suggestedId === c.id ? 'is-suggested' : ''}`}
-          onDragOver={(e) => onCategoryDragOver(e, c.id)}
-          onDrop={(e) => onCategoryDrop(e, c.id)}
-        >
-          <span className="category-name">{c.name}</span>
-        </li>
-      ))}
+      {items.map((c) => {
+        const sum = sums.get(c.id);
+        return (
+          <li
+            key={c.id}
+            className={`category-row ${dropTargetId === c.id ? 'is-drop-target' : ''} ${suggestedId === c.id ? 'is-suggested' : ''}`}
+            onDragOver={(e) => onCategoryDragOver(e, c.id)}
+            onDrop={(e) => onCategoryDrop(e, c.id)}
+          >
+            <span className="category-name">{c.name}</span>
+            {sum !== undefined && (
+              <span className={`category-sum ${c.type === 'INCOME' ? 'is-positive' : 'is-negative'}`}>
+                {formatSum(sum, c.type)}
+              </span>
+            )}
+          </li>
+        );
+      })}
     </ul>
   );
 }
@@ -101,6 +125,9 @@ export default function Operations() {
   const [toast, setToast] = useState<{ tx: Transaction; categoryId: number; categoryName: string } | null>(null);
   const toastTimerRef = useRef<number | null>(null);
 
+  const [period, setPeriod] = useState<Period>('MONTH');
+  const [categorySums, setCategorySums] = useState<Map<number, number>>(new Map());
+
   const [editing, setEditing] = useState<Transaction | null>(null);
   const [editForm, setEditForm] = useState<EditForm>({ message: '', amount: '', date: '', categoryName: '' });
   const [saving, setSaving] = useState(false);
@@ -133,6 +160,32 @@ export default function Operations() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = () => {
+      apiFetch(`/analytics/categories/sums?period=${period}`, { credentials: 'include' })
+        .then((r) => {
+          if (!r.ok) throw new Error(`HTTP ${r.status}`);
+          return r.json() as Promise<CategorySum[]>;
+        })
+        .then((data) => {
+          if (cancelled) return;
+          const map = new Map<number, number>();
+          data.forEach((d) => map.set(d.id, d.sum ?? 0));
+          setCategorySums(map);
+        })
+        .catch((e) => console.error('Failed to load category sums', e));
+    };
+    const id = 'requestIdleCallback' in window
+      ? window.requestIdleCallback(load)
+      : window.setTimeout(load, 300);
+    return () => {
+      cancelled = true;
+      if ('requestIdleCallback' in window) window.cancelIdleCallback(id as number);
+      else window.clearTimeout(id as number);
+    };
+  }, [period]);
 
   const loadTransactions = () => {
     return apiFetch('/transactions', { credentials: 'include' })
@@ -366,22 +419,52 @@ export default function Operations() {
           </div>
 
           <section className="cat-section">
-            <h2 className="cat-section__title">Расходы</h2>
+            <div className="cat-section__header">
+              <h2 className="cat-section__title">Расходы</h2>
+              <div className="period-tabs">
+                {(['DAY', 'MONTH', 'YEAR'] as Period[]).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`period-tab ${period === p ? 'is-active' : ''}`}
+                    onClick={() => setPeriod(p)}
+                  >
+                    {p === 'DAY' ? 'Д' : p === 'MONTH' ? 'М' : 'Г'}
+                  </button>
+                ))}
+              </div>
+            </div>
             <CategoryList
               items={filteredExpenses}
               dropTargetId={dropTargetId}
               suggestedId={draggingSuggestedId}
+              sums={categorySums}
               onCategoryDragOver={handleCategoryDragOver}
               onCategoryDrop={handleCategoryDrop}
             />
           </section>
 
           <section className="cat-section">
-            <h2 className="cat-section__title">Доходы</h2>
+            <div className="cat-section__header">
+              <h2 className="cat-section__title">Доходы</h2>
+              <div className="period-tabs">
+                {(['DAY', 'MONTH', 'YEAR'] as Period[]).map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    className={`period-tab ${period === p ? 'is-active' : ''}`}
+                    onClick={() => setPeriod(p)}
+                  >
+                    {p === 'DAY' ? 'Д' : p === 'MONTH' ? 'М' : 'Г'}
+                  </button>
+                ))}
+              </div>
+            </div>
             <CategoryList
               items={filteredIncomes}
               dropTargetId={dropTargetId}
               suggestedId={draggingSuggestedId}
+              sums={categorySums}
               onCategoryDragOver={handleCategoryDragOver}
               onCategoryDrop={handleCategoryDrop}
             />

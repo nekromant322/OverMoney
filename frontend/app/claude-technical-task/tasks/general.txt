@@ -1,6 +1,11 @@
+Для решения следующей задачи тебе придется делать запросы на
+getCategoriesWithSumOfTransactionsPerPeriod в src/main/java/com/override/orchestrator_service/controller/rest/AnalyticsController.java
+Тебе нужно добавить на страницу Операций Operations.tsx Селекторы выбора периода День, месяц, год, как на картинке.
+При нажатии - изменять период за который отображается стастика рядом с категориями.
 
 
-Иконка слева вверху желтая убрать
+
+
 
 Правила CORS можно найти в corsConfigurationSource в src/main/java/com/override/orchestrator_service/config/SecurityConfig.java
 У меня фронт на overmoney.tech/finances/
