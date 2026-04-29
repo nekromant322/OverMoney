@@ -43,7 +43,8 @@ public class AnalyticsController {
                                                                       @PathVariable("type") Type type,
                                                                       @PathVariable("year") Integer year)
             throws InstanceNotFoundException {
-        return analyticService.getTotalCategorySumsForAnalyticsByYear(telegramUtils.getTelegramId(principal), type, year);
+        return analyticService.getTotalCategorySumsForAnalyticsByYear(
+                telegramUtils.getTelegramId(principal), type, year);
     }
 
     @GetMapping("/totalIncomeOutcome/{year}")
