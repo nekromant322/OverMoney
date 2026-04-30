@@ -190,7 +190,7 @@ export default function Login() {
         <a href="mailto:shamaneeel881@gmail.com">shamaneeel881@gmail.com</a>
         <div className="footer__copyright">
           © {new Date().getFullYear()}{' '}
-          <a href="/offer">Договор-оферта</a>
+          <a href={`${import.meta.env.BASE_URL}offer`}>Договор-оферта</a>
         </div>
       </footer>
     </div>
