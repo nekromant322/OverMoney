@@ -95,3 +95,10 @@
       - dayOffset: 0
         text: "Ты можешь отправить боту голосовые сообщения и он сам распознает сумму и комментарий"
         image: "voice_message_example.jpg"
+      - dayOffset: 2
+        text: "Операцию можно отредактировать, если прислать реплай на свое сообщение, или на сообщение бота"
+        image: "edit_message_example.jpg"
+      - dayOffset: 4
+        text: "Если пришлешь в реплай \"удалить\", я удалю операцию. "
+        image: "delete_message_example.jpg"
+
