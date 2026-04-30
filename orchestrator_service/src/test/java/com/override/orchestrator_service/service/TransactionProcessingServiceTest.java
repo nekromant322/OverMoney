@@ -22,17 +22,21 @@ import org.mockito.quality.Strictness;
 
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class TransactionProcessingServiceTest {
+    private static final LocalDateTime LOCAL_DATE_TIME = LocalDateTime.of(2020, 1, 1, 0, 0);
+
     @InjectMocks
     private TransactionProcessingService transactionProcessingService;
 
@@ -205,14 +209,13 @@ public class TransactionProcessingServiceTest {
         when(overMoneyAccountService.getOverMoneyAccountByChatId(any())).thenReturn(TestFieldsUtil.generateTestAccount());
         Principal principal = new JwtAuthentication();
 
+        TransactionMessageDTO webTransactionMessageDTO = TestFieldsUtil.generateTransactionMessageDTOFromWeb(LOCAL_DATE_TIME);
+        TransactionMessageDTO telegramTransactionMessageDTO = TestFieldsUtil.generateTransactionMessageDTOFromTelegram();
+
         Transaction resultTransactionWithPrincipal =
-                transactionProcessingService
-                        .validateAndProcessTransaction(TestFieldsUtil.generateTransactionMessageDTOFromWeb(),
-                                principal);
+                transactionProcessingService.validateAndProcessTransaction(webTransactionMessageDTO, principal);
         Transaction resultTransactionWithoutPrincipal =
-                transactionProcessingService
-                        .validateAndProcessTransaction(TestFieldsUtil.generateTransactionMessageDTOFromTelegram(),
-                                null);
+                transactionProcessingService.validateAndProcessTransaction(telegramTransactionMessageDTO, null);
 
 
         assertEquals(resultTransactionWithPrincipal.getMessage(), resultTransactionWithoutPrincipal.getMessage());
@@ -221,5 +224,26 @@ public class TransactionProcessingServiceTest {
                 resultTransactionWithoutPrincipal.getAccount().getId());
         assertEquals(resultTransactionWithPrincipal.getCategory().getName(),
                 resultTransactionWithoutPrincipal.getCategory().getName());
+
+        assertEquals(webTransactionMessageDTO.getDate(), resultTransactionWithPrincipal.getDate());
+    }
+
+    @Test
+    public void checkValidateAndProcessTransactionNullTransactionDate() throws InstanceNotFoundException {
+        transactionProcessingService.init();
+        when(telegramUtils.getTelegramId(any())).thenReturn(TestFieldsUtil.generateTestAccount().getId());
+        when(overMoneyAccountService.getAccountByUserId(any())).thenReturn(TestFieldsUtil.generateTestAccount());
+
+        List<CategoryDTO> categories = List.of(TestFieldsUtil.generateTestCategoryDTO());
+        when(categoryService.findCategoriesListByUserId(any())).thenReturn(categories);
+        when(overMoneyAccountService.getOverMoneyAccountByChatId(any())).thenReturn(TestFieldsUtil.generateTestAccount());
+        Principal principal = new JwtAuthentication();
+
+        TransactionMessageDTO webTransactionMessageDTO = TestFieldsUtil.generateTransactionMessageDTOFromWeb(null);
+
+        Transaction resultTransactionWithPrincipal =
+                transactionProcessingService.validateAndProcessTransaction(webTransactionMessageDTO, principal);
+
+        assertNotNull(resultTransactionWithPrincipal.getDate());
     }
 }
