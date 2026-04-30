@@ -355,9 +355,10 @@ public class TestFieldsUtil {
                 .build();
     }
 
-    public static TransactionMessageDTO generateTransactionMessageDTOFromWeb() {
+    public static TransactionMessageDTO generateTransactionMessageDTOFromWeb(LocalDateTime date) {
         return TransactionMessageDTO.builder()
                 .message("пиво 200")
+                .date(date)
                 .build();
     }
 

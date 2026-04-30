@@ -1,10 +1,19 @@
 package com.override.orchestrator_service.service;
 
-import com.override.dto.*;
+import com.override.dto.TransactionAmountAndCommentDTO;
+import com.override.dto.TransactionMessageDTO;
 import com.override.orchestrator_service.exception.InvalidDataException;
 import com.override.orchestrator_service.feign.RecognizerFeign;
-import com.override.orchestrator_service.model.*;
-import com.override.orchestrator_service.service.calc.*;
+import com.override.orchestrator_service.model.Category;
+import com.override.orchestrator_service.model.Keyword;
+import com.override.orchestrator_service.model.OverMoneyAccount;
+import com.override.orchestrator_service.model.Transaction;
+import com.override.orchestrator_service.service.calc.TransactionHandler;
+import com.override.orchestrator_service.service.calc.TransactionHandlerImplInvalidTransaction;
+import com.override.orchestrator_service.service.calc.TransactionHandlerImplSingleAmountAtEnd;
+import com.override.orchestrator_service.service.calc.TransactionHandlerImplSingleAmountAtFront;
+import com.override.orchestrator_service.service.calc.TransactionHandlerImplSumAmountAtEnd;
+import com.override.orchestrator_service.service.calc.TransactionHandlerImplSumAmountAtFront;
 import com.override.orchestrator_service.util.TelegramUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,9 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.PostConstruct;
 import javax.management.InstanceNotFoundException;
 import java.security.Principal;
-import java.time.*;
-import java.util.*;
-import java.util.regex.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class TransactionProcessingService {
@@ -110,7 +126,8 @@ public class TransactionProcessingService {
     public Transaction validateAndProcessTransaction(TransactionMessageDTO transactionMessageDTO, Principal principal)
             throws InstanceNotFoundException {
 
-        LocalDateTime moscowTime = LocalDateTime.now(ZoneId.ofOffset("UTC", MOSCOW_OFFSET));
+        LocalDateTime transactionDate = Optional.ofNullable(transactionMessageDTO.getDate())
+                .orElse(LocalDateTime.now(ZoneId.ofOffset("UTC", MOSCOW_OFFSET)));
 
         if (principal != null) {
             OverMoneyAccount overMoneyAccount =
@@ -118,7 +135,7 @@ public class TransactionProcessingService {
 
             transactionMessageDTO.setChatId(overMoneyAccount.getChatId());
             transactionMessageDTO.setUserId(telegramUtils.getTelegramId(principal));
-            transactionMessageDTO.setDate(moscowTime);
+            transactionMessageDTO.setDate(transactionDate);
         }
 
         return processTransaction(transactionMessageDTO);
