@@ -26,6 +26,7 @@ public interface TransactionRepository extends PagingAndSortingRepository<Transa
     int getTransactionsCount();
 
     @Query("SELECT t FROM Transaction t WHERE t.account.id = :id AND t.category.id is null")
+    @EntityGraph(attributePaths = {"suggestion"})
     List<Transaction> findAllWithoutCategoriesByAccountId(@Param("id") Long accountId);
 
     @EntityGraph(attributePaths = {"account", "suggestion", "category"})
