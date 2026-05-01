@@ -521,7 +521,7 @@
 }
 
 .fab-trash:not(.is-drag-active):hover::after {
-  content: 'Перетащи сюда транзакцию для удаления';
+  content: 'Перетащи сюда операцию для удаления';
   position: absolute;
   bottom: calc(100% + 8px);
   right: 0;
