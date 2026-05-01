@@ -289,3 +289,7 @@
     bottom: 12px;
   }
 }
+
+.archive-page .fab-trash:not(.is-drag-active):hover::after {
+  content: none;
+}
