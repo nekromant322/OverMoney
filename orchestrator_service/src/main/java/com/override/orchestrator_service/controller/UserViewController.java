@@ -9,7 +9,7 @@ public class UserViewController {
 
     @GetMapping("/")
     public RedirectView redirectToMainPage() {
-        return new RedirectView("/overmoney");
+        return new RedirectView("/login");
     }
 
     @GetMapping("/overmoney")
